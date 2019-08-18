@@ -33,366 +33,104 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <unistd.h>
 
-#ifndef ENOMEM
-#    define ENOMEM 12
-#endif
-
-#ifndef EINVAL
-#    define EINVAL 22
-#endif
-
-#ifndef EOUTOFDATA
-#    define EOUTOFDATA 500
-#endif
-
-#ifndef EBADCHOICE
-#    define EBADCHOICE 501
-#endif
-
-#ifndef EBADLENGTH
-#    define EBADLENGTH 502
-#endif
-
-#ifndef EBADENUM
-#    define EBADENUM 503
-#endif
-
-/**
- * Type D in module MyProtocol.
- */
-struct uper_my_protocol_d_t {
-    uint8_t length;
-    uint8_t buf[16];
+enum address_book_person_phone_type_e {
+    address_book_person_phone_type_mobile_e = 0,
+    address_book_person_phone_type_home_e = 1,
+    address_book_person_phone_type_work_e = 2
 };
 
-/**
- * Type C in module MyProtocol.
- */
-enum uper_my_protocol_c_c_choice_e {
-    uper_my_protocol_c_c_choice_a_e,
-    uper_my_protocol_c_c_choice_b_e
+struct address_book_person_phone_number_t {
+    char *number_p;
+    enum address_book_person_phone_type_e type;
 };
 
-struct uper_my_protocol_c_t {
-    bool is_a_present;
+struct address_book_person_t {
+    char *name_p;
+    int32_t id;
+    char *email_p;
     struct {
-        struct {
-            uint8_t length;
-            int32_t elements[5];
-        } a;
-        bool is_b_present;
-        bool b;
-        int8_t c;
-    } a;
-    uint32_t b;
+        int length;
+        struct address_book_person_phone_number_t **elems_pp;
+    } phones;
+};
+
+struct address_book_adderss_book_t {
     struct {
-        enum uper_my_protocol_c_c_choice_e choice;
-        union {
-            struct {
-                struct uper_my_protocol_d_t elements[3];
-            } a;
-            bool b;
-        } value;
-    } c;
-    struct {
-        bool a;
-    } d;
+        int length;
+        struct address_book_person_t **elems_pp;
+    } people;
 };
 
-/**
- * Type B in module MyProtocol.
- */
-enum uper_my_protocol_b_choice_e {
-    uper_my_protocol_b_choice_a_e,
-    uper_my_protocol_b_choice_b_e
-};
+struct address_book_person_t *address_book_person_alloc(void);
 
-struct uper_my_protocol_b_t {
-    enum uper_my_protocol_b_choice_e choice;
-    union {
-        struct uper_my_protocol_c_t a;
-        struct uper_my_protocol_d_t b;
-    } value;
-};
+void address_book_person_free(struct address_book_person_t *person_p);
 
-/**
- * Type A in module MyProtocol.
- */
-struct uper_my_protocol_a_t {
-    uint8_t length;
-    struct uper_my_protocol_b_t elements[5];
-};
+int address_book_person_set_name(
+    struct address_book_person_t *person_p,
+    const char *value_p);
 
-/**
- * Type E in module MyProtocol.
- */
-struct uper_my_protocol_e_t {
-    bool value;
-};
+const char *address_book_person_get_name(
+    struct address_book_person_t *person_p);
 
-/**
- * Type F in module MyProtocol.
- */
-struct uper_my_protocol_f_t {
-    int32_t value;
-};
+int address_book_person_set_id(
+    struct address_book_person_t *person_p,
+    int32_t value);
 
-/**
- * Type G in module MyProtocol.
- */
-struct uper_my_protocol_g_t {
-    uint32_t value;
-};
+int32_t address_book_person_get_id(
+    struct address_book_person_t *person_p);
 
-/**
- * Type PDU in module MyProtocol.
- */
-enum uper_my_protocol_pdu_b_choice_e {
-    uper_my_protocol_pdu_b_choice_a_e,
-    uper_my_protocol_pdu_b_choice_b_e,
-    uper_my_protocol_pdu_b_choice_c_e,
-    uper_my_protocol_pdu_b_choice_d_e,
-    uper_my_protocol_pdu_b_choice_e_e
-};
+int address_book_person_set_email(
+    struct address_book_person_t *person_p,
+    const char *value_p);
 
-struct uper_my_protocol_pdu_t {
-    int32_t a;
-    struct {
-        enum uper_my_protocol_pdu_b_choice_e choice;
-        union {
-            struct uper_my_protocol_a_t a;
-            struct uper_my_protocol_b_t b;
-            struct uper_my_protocol_c_t c;
-            struct uper_my_protocol_d_t d;
-            bool e;
-        } value;
-    } b;
-};
+const char *address_book_person_get_email(
+    struct address_book_person_t *person_p);
 
-/**
- * Encode type D defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_d_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_d_t *src_p);
+int address_book_person_phones_length(
+    struct address_book_person_t *person_p);
 
-/**
- * Decode type D defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_d_decode(
-    struct uper_my_protocol_d_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+struct address_book_person_phone_number_t *address_book_person_phones_add(
+    struct address_book_person_t *person_p);
 
-/**
- * Encode type C defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_c_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_c_t *src_p);
+struct address_book_person_phone_number_t *address_book_person_phones_get(
+    struct address_book_person_t *person_p,
+    int index);
 
-/**
- * Decode type C defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_c_decode(
-    struct uper_my_protocol_c_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+int address_book_person_phone_number_set_number(
+    struct address_book_person_phone_number_t *phone_number_p,
+    const char *value_p);
 
-/**
- * Encode type B defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_b_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_b_t *src_p);
+const char *address_book_person_phone_number_get_number(
+    struct address_book_person_phone_number_t *phone_number_p);
 
-/**
- * Decode type B defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_b_decode(
-    struct uper_my_protocol_b_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+int address_book_person_phone_number_set_type(
+    struct address_book_person_phone_number_t *phone_number_p,
+    enum address_book_person_phone_type_e value);
 
-/**
- * Encode type A defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_a_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_a_t *src_p);
+enum address_book_person_phone_type_e address_book_person_phone_number_get_type(
+    struct address_book_person_phone_number_t *phone_number_p);
 
-/**
- * Decode type A defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_a_decode(
-    struct uper_my_protocol_a_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+struct address_book_adderss_book_t *address_book_adderss_book_alloc(void);
 
-/**
- * Encode type E defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_e_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_e_t *src_p);
+void address_book_adderss_book_free(struct address_book_adderss_book_t *address_book_p);
 
-/**
- * Decode type E defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_e_decode(
-    struct uper_my_protocol_e_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+int address_book_adderss_book_people_length(
+    struct address_book_adderss_book_t *address_book_p);
 
-/**
- * Encode type F defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_f_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_f_t *src_p);
+struct address_book_person_t *address_book_adderss_book_people_add(
+    struct address_book_adderss_book_t *address_book_p);
 
-/**
- * Decode type F defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_f_decode(
-    struct uper_my_protocol_f_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+struct address_book_person_t *address_book_adderss_book_people_get(
+    struct address_book_adderss_book_t *address_book_p,
+    int index);
 
-/**
- * Encode type G defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_g_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_g_t *src_p);
+int address_book_adderss_book_encode(
+    struct address_book_adderss_book_t *address_book_p,
+    uint8_t **encoded_pp);
 
-/**
- * Decode type G defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_g_decode(
-    struct uper_my_protocol_g_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
-
-/**
- * Encode type PDU defined in module MyProtocol.
- *
- * @param[out] dst_p Buffer to encode into.
- * @param[in] size Size of dst_p.
- * @param[in] src_p Data to encode.
- *
- * @return Encoded data length or negative error code.
- */
-ssize_t uper_my_protocol_pdu_encode(
-    uint8_t *dst_p,
-    size_t size,
-    const struct uper_my_protocol_pdu_t *src_p);
-
-/**
- * Decode type PDU defined in module MyProtocol.
- *
- * @param[out] dst_p Decoded data.
- * @param[in] src_p Data to decode.
- * @param[in] size Size of src_p.
- *
- * @return Number of bytes decoded or negative error code.
- */
-ssize_t uper_my_protocol_pdu_decode(
-    struct uper_my_protocol_pdu_t *dst_p,
-    const uint8_t *src_p,
-    size_t size);
+int address_book_adderss_book_decode(
+    const uint8_t *encoded_p,
+    struct address_book_adderss_book_t **address_book_pp);
 
 #endif
