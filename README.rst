@@ -1,3 +1,6 @@
+|buildstatus|_
+|coverage|_
+
 About
 =====
 
@@ -32,3 +35,9 @@ proto-file.
 
    $ pbtools generate_c_source examples/address_book/address_book.proto
    Successfully generated address_book.h and address_book.c.
+
+.. |buildstatus| image:: https://travis-ci.org/eerimoq/pbtools.svg?branch=master
+.. _buildstatus: https://travis-ci.org/eerimoq/pbtools
+
+.. |coverage| image:: https://coveralls.io/repos/github/eerimoq/pbtools/badge.svg?branch=master
+.. _coverage: https://coveralls.io/github/eerimoq/pbtools
