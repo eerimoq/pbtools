@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package sfixed32;
+
+message Message {
+    sfixed32 value = 1;
+}

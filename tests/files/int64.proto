@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package int64;
+
+message Message {
+    int64 value = 1;
+}

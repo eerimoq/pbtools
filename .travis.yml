@@ -8,6 +8,7 @@ install:
 
 script:
   - coverage run --source=pbtools setup.py test
+  - make test-c
 
 after_success:
   coveralls
