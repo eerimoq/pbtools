@@ -33,7 +33,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "address_book.h"
+#include "int32.h"
 
 struct encoder_t {
     uint8_t *buf_p;
@@ -45,15 +45,15 @@ struct decoder_t {
     const uint8_t *buf_p;
     int size;
     int pos;
-    struct address_book_heap_t *heap_p;
+    struct int32_heap_t *heap_p;
 };
 
-static struct address_book_heap_t *heap_init(void *buf_p, size_t size)
+static struct int32_heap_t *heap_init(void *buf_p, size_t size)
 {
-    struct address_book_heap_t *heap_p;
+    struct int32_heap_t *heap_p;
 
     if (size >= sizeof(*heap_p)) {
-        heap_p = (struct address_book_heap_t *)buf_p;
+        heap_p = (struct int32_heap_t *)buf_p;
         heap_p->buf_p = buf_p;
         heap_p->size = size;
         heap_p->pos = sizeof(*heap_p);
@@ -64,7 +64,7 @@ static struct address_book_heap_t *heap_init(void *buf_p, size_t size)
     return (heap_p);
 }
 
-static void *heap_alloc(struct address_book_heap_t *self_p, size_t size)
+static void *heap_alloc(struct int32_heap_t *self_p, size_t size)
 {
     void *buf_p;
     int left;
@@ -97,17 +97,14 @@ static size_t encoder_pos(struct encoder_t *self_p)
 
 static int encoder_get_result(struct encoder_t *self_p)
 {
-    /* int i; */
+    int length;
 
-    /* fprintf(stderr, "pos: %d, size: %d\n", (int)self_p->pos, (int)self_p->size); */
+    length = (self_p->size - self_p->pos - 1);
+    memmove(self_p->buf_p,
+            &self_p->buf_p[self_p->pos + 1],
+            length);
 
-    /* for (i = self_p->pos + 1; i < self_p->size; i++) { */
-    /*     fprintf(stderr, "\\x%02x", self_p->buf_p[i]); */
-    /* } */
-
-    /* fprintf(stderr, "\n"); */
-
-    return (self_p->size - self_p->pos - 1);
+    return (length);
 }
 
 static void encoder_prepend_byte(struct encoder_t *self_p,
@@ -159,10 +156,60 @@ static void encoder_prepend_varint(struct encoder_t *self_p,
     encoder_prepend_tag(self_p, tag, 0);
 }
 
+static void encoder_prepend_uint32(struct encoder_t *self_p,
+                                   int tag,
+                                   uint32_t value)
+{
+    if (value < (1 << 7)) {
+        encoder_prepend_byte(self_p, value);
+    } else if (value < (1 << 14)) {
+        encoder_prepend_byte(self_p, value >> 7);
+        encoder_prepend_byte(self_p, (value & 0x7f) | 0x80);
+    } else if (value < (1 << 21)) {
+        encoder_prepend_byte(self_p, value >> 14);
+        encoder_prepend_byte(self_p, ((value >> 7) & 0x7f) | 0x80);
+        encoder_prepend_byte(self_p, (value & 0x7f) | 0x80);
+    } else if (value < (1 << 28)) {
+        encoder_prepend_byte(self_p, value >> 21);
+        encoder_prepend_byte(self_p, ((value >> 14) & 0x7f) | 0x80);
+        encoder_prepend_byte(self_p, ((value >> 7) & 0x7f) | 0x80);
+        encoder_prepend_byte(self_p, (value & 0x7f) | 0x80);
+    } else {
+        encoder_prepend_byte(self_p, value >> 28);
+        encoder_prepend_byte(self_p, ((value >> 21) & 0x7f) | 0x80);
+        encoder_prepend_byte(self_p, ((value >> 14) & 0x7f) | 0x80);
+        encoder_prepend_byte(self_p, ((value >> 7) & 0x7f) | 0x80);
+        encoder_prepend_byte(self_p, (value & 0x7f) | 0x80);
+    }
+
+    encoder_prepend_tag(self_p, tag, 0);
+}
+
+static void encoder_prepend_int32(struct encoder_t *self_p,
+                                  int tag,
+                                  int32_t value)
+{
+    if (value < 0) {
+        encoder_prepend_byte(self_p, 0x01);
+        encoder_prepend_byte(self_p, 0xff);
+        encoder_prepend_byte(self_p, 0xff);
+        encoder_prepend_byte(self_p, 0xff);
+        encoder_prepend_byte(self_p, 0xff);
+        encoder_prepend_byte(self_p, (value >> 28) | 0x80);
+        encoder_prepend_byte(self_p, (value >> 21) | 0x80);
+        encoder_prepend_byte(self_p, (value >> 14) | 0x80);
+        encoder_prepend_byte(self_p, (value >> 7) | 0x80);
+        encoder_prepend_byte(self_p, value | 0x80);
+        encoder_prepend_tag(self_p, tag, 0);
+    } else if (value > 0) {
+        encoder_prepend_uint32(self_p, tag, (uint32_t)value);
+    }
+}
+
 static void decoder_init(struct decoder_t *self_p,
                          const uint8_t *buf_p,
                          size_t size,
-                         struct address_book_heap_t *heap_p)
+                         struct int32_heap_t *heap_p)
 {
     self_p->buf_p = buf_p;
     self_p->size = size;
@@ -212,6 +259,20 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
     return (value);
 }
 
+static void decoder_read_tag(struct decoder_t *self_p,
+                             int tag,
+                             int wire_type)
+{
+    uint8_t value;
+
+    value = decoder_read_byte(self_p);
+
+    if (value != ((tag << 3) | wire_type)) {
+        fprintf(stderr, "decoder_read_tag: %02x %02x\n", value, (tag << 3) | wire_type);
+        exit(1);
+    }
+}
+
 static uint64_t decoder_read_varint_value(struct decoder_t *self_p)
 {
     return (decoder_read_byte(self_p));
@@ -225,12 +286,18 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p,
     return (decoder_read_varint_value(self_p));
 }
 
+static int32_t decoder_read_int32(struct decoder_t *self_p,
+                                  int tag)
+{
+    return (0);
+}
+
 struct int32_message_t *int32_message_init(
     void *workspace_p,
     size_t size)
 {
     struct int32_message_t *message_p;
-    struct address_book_heap_t *heap_p;
+    struct int32_heap_t *heap_p;
 
     heap_p = heap_init(workspace_p, size);
 
@@ -245,7 +312,7 @@ struct int32_message_t *int32_message_init(
         message_p->value = 0;
     }
 
-    return (address_book_p);
+    return (message_p);
 }
 
 void int32_message_encode_inner(
