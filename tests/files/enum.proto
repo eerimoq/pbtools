@@ -8,5 +8,5 @@ message Message {
         B = 1;
     }
 
-    enum Enum value = 1;
+    Enum value = 1;
 }

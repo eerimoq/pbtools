@@ -69,3 +69,4 @@ target/
 .idea/
 
 main
+*_pb2.py
