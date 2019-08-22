@@ -85,6 +85,12 @@ SOURCE_FMT = '''\
 {definitions}\
 '''
 
+STRUCT_FMT = '''\
+struct {name}_t {{
+{members}
+}};
+'''
+
 
 def canonical(value):
     """Replace anything but 'a-z', 'A-Z' and '0-9' with '_'.
@@ -103,6 +109,32 @@ def camel_to_snake_case(value):
     return value
 
 
+def _generate_members(message):
+    members = []
+
+    for field in message.fields:
+        members.append(f'    {field.type} {field.name};')
+
+    if not members:
+        members = [
+            '    uint8_t dummy;'
+        ]
+
+    return members
+
+
+def generate_structs(parsed):
+    structs = []
+
+    for message in parsed.messages:
+        members = _generate_members(message)
+        structs.append(
+            STRUCT_FMT.format(name=camel_to_snake_case(message.name),
+                              members='\n'.join(members)))
+
+    return '\n'.join(structs)
+
+
 def generate(namespace, parsed):
     """Generate C source code from given parsed proto-file.
 
@@ -112,7 +144,7 @@ def generate(namespace, parsed):
     namespace = camel_to_snake_case(namespace)
     include_guard = '{}_H'.format(namespace.upper())
 
-    structs = ''
+    structs = generate_structs(parsed)
     declarations = ''
     header_name = ''
     helpers = ''
