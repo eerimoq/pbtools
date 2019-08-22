@@ -279,6 +279,11 @@ static bool decoder_peek_tag(struct decoder_t *self_p,
             && ((self_p->buf_p[self_p->pos] >> 3) == tag));
 }
 
+static int decoder_peek_tag_2(struct decoder_t *self_p)
+{
+    return (self_p->buf_p[self_p->pos] >> 3);
+}
+
 static uint64_t decoder_read_varint_value(struct decoder_t *self_p)
 {
     return (decoder_read_byte(self_p));
@@ -433,8 +438,23 @@ void address_book_person_phone_number_decode_inner(
     struct decoder_t *decoder_p,
     struct address_book_person_phone_number_t *phone_number_p)
 {
-    decoder_read_string(decoder_p, 1, &phone_number_p->number_p);
-    phone_number_p->type = decoder_read_varint(decoder_p, 2);
+    while (decoder_available(decoder_p)) {
+        switch (decoder_peek_tag_2(decoder_p)) {
+
+        case 1:
+            decoder_read_string(decoder_p, 1, &phone_number_p->number_p);
+            break;
+
+        case 2:
+            phone_number_p->type = decoder_read_varint(decoder_p, 2);
+            break;
+
+        default:
+            fprintf(stderr, "address_book_person_phone_number_decode_inner\n");
+            exit(1);
+            return;
+        }
+    }
 }
 
 void address_book_person_encode_inner(
@@ -468,21 +488,42 @@ void address_book_person_decode_inner(
     struct decoder_t decoder;
     int i;
 
-    decoder_read_string(decoder_p, 1, &person_p->name_p);
-    person_p->id = decoder_read_varint(decoder_p, 2);
-    decoder_read_string(decoder_p, 3, &person_p->email_p);
-    person_p->phones.length = decoder_peek_repeated_length(decoder_p, 4);
-    person_p->phones.items_p = heap_alloc(
-        decoder_p->heap_p,
-        sizeof(*phone_number_p) * person_p->phones.length);
+    while (decoder_available(decoder_p)) {
+        switch (decoder_peek_tag_2(decoder_p)) {
 
-    for (i = 0; i < person_p->phones.length; i++) {
-        length = decoder_read_length_delimited(decoder_p, 4);
-        //fprintf(stderr, "repeated length: %llu\n", (unsigned long long)length);
-        decoder_init_slice(&decoder, decoder_p, length);
-        address_book_person_phone_number_decode_inner(&decoder,
-                                                      &person_p->phones.items_p[i]);
-        decoder_seek(decoder_p, decoder_get_result(&decoder));
+        case 1:
+            decoder_read_string(decoder_p, 1, &person_p->name_p);
+            break;
+
+        case 2:
+            person_p->id = decoder_read_varint(decoder_p, 2);
+            break;
+
+        case 3:
+            decoder_read_string(decoder_p, 3, &person_p->email_p);
+            break;
+
+        case 4:
+            person_p->phones.length = decoder_peek_repeated_length(decoder_p, 4);
+            person_p->phones.items_p = heap_alloc(
+                decoder_p->heap_p,
+                sizeof(*phone_number_p) * person_p->phones.length);
+
+            for (i = 0; i < person_p->phones.length; i++) {
+                length = decoder_read_length_delimited(decoder_p, 4);
+                //fprintf(stderr, "repeated length: %llu\n", (unsigned long long)length);
+                decoder_init_slice(&decoder, decoder_p, length);
+                address_book_person_phone_number_decode_inner(&decoder,
+                                                              &person_p->phones.items_p[i]);
+                decoder_seek(decoder_p, decoder_get_result(&decoder));
+            }
+            break;
+
+        default:
+            fprintf(stderr, "address_book_person_decode_inner\n");
+            exit(1);
+            return;
+        }
     }
 }
 

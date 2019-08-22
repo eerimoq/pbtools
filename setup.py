@@ -25,6 +25,9 @@ setup(name='pbtools',
       keywords=['protobuf', 'proto', 'protocol buffers'],
       url='https://github.com/eerimoq/pbtools',
       packages=find_packages(exclude=['tests']),
+      install_requires=[
+          'textparser>=0.21.1'
+      ],
       test_suite="tests",
       entry_points = {
           'console_scripts': ['pbtools=pbtools.__init__:_main']
