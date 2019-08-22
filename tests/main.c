@@ -9,6 +9,7 @@
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
 #include "files/c_source/int32.h"
+#include "files/c_source/address_book.h"
 
 static void test_int32(void)
 {
@@ -40,7 +41,7 @@ static void test_int32(void)
     for (i = 0; i < membersof(datas); i++) {
         printf("Value: %d\n", datas[i].decoded);
         
-        message_p = int32_message_init(&workspace[0], sizeof(workspace));
+        message_p = int32_message_new(&workspace[0], sizeof(workspace));
         assert(message_p != NULL);
         message_p->value = datas[i].decoded;
 

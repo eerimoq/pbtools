@@ -48,7 +48,7 @@ struct decoder_t {
     struct address_book_heap_t *heap_p;
 };
 
-static struct address_book_heap_t *heap_init(void *buf_p, size_t size)
+static struct address_book_heap_t *heap_new(void *buf_p, size_t size)
 {
     struct address_book_heap_t *heap_p;
 
@@ -344,89 +344,7 @@ static void decoder_read_string(struct decoder_t *self_p,
     }
 }
 
-void address_book_person_free(struct address_book_person_t *person_p)
-{
-    free(person_p);
-}
-
-int address_book_person_phones_alloc(
-    struct address_book_person_t *person_p,
-    int length)
-{
-    int res;
-    int i;
-    struct address_book_person_phone_number_t *items_p;
-
-    items_p = heap_alloc(person_p->heap_p, sizeof(*items_p) * length);
-
-    if (items_p != NULL) {
-        for (i = 0; i < length; i++) {
-            items_p[i].number_p = "";
-            items_p[i].type = address_book_person_phone_type_mobile_e;
-        }
-
-        person_p->phones.length = length;
-        person_p->phones.items_p = items_p;
-        res = 0;
-    } else {
-        res = -1;
-    }
-
-    return (res);
-}
-
-struct address_book_address_book_t *address_book_address_book_init(
-    void *workspace_p,
-    size_t size)
-{
-    struct address_book_address_book_t *address_book_p;
-    struct address_book_heap_t *heap_p;
-
-    heap_p = heap_init(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    address_book_p = heap_alloc(heap_p, sizeof(*address_book_p));
-
-    if (address_book_p != NULL) {
-        address_book_p->heap_p = heap_p;
-        address_book_p->people.length = 0;
-    }
-
-    return (address_book_p);
-}
-
-int address_book_address_book_people_alloc(
-    struct address_book_address_book_t *address_book_p,
-    int length)
-{
-    int res;
-    int i;
-    struct address_book_person_t *items_p;
-
-    items_p = heap_alloc(address_book_p->heap_p, sizeof(*items_p) * length);
-
-    if (items_p != NULL) {
-        for (i = 0; i < length; i++) {
-            items_p[i].heap_p = address_book_p->heap_p;
-            items_p[i].name_p = "";
-            items_p[i].id = 0;
-            items_p[i].email_p = "";
-        }
-
-        address_book_p->people.length = length;
-        address_book_p->people.items_p = items_p;
-        res = 0;
-    } else {
-        res = -1;
-    }
-
-    return (res);
-}
-
-void address_book_person_phone_number_encode_inner(
+static void address_book_person_phone_number_encode_inner(
     struct encoder_t *encoder_p,
     struct address_book_person_phone_number_t *phone_number_p)
 {
@@ -434,7 +352,7 @@ void address_book_person_phone_number_encode_inner(
     encoder_prepend_string(encoder_p, 1, phone_number_p->number_p);
 }
 
-void address_book_person_phone_number_decode_inner(
+static void address_book_person_phone_number_decode_inner(
     struct decoder_t *decoder_p,
     struct address_book_person_phone_number_t *phone_number_p)
 {
@@ -457,7 +375,7 @@ void address_book_person_phone_number_decode_inner(
     }
 }
 
-void address_book_person_encode_inner(
+static void address_book_person_encode_inner(
     struct encoder_t *encoder_p,
     struct address_book_person_t *person_p)
 {
@@ -479,7 +397,7 @@ void address_book_person_encode_inner(
     encoder_prepend_string(encoder_p, 1, person_p->name_p);
 }
 
-void address_book_person_decode_inner(
+static void address_book_person_decode_inner(
     struct decoder_t *decoder_p,
     struct address_book_person_t *person_p)
 {
@@ -527,7 +445,7 @@ void address_book_person_decode_inner(
     }
 }
 
-void address_book_address_book_encode_inner(
+static void address_book_address_book_encode_inner(
     struct encoder_t *encoder_p,
     struct address_book_address_book_t *address_book_p)
 {
@@ -544,7 +462,7 @@ void address_book_address_book_encode_inner(
     }
 }
 
-void address_book_address_book_decode_inner(
+static void address_book_address_book_decode_inner(
     struct decoder_t *decoder_p,
     struct address_book_address_book_t *address_book_p)
 {
@@ -566,6 +484,135 @@ void address_book_address_book_decode_inner(
                                          &address_book_p->people.items_p[i]);
         decoder_seek(decoder_p, decoder_get_result(&decoder));
     }
+}
+
+struct address_book_person_t *address_book_person_new(
+    void *workspace_p,
+    size_t size)
+{
+    struct address_book_person_t *person_p;
+    struct address_book_heap_t *heap_p;
+
+    heap_p = heap_new(workspace_p, size);
+
+    if (heap_p == NULL) {
+        return (NULL);
+    }
+
+    person_p = heap_alloc(heap_p, sizeof(*person_p));
+
+    if (person_p != NULL) {
+        person_p->heap_p = heap_p;
+        person_p->name_p = "";
+        person_p->id = 0;
+        person_p->email_p = "";
+        person_p->phones.length = 0;
+    }
+
+    return (person_p);
+}
+
+int address_book_person_phones_alloc(
+    struct address_book_person_t *person_p,
+    int length)
+{
+    int res;
+    int i;
+    struct address_book_person_phone_number_t *items_p;
+
+    items_p = heap_alloc(person_p->heap_p, sizeof(*items_p) * length);
+
+    if (items_p != NULL) {
+        for (i = 0; i < length; i++) {
+            items_p[i].number_p = "";
+            items_p[i].type = address_book_person_phone_type_mobile_e;
+        }
+
+        person_p->phones.length = length;
+        person_p->phones.items_p = items_p;
+        res = 0;
+    } else {
+        res = -1;
+    }
+
+    return (res);
+}
+
+int address_book_person_encode(
+    struct address_book_person_t *person_p,
+    uint8_t *encoded_p,
+    size_t size)
+{
+    struct encoder_t encoder;
+
+    encoder_init(&encoder, encoded_p, size);
+    address_book_person_encode_inner(&encoder, person_p);
+
+    return (encoder_get_result(&encoder));
+}
+
+int address_book_person_decode(
+    struct address_book_person_t *person_p,
+    const uint8_t *encoded_p,
+    size_t size)
+{
+    struct decoder_t decoder;
+
+    decoder_init(&decoder, encoded_p, size, person_p->heap_p);
+    address_book_person_decode_inner(&decoder, person_p);
+
+    return (decoder_get_result(&decoder));
+}
+
+struct address_book_address_book_t *address_book_address_book_new(
+    void *workspace_p,
+    size_t size)
+{
+    struct address_book_address_book_t *address_book_p;
+    struct address_book_heap_t *heap_p;
+
+    heap_p = heap_new(workspace_p, size);
+
+    if (heap_p == NULL) {
+        return (NULL);
+    }
+
+    address_book_p = heap_alloc(heap_p, sizeof(*address_book_p));
+
+    if (address_book_p != NULL) {
+        address_book_p->heap_p = heap_p;
+        address_book_p->people.length = 0;
+    }
+
+    return (address_book_p);
+}
+
+int address_book_address_book_people_alloc(
+    struct address_book_address_book_t *address_book_p,
+    int length)
+{
+    int res;
+    int i;
+    struct address_book_person_t *items_p;
+
+    items_p = heap_alloc(address_book_p->heap_p, sizeof(*items_p) * length);
+
+    if (items_p != NULL) {
+        for (i = 0; i < length; i++) {
+            items_p[i].heap_p = address_book_p->heap_p;
+            items_p[i].name_p = "";
+            items_p[i].id = 0;
+            items_p[i].email_p = "";
+        }
+
+        address_book_p->people.length = length;
+        address_book_p->people.items_p = items_p;
+        res = 0;
+    } else {
+        res = -1;
+    }
+
+    return (res);
 }
 
 int address_book_address_book_encode(

@@ -48,7 +48,7 @@ struct decoder_t {
     struct int32_heap_t *heap_p;
 };
 
-static struct int32_heap_t *heap_init(void *buf_p, size_t size)
+static struct int32_heap_t *heap_new(void *buf_p, size_t size)
 {
     struct int32_heap_t *heap_p;
 
@@ -292,14 +292,14 @@ static int32_t decoder_read_int32(struct decoder_t *self_p,
     return (0);
 }
 
-struct int32_message_t *int32_message_init(
+struct int32_message_t *int32_message_new(
     void *workspace_p,
     size_t size)
 {
     struct int32_message_t *message_p;
     struct int32_heap_t *heap_p;
 
-    heap_p = heap_init(workspace_p, size);
+    heap_p = heap_new(workspace_p, size);
 
     if (heap_p == NULL) {
         return (NULL);

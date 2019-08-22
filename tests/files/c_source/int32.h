@@ -49,14 +49,14 @@ struct int32_message_t {
 };
 
 /**
- * Initialize a message in given workspace.
+ * Create a new message in given workspace.
  *
  * @param[in] src_p Data to decode.
  * @param[in] size Size of src_p.
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct int32_message_t *int32_message_init(
+struct int32_message_t *int32_message_new(
     void *workspace_p,
     size_t size);
 

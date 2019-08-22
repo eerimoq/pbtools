@@ -77,6 +77,18 @@ struct address_book_address_book_t {
 };
 
 /**
+ * Craete a new person in given workspace.
+ *
+ * @param[in] src_p Data to decode.
+ * @param[in] size Size of src_p.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct address_book_person_t *address_book_person_new(
+    void *workspace_p,
+    size_t size);
+
+/**
  * Allocate given number of phone numbers.
  *
  * @param[in] src_p Data to decode.
@@ -89,14 +101,42 @@ int address_book_person_phones_alloc(
     int length);
 
 /**
- * Initialize an address book in given workspace.
+ * Encode message AddressBook defined in package address_book.
+ *
+ * @param[out] dst_p Buffer to encode into.
+ * @param[in] size Size of dst_p.
+ * @param[in] src_p Data to encode.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int address_book_person_encode(
+    struct address_book_person_t *person_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message AddressBook defined in package address_book.
+ *
+ * @param[out] dst_p Decoded data.
+ * @param[in] src_p Data to decode.
+ * @param[in] size Size of src_p.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int address_book_person_decode(
+    struct address_book_person_t *person_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Craete a new address book in given workspace.
  *
  * @param[in] src_p Data to decode.
  * @param[in] size Size of src_p.
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct address_book_address_book_t *address_book_address_book_init(
+struct address_book_address_book_t *address_book_address_book_new(
     void *workspace_p,
     size_t size);
 
