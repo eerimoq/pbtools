@@ -49,7 +49,7 @@ struct int32_message_t {
 };
 
 /**
- * Create a new message in given workspace.
+ * Create a new message Message in given workspace.
  *
  * @param[in] src_p Data to decode.
  * @param[in] size Size of src_p.

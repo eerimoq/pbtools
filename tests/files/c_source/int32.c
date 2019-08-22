@@ -119,47 +119,21 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_bytes(struct encoder_t *self_p,
-                                  const uint8_t *buf_p,
-                                  size_t size)
-{
-    int i;
-
-    for (i = (int)size - 1; i >= 0; i--) {
-        encoder_prepend_byte(self_p, buf_p[i]);
-    }
-}
-
 static void encoder_prepend_tag(struct encoder_t *self_p,
-                                int tag,
+                                int field_number,
                                 int wire_type)
 {
-    encoder_prepend_byte(self_p, (tag << 3) | wire_type);
-}
-
-static void encoder_prepend_varint_value(struct encoder_t *self_p,
-                                         uint64_t value)
-{
-    if (value > 127) {
-        fprintf(stderr, "encoder_prepend_varint_value: %llu\n", (unsigned long long)value);
-        exit(1);
-    }
-
-    encoder_prepend_byte(self_p, value);
-}
-
-static void encoder_prepend_varint(struct encoder_t *self_p,
-                                   int tag,
-                                   uint64_t value)
-{
-    encoder_prepend_varint_value(self_p, value);
-    encoder_prepend_tag(self_p, tag, 0);
+    encoder_prepend_byte(self_p, (field_number << 3) | wire_type);
 }
 
 static void encoder_prepend_uint32(struct encoder_t *self_p,
-                                   int tag,
+                                   int field_number,
                                    uint32_t value)
 {
+    if (value == 0) {
+        return;
+    }
+
     if (value < (1 << 7)) {
         encoder_prepend_byte(self_p, value);
     } else if (value < (1 << 14)) {
@@ -182,11 +156,11 @@ static void encoder_prepend_uint32(struct encoder_t *self_p,
         encoder_prepend_byte(self_p, (value & 0x7f) | 0x80);
     }
 
-    encoder_prepend_tag(self_p, tag, 0);
+    encoder_prepend_tag(self_p, field_number, 0);
 }
 
 static void encoder_prepend_int32(struct encoder_t *self_p,
-                                  int tag,
+                                  int field_number,
                                   int32_t value)
 {
     if (value < 0) {
@@ -200,9 +174,9 @@ static void encoder_prepend_int32(struct encoder_t *self_p,
         encoder_prepend_byte(self_p, (value >> 14) | 0x80);
         encoder_prepend_byte(self_p, (value >> 7) | 0x80);
         encoder_prepend_byte(self_p, value | 0x80);
-        encoder_prepend_tag(self_p, tag, 0);
-    } else if (value > 0) {
-        encoder_prepend_uint32(self_p, tag, (uint32_t)value);
+        encoder_prepend_tag(self_p, field_number, 0);
+    } else {
+        encoder_prepend_uint32(self_p, field_number, (uint32_t)value);
     }
 }
 
@@ -217,16 +191,6 @@ static void decoder_init(struct decoder_t *self_p,
     self_p->heap_p = heap_p;
 }
 
-static void decoder_seek(struct decoder_t *self_p,
-                         int offset)
-{
-    if (offset < 0) {
-        exit(1);
-    }
-
-    self_p->pos += offset;
-}
-
 static int decoder_get_result(struct decoder_t *self_p)
 {
     int res;
@@ -237,16 +201,19 @@ static int decoder_get_result(struct decoder_t *self_p)
         res = -1;
     }
 
-    //fprintf(stderr, "result: %d\n", res);
-
     return (res);
+}
+
+static bool decoder_available(struct decoder_t *self_p)
+{
+    return (self_p->pos < self_p->size);
 }
 
 static uint8_t decoder_read_byte(struct decoder_t *self_p)
 {
     uint8_t value;
 
-    if (self_p->pos >= self_p->size) {
+    if (!decoder_available(self_p)) {
         fprintf(stderr, "decoder_read_byte: %d %d\n", self_p->pos, self_p->size);
         exit(1);
     }
@@ -254,40 +221,22 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
     value = self_p->buf_p[self_p->pos];
     self_p->pos++;
 
-    //fprintf(stderr, "r: %02x\n", value);
-
     return (value);
 }
 
-static void decoder_read_tag(struct decoder_t *self_p,
-                             int tag,
-                             int wire_type)
+static int decoder_read_tag(struct decoder_t *self_p,
+                            int *wire_type_p)
 {
     uint8_t value;
 
     value = decoder_read_byte(self_p);
+    *wire_type_p = (value & 0x7);
 
-    if (value != ((tag << 3) | wire_type)) {
-        fprintf(stderr, "decoder_read_tag: %02x %02x\n", value, (tag << 3) | wire_type);
-        exit(1);
-    }
-}
-
-static uint64_t decoder_read_varint_value(struct decoder_t *self_p)
-{
-    return (decoder_read_byte(self_p));
-}
-
-static uint64_t decoder_read_varint(struct decoder_t *self_p,
-                                    int tag)
-{
-    decoder_read_tag(self_p, tag, 0);
-
-    return (decoder_read_varint_value(self_p));
+    return (value >> 3);
 }
 
 static int32_t decoder_read_int32(struct decoder_t *self_p,
-                                  int tag)
+                                  int wire_type)
 {
     return (0);
 }
@@ -326,7 +275,19 @@ void int32_message_decode_inner(
     struct decoder_t *decoder_p,
     struct int32_message_t *message_p)
 {
-    message_p->value = decoder_read_int32(decoder_p, 1);
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {
+        switch (decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            message_p->value = decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 int int32_message_encode(
