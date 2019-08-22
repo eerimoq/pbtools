@@ -119,6 +119,30 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.tag, 1)
         self.assertTrue(field.repeated)
 
+    def test_service(self):
+        parsed = pbtools.parse_file('tests/files/service.proto')
+
+        self.assertEqual(parsed.package, 'service')
+        self.assertEqual(len(parsed.messages), 2)
+        self.assertEqual(len(parsed.services), 1)
+
+        service = parsed.services[0]
+        self.assertEqual(len(service.rpcs), 2)
+
+        rpc = service.rpcs[0]
+        self.assertEqual(rpc.name, 'Foo')
+        self.assertEqual(rpc.request_type, 'Request')
+        self.assertFalse(rpc.request_stream)
+        self.assertEqual(rpc.response_type, 'Response')
+        self.assertFalse(rpc.response_stream)
+
+        rpc = service.rpcs[1]
+        self.assertEqual(rpc.name, 'Bar')
+        self.assertEqual(rpc.request_type, 'Request')
+        self.assertFalse(rpc.request_stream)
+        self.assertEqual(rpc.response_type, 'Response')
+        self.assertFalse(rpc.response_stream)
+
 
 if __name__ == '__main__':
     unittest.main()

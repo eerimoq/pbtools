@@ -13,12 +13,7 @@ class Parser(textparser.Parser):
 
     def token_specs(self):
         return [
-            ('SKIP',          r'[ \r\n\t]+'),
-            ('SYNTAX',        r'syntax'),
-            ('PACKAGE',       r'package'),
-            ('MESSAGE',       r'message'),
-            ('REPEATED',      r'repeated'),
-            ('ENUM',          r'enum'),
+            ('SKIP',          r'[ \r\n\t]+|//.*?\n'),
             ('LIDENT',        r'[a-zA-Z]\w*(\.[a-zA-Z]\w*)+'),
             ('IDENT',         r'[a-zA-Z]\w*'),
             ('INT',           r'0[xX][a-fA-F0-9]+|[0-9]+'),
@@ -30,35 +25,59 @@ class Parser(textparser.Parser):
             ('SCOLON',   ';', r';'),
             ('LBRACE',   '{', r'{'),
             ('RBRACE',   '}', r'}'),
+            ('LPAREN',   '(', r'\('),
+            ('RPAREN',   ')', r'\)'),
             ('MISMATCH',      r'.')
         ]
 
+    def keywords(self):
+        return set([
+            'syntax',
+            'package',
+            'message',
+            'repeated',
+            'enum',
+            'service',
+            'rpc',
+            'returns',
+            'stream',
+            'import'
+        ])
+
     def grammar(self):
         ident = choice('IDENT',
-                       'SYNTAX',
-                       'PACKAGE',
-                       'MESSAGE',
-                       'REPEATED',
-                       'ENUM')
+                       'syntax',
+                       'package',
+                       'message',
+                       'repeated',
+                       'enum',
+                       'service',
+                       'rpc',
+                       'returns',
+                       'stream',
+                       'import')
         full_ident = choice(ident, 'LIDENT')
         empty_statement = ';'
+        message_type = Sequence(Optional('.'), full_ident)
 
-        import_ = NoMatch()
+        import_ = Sequence('import',
+                           Optional(choice('weak', 'public')),
+                           'STRING')
 
-        package = Sequence('PACKAGE', full_ident, ';')
+        package = Sequence('package', full_ident, ';')
 
         option = NoMatch()
 
         enum_field = Sequence(ident, '=', 'INT', ';')
-        enum = Sequence('ENUM',
+        enum = Sequence('enum',
                         ident,
                         '{',
                         ZeroOrMore(choice(enum_field, empty_statement)),
                         '}')
 
-        field = Sequence(Optional('REPEATED'), ident, ident, '=', 'INT', ';')
+        field = Sequence(Optional('repeated'), message_type, ident, '=', 'INT', ';')
         message = Forward()
-        message <<= Sequence('MESSAGE',
+        message <<= Sequence('message',
                              ident,
                              '{',
                              ZeroOrMore(choice(Tag('field', field),
@@ -66,9 +85,22 @@ class Parser(textparser.Parser):
                                                message)),
                              '}')
 
-        top_level_def = choice(message, enum)
+        rpc = Sequence('rpc',
+                       ident,
+                       '(', Optional('stream'), message_type, ')',
+                       'returns',
+                       '(', Optional('stream'), message_type, ')',
+                       ';')
 
-        syntax = Sequence('SYNTAX', '=', 'PROTO3', ';')
+        service = Sequence('service',
+                           ident,
+                           '{',
+                           ZeroOrMore(choice(option, rpc, empty_statement)),
+                           '}')
+
+        top_level_def = choice(message, enum, service)
+
+        syntax = Sequence('syntax', '=', 'PROTO3', ';')
 
         proto = Sequence(syntax,
                          ZeroOrMoreDict(choice(import_,
@@ -78,6 +110,10 @@ class Parser(textparser.Parser):
                                                empty_statement)))
 
         return proto
+
+
+def load_message_type(tokens):
+    return tokens[1]
 
 
 class EnumField:
@@ -95,16 +131,16 @@ class Enum:
 
         for item in tokens[3]:
             self.fields.append(EnumField(item))
-            
+
 
 class MessageField:
 
     def __init__(self, tokens):
-        self.type = tokens[1]
+        self.type = load_message_type(tokens[1])
         self.name = tokens[2]
         self.tag = int(tokens[4])
         self.repeated = bool(tokens[0])
-                        
+
 
 class Message:
 
@@ -124,7 +160,32 @@ class Message:
             elif kind == 'message':
                 self.messages.append(Message(item))
             else:
-                raise RuntimeError()
+                raise RuntimeError(kind)
+
+
+class Rpc:
+
+    def __init__(self, tokens):
+        self.name = tokens[1]
+        self.request_type = tokens[4][1]
+        self.request_stream = False
+        self.response_type = tokens[9][1]
+        self.response_stream = False
+
+
+class Service:
+
+    def __init__(self, tokens):
+        self.name = tokens[1]
+        self.rpcs = []
+
+        for item in tokens[3]:
+            kind = item[0]
+
+            if kind == 'rpc':
+                self.rpcs.append(Rpc(item))
+            else:
+                raise RuntimeError(kind)
 
 
 def load_package(tokens):
@@ -143,11 +204,21 @@ def load_messages(tokens):
     return messages
 
 
+def load_services(tokens):
+    services = []
+
+    for service in tokens[1].get('service', []):
+        services.append(Service(service))
+
+    return services
+
+
 class Proto:
 
     def __init__(self, tree):
         self.package = load_package(tree)
         self.messages = load_messages(tree)
+        self.services = load_services(tree)
 
 
 def parse_string(text):
