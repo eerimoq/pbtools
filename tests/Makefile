@@ -10,6 +10,12 @@ all:
 	    files/c_source/fixed64.c \
 	    files/c_source/sfixed32.c \
 	    files/c_source/sfixed64.c \
+	    files/c_source/float.c \
+	    files/c_source/double.c \
+	    files/c_source/bool.c \
+	    files/c_source/string.c \
+	    files/c_source/bytes.c \
+	    files/c_source/enum.c \
 	    files/c_source/address_book.c \
 	    main.c
 	./a.out

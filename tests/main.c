@@ -18,6 +18,12 @@
 #include "files/c_source/fixed64.h"
 #include "files/c_source/sfixed32.h"
 #include "files/c_source/sfixed64.h"
+#include "files/c_source/float.h"
+#include "files/c_source/double.h"
+#include "files/c_source/bool.h"
+#include "files/c_source/string.h"
+#include "files/c_source/bytes.h"
+#include "files/c_source/enum.h"
 #include "files/c_source/address_book.h"
 
 static void test_int32(void)
@@ -503,8 +509,6 @@ static void test_sfixed64(void)
     }
 }
 
-#if 0
-
 static void test_float(void)
 {
     int i;
@@ -553,14 +557,14 @@ static void test_double(void)
     struct double_message_t *message_p;
     struct {
         double decoded;
-        int size;
+        double size;
         const char *encoded_p;
     } datas[] = {
-        { -500.0, "\x09\x00\x00\x00\x00\x00\x40\x7f\xc0" },
-        { -1.0,   "\x09\x00\x00\x00\x00\x00\x00\xf0\xbf" },
-        { 0.0,    "" },
-        { 1.0,    "\x09\x00\x00\x00\x00\x00\x00\xf0\x3f" },
-        { 500.0,  "\x09\x00\x00\x00\x00\x00\x40\x7f\x40" }
+        { -500.0, 9, "\x09\x00\x00\x00\x00\x00\x40\x7f\xc0" },
+        { -1.0,   9, "\x09\x00\x00\x00\x00\x00\x00\xf0\xbf" },
+        { 0.0,    0, "" },
+        { 1.0,    9, "\x09\x00\x00\x00\x00\x00\x00\xf0\x3f" },
+        { 500.0,  9, "\x09\x00\x00\x00\x00\x00\x40\x7f\x40" }
     };
 
     for (i = 0; i < membersof(datas); i++) {
@@ -595,8 +599,8 @@ static void test_bool(void)
         int size;
         const char *encoded_p;
     } datas[] = {
-        { true, "\x08\x01" },
-        { false, "" }
+        { true, 2, "\x08\x01" },
+        { false, 0, "" }
     };
 
     for (i = 0; i < membersof(datas); i++) {
@@ -622,20 +626,21 @@ static void test_bool(void)
 static void test_string(void)
 {
     int i;
-    uint8_t encoded[128];
+    uint8_t encoded[256];
     int size;
     uint8_t workspace[512];
     struct string_message_t *message_p;
     struct {
-        const char *decoded_p;
+        char *decoded_p;
         int size;
         const char *encoded_p;
     } datas[] = {
-        { "", "" },
-        { "1", "\x0a\x01\x31" },
+        { "",  0, "" },
+        { "1", 3, "\x0a\x01\x31" },
         { "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890",
+          153,
           "\x0a\x96\x01\x31\x32\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32"
           "\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32\x33\x34\x35\x36\x37"
           "\x38\x39\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32"
@@ -650,11 +655,11 @@ static void test_string(void)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %s\n", datas[i].decoded);
+        printf("Value: '%s'\n", datas[i].decoded_p);
 
         message_p = string_message_new(&workspace[0], sizeof(workspace));
         assert(message_p != NULL);
-        message_p->value = datas[i].decoded;
+        message_p->value_p = datas[i].decoded_p;
 
         size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
         assert(size == datas[i].size);
@@ -672,20 +677,23 @@ static void test_string(void)
 static void test_bytes(void)
 {
     int i;
-    uint8_t encoded[128];
+    uint8_t encoded[256];
     int size;
     uint8_t workspace[512];
     struct bytes_message_t *message_p;
     struct {
-        const uint8_t *decoded_p;
+        uint8_t *decoded_p;
+        int decoded_size;
         int size;
         const char *encoded_p;
     } datas[] = {
-        { "" , ""},
-        { "1" , "\x0a\x01\x31"},
+        { "" ,  0, 0, ""},
+        { "1" , 1, 3, "\x0a\x01\x31"},
         { "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890",
+          150,
+          153,
           "\x0a\x96\x01\x31\x32\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32"
           "\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32\x33\x34\x35\x36\x37"
           "\x38\x39\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32"
@@ -700,11 +708,12 @@ static void test_bytes(void)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %s\n", datas[i].decoded);
+        printf("Value size: %d\n", datas[i].size);
 
         message_p = bytes_message_new(&workspace[0], sizeof(workspace));
         assert(message_p != NULL);
-        message_p->value = datas[i].decoded;
+        message_p->value.buf_p = datas[i].decoded_p;
+        message_p->value.size = datas[i].decoded_size;
 
         size = bytes_message_encode(message_p, &encoded[0], sizeof(encoded));
         assert(size == datas[i].size);
@@ -727,12 +736,12 @@ static void test_enum(void)
     uint8_t workspace[512];
     struct enum_message_t *message_p;
     struct {
-        enum enum_enum_e decoded;
+        enum enum_message_enum_e decoded;
         int size;
         const char *encoded_p;
     } datas[] = {
-        { enum_enum_a_e, 0, "" },
-        { enum_enum_b_e, 2, "\x08\x01" }
+        { enum_message_enum_a_e, 0, "" },
+        { enum_message_enum_b_e, 2, "\x08\x01" }
     };
 
     for (i = 0; i < membersof(datas); i++) {
@@ -755,8 +764,6 @@ static void test_enum(void)
     }
 }
 
-#endif
-
 int main(void)
 {
     test_int32();
@@ -769,12 +776,10 @@ int main(void)
     test_fixed64();
     test_sfixed32();
     test_sfixed64();
-#if 0
     test_float();
     test_double();
     test_bool();
     test_string();
     test_bytes();
     test_enum();
-#endif
 }
