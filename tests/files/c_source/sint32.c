@@ -33,7 +33,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "int32.h"
+#include "sint32.h"
 
 struct encoder_t {
     uint8_t *buf_p;
@@ -45,7 +45,7 @@ struct decoder_t {
     const uint8_t *buf_p;
     int size;
     int pos;
-    struct int32_heap_t *heap_p;
+    struct sint32_heap_t *heap_p;
 };
 
 static uint8_t tag(int field_number, int wire_type)
@@ -53,12 +53,12 @@ static uint8_t tag(int field_number, int wire_type)
     return ((field_number << 3) | wire_type);
 }
 
-static struct int32_heap_t *heap_new(void *buf_p, size_t size)
+static struct sint32_heap_t *heap_new(void *buf_p, size_t size)
 {
-    struct int32_heap_t *heap_p;
+    struct sint32_heap_t *heap_p;
 
     if (size >= sizeof(*heap_p)) {
-        heap_p = (struct int32_heap_t *)buf_p;
+        heap_p = (struct sint32_heap_t *)buf_p;
         heap_p->buf_p = buf_p;
         heap_p->size = size;
         heap_p->pos = sizeof(*heap_p);
@@ -69,7 +69,7 @@ static struct int32_heap_t *heap_new(void *buf_p, size_t size)
     return (heap_p);
 }
 
-static void *heap_alloc(struct int32_heap_t *self_p, size_t size)
+static void *heap_alloc(struct sint32_heap_t *self_p, size_t size)
 {
     void *buf_p;
     int left;
@@ -158,23 +158,21 @@ static void encoder_prepend_varint(struct encoder_t *self_p,
     encoder_prepend_bytes(self_p, &buf[0], pos);
 }
 
-static void encoder_prepend_int32(struct encoder_t *self_p,
-                                  int field_number,
-                                  int32_t value)
+static void encoder_prepend_sint32(struct encoder_t *self_p,
+                                   int field_number,
+                                   int32_t value)
 {
     if (value < 0) {
-        encoder_prepend_varint(self_p,
-                               field_number,
-                               value | 0xffffffff00000000ll);
+        encoder_prepend_varint(self_p, field_number, ~((uint64_t)value << 1));
     } else {
-        encoder_prepend_varint(self_p, field_number, (uint64_t)value);
+        encoder_prepend_varint(self_p, field_number, (uint64_t)value << 1);
     }
 }
 
 static void decoder_init(struct decoder_t *self_p,
                          const uint8_t *buf_p,
                          size_t size,
-                         struct int32_heap_t *heap_p)
+                         struct sint32_heap_t *heap_p)
 {
     self_p->buf_p = buf_p;
     self_p->size = size;
@@ -226,18 +224,18 @@ static int decoder_read_tag(struct decoder_t *self_p,
     return (value >> 3);
 }
 
-static int32_t decoder_read_int32(struct decoder_t *self_p,
+static int32_t decoder_read_sint32(struct decoder_t *self_p,
                                   int wire_type)
 {
     return (0);
 }
 
-struct int32_message_t *int32_message_new(
+struct sint32_message_t *sint32_message_new(
     void *workspace_p,
     size_t size)
 {
-    struct int32_message_t *message_p;
-    struct int32_heap_t *heap_p;
+    struct sint32_message_t *message_p;
+    struct sint32_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
 
@@ -255,16 +253,16 @@ struct int32_message_t *int32_message_new(
     return (message_p);
 }
 
-void int32_message_encode_inner(
+void sint32_message_encode_inner(
     struct encoder_t *encoder_p,
-    struct int32_message_t *message_p)
+    struct sint32_message_t *message_p)
 {
-    encoder_prepend_int32(encoder_p, 1, message_p->value);
+    encoder_prepend_sint32(encoder_p, 1, message_p->value);
 }
 
-void int32_message_decode_inner(
+void sint32_message_decode_inner(
     struct decoder_t *decoder_p,
-    struct int32_message_t *message_p)
+    struct sint32_message_t *message_p)
 {
     int wire_type;
 
@@ -272,7 +270,7 @@ void int32_message_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            message_p->value = decoder_read_int32(decoder_p, wire_type);
+            message_p->value = decoder_read_sint32(decoder_p, wire_type);
             break;
 
         default:
@@ -281,28 +279,28 @@ void int32_message_decode_inner(
     }
 }
 
-int int32_message_encode(
-    struct int32_message_t *message_p,
+int sint32_message_encode(
+    struct sint32_message_t *message_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    int32_message_encode_inner(&encoder, message_p);
+    sint32_message_encode_inner(&encoder, message_p);
 
     return (encoder_get_result(&encoder));
 }
 
-int int32_message_decode(
-    struct int32_message_t *message_p,
+int sint32_message_decode(
+    struct sint32_message_t *message_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
     decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    int32_message_decode_inner(&decoder, message_p);
+    sint32_message_decode_inner(&decoder, message_p);
 
     return (decoder_get_result(&decoder));
 }

@@ -4,6 +4,7 @@ test:
 test-c:
 	make -C examples/address_book
 	examples/address_book/main
+	make -C tests
 
 release-to-pypi:
 	python setup.py sdist
