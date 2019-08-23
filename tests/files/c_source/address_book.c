@@ -195,7 +195,6 @@ static void decoder_init_slice(struct decoder_t *self_p,
                                struct decoder_t *parent_p,
                                int size)
 {
-    //fprintf(stderr, "slice size: %d\n", size);
     self_p->buf_p = &parent_p->buf_p[parent_p->pos];
     self_p->size = size;
     self_p->pos = 0;
@@ -227,8 +226,6 @@ static int decoder_get_result(struct decoder_t *self_p)
         res = -1;
     }
 
-    //fprintf(stderr, "result: %d\n", res);
-
     return (res);
 }
 
@@ -243,8 +240,6 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
 
     value = self_p->buf_p[self_p->pos];
     self_p->pos++;
-
-    //fprintf(stderr, "r: %02x\n", value);
 
     return (value);
 }
@@ -323,27 +318,24 @@ static int decoder_peek_repeated_length(struct decoder_t *self_p,
         length++;
     }
 
-    //fprintf(stderr, "repeated length peek: %d\n", length);
-
     return (length);
 }
 
-static void decoder_read_string(struct decoder_t *self_p,
-                                int tag,
-                                char **value_pp)
+static char *decoder_read_string(struct decoder_t *self_p,
+                                 int tag)
 {
     uint64_t length;
     char *value_p;
 
     length = decoder_read_length_delimited(self_p, tag);
-    //fprintf(stderr, "length: %llu\n", (unsigned long long)length);
     value_p = heap_alloc(self_p->heap_p, length + 1);
-    *value_pp = value_p;
 
     if (value_p != NULL) {
         decoder_read_bytes(self_p, (uint8_t *)value_p, length);
         value_p[length] = '\0';
     }
+
+    return (value_p);
 }
 
 static void address_book_person_phone_number_encode_inner(
@@ -362,7 +354,7 @@ static void address_book_person_phone_number_decode_inner(
         switch (decoder_peek_tag_2(decoder_p)) {
 
         case 1:
-            decoder_read_string(decoder_p, 1, &phone_number_p->number_p);
+            phone_number_p->number_p = decoder_read_string(decoder_p, 1);
             break;
 
         case 2:
@@ -412,7 +404,7 @@ static void address_book_person_decode_inner(
         switch (decoder_peek_tag_2(decoder_p)) {
 
         case 1:
-            decoder_read_string(decoder_p, 1, &person_p->name_p);
+            person_p->name_p = decoder_read_string(decoder_p, 1);
             break;
 
         case 2:
@@ -420,7 +412,7 @@ static void address_book_person_decode_inner(
             break;
 
         case 3:
-            decoder_read_string(decoder_p, 3, &person_p->email_p);
+            person_p->email_p = decoder_read_string(decoder_p, 3);
             break;
 
         case 4:
@@ -431,7 +423,6 @@ static void address_book_person_decode_inner(
 
             for (i = 0; i < person_p->phones.length; i++) {
                 length = decoder_read_length_delimited(decoder_p, 4);
-                //fprintf(stderr, "repeated length: %llu\n", (unsigned long long)length);
                 decoder_init_slice(&decoder, decoder_p, length);
                 address_book_person_phone_number_decode_inner(&decoder,
                                                               &person_p->phones.items_p[i]);
@@ -480,7 +471,6 @@ static void address_book_address_book_decode_inner(
 
     for (i = 0; i < address_book_p->people.length; i++) {
         length = decoder_read_length_delimited(decoder_p, 1);
-        //fprintf(stderr, "repeated length: %llu\n", (unsigned long long)length);
         decoder_init_slice(&decoder, decoder_p, length);
         address_book_person_decode_inner(&decoder,
                                          &address_book_p->people.items_p[i]);
