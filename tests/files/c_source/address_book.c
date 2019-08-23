@@ -97,17 +97,14 @@ static size_t encoder_pos(struct encoder_t *self_p)
 
 static int encoder_get_result(struct encoder_t *self_p)
 {
-    /* int i; */
+    int length;
 
-    /* fprintf(stderr, "pos: %d, size: %d\n", (int)self_p->pos, (int)self_p->size); */
+    length = (self_p->size - self_p->pos - 1);
+    memmove(self_p->buf_p,
+            &self_p->buf_p[self_p->pos + 1],
+            length);
 
-    /* for (i = self_p->pos + 1; i < self_p->size; i++) { */
-    /*     fprintf(stderr, "\\x%02x", self_p->buf_p[i]); */
-    /* } */
-
-    /* fprintf(stderr, "\n"); */
-
-    return (self_p->size - self_p->pos - 1);
+    return (length);
 }
 
 static void encoder_prepend_byte(struct encoder_t *self_p,
@@ -155,8 +152,10 @@ static void encoder_prepend_varint(struct encoder_t *self_p,
                                    int tag,
                                    uint64_t value)
 {
-    encoder_prepend_varint_value(self_p, value);
-    encoder_prepend_tag(self_p, tag, 0);
+    if (value > 0) {
+        encoder_prepend_varint_value(self_p, value);
+        encoder_prepend_tag(self_p, tag, 0);
+    }
 }
 
 static void encoder_prepend_length_delimited(struct encoder_t *self_p,
@@ -174,8 +173,11 @@ static void encoder_prepend_string(struct encoder_t *self_p,
     int length;
 
     length = strlen(value_p);
-    encoder_prepend_bytes(self_p, (uint8_t *)value_p, length);
-    encoder_prepend_length_delimited(self_p, tag, length);
+
+    if (length > 0) {
+        encoder_prepend_bytes(self_p, (uint8_t *)value_p, length);
+        encoder_prepend_length_delimited(self_p, tag, length);
+    }
 }
 
 static void decoder_init(struct decoder_t *self_p,
@@ -603,6 +605,7 @@ int address_book_address_book_people_alloc(
             items_p[i].name_p = "";
             items_p[i].id = 0;
             items_p[i].email_p = "";
+            items_p[i].phones.length = 0;
         }
 
         address_book_p->people.length = length;

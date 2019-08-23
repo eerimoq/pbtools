@@ -19,6 +19,7 @@ import bytes_pb2
 import enum_pb2
 import message_pb2
 import repeated_pb2
+import address_book_pb2
 
 
 def output_int32():
@@ -491,6 +492,45 @@ def output_enum():
     print('------------------ enum end ------------------')
 
 
+def output_address_book():
+
+    print('----------------- address_book begin -----------------')
+
+    message = address_book_pb2.AddressBook()
+    print(f'------ default -------')
+    print('Message:')
+    print(str(message).strip())
+    print('Encoded:')
+    print(binascii.hexlify(message.SerializeToString()))
+
+    message = address_book_pb2.AddressBook()
+    message.people.add()
+    print(f'------ default person -------')
+    print('Message:')
+    print(str(message).strip())
+    print('Encoded:')
+    print(binascii.hexlify(message.SerializeToString()))
+
+    message = address_book_pb2.AddressBook()
+    person = message.people.add()
+    person.name = 'Kalle Kula'
+    person.id = 56
+    person.email = 'kalle.kula@foobar.com'
+    phone_number = person.phones.add()
+    phone_number.number = '+46701232345';
+    phone_number.type = address_book_pb2.Person.HOME
+    phone_number = person.phones.add()
+    phone_number.number = '+46999999999'
+    phone_number.type = address_book_pb2.Person.WORK
+    print(f'------ address book -------')
+    print('Message:')
+    print(str(message).strip())
+    print('Encoded:')
+    print(binascii.hexlify(message.SerializeToString()))
+
+    print('------------------ address_book end ------------------')
+
+
 def main():
     output_int32()
     output_int64()
@@ -508,7 +548,7 @@ def main():
     output_string()
     output_bytes()
     output_enum()
-
+    output_address_book()
 
 if __name__ == '__main__':
     main()
