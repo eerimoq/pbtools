@@ -139,7 +139,7 @@ static void encoder_prepend_varint(struct encoder_t *self_p,
                                    int field_number,
                                    uint64_t value)
 {
-    uint8_t buf[10];
+    uint8_t buf[11];
     int pos;
 
     if (value == 0) {
