@@ -4,6 +4,12 @@ all:
 	    files/c_source/int64.c \
 	    files/c_source/sint32.c \
 	    files/c_source/sint64.c \
+	    files/c_source/uint32.c \
+	    files/c_source/uint64.c \
+	    files/c_source/fixed32.c \
+	    files/c_source/fixed64.c \
+	    files/c_source/sfixed32.c \
+	    files/c_source/sfixed64.c \
 	    files/c_source/address_book.c \
 	    main.c
 	./a.out
