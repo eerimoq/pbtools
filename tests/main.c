@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -6,8 +5,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define membersof(a) (sizeof(a) / sizeof((a)[0]))
-
+#include "narwhal.h"
 #include "files/c_source/int32.h"
 #include "files/c_source/int64.h"
 #include "files/c_source/sint32.h"
@@ -26,7 +24,9 @@
 #include "files/c_source/enum.h"
 #include "files/c_source/address_book.h"
 
-static void test_int32(void)
+#define membersof(a) (sizeof(a) / sizeof((a)[0]))
+
+TEST(int32)
 {
     int i;
     uint8_t encoded[128];
@@ -58,23 +58,23 @@ static void test_int32(void)
         printf("Value: %d\n", datas[i].decoded);
 
         message_p = int32_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = int32_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = int32_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = int32_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_int64(void)
+TEST(int64)
 {
     int i;
     uint8_t encoded[128];
@@ -113,23 +113,23 @@ static void test_int64(void)
         printf("Value: %lld\n", (long long)datas[i].decoded);
 
         message_p = int64_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = int64_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = int64_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = int64_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_sint32(void)
+TEST(sint32)
 {
     int i;
     uint8_t encoded[128];
@@ -168,23 +168,23 @@ static void test_sint32(void)
         printf("Value: %d\n", datas[i].decoded);
 
         message_p = sint32_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = sint32_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = sint32_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = sint32_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_sint64(void)
+TEST(sint64)
 {
     int i;
     uint8_t encoded[128];
@@ -243,23 +243,23 @@ static void test_sint64(void)
         printf("Value: %lld\n", (long long)datas[i].decoded);
 
         message_p = sint64_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = sint64_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = sint64_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = sint64_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_uint32(void)
+TEST(uint32)
 {
     int i;
     uint8_t encoded[128];
@@ -288,23 +288,23 @@ static void test_uint32(void)
         printf("Value: %u\n", datas[i].decoded);
 
         message_p = uint32_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = uint32_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = uint32_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = uint32_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_uint64(void)
+TEST(uint64)
 {
     int i;
     uint8_t encoded[128];
@@ -341,23 +341,23 @@ static void test_uint64(void)
         printf("Value: %llu\n", (unsigned long long)datas[i].decoded);
 
         message_p = uint64_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = uint64_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = uint64_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = uint64_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_fixed32(void)
+TEST(fixed32)
 {
     int i;
     uint8_t encoded[128];
@@ -378,23 +378,23 @@ static void test_fixed32(void)
         printf("Value: %u\n", datas[i].decoded);
 
         message_p = fixed32_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = fixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = fixed32_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = fixed32_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_fixed64(void)
+TEST(fixed64)
 {
     int i;
     uint8_t encoded[128];
@@ -415,23 +415,23 @@ static void test_fixed64(void)
         printf("Value: %llu\n", (unsigned long long)datas[i].decoded);
 
         message_p = fixed64_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = fixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = fixed64_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = fixed64_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_sfixed32(void)
+TEST(sfixed32)
 {
     int i;
     uint8_t encoded[128];
@@ -454,23 +454,23 @@ static void test_sfixed32(void)
         printf("Value: %d\n", datas[i].decoded);
 
         message_p = sfixed32_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = sfixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = sfixed32_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = sfixed32_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_sfixed64(void)
+TEST(sfixed64)
 {
     int i;
     uint8_t encoded[128];
@@ -493,23 +493,23 @@ static void test_sfixed64(void)
         printf("Value: %lld\n", (long long)datas[i].decoded);
 
         message_p = sfixed64_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = sfixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = sfixed64_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = sfixed64_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_float(void)
+TEST(float_)
 {
     int i;
     uint8_t encoded[128];
@@ -532,23 +532,23 @@ static void test_float(void)
         printf("Value: %f\n", datas[i].decoded);
 
         message_p = float_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = float_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = float_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = float_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_double(void)
+TEST(double_)
 {
     int i;
     uint8_t encoded[128];
@@ -571,23 +571,23 @@ static void test_double(void)
         printf("Value: %f\n", datas[i].decoded);
 
         message_p = double_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = double_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = double_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = double_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_bool(void)
+TEST(bool_)
 {
     int i;
     uint8_t encoded[128];
@@ -607,23 +607,23 @@ static void test_bool(void)
         printf("Value: %d\n", datas[i].decoded);
 
         message_p = bool_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = bool_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = bool_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = bool_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_string(void)
+TEST(string)
 {
     int i;
     uint8_t encoded[256];
@@ -658,23 +658,23 @@ static void test_string(void)
         printf("Value: '%s'\n", datas[i].decoded_p);
 
         message_p = string_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value_p = datas[i].decoded_p;
 
         size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = string_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = string_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_bytes(void)
+TEST(bytes)
 {
     int i;
     uint8_t encoded[256];
@@ -711,24 +711,24 @@ static void test_bytes(void)
         printf("Value size: %d\n", datas[i].size);
 
         message_p = bytes_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value.buf_p = datas[i].decoded_p;
         message_p->value.size = datas[i].decoded_size;
 
         size = bytes_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = bytes_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = bytes_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_enum(void)
+TEST(enum_)
 {
     int i;
     uint8_t encoded[128];
@@ -748,23 +748,23 @@ static void test_enum(void)
         printf("Value: %d\n", datas[i].decoded);
 
         message_p = enum_message_new(&workspace[0], sizeof(workspace));
-        assert(message_p != NULL);
+        ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
 
         size = enum_message_encode(message_p, &encoded[0], sizeof(encoded));
-        assert(size == datas[i].size);
-        assert(memcmp(&encoded[0], datas[i].encoded_p, size) == 0);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
         /* message_p = enum_message_init(&workspace[0], sizeof(workspace)); */
-        /* assert(message_p != NULL); */
+        /* ASSERT_NE(message_p, NULL); */
         /* size = enum_message_decode(message_p, &encoded[0], size); */
-        /* assert(size == datas[i].size); */
+        /* ASSERT_EQ(size, datas[i].size); */
 
         /* assert(message_p->value == datas[i].decoded); */
     }
 }
 
-static void test_address_book(void)
+TEST(address_book)
 {
     uint8_t encoded[75];
     int size;
@@ -775,28 +775,28 @@ static void test_address_book(void)
 
     address_book_p = address_book_address_book_new(&workspace[0],
                                                    sizeof(workspace));
-    assert(address_book_p != NULL);
+    ASSERT_NE(address_book_p, NULL);
 
     /* Add one person to the address book. */
-    assert(address_book_address_book_people_alloc(address_book_p, 1) == 0);
+    ASSERT_EQ(address_book_address_book_people_alloc(address_book_p, 1), 0);
     person_p = &address_book_p->people.items_p[0];
-    assert(person_p != NULL);
+    ASSERT_NE(person_p, NULL);
     person_p->name_p = "Kalle Kula";
     person_p->id = 56;
     person_p->email_p = "kalle.kula@foobar.com";
 
     /* Add phone numbers. */
-    assert(address_book_person_phones_alloc(person_p, 2) == 0);
+    ASSERT_EQ(address_book_person_phones_alloc(person_p, 2), 0);
 
     /* Home. */
     phone_number_p = &person_p->phones.items_p[0];
-    assert(phone_number_p != NULL);
+    ASSERT_NE(phone_number_p, NULL);
     phone_number_p->number_p = "+46701232345";
     phone_number_p->type = address_book_person_phone_type_home_e;
 
     /* Work. */
     phone_number_p = &person_p->phones.items_p[1];
-    assert(phone_number_p != NULL);
+    ASSERT_NE(phone_number_p, NULL);
     phone_number_p->number_p = "+46999999999";
     phone_number_p->type = address_book_person_phone_type_work_e;
 
@@ -804,20 +804,20 @@ static void test_address_book(void)
     size = address_book_address_book_encode(address_book_p,
                                             &encoded[0],
                                             sizeof(encoded));
-    assert(size == 75);
-    assert(memcmp(&encoded[0],
-                  "\x0a\x49\x0a\x0a\x4b\x61\x6c\x6c\x65\x20"
-                  "\x4b\x75\x6c\x61\x10\x38\x1a\x15\x6b\x61"
-                  "\x6c\x6c\x65\x2e\x6b\x75\x6c\x61\x40\x66"
-                  "\x6f\x6f\x62\x61\x72\x2e\x63\x6f\x6d\x22"
-                  "\x10\x0a\x0c\x2b\x34\x36\x37\x30\x31\x32"
-                  "\x33\x32\x33\x34\x35\x10\x01\x22\x10\x0a"
-                  "\x0c\x2b\x34\x36\x39\x39\x39\x39\x39\x39"
-                  "\x39\x39\x39\x10\x02",
-                  size) == 0);
+    ASSERT_EQ(size, 75);
+    ASSERT_EQ(memcmp(&encoded[0],
+                     "\x0a\x49\x0a\x0a\x4b\x61\x6c\x6c\x65\x20"
+                     "\x4b\x75\x6c\x61\x10\x38\x1a\x15\x6b\x61"
+                     "\x6c\x6c\x65\x2e\x6b\x75\x6c\x61\x40\x66"
+                     "\x6f\x6f\x62\x61\x72\x2e\x63\x6f\x6d\x22"
+                     "\x10\x0a\x0c\x2b\x34\x36\x37\x30\x31\x32"
+                     "\x33\x32\x33\x34\x35\x10\x01\x22\x10\x0a"
+                     "\x0c\x2b\x34\x36\x39\x39\x39\x39\x39\x39"
+                     "\x39\x39\x39\x10\x02",
+                     size), 0);
 }
 
-static void test_address_book_default(void)
+TEST(address_book_default)
 {
     uint8_t encoded[75];
     int size;
@@ -828,16 +828,16 @@ static void test_address_book_default(void)
 
     address_book_p = address_book_address_book_new(&workspace[0],
                                                    sizeof(workspace));
-    assert(address_book_p != NULL);
+    ASSERT_NE(address_book_p, NULL);
 
     /* Encode the message. */
     size = address_book_address_book_encode(address_book_p,
                                             &encoded[0],
                                             sizeof(encoded));
-    assert(size == 0);
+    ASSERT_EQ(size, 0);
 }
 
-static void test_address_book_default_person(void)
+TEST(address_book_default_person)
 {
     uint8_t encoded[75];
     int size;
@@ -848,38 +848,40 @@ static void test_address_book_default_person(void)
 
     address_book_p = address_book_address_book_new(&workspace[0],
                                                    sizeof(workspace));
-    assert(address_book_p != NULL);
+    ASSERT_NE(address_book_p, NULL);
 
     /* Add one person to the address book. */
-    assert(address_book_address_book_people_alloc(address_book_p, 1) == 0);
+    ASSERT_EQ(address_book_address_book_people_alloc(address_book_p, 1), 0);
 
     /* Encode the message. */
     size = address_book_address_book_encode(address_book_p,
                                             &encoded[0],
                                             sizeof(encoded));
-    assert(size == 2);
-    assert(memcmp(&encoded[0], "\x0a\x00", size) == 0);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(memcmp(&encoded[0], "\x0a\x00", size), 0);
 }
 
 int main(void)
 {
-    test_int32();
-    test_int64();
-    test_sint32();
-    test_sint64();
-    test_uint32();
-    test_uint64();
-    test_fixed32();
-    test_fixed64();
-    test_sfixed32();
-    test_sfixed64();
-    test_float();
-    test_double();
-    test_bool();
-    test_string();
-    test_bytes();
-    test_enum();
-    test_address_book();
-    test_address_book_default();
-    test_address_book_default_person();
+    return RUN_TESTS(
+        int32,
+        int64,
+        sint32,
+        sint64,
+        uint32,
+        uint64,
+        fixed32,
+        fixed64,
+        sfixed32,
+        sfixed64,
+        float_,
+        double_,
+        bool_,
+        string,
+        bytes,
+        enum_,
+        address_book,
+        address_book_default,
+        address_book_default_person
+    );
 }
