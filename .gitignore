@@ -70,3 +70,4 @@ target/
 
 main
 *_pb2.py
+/*.[hc]
