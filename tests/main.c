@@ -883,6 +883,34 @@ TEST(address_book)
                      "\x0c\x2b\x34\x36\x39\x39\x39\x39\x39\x39"
                      "\x39\x39\x39\x10\x02",
                      size), 0);
+
+    /* Decode the message. */
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(address_book_p, &encoded[0], size);
+    ASSERT_EQ(size, 75);
+    ASSERT_EQ(address_book_p->people.length, 1);
+
+    /* Check the decoded person. */
+    person_p = &address_book_p->people.items_p[0];
+    ASSERT_NE(person_p, NULL);
+    ASSERT_NE(person_p->name_p, NULL);
+    ASSERT_SUBSTRING(person_p->name_p, "Kalle Kula");
+    ASSERT_EQ(person_p->id, 56);
+    ASSERT_NE(person_p->email_p, NULL);
+    ASSERT_SUBSTRING(person_p->email_p, "kalle.kula@foobar.com");
+    ASSERT_EQ(person_p->phones.length, 2);
+
+    /* Check home phone number. */
+    phone_number_p = &person_p->phones.items_p[0];
+    ASSERT_SUBSTRING(phone_number_p->number_p, "+46701232345");
+    ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_home_e);
+
+    /* Check work phone number. */
+    phone_number_p = &person_p->phones.items_p[1];
+    ASSERT_SUBSTRING(phone_number_p->number_p, "+46999999999");
+    ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_work_e);
 }
 
 TEST(address_book_default)
@@ -901,6 +929,14 @@ TEST(address_book_default)
                                             &encoded[0],
                                             sizeof(encoded));
     ASSERT_EQ(size, 0);
+
+    /* Decode the message. */
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(address_book_p, &encoded[0], size);
+    ASSERT_EQ(size, 0);
+    ASSERT_EQ(address_book_p->people.length, 0);
 }
 
 TEST(address_book_default_person)
@@ -909,6 +945,7 @@ TEST(address_book_default_person)
     int size;
     uint8_t workspace[512];
     struct address_book_address_book_t *address_book_p;
+    struct address_book_person_t *person_p;
 
     address_book_p = address_book_address_book_new(&workspace[0],
                                                    sizeof(workspace));
@@ -923,6 +960,24 @@ TEST(address_book_default_person)
                                             sizeof(encoded));
     ASSERT_EQ(size, 2);
     ASSERT_EQ(memcmp(&encoded[0], "\x0a\x00", size), 0);
+
+    /* Decode the message. */
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(address_book_p, &encoded[0], size);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(address_book_p->people.length, 1);
+
+    /* Check the decoded person. */
+    person_p = &address_book_p->people.items_p[0];
+    ASSERT_NE(person_p, NULL);
+    ASSERT_NE(person_p->name_p, NULL);
+    ASSERT_SUBSTRING(person_p->name_p, "");
+    ASSERT_EQ(person_p->id, 0);
+    ASSERT_NE(person_p->email_p, NULL);
+    ASSERT_SUBSTRING(person_p->email_p, "");
+    ASSERT_EQ(person_p->phones.length, 0);
 }
 
 int main(void)
