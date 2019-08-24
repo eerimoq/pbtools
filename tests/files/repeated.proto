@@ -4,4 +4,5 @@ package repeated;
 
 message Message {
     repeated int32 value = 1;
+    repeated Message messages = 2;
 }
