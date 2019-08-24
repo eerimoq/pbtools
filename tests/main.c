@@ -659,9 +659,10 @@ TEST(bytes)
         int size;
         const char *encoded_p;
     } datas[] = {
-        { "" ,  0, 0, ""},
-        { "1" , 1, 3, "\x0a\x01\x31"},
-        { "123456789012345678901234567890123456789012345678901234567890"
+        { (uint8_t *)"" ,  0, 0, ""},
+        { (uint8_t *)"1" , 1, 3, "\x0a\x01\x31"},
+        { (uint8_t *)
+          "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890",
           150,
@@ -794,8 +795,6 @@ TEST(address_book_default)
     int size;
     uint8_t workspace[512];
     struct address_book_address_book_t *address_book_p;
-    struct address_book_person_t *person_p;
-    struct address_book_person_phone_number_t *phone_number_p;
 
     address_book_p = address_book_address_book_new(&workspace[0],
                                                    sizeof(workspace));
@@ -814,8 +813,6 @@ TEST(address_book_default_person)
     int size;
     uint8_t workspace[512];
     struct address_book_address_book_t *address_book_p;
-    struct address_book_person_t *person_p;
-    struct address_book_person_phone_number_t *phone_number_p;
 
     address_book_p = address_book_address_book_new(&workspace[0],
                                                    sizeof(workspace));

@@ -95,11 +95,6 @@ static void encoder_init(struct encoder_t *self_p,
     self_p->pos = (size - 1);
 }
 
-static size_t encoder_pos(struct encoder_t *self_p)
-{
-    return (self_p->pos);
-}
-
 static int encoder_get_result(struct encoder_t *self_p)
 {
     int length;
@@ -168,7 +163,7 @@ static void encoder_prepend_string(struct encoder_t *self_p,
     length = strlen(value_p);
 
     if (length > 0) {
-        encoder_prepend_bytes(self_p, value_p, length);
+        encoder_prepend_bytes(self_p, (uint8_t *)value_p, length);
         encoder_prepend_varint(self_p, field_number, 2, length);
     }
 }
@@ -274,7 +269,7 @@ static char *decoder_read_string(struct decoder_t *self_p,
         return ("");
     }
 
-    decoder_read_bytes(self_p, value_p, length);
+    decoder_read_bytes(self_p, (uint8_t *)value_p, length);
     value_p[length] = '\0';
 
     return (value_p);

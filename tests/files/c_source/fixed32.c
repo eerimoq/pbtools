@@ -95,11 +95,6 @@ static void encoder_init(struct encoder_t *self_p,
     self_p->pos = (size - 1);
 }
 
-static size_t encoder_pos(struct encoder_t *self_p)
-{
-    return (self_p->pos);
-}
-
 static int encoder_get_result(struct encoder_t *self_p)
 {
     int length;

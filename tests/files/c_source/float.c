@@ -95,11 +95,6 @@ static void encoder_init(struct encoder_t *self_p,
     self_p->pos = (size - 1);
 }
 
-static size_t encoder_pos(struct encoder_t *self_p)
-{
-    return (self_p->pos);
-}
-
 static int encoder_get_result(struct encoder_t *self_p)
 {
     int length;
@@ -122,17 +117,6 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
 
     self_p->buf_p[self_p->pos] = value;
     self_p->pos--;
-}
-
-static void encoder_prepend_bytes(struct encoder_t *self_p,
-                                  uint8_t *buf_p,
-                                  int size)
-{
-    int i;
-
-    for (i = size - 1; i >= 0; i--) {
-        encoder_prepend_byte(self_p, buf_p[i]);
-    }
 }
 
 static void encoder_prepend_float(struct encoder_t *self_p,

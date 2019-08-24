@@ -41,6 +41,12 @@ HEADER_FMT = '''\
 #include <stdint.h>
 #include <stdbool.h>
 
+struct {namespace}_heap_t {{
+    char *buf_p;
+    int size;
+    int pos;
+}};
+
 {structs}
 {declarations}
 #endif
@@ -81,12 +87,251 @@ SOURCE_FMT = '''\
 
 #include "{header}"
 
+struct encoder_t {{
+    uint8_t *buf_p;
+    int size;
+    int pos;
+}};
+
+struct decoder_t {{
+    const uint8_t *buf_p;
+    int size;
+    int pos;
+    struct bool_heap_t *heap_p;
+}};
+
+static uint8_t tag(int field_number, int wire_type)
+{{
+    return ((field_number << 3) | wire_type);
+}}
+
+static struct bool_heap_t *heap_new(void *buf_p, size_t size)
+{{
+    struct bool_heap_t *heap_p;
+
+    if (size >= sizeof(*heap_p)) {{
+        heap_p = (struct bool_heap_t *)buf_p;
+        heap_p->buf_p = buf_p;
+        heap_p->size = size;
+        heap_p->pos = sizeof(*heap_p);
+    }} else {{
+        heap_p = NULL;
+    }}
+
+    return (heap_p);
+}}
+
+static void *heap_alloc(struct bool_heap_t *self_p, size_t size)
+{{
+    void *buf_p;
+    int left;
+
+    left = (self_p->size - self_p->pos);
+
+    if (size <= left) {{
+        buf_p = &self_p->buf_p[self_p->pos];
+        self_p->pos += size;
+    }} else {{
+        buf_p = NULL;
+    }}
+
+    return (buf_p);
+}}
+
+static void encoder_init(struct encoder_t *self_p,
+                         uint8_t *buf_p,
+                         size_t size)
+{{
+    self_p->buf_p = buf_p;
+    self_p->size = size;
+    self_p->pos = (size - 1);
+}}
+
+static size_t encoder_pos(struct encoder_t *self_p)
+{{
+    return (self_p->pos);
+}}
+
+static int encoder_get_result(struct encoder_t *self_p)
+{{
+    int length;
+
+    length = (self_p->size - self_p->pos - 1);
+    memmove(self_p->buf_p,
+            &self_p->buf_p[self_p->pos + 1],
+            length);
+
+    return (length);
+}}
+
+static void encoder_put(struct encoder_t *self_p,
+                                 uint8_t value)
+{{
+    if (self_p->pos < 0) {{
+        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
+        exit(1);
+    }}
+
+    self_p->buf_p[self_p->pos] = value;
+    self_p->pos--;
+}}
+
+static void encoder_write(struct encoder_t *self_p,
+                          uint8_t *buf_p,
+                          int size)
+{{
+    int i;
+
+    for (i = size - 1; i >= 0; i--) {{
+        encoder_put(self_p, buf_p[i]);
+    }}
+}}
+
+static void encoder_write_bool(struct encoder_t *self_p,
+                                 int field_number,
+                                 bool value)
+{{
+    if (value) {{
+        encoder_put(self_p, 1);
+        encoder_put(self_p, tag(field_number, 0));
+    }}
+}}
+
+static void encoder_write_bytes(struct encoder_t *self_p,
+                                int field_number,
+                                uint8_t *value_p,
+                                size_t size)
+{{
+    if (size > 0) {{
+        encoder_write(self_p, value_p, size);
+        encoder_write_varint(self_p, field_number, 2, size);
+    }}
+}}
+
+static void decoder_init(struct decoder_t *self_p,
+                         const uint8_t *buf_p,
+                         size_t size,
+                         struct bool_heap_t *heap_p)
+{{
+    self_p->buf_p = buf_p;
+    self_p->size = size;
+    self_p->pos = 0;
+    self_p->heap_p = heap_p;
+}}
+
+static int decoder_get_result(struct decoder_t *self_p)
+{{
+    int res;
+
+    if (self_p->pos == self_p->size) {{
+        res = self_p->pos;
+    }} else {{
+        res = -1;
+    }}
+
+    return (res);
+}}
+
+static bool decoder_available(struct decoder_t *self_p)
+{{
+    return (self_p->pos < self_p->size);
+}}
+
+static uint8_t decoder_get(struct decoder_t *self_p)
+{{
+    uint8_t value;
+
+    if (decoder_available(self_p)) {{
+        value = self_p->buf_p[self_p->pos];
+        self_p->pos++;
+    }} else {{
+        self_p->size = -1;
+        value = 0;
+    }}
+
+    return (value);
+}}
+
+static void decoder_read(struct decoder_t *self_p,
+                         uint8_t *buf_p,
+                         int size)
+{{
+    int i;
+
+    for (i = 0; i < size; i++) {{
+        buf_p[i] = decoder_get(self_p);
+    }}
+}}
+
+static int decoder_read_tag(struct decoder_t *self_p,
+                            int *wire_type_p)
+{{
+    uint8_t value;
+
+    value = decoder_get(self_p);
+    *wire_type_p = (value & 0x7);
+
+    return (value >> 3);
+}}
+
+static uint64_t decoder_read_varint(struct decoder_t *self_p)
+{{
+    uint64_t value;
+    uint8_t byte;
+    int offset;
+
+    value = 0;
+    offset = 0;
+
+    do {{
+        byte = decoder_get(self_p);
+        value |= (((uint64_t)byte & 0x7f) << offset);
+        offset += 7;
+    }} while (byte & 0x80);
+
+    return (value);
+}}
+
+static bool decoder_read_bool(struct decoder_t *self_p,
+                              int wire_type)
+{{
+    if (wire_type != 0) {{
+        return (false);
+    }}
+
+    return (decoder_read_byte(self_p) == 1);
+}}
+
+static uint8_t *decoder_read_bytes(struct decoder_t *self_p,
+                                   int wire_type,
+                                   size_t *size_p)
+{{
+    uint64_t size;
+    uint8_t *value_p;
+
+    if (wire_type != 2) {{
+        return (NULL);
+    }}
+
+    size = decoder_read_varint(self_p);
+    value_p = heap_alloc(self_p->heap_p, size);
+
+    if (value_p == NULL) {{
+        return (NULL);
+    }}
+
+    decoder_read(self_p, value_p, size);
+    *size_p = size;
+
+    return (value_p);
+}}
+
 {helpers}
 {definitions}\
 '''
 
 STRUCT_FMT = '''\
-struct {name}_t {{
+struct {namespace}_{name}_t {{
 {members}
 }};
 '''
@@ -113,7 +358,7 @@ def _generate_members(message):
     members = []
 
     for field in message.fields:
-        members.append(f'    {field.type} {field.name};')
+        members.append(f'    {camel_to_snake_case(field.type)}_t {field.name};')
 
     if not members:
         members = [
@@ -123,13 +368,14 @@ def _generate_members(message):
     return members
 
 
-def generate_structs(parsed):
+def generate_structs(namespace, parsed):
     structs = []
 
     for message in parsed.messages:
         members = _generate_members(message)
         structs.append(
-            STRUCT_FMT.format(name=camel_to_snake_case(message.name),
+            STRUCT_FMT.format(namespace=namespace,
+                              name=camel_to_snake_case(message.name),
                               members='\n'.join(members)))
 
     return '\n'.join(structs)
@@ -144,7 +390,7 @@ def generate(namespace, parsed):
     namespace = camel_to_snake_case(namespace)
     include_guard = '{}_H'.format(namespace.upper())
 
-    structs = generate_structs(parsed)
+    structs = generate_structs(namespace, parsed)
     declarations = ''
     header_name = ''
     helpers = ''
@@ -152,12 +398,14 @@ def generate(namespace, parsed):
 
     header = HEADER_FMT.format(version=__version__,
                                date=date,
+                               namespace=namespace,
                                include_guard=include_guard,
                                structs=structs,
                                declarations=declarations)
 
     source = SOURCE_FMT.format(version=__version__,
                                date=date,
+                               namespace=namespace,
                                header=header_name,
                                helpers=helpers,
                                definitions=definitions)

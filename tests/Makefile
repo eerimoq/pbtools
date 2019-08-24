@@ -1,5 +1,5 @@
 all:
-	gcc -g -Og -std=gnu11 \
+	gcc -Wall -g -Og -std=gnu11 \
 	    narwhal.c \
 	    files/c_source/int32.c \
 	    files/c_source/int64.c \
