@@ -35,7 +35,7 @@ class ParserTest(unittest.TestCase):
 
         field = message.fields[0]
         self.assertEqual(field.type, 'int32')
-        self.assertEqual(field.name, 'value')
+        self.assertEqual(field.name, 'int32s')
         self.assertEqual(field.tag, 1)
         self.assertTrue(field.repeated)
 

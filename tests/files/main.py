@@ -492,6 +492,51 @@ def output_enum():
     print('------------------ enum end ------------------')
 
 
+def output_repeated():
+    message = repeated_pb2.Message()
+
+    print('----------------- repeated begin -----------------')
+
+    values = [
+        [],
+        [1],
+        [1, 2]
+    ]
+
+    for value in values:
+        message.int32s[:] = value
+        print(f'------ value {value} -------')
+        print('Message:')
+        print(str(message).strip())
+        print('Encoded:')
+        print(binascii.hexlify(message.SerializeToString()))
+
+    print(f'------ zero messages -------')
+    message = repeated_pb2.Message()
+    print('Message:')
+    print(str(message).strip())
+    print('Encoded:')
+    print(binascii.hexlify(message.SerializeToString()))
+
+    print(f'------ one message -------')
+    inner = message.messages.add()
+    inner.int32s.append(1)
+    print('Message:')
+    print(str(message).strip())
+    print('Encoded:')
+    print(binascii.hexlify(message.SerializeToString()))
+
+    print(f'------ two messages -------')
+    inner = message.messages.add()
+    inner.int32s.append(2)
+    print('Message:')
+    print(str(message).strip())
+    print('Encoded:')
+    print(binascii.hexlify(message.SerializeToString()))
+
+    print('------------------ repeated end ------------------')
+
+
 def output_address_book():
 
     print('----------------- address_book begin -----------------')
@@ -560,6 +605,7 @@ def main():
     output_string()
     output_bytes()
     output_enum()
+    output_repeated()
     output_address_book()
 
 if __name__ == '__main__':
