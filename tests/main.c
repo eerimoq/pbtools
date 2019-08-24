@@ -55,22 +55,20 @@ TEST(int32)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %d\n", datas[i].decoded);
+        printf("int32: %d\n", datas[i].decoded);
 
         message_p = int32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = int32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = int32_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = int32_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = int32_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = int32_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -110,22 +108,20 @@ TEST(int64)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %lld\n", (long long)datas[i].decoded);
+        printf("int64: %lld\n", (long long)datas[i].decoded);
 
         message_p = int64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = int64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = int64_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = int64_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = int64_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = int64_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -165,22 +161,20 @@ TEST(sint32)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %d\n", datas[i].decoded);
+        printf("sint32: %d\n", datas[i].decoded);
 
         message_p = sint32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = sint32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = sint32_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = sint32_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = sint32_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = sint32_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -240,22 +234,20 @@ TEST(sint64)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %lld\n", (long long)datas[i].decoded);
+        printf("sint64: %lld\n", (long long)datas[i].decoded);
 
         message_p = sint64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = sint64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = sint64_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = sint64_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = sint64_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = sint64_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -285,22 +277,20 @@ TEST(uint32)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %u\n", datas[i].decoded);
+        printf("uint32: %u\n", datas[i].decoded);
 
         message_p = uint32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = uint32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = uint32_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = uint32_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = uint32_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = uint32_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -338,22 +328,20 @@ TEST(uint64)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %llu\n", (unsigned long long)datas[i].decoded);
+        printf("uint64: %llu\n", (unsigned long long)datas[i].decoded);
 
         message_p = uint64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = uint64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = uint64_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = uint64_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = uint64_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = uint64_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -375,22 +363,20 @@ TEST(fixed32)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %u\n", datas[i].decoded);
+        printf("fixed32: %u\n", datas[i].decoded);
 
         message_p = fixed32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = fixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = fixed32_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = fixed32_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = fixed32_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = fixed32_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -412,22 +398,20 @@ TEST(fixed64)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %llu\n", (unsigned long long)datas[i].decoded);
+        printf("fixed64: %llu\n", (unsigned long long)datas[i].decoded);
 
         message_p = fixed64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = fixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = fixed64_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = fixed64_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = fixed64_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = fixed64_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -451,22 +435,20 @@ TEST(sfixed32)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %d\n", datas[i].decoded);
+        printf("sfixed32: %d\n", datas[i].decoded);
 
         message_p = sfixed32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = sfixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = sfixed32_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = sfixed32_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = sfixed32_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = sfixed32_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -490,22 +472,20 @@ TEST(sfixed64)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %lld\n", (long long)datas[i].decoded);
+        printf("sfixed64: %lld\n", (long long)datas[i].decoded);
 
         message_p = sfixed64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = sfixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = sfixed64_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = sfixed64_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = sfixed64_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = sfixed64_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -529,22 +509,20 @@ TEST(float_)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %f\n", datas[i].decoded);
+        printf("float: %f\n", datas[i].decoded);
 
         message_p = float_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = float_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = float_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = float_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = float_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = float_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -568,22 +546,20 @@ TEST(double_)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %f\n", datas[i].decoded);
+        printf("double: %f\n", datas[i].decoded);
 
         message_p = double_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = double_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = double_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = double_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = double_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = double_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -604,22 +580,20 @@ TEST(bool_)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %d\n", datas[i].decoded);
+        printf("bool: %d\n", datas[i].decoded);
 
         message_p = bool_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = bool_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = bool_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = bool_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = bool_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = bool_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 
@@ -655,22 +629,20 @@ TEST(string)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: '%s'\n", datas[i].decoded_p);
+        printf("string: '%s'\n", datas[i].decoded_p);
 
         message_p = string_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value_p = datas[i].decoded_p;
-
         size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = string_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = string_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = string_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = string_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value_p, datas[i].decoded_p);
     }
 }
 
@@ -708,23 +680,24 @@ TEST(bytes)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value size: %d\n", datas[i].size);
+        printf("bytes size: %d\n", datas[i].size);
 
         message_p = bytes_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value.buf_p = datas[i].decoded_p;
         message_p->value.size = datas[i].decoded_size;
-
         size = bytes_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = bytes_message_init(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = bytes_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        message_p = bytes_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = bytes_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value.size, datas[i].decoded_size);
+        ASSERT_EQ(memcmp(message_p->value.buf_p,
+                         datas[i].decoded_p,
+                         datas[i].decoded_size), 0);
     }
 }
 
@@ -745,22 +718,20 @@ TEST(enum_)
     };
 
     for (i = 0; i < membersof(datas); i++) {
-        printf("Value: %d\n", datas[i].decoded);
+        printf("enum: %d\n", datas[i].decoded);
 
         message_p = enum_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         message_p->value = datas[i].decoded;
-
         size = enum_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = enum_message_init(&workspace[0], sizeof(workspace)); */
+        /* message_p = enum_message_new(&workspace[0], sizeof(workspace)); */
         /* ASSERT_NE(message_p, NULL); */
         /* size = enum_message_decode(message_p, &encoded[0], size); */
         /* ASSERT_EQ(size, datas[i].size); */
-
-        /* assert(message_p->value == datas[i].decoded); */
+        /* ASSERT_EQ(message_p->value, datas[i].decoded); */
     }
 }
 

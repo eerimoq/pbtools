@@ -209,7 +209,14 @@ static int decoder_read_tag(struct decoder_t *self_p,
 static int32_t decoder_read_sfixed32(struct decoder_t *self_p,
                                      int wire_type)
 {
-    return (0);
+    uint32_t value;
+
+    value = decoder_read_byte(self_p);
+    value |= (decoder_read_byte(self_p) << 8);
+    value |= (decoder_read_byte(self_p) << 16);
+    value |= (decoder_read_byte(self_p) << 24);
+
+    return (value);
 }
 
 struct sfixed32_message_t *sfixed32_message_new(

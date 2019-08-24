@@ -212,6 +212,8 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
         value = 0;
     }
 
+    fprintf(stderr, "rv: 0x%02x\n", value);
+
     return (value);
 }
 
@@ -222,14 +224,37 @@ static int decoder_read_tag(struct decoder_t *self_p,
 
     value = decoder_read_byte(self_p);
     *wire_type_p = (value & 0x7);
+    fprintf(stderr, "b: 0x%02x, %d\n", value, value >> 3);
 
     return (value >> 3);
+}
+
+static uint64_t decoder_read_varint(struct decoder_t *self_p)
+{
+    uint64_t value;
+    uint8_t byte;
+    int offset;
+
+    value = 0;
+    offset = 0;
+
+    do {
+        byte = decoder_read_byte(self_p);
+        value |= (((uint64_t)byte & 0x7f) << offset);
+        offset += 7;
+    } while (byte & 0x80);
+
+    return (value);
 }
 
 static int32_t decoder_read_int32(struct decoder_t *self_p,
                                   int wire_type)
 {
-    return (0);
+    if (wire_type != 0) {
+        return (0);
+    }
+
+    return (decoder_read_varint(self_p));
 }
 
 struct int32_message_t *int32_message_new(
@@ -276,6 +301,7 @@ void int32_message_decode_inner(
             break;
 
         default:
+            fprintf(stderr, "bad tag\n");
             break;
         }
     }

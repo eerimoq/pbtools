@@ -211,7 +211,20 @@ static int decoder_read_tag(struct decoder_t *self_p,
 static float decoder_read_float(struct decoder_t *self_p,
                                 int wire_type)
 {
-    return (0);
+    uint32_t data;
+    float value;
+
+    if (wire_type != 5) {
+        return (0.0);
+    }
+    
+    data = decoder_read_byte(self_p);
+    data |= (decoder_read_byte(self_p) << 8);
+    data |= (decoder_read_byte(self_p) << 16);
+    data |= (decoder_read_byte(self_p) << 24);
+    memcpy(&value, &data, sizeof(value));
+    
+    return (value);
 }
 
 struct float_message_t *float_message_new(

@@ -220,10 +220,32 @@ static int decoder_read_tag(struct decoder_t *self_p,
     return (value >> 3);
 }
 
+static uint64_t decoder_read_varint(struct decoder_t *self_p)
+{
+    uint64_t value;
+    uint8_t byte;
+    int offset;
+
+    value = 0;
+    offset = 0;
+
+    do {
+        byte = decoder_read_byte(self_p);
+        value |= (((uint64_t)byte & 0x7f) << offset);
+        offset += 7;
+    } while (byte & 0x80);
+
+    return (value);
+}
+
 static uint64_t decoder_read_uint64(struct decoder_t *self_p,
                                   int wire_type)
 {
-    return (0);
+    if (wire_type != 0) {
+        return (0);
+    }
+
+    return (decoder_read_varint(self_p));
 }
 
 struct uint64_message_t *uint64_message_new(

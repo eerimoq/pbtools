@@ -215,7 +215,24 @@ static int decoder_read_tag(struct decoder_t *self_p,
 static double decoder_read_double(struct decoder_t *self_p,
                                 int wire_type)
 {
-    return (0);
+    uint64_t data;
+    double value;
+
+    if (wire_type != 1) {
+        return (0.0);
+    }
+    
+    data = decoder_read_byte(self_p);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 8);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 16);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 24);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 32);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 40);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 48);
+    data |= ((uint64_t)decoder_read_byte(self_p) << 56);
+    memcpy(&value, &data, sizeof(value));
+    
+    return (value);
 }
 
 struct double_message_t *double_message_new(

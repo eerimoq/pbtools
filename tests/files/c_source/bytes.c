@@ -199,7 +199,7 @@ static bool decoder_available(struct decoder_t *self_p)
     return (self_p->pos < self_p->size);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
@@ -214,22 +214,68 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
     return (value);
 }
 
+static void decoder_read(struct decoder_t *self_p,
+                         uint8_t *buf_p,
+                         int size)
+{
+    int i;
+
+    for (i = 0; i < size; i++) {
+        buf_p[i] = decoder_get(self_p);
+    }
+}
+
 static int decoder_read_tag(struct decoder_t *self_p,
                             int *wire_type_p)
 {
     uint8_t value;
 
-    value = decoder_read_byte(self_p);
+    value = decoder_get(self_p);
     *wire_type_p = (value & 0x7);
 
     return (value >> 3);
 }
 
-static uint8_t *decoder_read_bytes2(struct decoder_t *self_p,
-                                    int wire_type,
-                                    size_t *size_p)
+static uint64_t decoder_read_varint(struct decoder_t *self_p)
 {
-    return (0);
+    uint64_t value;
+    uint8_t byte;
+    int offset;
+
+    value = 0;
+    offset = 0;
+
+    do {
+        byte = decoder_get(self_p);
+        value |= (((uint64_t)byte & 0x7f) << offset);
+        offset += 7;
+    } while (byte & 0x80);
+
+    return (value);
+}
+
+static uint8_t *decoder_read_bytes(struct decoder_t *self_p,
+                                   int wire_type,
+                                   size_t *size_p)
+{
+    uint64_t size;
+    uint8_t *value_p;
+
+    if (wire_type != 2) {
+        return (NULL);
+    }
+
+    size = decoder_read_varint(self_p);
+    value_p = heap_alloc(self_p->heap_p, size);
+
+    if (value_p == NULL) {
+        return (NULL);
+    }
+
+    decoder_read(self_p, value_p, size);
+    *size_p = size;
+
+    return (value_p);
 }
 
 struct bytes_message_t *bytes_message_new(
@@ -275,9 +321,9 @@ void bytes_message_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            message_p->value.buf_p = decoder_read_bytes2(decoder_p,
-                                                         wire_type,
-                                                         &message_p->value.size);
+            message_p->value.buf_p = decoder_read_bytes(decoder_p,
+                                                        wire_type,
+                                                        &message_p->value.size);
             break;
 
         default:

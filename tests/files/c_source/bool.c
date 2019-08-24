@@ -201,9 +201,13 @@ static int decoder_read_tag(struct decoder_t *self_p,
 }
 
 static bool decoder_read_bool(struct decoder_t *self_p,
-                                int wire_type)
+                              int wire_type)
 {
-    return (0);
+    if (wire_type != 0) {
+        return (false);
+    }
+
+    return (decoder_read_byte(self_p) == 1);
 }
 
 struct bool_message_t *bool_message_new(

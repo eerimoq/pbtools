@@ -217,6 +217,17 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
     return (value);
 }
 
+static void decoder_read_bytes(struct decoder_t *self_p,
+                               uint8_t *buf_p,
+                               int size)
+{
+    int i;
+
+    for (i = 0; i < size; i++) {
+        buf_p[i] = decoder_read_byte(self_p);
+    }
+}
+
 static int decoder_read_tag(struct decoder_t *self_p,
                             int *wire_type_p)
 {
@@ -228,10 +239,45 @@ static int decoder_read_tag(struct decoder_t *self_p,
     return (value >> 3);
 }
 
+static uint64_t decoder_read_varint(struct decoder_t *self_p)
+{
+    uint64_t value;
+    uint8_t byte;
+    int offset;
+
+    value = 0;
+    offset = 0;
+
+    do {
+        byte = decoder_read_byte(self_p);
+        value |= (((uint64_t)byte & 0x7f) << offset);
+        offset += 7;
+    } while (byte & 0x80);
+
+    return (value);
+}
+
 static char *decoder_read_string(struct decoder_t *self_p,
                                  int wire_type)
 {
-    return (0);
+    uint64_t length;
+    char *value_p;
+
+    if (wire_type != 2) {
+        return ("");
+    }
+
+    length = decoder_read_varint(self_p);
+    value_p = heap_alloc(self_p->heap_p, length + 1);
+
+    if (value_p == NULL) {
+        return ("");
+    }
+
+    decoder_read_bytes(self_p, value_p, length);
+    value_p[length] = '\0';
+
+    return (value_p);
 }
 
 struct string_message_t *string_message_new(

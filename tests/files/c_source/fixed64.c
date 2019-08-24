@@ -213,7 +213,18 @@ static int decoder_read_tag(struct decoder_t *self_p,
 static uint64_t decoder_read_fixed64(struct decoder_t *self_p,
                                      int wire_type)
 {
-    return (0);
+    uint64_t value;
+
+    value = decoder_read_byte(self_p);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 8);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 16);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 24);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 32);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 40);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 48);
+    value |= ((uint64_t)decoder_read_byte(self_p) << 56);
+
+    return (value);
 }
 
 struct fixed64_message_t *fixed64_message_new(
