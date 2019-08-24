@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package benchmark;
+
+message Benchmark {
+    int32 v1 = 1;
+}
