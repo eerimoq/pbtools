@@ -727,11 +727,11 @@ TEST(enum_)
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
 
-        /* message_p = enum_message_new(&workspace[0], sizeof(workspace)); */
-        /* ASSERT_NE(message_p, NULL); */
-        /* size = enum_message_decode(message_p, &encoded[0], size); */
-        /* ASSERT_EQ(size, datas[i].size); */
-        /* ASSERT_EQ(message_p->value, datas[i].decoded); */
+        message_p = enum_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = enum_message_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
     }
 }
 

@@ -220,10 +220,32 @@ static int decoder_read_tag(struct decoder_t *self_p,
     return (value >> 3);
 }
 
-static uint64_t decoder_read_enum(struct decoder_t *self_p,
-                                     int wire_type)
+static uint64_t decoder_read_varint(struct decoder_t *self_p)
 {
-    return (0);
+    uint64_t value;
+    uint8_t byte;
+    int offset;
+
+    value = 0;
+    offset = 0;
+
+    do {
+        byte = decoder_read_byte(self_p);
+        value |= (((uint64_t)byte & 0x7f) << offset);
+        offset += 7;
+    } while (byte & 0x80);
+
+    return (value);
+}
+
+static int decoder_read_enum(struct decoder_t *self_p,
+                             int wire_type)
+{
+    if (wire_type != 0) {
+        return (0);
+    }
+
+    return (decoder_read_varint(self_p));
 }
 
 struct enum_message_t *enum_message_new(
