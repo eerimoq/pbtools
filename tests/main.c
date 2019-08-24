@@ -54,6 +54,12 @@ TEST(int32)
          { 0x7fffffff,  6, "\x08\xff\xff\xff\xff\x07" }
     };
 
+    /* Default. */
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("int32: %d\n", datas[i].decoded);
 
@@ -107,6 +113,12 @@ TEST(int64)
         { 0x7fffffffffffffff,  10, "\x08\xff\xff\xff\xff\xff\xff\xff\xff\x7f" }
     };
 
+    /* Default. */
+    message_p = int64_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int64_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("int64: %lld\n", (long long)datas[i].decoded);
 
@@ -159,6 +171,12 @@ TEST(sint32)
         { 0x10000000,  6, "\x08\x80\x80\x80\x80\x02" },
         { 0x7fffffff,  6, "\x08\xfe\xff\xff\xff\x0f" }
     };
+
+    /* Default. */
+    message_p = sint32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = sint32_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("sint32: %d\n", datas[i].decoded);
@@ -233,6 +251,12 @@ TEST(sint64)
         { 0x7fffffffffffffff,  11, "\x08\xfe\xff\xff\xff\xff\xff\xff\xff\xff\x01" },
     };
 
+    /* Default. */
+    message_p = sint64_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = sint64_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("sint64: %lld\n", (long long)datas[i].decoded);
 
@@ -275,6 +299,12 @@ TEST(uint32)
         { 0x10000000, 6, "\x08\x80\x80\x80\x80\x01" },
         { 0xffffffff, 6, "\x08\xff\xff\xff\xff\x0f" }
     };
+
+    /* Default. */
+    message_p = uint32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = uint32_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("uint32: %u\n", datas[i].decoded);
@@ -327,6 +357,12 @@ TEST(uint64)
         { 0xffffffffffffffff, 11, "\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01" }
     };
 
+    /* Default. */
+    message_p = uint64_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = uint64_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("uint64: %llu\n", (unsigned long long)datas[i].decoded);
 
@@ -362,6 +398,12 @@ TEST(fixed32)
         { 0xffffffff, 5, "\x0d\xff\xff\xff\xff" }
     };
 
+    /* Default. */
+    message_p = fixed32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = fixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("fixed32: %u\n", datas[i].decoded);
 
@@ -396,6 +438,12 @@ TEST(fixed64)
         { 0x1,                9, "\x09\x01\x00\x00\x00\x00\x00\x00\x00" },
         { 0xffffffffffffffff, 9, "\x09\xff\xff\xff\xff\xff\xff\xff\xff" }
     };
+
+    /* Default. */
+    message_p = fixed64_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = fixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("fixed64: %llu\n", (unsigned long long)datas[i].decoded);
@@ -434,6 +482,12 @@ TEST(sfixed32)
         { 0x7fffffff,  5, "\x0d\xff\xff\xff\x7f" }
     };
 
+    /* Default. */
+    message_p = sfixed32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = sfixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("sfixed32: %d\n", datas[i].decoded);
 
@@ -470,6 +524,12 @@ TEST(sfixed64)
         { 0x1,                 9, "\x09\x01\x00\x00\x00\x00\x00\x00\x00" },
         { 0x7fffffffffffffff,  9, "\x09\xff\xff\xff\xff\xff\xff\xff\x7f" }
     };
+
+    /* Default. */
+    message_p = sfixed64_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = sfixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("sfixed64: %lld\n", (long long)datas[i].decoded);
@@ -508,6 +568,12 @@ TEST(float_)
         { 500.0,  5, "\x0d\x00\x00\xfa\x43" }
     };
 
+    /* Default. */
+    message_p = float_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = float_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("float: %f\n", datas[i].decoded);
 
@@ -545,6 +611,12 @@ TEST(double_)
         { 500.0,  9, "\x09\x00\x00\x00\x00\x00\x40\x7f\x40" }
     };
 
+    /* Default. */
+    message_p = double_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = double_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("double: %f\n", datas[i].decoded);
 
@@ -578,6 +650,12 @@ TEST(bool_)
         { true, 2, "\x08\x01" },
         { false, 0, "" }
     };
+
+    /* Default. */
+    message_p = bool_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = bool_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("bool: %d\n", datas[i].decoded);
@@ -627,6 +705,12 @@ TEST(string)
           "\x33\x34\x35\x36\x37\x38\x39\x30\x31\x32\x33\x34\x35\x36\x37"
           "\x38\x39\x30" }
     };
+
+    /* Default. */
+    message_p = string_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("string: '%s'\n", datas[i].decoded_p);
@@ -680,6 +764,12 @@ TEST(bytes)
           "\x38\x39\x30" }
     };
 
+    /* Default. */
+    message_p = bytes_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = bytes_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
     for (i = 0; i < membersof(datas); i++) {
         printf("bytes size: %d\n", datas[i].size);
 
@@ -717,6 +807,12 @@ TEST(enum_)
         { enum_message_enum_a_e, 0, "" },
         { enum_message_enum_b_e, 2, "\x08\x01" }
     };
+
+    /* Default. */
+    message_p = enum_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = enum_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
 
     for (i = 0; i < membersof(datas); i++) {
         printf("enum: %d\n", datas[i].decoded);
