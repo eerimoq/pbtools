@@ -17,8 +17,8 @@ int main(int argc, const char *argv[])
     struct address_book_person_t *person_p;
     struct address_book_person_phone_number_t *phone_number_p;
 
-    address_book_p = address_book_address_book_init(&workspace[0],
-                                                    sizeof(workspace));
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
     assert(address_book_p != NULL);
 
     /* Add one person to the address book. */
@@ -61,8 +61,8 @@ int main(int argc, const char *argv[])
                   size) == 0);
 
     /* Decode the message. */
-    address_book_p = address_book_address_book_init(&workspace[0],
-                                                    sizeof(workspace));
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
     assert(address_book_p != NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
     assert(size == 75);
