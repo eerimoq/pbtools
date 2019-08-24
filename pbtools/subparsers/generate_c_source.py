@@ -15,7 +15,7 @@ def _do_generate_c_source(args):
     filename_h = f'{name}.h'
     filename_c = f'{name}.c'
 
-    header, source = generate(name, parsed)
+    header, source = generate(name, parsed, filename_h)
 
     with open(filename_h, 'w') as fout:
         fout.write(header)

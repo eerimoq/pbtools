@@ -84,6 +84,8 @@ SOURCE_FMT = '''\
  */
 
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "{header}"
 
@@ -97,7 +99,7 @@ struct decoder_t {{
     const uint8_t *buf_p;
     int size;
     int pos;
-    struct bool_heap_t *heap_p;
+    struct {namespace}_heap_t *heap_p;
 }};
 
 static uint8_t tag(int field_number, int wire_type)
@@ -105,12 +107,12 @@ static uint8_t tag(int field_number, int wire_type)
     return ((field_number << 3) | wire_type);
 }}
 
-static struct bool_heap_t *heap_new(void *buf_p, size_t size)
+static struct {namespace}_heap_t *heap_new(void *buf_p, size_t size)
 {{
-    struct bool_heap_t *heap_p;
+    struct {namespace}_heap_t *heap_p;
 
     if (size >= sizeof(*heap_p)) {{
-        heap_p = (struct bool_heap_t *)buf_p;
+        heap_p = (struct {namespace}_heap_t *)buf_p;
         heap_p->buf_p = buf_p;
         heap_p->size = size;
         heap_p->pos = sizeof(*heap_p);
@@ -121,7 +123,7 @@ static struct bool_heap_t *heap_new(void *buf_p, size_t size)
     return (heap_p);
 }}
 
-static void *heap_alloc(struct bool_heap_t *self_p, size_t size)
+static void *heap_alloc(struct {namespace}_heap_t *self_p, size_t size)
 {{
     void *buf_p;
     int left;
@@ -147,11 +149,6 @@ static void encoder_init(struct encoder_t *self_p,
     self_p->pos = (size - 1);
 }}
 
-static size_t encoder_pos(struct encoder_t *self_p)
-{{
-    return (self_p->pos);
-}}
-
 static int encoder_get_result(struct encoder_t *self_p)
 {{
     int length;
@@ -165,10 +162,10 @@ static int encoder_get_result(struct encoder_t *self_p)
 }}
 
 static void encoder_put(struct encoder_t *self_p,
-                                 uint8_t value)
+                        uint8_t value)
 {{
     if (self_p->pos < 0) {{
-        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_put: %d\\n", self_p->pos);
         exit(1);
     }}
 
@@ -187,31 +184,46 @@ static void encoder_write(struct encoder_t *self_p,
     }}
 }}
 
-static void encoder_write_bool(struct encoder_t *self_p,
+static void encoder_write_varint(struct encoder_t *self_p,
                                  int field_number,
-                                 bool value)
+                                 uint64_t value)
 {{
-    if (value) {{
-        encoder_put(self_p, 1);
-        encoder_put(self_p, tag(field_number, 0));
+    uint8_t buf[11];
+    int pos;
+
+    if (value == 0) {{
+        return;
     }}
+
+    pos = 0;
+    buf[pos++] = tag(field_number, 0);
+
+    while (value > 0) {{
+        buf[pos++] = (value | 0x80);
+        value >>= 7;
+    }}
+
+    buf[pos - 1] &= 0x7f;
+    encoder_write(self_p, &buf[0], pos);
 }}
 
-static void encoder_write_bytes(struct encoder_t *self_p,
+static void encoder_write_int32(struct encoder_t *self_p,
                                 int field_number,
-                                uint8_t *value_p,
-                                size_t size)
+                                int32_t value)
 {{
-    if (size > 0) {{
-        encoder_write(self_p, value_p, size);
-        encoder_write_varint(self_p, field_number, 2, size);
+    if (value < 0) {{
+        encoder_write_varint(self_p,
+                             field_number,
+                             value | 0xffffffff00000000ll);
+    }} else {{
+        encoder_write_varint(self_p, field_number, (uint64_t)value);
     }}
 }}
 
 static void decoder_init(struct decoder_t *self_p,
                          const uint8_t *buf_p,
                          size_t size,
-                         struct bool_heap_t *heap_p)
+                         struct {namespace}_heap_t *heap_p)
 {{
     self_p->buf_p = buf_p;
     self_p->size = size;
@@ -252,17 +264,6 @@ static uint8_t decoder_get(struct decoder_t *self_p)
     return (value);
 }}
 
-static void decoder_read(struct decoder_t *self_p,
-                         uint8_t *buf_p,
-                         int size)
-{{
-    int i;
-
-    for (i = 0; i < size; i++) {{
-        buf_p[i] = decoder_get(self_p);
-    }}
-}}
-
 static int decoder_read_tag(struct decoder_t *self_p,
                             int *wire_type_p)
 {{
@@ -292,48 +293,148 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p)
     return (value);
 }}
 
-static bool decoder_read_bool(struct decoder_t *self_p,
-                              int wire_type)
+static int32_t decoder_read_int32(struct decoder_t *self_p,
+                                  int wire_type)
 {{
     if (wire_type != 0) {{
-        return (false);
+        return (0);
     }}
 
-    return (decoder_read_byte(self_p) == 1);
+    return (decoder_read_varint(self_p));
 }}
 
-static uint8_t *decoder_read_bytes(struct decoder_t *self_p,
-                                   int wire_type,
-                                   size_t *size_p)
-{{
-    uint64_t size;
-    uint8_t *value_p;
-
-    if (wire_type != 2) {{
-        return (NULL);
-    }}
-
-    size = decoder_read_varint(self_p);
-    value_p = heap_alloc(self_p->heap_p, size);
-
-    if (value_p == NULL) {{
-        return (NULL);
-    }}
-
-    decoder_read(self_p, value_p, size);
-    *size_p = size;
-
-    return (value_p);
-}}
-
-{helpers}
+{helpers}\
 {definitions}\
 '''
 
-STRUCT_FMT = '''\
+MESSAGE_STRUCT_FMT = '''\
+/**
+ * Message {proto_name} in package {package}.
+ */
 struct {namespace}_{name}_t {{
+    struct {namespace}_heap_t *heap_p;
 {members}
 }};
+'''
+
+MESSAGE_DECLARATION_FMT = '''\
+/**
+ * Create a new message {proto_name} in given workspace.
+ *
+ * @param[in] src_p Data to decode.
+ * @param[in] size Size of src_p.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct {namespace}_{name}_t *{namespace}_{name}_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message {proto_name} defined in package {package}.
+ *
+ * @param[out] dst_p Buffer to encode into.
+ * @param[in] size Size of dst_p.
+ * @param[in] src_p Data to encode.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int {namespace}_{name}_encode(
+    struct {namespace}_{name}_t *message_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message {proto_name} defined in package {package}.
+ *
+ * @param[out] dst_p Decoded data.
+ * @param[in] src_p Data to decode.
+ * @param[in] size Size of src_p.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int {namespace}_{name}_decode(
+    struct {namespace}_{name}_t *message_p,
+    const uint8_t *encoded_p,
+    size_t size);
+'''
+
+MESSAGE_DEFINITION_FMT = '''\
+static void {namespace}_{name}_encode_inner(
+    struct encoder_t *encoder_p,
+    struct {namespace}_{name}_t *message_p)
+{{
+    encoder_write_int32(encoder_p, 1, message_p->value);
+}}
+
+static void {namespace}_{name}_decode_inner(
+    struct decoder_t *decoder_p,
+    struct {namespace}_{name}_t *message_p)
+{{
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {{
+        switch (decoder_read_tag(decoder_p, &wire_type)) {{
+
+        case 1:
+            message_p->value = decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        default:
+            fprintf(stderr, "bad tag\\n");
+            break;
+        }}
+    }}
+}}
+
+struct {namespace}_{name}_t *{namespace}_{name}_new(
+    void *workspace_p,
+    size_t size)
+{{
+    struct {namespace}_{name}_t *message_p;
+    struct {namespace}_heap_t *heap_p;
+
+    heap_p = heap_new(workspace_p, size);
+
+    if (heap_p == NULL) {{
+        return (NULL);
+    }}
+
+    message_p = heap_alloc(heap_p, sizeof(*message_p));
+
+    if (message_p != NULL) {{
+        message_p->heap_p = heap_p;
+        message_p->value = 0;
+    }}
+
+    return (message_p);
+}}
+
+int {namespace}_{name}_encode(
+    struct {namespace}_{name}_t *message_p,
+    uint8_t *encoded_p,
+    size_t size)
+{{
+    struct encoder_t encoder;
+
+    encoder_init(&encoder, encoded_p, size);
+    {namespace}_{name}_encode_inner(&encoder, message_p);
+
+    return (encoder_get_result(&encoder));
+}}
+
+int {namespace}_{name}_decode(
+    struct {namespace}_{name}_t *message_p,
+    const uint8_t *encoded_p,
+    size_t size)
+{{
+    struct decoder_t decoder;
+
+    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
+    {namespace}_{name}_decode_inner(&decoder, message_p);
+
+    return (decoder_get_result(&decoder));
+}}
 '''
 
 
@@ -374,14 +475,42 @@ def generate_structs(namespace, parsed):
     for message in parsed.messages:
         members = _generate_members(message)
         structs.append(
-            STRUCT_FMT.format(namespace=namespace,
-                              name=camel_to_snake_case(message.name),
-                              members='\n'.join(members)))
+            MESSAGE_STRUCT_FMT.format(namespace=namespace,
+                                      package=parsed.package,
+                                      proto_name=message.name,
+                                      name=camel_to_snake_case(message.name),
+                                      members='\n'.join(members)))
 
     return '\n'.join(structs)
 
 
-def generate(namespace, parsed):
+def generate_declarations(namespace, parsed):
+    declarations = []
+
+    for message in parsed.messages:
+        declarations.append(
+            MESSAGE_DECLARATION_FMT.format(namespace=namespace,
+                                           package=parsed.package,
+                                           proto_name=message.name,
+                                           name=camel_to_snake_case(message.name)))
+
+    return '\n'.join(declarations)
+
+
+def generate_definitions(namespace, parsed):
+    definitions = []
+
+    for message in parsed.messages:
+        definitions.append(
+            MESSAGE_DEFINITION_FMT.format(namespace=namespace,
+                                          package=parsed.package,
+                                          proto_name=message.name,
+                                          name=camel_to_snake_case(message.name)))
+
+    return '\n'.join(definitions)
+
+
+def generate(namespace, parsed, header_name):
     """Generate C source code from given parsed proto-file.
 
     """
@@ -391,10 +520,9 @@ def generate(namespace, parsed):
     include_guard = '{}_H'.format(namespace.upper())
 
     structs = generate_structs(namespace, parsed)
-    declarations = ''
-    header_name = ''
+    declarations = generate_declarations(namespace, parsed)
     helpers = ''
-    definitions = ''
+    definitions = generate_definitions(namespace, parsed)
 
     header = HEADER_FMT.format(version=__version__,
                                date=date,

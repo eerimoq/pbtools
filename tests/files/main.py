@@ -502,6 +502,10 @@ def output_address_book():
     print(str(message).strip())
     print('Encoded:')
     print(binascii.hexlify(message.SerializeToString()))
+    decoded = address_book_pb2.AddressBook()
+    decoded.ParseFromString(message.SerializeToString())
+    print('Decoded:')
+    print(decoded)
 
     message = address_book_pb2.AddressBook()
     message.people.add()
@@ -510,6 +514,10 @@ def output_address_book():
     print(str(message).strip())
     print('Encoded:')
     print(binascii.hexlify(message.SerializeToString()))
+    decoded = address_book_pb2.AddressBook()
+    decoded.ParseFromString(message.SerializeToString())
+    print('Decoded:')
+    print(decoded)
 
     message = address_book_pb2.AddressBook()
     person = message.people.add()
@@ -527,6 +535,10 @@ def output_address_book():
     print(str(message).strip())
     print('Encoded:')
     print(binascii.hexlify(message.SerializeToString()))
+    decoded = address_book_pb2.AddressBook()
+    decoded.ParseFromString(message.SerializeToString())
+    print('Decoded:')
+    print(decoded)
 
     print('------------------ address_book end ------------------')
 

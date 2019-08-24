@@ -22,8 +22,7 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source(self):
         specs = [
-            'int32',
-            'address_book'
+            'int32'
         ]
 
         for spec in specs:
@@ -45,13 +44,12 @@ class CommandLineTest(unittest.TestCase):
             with patch('sys.argv', argv):
                 pbtools._main()
 
-            with self.assertRaises(AssertionError):
-                self.assertEqual(
-                    read_file(f'tests/files/c_source/{filename_h}'),
-                    read_file(filename_h))
-                self.assertEqual(
-                    read_file(f'tests/files/c_source/{filename_c}'),
-                    read_file(filename_c))
+            self.assertEqual(
+                read_file(f'tests/files/c_source/{filename_h}'),
+                read_file(filename_h))
+            self.assertEqual(
+                read_file(f'tests/files/c_source/{filename_c}'),
+                read_file(filename_c))
 
 
 if __name__ == '__main__':
