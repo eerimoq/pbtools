@@ -7,7 +7,6 @@ test-python:
 
 test-c:
 	make -C examples/address_book
-	examples/address_book/main
 	make -C examples/benchmarks/c_source
 	make -C tests
 
