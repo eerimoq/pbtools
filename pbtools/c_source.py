@@ -357,6 +357,142 @@ static void encoder_write_uint64(struct encoder_t *self_p,
 }}
 '''
 
+ENCODER_WRITE_FIXED32 = '''\
+static void encoder_write_fixed32(struct encoder_t *self_p,
+                                  int field_number,
+                                  uint32_t value)
+{{
+    uint8_t buf[4];
+
+    if (value > 0) {{
+        buf[0] = (value & 0xff);
+        buf[1] = ((value >> 8) & 0xff);
+        buf[2] = ((value >> 16) & 0xff);
+        buf[3] = ((value >> 24) & 0xff);
+        encoder_write(self_p, &buf[0], 4);
+        encoder_write_tag(self_p, field_number, 5);
+    }}
+}}
+'''
+
+ENCODER_WRITE_FIXED64 = '''\
+static void encoder_write_fixed64(struct encoder_t *self_p,
+                                  int field_number,
+                                  uint64_t value)
+{{
+    uint8_t buf[8];
+
+    if (value > 0) {{
+        buf[0] = (value & 0xff);
+        buf[1] = ((value >> 8) & 0xff);
+        buf[2] = ((value >> 16) & 0xff);
+        buf[3] = ((value >> 24) & 0xff);
+        buf[4] = ((value >> 32) & 0xff);
+        buf[5] = ((value >> 40) & 0xff);
+        buf[6] = ((value >> 48) & 0xff);
+        buf[7] = ((value >> 56) & 0xff);
+        encoder_write(self_p, &buf[0], 8);
+        encoder_write_tag(self_p, field_number, 1);
+    }}
+}}
+'''
+
+ENCODER_WRITE_SFIXED32 = '''\
+static void encoder_write_sfixed32(struct encoder_t *self_p,
+                                   int field_number,
+                                   int32_t value)
+{{
+    uint8_t buf[4];
+
+    if (value != 0) {{
+        buf[0] = (value & 0xff);
+        buf[1] = ((value >> 8) & 0xff);
+        buf[2] = ((value >> 16) & 0xff);
+        buf[3] = ((value >> 24) & 0xff);
+        encoder_write(self_p, &buf[0], 4);
+        encoder_write_tag(self_p, field_number, 5);
+    }}
+}}
+'''
+
+ENCODER_WRITE_SFIXED64 = '''\
+static void encoder_write_sfixed64(struct encoder_t *self_p,
+                                   int field_number,
+                                   int64_t value)
+{{
+    uint8_t buf[8];
+
+    if (value != 0) {{
+        buf[0] = (value & 0xff);
+        buf[1] = ((value >> 8) & 0xff);
+        buf[2] = ((value >> 16) & 0xff);
+        buf[3] = ((value >> 24) & 0xff);
+        buf[4] = ((value >> 32) & 0xff);
+        buf[5] = ((value >> 40) & 0xff);
+        buf[6] = ((value >> 48) & 0xff);
+        buf[7] = ((value >> 56) & 0xff);
+        encoder_write(self_p, &buf[0], 8);
+        encoder_write_tag(self_p, field_number, 1);
+    }}
+}}
+'''
+
+ENCODER_WRITE_FLOAT = '''\
+static void encoder_write_float(struct encoder_t *self_p,
+                                int field_number,
+                                float value)
+{{
+    uint32_t data;
+
+    if (value == 0) {{
+        return;
+    }}
+    
+    memcpy(&data, &value, sizeof(data));
+    encoder_put(self_p, data >> 24);
+    encoder_put(self_p, data >> 16);
+    encoder_put(self_p, data >> 8);
+    encoder_put(self_p, data >> 0);
+    encoder_write_tag(self_p, field_number, 5);
+}}
+'''
+
+ENCODER_WRITE_DOUBLE = '''\
+static void encoder_write_double(struct encoder_t *self_p,
+                                 int field_number,
+                                 double value)
+{{
+    uint64_t data;
+
+    if (value == 0) {{
+        return;
+    }}
+    
+    memcpy(&data, &value, sizeof(data));
+    encoder_put(self_p, data >> 56);
+    encoder_put(self_p, data >> 48);
+    encoder_put(self_p, data >> 40);
+    encoder_put(self_p, data >> 32);
+    encoder_put(self_p, data >> 24);
+    encoder_put(self_p, data >> 16);
+    encoder_put(self_p, data >> 8);
+    encoder_put(self_p, data >> 0);
+    encoder_write_tag(self_p, field_number, 1);
+}}
+'''
+
+ENCODER_WRITE_BOOL = '''\
+static void encoder_write_bool(struct encoder_t *self_p,
+                               int field_number,
+                               bool value)
+{{
+    if (value) {{
+        encoder_put(self_p, 1);
+        encoder_write_tag(self_p, field_number, 0);
+    }}
+}}
+'''
+
 DECODER_ABORT = '''\
 static void decoder_abort(struct decoder_t *self_p,
                           int error)
@@ -503,6 +639,132 @@ static uint64_t decoder_read_uint64(struct decoder_t *self_p,
                                     int wire_type)
 {{
     return (decoder_read_varint(self_p, wire_type));
+}}
+'''
+
+DECODER_READ_FIXED32 = '''\
+static uint32_t decoder_read_fixed32(struct decoder_t *self_p,
+                                     int wire_type)
+{{
+    uint32_t value;
+
+    value = decoder_get(self_p);
+    value |= (decoder_get(self_p) << 8);
+    value |= (decoder_get(self_p) << 16);
+    value |= (decoder_get(self_p) << 24);
+
+    return (value);
+}}
+'''
+
+DECODER_READ_FIXED64 = '''\
+static uint64_t decoder_read_fixed64(struct decoder_t *self_p,
+                                     int wire_type)
+{{
+    uint64_t value;
+
+    value = decoder_get(self_p);
+    value |= ((uint64_t)decoder_get(self_p) << 8);
+    value |= ((uint64_t)decoder_get(self_p) << 16);
+    value |= ((uint64_t)decoder_get(self_p) << 24);
+    value |= ((uint64_t)decoder_get(self_p) << 32);
+    value |= ((uint64_t)decoder_get(self_p) << 40);
+    value |= ((uint64_t)decoder_get(self_p) << 48);
+    value |= ((uint64_t)decoder_get(self_p) << 56);
+
+    return (value);
+}}
+'''
+
+DECODER_READ_SFIXED32 = '''\
+static int32_t decoder_read_sfixed32(struct decoder_t *self_p,
+                                     int wire_type)
+{{
+    uint32_t value;
+
+    value = decoder_get(self_p);
+    value |= (decoder_get(self_p) << 8);
+    value |= (decoder_get(self_p) << 16);
+    value |= (decoder_get(self_p) << 24);
+
+    return (value);
+}}
+'''
+
+DECODER_READ_SFIXED64 = '''\
+static int64_t decoder_read_sfixed64(struct decoder_t *self_p,
+                                     int wire_type)
+{{
+    uint64_t value;
+
+    value = decoder_get(self_p);
+    value |= ((uint64_t)decoder_get(self_p) << 8);
+    value |= ((uint64_t)decoder_get(self_p) << 16);
+    value |= ((uint64_t)decoder_get(self_p) << 24);
+    value |= ((uint64_t)decoder_get(self_p) << 32);
+    value |= ((uint64_t)decoder_get(self_p) << 40);
+    value |= ((uint64_t)decoder_get(self_p) << 48);
+    value |= ((uint64_t)decoder_get(self_p) << 56);
+
+    return (value);
+}}
+'''
+
+DECODER_READ_FLOAT = '''\
+static float decoder_read_float(struct decoder_t *self_p,
+                                int wire_type)
+{{
+    uint32_t data;
+    float value;
+
+    if (wire_type != 5) {{
+        return (0.0);
+    }}
+    
+    data = decoder_get(self_p);
+    data |= (decoder_get(self_p) << 8);
+    data |= (decoder_get(self_p) << 16);
+    data |= (decoder_get(self_p) << 24);
+    memcpy(&value, &data, sizeof(value));
+    
+    return (value);
+}}
+'''
+
+DECODER_READ_DOUBLE = '''\
+static double decoder_read_double(struct decoder_t *self_p,
+                                  int wire_type)
+{{
+    uint64_t data;
+    double value;
+
+    if (wire_type != 1) {{
+        return (0.0);
+    }}
+    
+    data = decoder_get(self_p);
+    data |= ((uint64_t)decoder_get(self_p) << 8);
+    data |= ((uint64_t)decoder_get(self_p) << 16);
+    data |= ((uint64_t)decoder_get(self_p) << 24);
+    data |= ((uint64_t)decoder_get(self_p) << 32);
+    data |= ((uint64_t)decoder_get(self_p) << 40);
+    data |= ((uint64_t)decoder_get(self_p) << 48);
+    data |= ((uint64_t)decoder_get(self_p) << 56);
+    memcpy(&value, &data, sizeof(value));
+    
+    return (value);
+}}
+'''
+
+DECODER_READ_BOOL = '''\
+static bool decoder_read_bool(struct decoder_t *self_p,
+                              int wire_type)
+{{
+    if (wire_type != 0) {{
+        return (false);
+    }}
+
+    return (decoder_get(self_p) == 1);
 }}
 '''
 
@@ -774,6 +1036,13 @@ def generate_encoder_helpers(definitions, namespace_upper):
     helpers = []
 
     functions = [
+        ('encoder_write_bool(', ENCODER_WRITE_BOOL),
+        ('encoder_write_double(', ENCODER_WRITE_DOUBLE),
+        ('encoder_write_float(', ENCODER_WRITE_FLOAT),
+        ('encoder_write_sfixed64(', ENCODER_WRITE_SFIXED64),
+        ('encoder_write_sfixed32(', ENCODER_WRITE_SFIXED32),
+        ('encoder_write_fixed64(', ENCODER_WRITE_FIXED64),
+        ('encoder_write_fixed32(', ENCODER_WRITE_FIXED32),
         ('encoder_write_uint64(', ENCODER_WRITE_UINT64),
         ('encoder_write_uint32(', ENCODER_WRITE_UINT32),
         ('encoder_write_sint64(', ENCODER_WRITE_SINT64),
@@ -800,6 +1069,13 @@ def generate_decode_helpers(definitions, namespace_upper):
     helpers = []
 
     functions = [
+        ('decoder_read_bool(', DECODER_READ_BOOL),
+        ('decoder_read_double(', DECODER_READ_DOUBLE),
+        ('decoder_read_float(', DECODER_READ_FLOAT),
+        ('decoder_read_sfixed64(', DECODER_READ_SFIXED64),
+        ('decoder_read_sfixed32(', DECODER_READ_SFIXED32),
+        ('decoder_read_fixed64(', DECODER_READ_FIXED64),
+        ('decoder_read_fixed32(', DECODER_READ_FIXED32),
         ('decoder_read_uint64(', DECODER_READ_UINT64),
         ('decoder_read_uint32(', DECODER_READ_UINT32),
         ('decoder_read_sint64(', DECODER_READ_SINT64),

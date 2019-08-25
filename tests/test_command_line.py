@@ -27,7 +27,14 @@ class CommandLineTest(unittest.TestCase):
             'sint32',
             'sint64',
             'uint32',
-            'uint64'
+            'uint64',
+            'fixed32',
+            'fixed64',
+            'sfixed32',
+            'sfixed64',
+            'float',
+            'double',
+            'bool'
         ]
 
         for spec in specs:
@@ -58,13 +65,6 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source_headers(self):
         specs = [
-            'fixed32',
-            'fixed64',
-            'sfixed32',
-            'sfixed64',
-            'float',
-            'double',
-            'bool',
             'string',
             'bytes'
         ]
