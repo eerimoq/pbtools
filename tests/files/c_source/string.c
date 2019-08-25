@@ -99,24 +99,37 @@ static int encoder_get_result(struct encoder_t *self_p)
 {
     int length;
 
-    length = (self_p->size - self_p->pos - 1);
-    memmove(self_p->buf_p,
-            &self_p->buf_p[self_p->pos + 1],
-            length);
+    if (self_p->pos >= 0) {
+        length = (self_p->size - self_p->pos - 1);
+        memmove(self_p->buf_p,
+                &self_p->buf_p[self_p->pos + 1],
+                length);
+    } else {
+        length = self_p->pos;
+    }
 
     return (length);
+}
+
+static void encoder_abort(struct encoder_t *self_p,
+                          int error)
+{
+    if (self_p->size >= 0) {
+        self_p->size = -error;
+        self_p->pos = -error;
+    }
 }
 
 static void encoder_put(struct encoder_t *self_p,
                                uint8_t value)
 {
-    if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
-        exit(1);
+    if (self_p->pos >= 0) {
+        self_p->buf_p[self_p->pos] = value;
+        self_p->pos--;
+    } else {
+        encoder_abort(self_p, STRING_ENCODE_BUFFER_FULL);
     }
 
-    self_p->buf_p[self_p->pos] = value;
-    self_p->pos--;
 }
 
 static void encoder_write(struct encoder_t *self_p,
@@ -192,6 +205,15 @@ static int decoder_get_result(struct decoder_t *self_p)
     return (res);
 }
 
+static void decoder_abort(struct decoder_t *self_p,
+                          int error)
+{
+    if (self_p->size >= 0) {
+        self_p->size = -error;
+        self_p->pos = -error;
+    }
+}
+
 static bool decoder_available(struct decoder_t *self_p)
 {
     return (self_p->pos < self_p->size);
@@ -205,7 +227,7 @@ static uint8_t decoder_get(struct decoder_t *self_p)
         value = self_p->buf_p[self_p->pos];
         self_p->pos++;
     } else {
-        self_p->size = -1;
+        decoder_abort(self_p, STRING_OUT_OF_DATA);
         value = 0;
     }
 

@@ -34,8 +34,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define EBADWIRETYPE                                   1
-#define EOUTOFDATA                                     2
+#define STRING_BAD_WIRE_TYPE                                   1
+#define STRING_OUT_OF_DATA                                     2
+#define STRING_OUT_OF_MEMORY                                   3
+#define STRING_ENCODE_BUFFER_FULL                              4
 
 struct string_heap_t {
     char *buf_p;

@@ -79,6 +79,23 @@ TEST(int32)
     }
 }
 
+TEST(int32_decode_out_of_data)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p, (uint8_t *)"\x08", 1);
+    ASSERT_EQ(size, -EOUTOFDATA);
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p, (uint8_t *)"\x08\x80", 2);
+    ASSERT_EQ(size, -EOUTOFDATA);
+}
+
 TEST(int64)
 {
     int i;
@@ -731,6 +748,42 @@ TEST(string)
     }
 }
 
+TEST(string_encode_out_of_memory)
+{
+    uint8_t encoded[150];
+    int size;
+    uint8_t workspace[512];
+    struct string_message_t *message_p;
+
+    message_p = string_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value_p = (
+        "123456789012345678901234567890123456789012345678901234567890"
+        "123456789012345678901234567890123456789012345678901234567890"
+        "123456789012345678901234567890");
+    size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, -STRING_ENCODE_BUFFER_FULL);
+}
+
+TEST(string_decode_out_of_data)
+{
+    int size;
+    uint8_t workspace[512];
+    struct string_message_t *message_p;
+
+    message_p = string_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = string_message_decode(message_p, (uint8_t *)"\x0a\x01", 2);
+    ASSERT_EQ(size, -EOUTOFDATA);
+
+    message_p = string_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = string_message_decode(message_p,
+                                 (uint8_t *)"\x0a\x96\x01\x31",
+                                 4);
+    ASSERT_EQ(size, -EOUTOFDATA);
+}
+
 TEST(bytes)
 {
     int i;
@@ -1111,6 +1164,7 @@ int main(void)
 {
     return RUN_TESTS(
         int32,
+        int32_decode_out_of_data,
         int64,
         sint32,
         sint64,
@@ -1124,6 +1178,8 @@ int main(void)
         double_,
         bool_,
         string,
+        string_encode_out_of_memory,
+        string_decode_out_of_data,
         bytes,
         enum_,
         address_book,

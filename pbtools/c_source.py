@@ -41,8 +41,10 @@ HEADER_FMT = '''\
 #include <stdint.h>
 #include <stdbool.h>
 
-#define EBADWIRETYPE                                   1
-#define EOUTOFDATA                                     2
+#define {namespace_upper}_BAD_WIRE_TYPE                                   1
+#define {namespace_upper}_OUT_OF_DATA                                     2
+#define {namespace_upper}_OUT_OF_MEMORY                                   3
+#define {namespace_upper}_ENCODE_BUFFER_FULL                              4
 
 struct {namespace}_heap_t {{
     char *buf_p;
@@ -263,7 +265,7 @@ static uint8_t decoder_get(struct decoder_t *self_p)
         value = self_p->buf_p[self_p->pos];
         self_p->pos++;
     }} else {{
-        decoder_abort(self_p, EOUTOFDATA);
+        decoder_abort(self_p, {namespace_upper}_OUT_OF_DATA);
         value = 0;
     }}
 
@@ -278,7 +280,7 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p,
     int offset;
 
     if (wire_type != 0) {{
-        decoder_abort(self_p, EBADWIRETYPE);
+        decoder_abort(self_p, {namespace_upper}_BAD_WIRE_TYPE);
 
         return (0);
     }}
@@ -557,6 +559,7 @@ def generate(namespace, parsed, header_name):
     header = HEADER_FMT.format(version=__version__,
                                date=date,
                                namespace=namespace,
+                               namespace_upper=namespace.upper(),
                                include_guard=include_guard,
                                structs=structs,
                                declarations=declarations)
@@ -564,6 +567,7 @@ def generate(namespace, parsed, header_name):
     source = SOURCE_FMT.format(version=__version__,
                                date=date,
                                namespace=namespace,
+                               namespace_upper=namespace.upper(),
                                header=header_name,
                                helpers=helpers,
                                definitions=definitions)

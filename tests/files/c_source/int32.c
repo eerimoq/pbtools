@@ -205,7 +205,7 @@ static uint8_t decoder_get(struct decoder_t *self_p)
         value = self_p->buf_p[self_p->pos];
         self_p->pos++;
     } else {
-        decoder_abort(self_p, EOUTOFDATA);
+        decoder_abort(self_p, INT32_OUT_OF_DATA);
         value = 0;
     }
 
@@ -220,7 +220,7 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p,
     int offset;
 
     if (wire_type != 0) {
-        decoder_abort(self_p, EBADWIRETYPE);
+        decoder_abort(self_p, INT32_BAD_WIRE_TYPE);
 
         return (0);
     }
