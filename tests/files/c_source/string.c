@@ -129,7 +129,6 @@ static void encoder_put(struct encoder_t *self_p,
     } else {
         encoder_abort(self_p, STRING_ENCODE_BUFFER_FULL);
     }
-
 }
 
 static void encoder_write(struct encoder_t *self_p,

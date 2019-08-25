@@ -107,8 +107,6 @@ SOURCE_FMT = '''\
  */
 
 #include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 #include "{header}"
 
@@ -213,17 +211,27 @@ static int decoder_get_result(struct decoder_t *self_p)
 {definitions}\
 '''
 
+ENCODER_ABORT = '''\
+static void encoder_abort(struct encoder_t *self_p,
+                          int error)
+{{
+    if (self_p->size >= 0) {{
+        self_p->size = -error;
+        self_p->pos = -error;
+    }}
+}}
+'''
+
 ENCODER_PUT = '''\
 static void encoder_put(struct encoder_t *self_p,
                         uint8_t value)
 {{
-    if (self_p->pos < 0) {{
-        fprintf(stderr, "encoder_put: %d\\n", self_p->pos);
-        exit(1);
+    if (self_p->pos >= 0) {{
+        self_p->buf_p[self_p->pos] = value;
+        self_p->pos--;
+    }} else {{
+        encoder_abort(self_p, {namespace_upper}_ENCODE_BUFFER_FULL);
     }}
-
-    self_p->buf_p[self_p->pos] = value;
-    self_p->pos--;
 }}
 '''
 
@@ -775,7 +783,8 @@ def generate_encoder_helpers(definitions, namespace_upper):
         ('encoder_write_varint(', ENCODER_WRITE_VARINT),
         ('encoder_write_tag(', ENCODER_WRITE_TAG),
         ('encoder_write(', ENCODER_WRITE),
-        ('encoder_put(', ENCODER_PUT)
+        ('encoder_put(', ENCODER_PUT),
+        ('encoder_abort(', ENCODER_ABORT)
     ]
 
     for pattern, definition in functions:
