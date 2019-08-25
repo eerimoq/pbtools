@@ -463,11 +463,33 @@ def camel_to_snake_case(value):
     return value
 
 
+def _generate_member_fmt(type, name):
+    if type in ['int32', 'int64', 'uint32', 'uint64']:
+        return f'    {type}_t {name};'
+    elif type in ['sint32', 'sint64']:
+        return f'    {type[1:]}_t {name};'
+    elif type in ['fixed32', 'fixed64']:
+        return f'    uint{type[5:]}_t {name};'
+    elif type in ['sfixed32', 'sfixed64']:
+        return f'    int{type[6:]}_t {name};'
+    elif type in ['float', 'double', 'bool']:
+        return f'    {type} {name};'
+    elif type == 'string':
+        return f'    char *{name}_p;'
+    elif type == 'bytes':
+        return '\n'.join(['    struct {',
+                          '        uint8_t *buf_p;',
+                          '        size_t size;',
+                          f'    }} {name};'])
+    else:
+        return f'    {camel_to_snake_case(type)}_t {name};'
+
+
 def _generate_members(message):
     members = []
 
     for field in message.fields:
-        members.append(f'    {camel_to_snake_case(field.type)}_t {field.name};')
+        members.append(_generate_member_fmt(field.type, field.name))
 
     if not members:
         members = [

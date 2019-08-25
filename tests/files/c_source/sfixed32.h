@@ -34,6 +34,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define EBADWIRETYPE                                   1
+#define EOUTOFDATA                                     2
+
 struct sfixed32_heap_t {
     char *buf_p;
     int size;
