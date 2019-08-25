@@ -300,7 +300,7 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p,
 static int decoder_read_tag(struct decoder_t *self_p,
                             int *wire_type_p)
 {{
-    uint8_t value;
+    uint32_t value;
 
     value = decoder_read_varint(self_p, 0);
     *wire_type_p = (value & 0x7);
