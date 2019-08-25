@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package tags;
+
+message Message {
+    bool v1 = 1;
+    bool v2 = 15;
+    bool v3 = 16;
+    bool v4 = 128;
+}
