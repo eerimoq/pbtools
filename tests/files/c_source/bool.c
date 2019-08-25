@@ -108,7 +108,7 @@ static int encoder_get_result(struct encoder_t *self_p)
 }
 
 static void encoder_put(struct encoder_t *self_p,
-                                 uint8_t value)
+                        uint8_t value)
 {
     if (self_p->pos < 0) {
         fprintf(stderr, "encoder_put: %d\n", self_p->pos);
@@ -120,8 +120,8 @@ static void encoder_put(struct encoder_t *self_p,
 }
 
 static void encoder_write_bool(struct encoder_t *self_p,
-                                 int field_number,
-                                 bool value)
+                               int field_number,
+                               bool value)
 {
     if (value) {
         encoder_put(self_p, 1);

@@ -47,8 +47,8 @@ struct enum_heap_t {
  * Message Message in package enum.
  */
 enum enum_message_enum_e {
-    enum_message_enum_a_e = 0,
-    enum_message_enum_b_e = 1
+                          enum_message_enum_a_e = 0,
+                          enum_message_enum_b_e = 1
 };
 
 struct enum_message_t {
@@ -78,7 +78,7 @@ struct enum_message_t *enum_message_new(
  * @return Encoded data length or negative error code.
  */
 int enum_message_encode(
-    struct enum_message_t *message_p,
+    struct enum_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -92,7 +92,7 @@ int enum_message_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int enum_message_decode(
-    struct enum_message_t *message_p,
+    struct enum_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

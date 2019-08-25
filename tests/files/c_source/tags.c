@@ -256,14 +256,14 @@ static bool decoder_read_bool(struct decoder_t *self_p,
 
 static void tags_message_1_encode_inner(
     struct encoder_t *encoder_p,
-    struct tags_message_1_t *message_p)
+    struct tags_message_1_t *self_p)
 {
-    encoder_write_bool(encoder_p, 1, message_p->value);
+    encoder_write_bool(encoder_p, 1, self_p->value);
 }
 
 static void tags_message_1_decode_inner(
     struct decoder_t *decoder_p,
-    struct tags_message_1_t *message_p)
+    struct tags_message_1_t *self_p)
 {
     int wire_type;
 
@@ -271,7 +271,7 @@ static void tags_message_1_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            message_p->value = decoder_read_bool(decoder_p, wire_type);
+            self_p->value = decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:
@@ -282,14 +282,14 @@ static void tags_message_1_decode_inner(
 
 static void tags_message_2_encode_inner(
     struct encoder_t *encoder_p,
-    struct tags_message_2_t *message_p)
+    struct tags_message_2_t *self_p)
 {
-    encoder_write_bool(encoder_p, 15, message_p->value);
+    encoder_write_bool(encoder_p, 15, self_p->value);
 }
 
 static void tags_message_2_decode_inner(
     struct decoder_t *decoder_p,
-    struct tags_message_2_t *message_p)
+    struct tags_message_2_t *self_p)
 {
     int wire_type;
 
@@ -297,7 +297,7 @@ static void tags_message_2_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 15:
-            message_p->value = decoder_read_bool(decoder_p, wire_type);
+            self_p->value = decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:
@@ -308,14 +308,14 @@ static void tags_message_2_decode_inner(
 
 static void tags_message_3_encode_inner(
     struct encoder_t *encoder_p,
-    struct tags_message_3_t *message_p)
+    struct tags_message_3_t *self_p)
 {
-    encoder_write_bool(encoder_p, 16, message_p->value);
+    encoder_write_bool(encoder_p, 16, self_p->value);
 }
 
 static void tags_message_3_decode_inner(
     struct decoder_t *decoder_p,
-    struct tags_message_3_t *message_p)
+    struct tags_message_3_t *self_p)
 {
     int wire_type;
 
@@ -323,7 +323,7 @@ static void tags_message_3_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 16:
-            message_p->value = decoder_read_bool(decoder_p, wire_type);
+            self_p->value = decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:
@@ -334,14 +334,14 @@ static void tags_message_3_decode_inner(
 
 static void tags_message_4_encode_inner(
     struct encoder_t *encoder_p,
-    struct tags_message_4_t *message_p)
+    struct tags_message_4_t *self_p)
 {
-    encoder_write_bool(encoder_p, 2047, message_p->value);
+    encoder_write_bool(encoder_p, 2047, self_p->value);
 }
 
 static void tags_message_4_decode_inner(
     struct decoder_t *decoder_p,
-    struct tags_message_4_t *message_p)
+    struct tags_message_4_t *self_p)
 {
     int wire_type;
 
@@ -349,7 +349,7 @@ static void tags_message_4_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 2047:
-            message_p->value = decoder_read_bool(decoder_p, wire_type);
+            self_p->value = decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:
@@ -360,14 +360,14 @@ static void tags_message_4_decode_inner(
 
 static void tags_message_5_encode_inner(
     struct encoder_t *encoder_p,
-    struct tags_message_5_t *message_p)
+    struct tags_message_5_t *self_p)
 {
-    encoder_write_bool(encoder_p, 2048, message_p->value);
+    encoder_write_bool(encoder_p, 2048, self_p->value);
 }
 
 static void tags_message_5_decode_inner(
     struct decoder_t *decoder_p,
-    struct tags_message_5_t *message_p)
+    struct tags_message_5_t *self_p)
 {
     int wire_type;
 
@@ -375,7 +375,7 @@ static void tags_message_5_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 2048:
-            message_p->value = decoder_read_bool(decoder_p, wire_type);
+            self_p->value = decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:
@@ -386,14 +386,14 @@ static void tags_message_5_decode_inner(
 
 static void tags_message_6_encode_inner(
     struct encoder_t *encoder_p,
-    struct tags_message_6_t *message_p)
+    struct tags_message_6_t *self_p)
 {
-    encoder_write_bool(encoder_p, 536870911, message_p->value);
+    encoder_write_bool(encoder_p, 536870911, self_p->value);
 }
 
 static void tags_message_6_decode_inner(
     struct decoder_t *decoder_p,
-    struct tags_message_6_t *message_p)
+    struct tags_message_6_t *self_p)
 {
     int wire_type;
 
@@ -401,7 +401,7 @@ static void tags_message_6_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 536870911:
-            message_p->value = decoder_read_bool(decoder_p, wire_type);
+            self_p->value = decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:
@@ -414,7 +414,7 @@ struct tags_message_1_t *tags_message_1_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message_1_t *message_p;
+    struct tags_message_1_t *self_p;
     struct tags_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -423,38 +423,38 @@ struct tags_message_1_t *tags_message_1_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int tags_message_1_encode(
-    struct tags_message_1_t *message_p,
+    struct tags_message_1_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    tags_message_1_encode_inner(&encoder, message_p);
+    tags_message_1_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int tags_message_1_decode(
-    struct tags_message_1_t *message_p,
+    struct tags_message_1_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    tags_message_1_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    tags_message_1_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }
@@ -463,7 +463,7 @@ struct tags_message_2_t *tags_message_2_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message_2_t *message_p;
+    struct tags_message_2_t *self_p;
     struct tags_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -472,38 +472,38 @@ struct tags_message_2_t *tags_message_2_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int tags_message_2_encode(
-    struct tags_message_2_t *message_p,
+    struct tags_message_2_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    tags_message_2_encode_inner(&encoder, message_p);
+    tags_message_2_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int tags_message_2_decode(
-    struct tags_message_2_t *message_p,
+    struct tags_message_2_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    tags_message_2_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    tags_message_2_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }
@@ -512,7 +512,7 @@ struct tags_message_3_t *tags_message_3_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message_3_t *message_p;
+    struct tags_message_3_t *self_p;
     struct tags_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -521,38 +521,38 @@ struct tags_message_3_t *tags_message_3_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int tags_message_3_encode(
-    struct tags_message_3_t *message_p,
+    struct tags_message_3_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    tags_message_3_encode_inner(&encoder, message_p);
+    tags_message_3_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int tags_message_3_decode(
-    struct tags_message_3_t *message_p,
+    struct tags_message_3_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    tags_message_3_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    tags_message_3_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }
@@ -561,7 +561,7 @@ struct tags_message_4_t *tags_message_4_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message_4_t *message_p;
+    struct tags_message_4_t *self_p;
     struct tags_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -570,38 +570,38 @@ struct tags_message_4_t *tags_message_4_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int tags_message_4_encode(
-    struct tags_message_4_t *message_p,
+    struct tags_message_4_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    tags_message_4_encode_inner(&encoder, message_p);
+    tags_message_4_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int tags_message_4_decode(
-    struct tags_message_4_t *message_p,
+    struct tags_message_4_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    tags_message_4_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    tags_message_4_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }
@@ -610,7 +610,7 @@ struct tags_message_5_t *tags_message_5_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message_5_t *message_p;
+    struct tags_message_5_t *self_p;
     struct tags_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -619,38 +619,38 @@ struct tags_message_5_t *tags_message_5_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int tags_message_5_encode(
-    struct tags_message_5_t *message_p,
+    struct tags_message_5_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    tags_message_5_encode_inner(&encoder, message_p);
+    tags_message_5_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int tags_message_5_decode(
-    struct tags_message_5_t *message_p,
+    struct tags_message_5_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    tags_message_5_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    tags_message_5_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }
@@ -659,7 +659,7 @@ struct tags_message_6_t *tags_message_6_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message_6_t *message_p;
+    struct tags_message_6_t *self_p;
     struct tags_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -668,38 +668,38 @@ struct tags_message_6_t *tags_message_6_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int tags_message_6_encode(
-    struct tags_message_6_t *message_p,
+    struct tags_message_6_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    tags_message_6_encode_inner(&encoder, message_p);
+    tags_message_6_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int tags_message_6_decode(
-    struct tags_message_6_t *message_p,
+    struct tags_message_6_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    tags_message_6_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    tags_message_6_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }

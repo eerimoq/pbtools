@@ -113,7 +113,7 @@ struct tags_message_1_t *tags_message_1_new(
  * @return Encoded data length or negative error code.
  */
 int tags_message_1_encode(
-    struct tags_message_1_t *message_p,
+    struct tags_message_1_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -127,7 +127,7 @@ int tags_message_1_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int tags_message_1_decode(
-    struct tags_message_1_t *message_p,
+    struct tags_message_1_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
@@ -153,7 +153,7 @@ struct tags_message_2_t *tags_message_2_new(
  * @return Encoded data length or negative error code.
  */
 int tags_message_2_encode(
-    struct tags_message_2_t *message_p,
+    struct tags_message_2_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -167,7 +167,7 @@ int tags_message_2_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int tags_message_2_decode(
-    struct tags_message_2_t *message_p,
+    struct tags_message_2_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
@@ -193,7 +193,7 @@ struct tags_message_3_t *tags_message_3_new(
  * @return Encoded data length or negative error code.
  */
 int tags_message_3_encode(
-    struct tags_message_3_t *message_p,
+    struct tags_message_3_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -207,7 +207,7 @@ int tags_message_3_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int tags_message_3_decode(
-    struct tags_message_3_t *message_p,
+    struct tags_message_3_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
@@ -233,7 +233,7 @@ struct tags_message_4_t *tags_message_4_new(
  * @return Encoded data length or negative error code.
  */
 int tags_message_4_encode(
-    struct tags_message_4_t *message_p,
+    struct tags_message_4_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -247,7 +247,7 @@ int tags_message_4_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int tags_message_4_decode(
-    struct tags_message_4_t *message_p,
+    struct tags_message_4_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
@@ -273,7 +273,7 @@ struct tags_message_5_t *tags_message_5_new(
  * @return Encoded data length or negative error code.
  */
 int tags_message_5_encode(
-    struct tags_message_5_t *message_p,
+    struct tags_message_5_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -287,7 +287,7 @@ int tags_message_5_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int tags_message_5_decode(
-    struct tags_message_5_t *message_p,
+    struct tags_message_5_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
@@ -313,7 +313,7 @@ struct tags_message_6_t *tags_message_6_new(
  * @return Encoded data length or negative error code.
  */
 int tags_message_6_encode(
-    struct tags_message_6_t *message_p,
+    struct tags_message_6_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -327,7 +327,7 @@ int tags_message_6_encode(
  * @return Number of bytes decoded or negative error code.
  */
 int tags_message_6_decode(
-    struct tags_message_6_t *message_p,
+    struct tags_message_6_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

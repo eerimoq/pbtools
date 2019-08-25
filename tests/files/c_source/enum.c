@@ -108,7 +108,7 @@ static int encoder_get_result(struct encoder_t *self_p)
 }
 
 static void encoder_put(struct encoder_t *self_p,
-                               uint8_t value)
+                        uint8_t value)
 {
     if (self_p->pos < 0) {
         fprintf(stderr, "encoder_put: %d\n", self_p->pos);
@@ -245,14 +245,14 @@ static int decoder_read_enum(struct decoder_t *self_p,
 
 static void enum_message_encode_inner(
     struct encoder_t *encoder_p,
-    struct enum_message_t *message_p)
+    struct enum_message_t *self_p)
 {
-    encoder_write_enum(encoder_p, 1, message_p->value);
+    encoder_write_enum(encoder_p, 1, self_p->value);
 }
 
 static void enum_message_decode_inner(
     struct decoder_t *decoder_p,
-    struct enum_message_t *message_p)
+    struct enum_message_t *self_p)
 {
     int wire_type;
 
@@ -260,7 +260,7 @@ static void enum_message_decode_inner(
         switch (decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            message_p->value = decoder_read_enum(decoder_p, wire_type);
+            self_p->value = decoder_read_enum(decoder_p, wire_type);
             break;
 
         default:
@@ -273,7 +273,7 @@ struct enum_message_t *enum_message_new(
     void *workspace_p,
     size_t size)
 {
-    struct enum_message_t *message_p;
+    struct enum_message_t *self_p;
     struct enum_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -282,38 +282,38 @@ struct enum_message_t *enum_message_new(
         return (NULL);
     }
 
-    message_p = heap_alloc(heap_p, sizeof(*message_p));
+    self_p = heap_alloc(heap_p, sizeof(*self_p));
 
-    if (message_p != NULL) {
-        message_p->heap_p = heap_p;
-        message_p->value = 0;
+    if (self_p != NULL) {
+        self_p->heap_p = heap_p;
+        self_p->value = 0;
     }
 
-    return (message_p);
+    return (self_p);
 }
 
 int enum_message_encode(
-    struct enum_message_t *message_p,
+    struct enum_message_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct encoder_t encoder;
 
     encoder_init(&encoder, encoded_p, size);
-    enum_message_encode_inner(&encoder, message_p);
+    enum_message_encode_inner(&encoder, self_p);
 
     return (encoder_get_result(&encoder));
 }
 
 int enum_message_decode(
-    struct enum_message_t *message_p,
+    struct enum_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, message_p->heap_p);
-    enum_message_decode_inner(&decoder, message_p);
+    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    enum_message_decode_inner(&decoder, self_p);
 
     return (decoder_get_result(&decoder));
 }
