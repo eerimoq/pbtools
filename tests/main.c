@@ -79,6 +79,28 @@ TEST(int32)
     }
 }
 
+TEST(int32_message_2)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct int32_message2_t *message_p;
+    uint8_t *encoded_p = (uint8_t *)"\x80\x01\x01";
+
+    message_p = int32_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = 1;
+    size = int32_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(memcmp(&encoded[0], encoded_p, size), 0);
+
+    message_p = int32_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message2_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(message_p->value, 1);
+}
+
 TEST(int32_decode_out_of_data)
 {
     int size;
@@ -1164,6 +1186,7 @@ int main(void)
 {
     return RUN_TESTS(
         int32,
+        int32_message_2,
         int32_decode_out_of_data,
         int64,
         sint32,

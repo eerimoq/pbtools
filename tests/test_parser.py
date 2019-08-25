@@ -9,7 +9,7 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/int32.proto')
 
         self.assertEqual(parsed.package, 'int32')
-        self.assertEqual(len(parsed.messages), 1)
+        self.assertEqual(len(parsed.messages), 2)
 
         message = parsed.messages[0]
         self.assertEqual(len(message.fields), 1)
@@ -20,6 +20,17 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.type, 'int32')
         self.assertEqual(field.name, 'value')
         self.assertEqual(field.tag, 1)
+        self.assertFalse(field.repeated)
+
+        message = parsed.messages[1]
+        self.assertEqual(len(message.fields), 1)
+        self.assertEqual(len(message.enums), 0)
+        self.assertEqual(len(message.messages), 0)
+
+        field = message.fields[0]
+        self.assertEqual(field.type, 'int32')
+        self.assertEqual(field.name, 'value')
+        self.assertEqual(field.tag, 16)
         self.assertFalse(field.repeated)
 
     def test_repeated(self):

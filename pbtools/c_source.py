@@ -125,11 +125,6 @@ struct decoder_t {{
     struct {namespace}_heap_t *heap_p;
 }};
 
-static uint8_t tag(int field_number, int wire_type)
-{{
-    return ((field_number << 3) | wire_type);
-}}
-
 static struct {namespace}_heap_t *heap_new(void *buf_p, size_t size)
 {{
     struct {namespace}_heap_t *heap_p;
@@ -245,20 +240,17 @@ static void encoder_write(struct encoder_t *self_p,
 }}
 '''
 
-ENCODER_WRITE_VARINT = '''\
-static void encoder_write_varint(struct encoder_t *self_p,
-                                 int field_number,
-                                 uint64_t value)
+ENCODER_WRITE_TAG = '''\
+static void encoder_write_tag(struct encoder_t *self_p,
+                              int field_number,
+                              int wire_type)
 {{
-    uint8_t buf[11];
+    uint8_t buf[5];
     int pos;
+    uint32_t value;
 
-    if (value == 0) {{
-        return;
-    }}
-
+    value = ((field_number << 3) | wire_type);
     pos = 0;
-    buf[pos++] = tag(field_number, 0);
 
     while (value > 0) {{
         buf[pos++] = (value | 0x80);
@@ -267,6 +259,31 @@ static void encoder_write_varint(struct encoder_t *self_p,
 
     buf[pos - 1] &= 0x7f;
     encoder_write(self_p, &buf[0], pos);
+}}
+'''
+
+ENCODER_WRITE_VARINT = '''\
+static void encoder_write_varint(struct encoder_t *self_p,
+                                 int field_number,
+                                 uint64_t value)
+{{
+    uint8_t buf[10];
+    int pos;
+
+    if (value == 0) {{
+        return;
+    }}
+
+    pos = 0;
+
+    while (value > 0) {{
+        buf[pos++] = (value | 0x80);
+        value >>= 7;
+    }}
+
+    buf[pos - 1] &= 0x7f;
+    encoder_write(self_p, &buf[0], pos);
+    encoder_write_tag(self_p, field_number, 0);
 }}
 '''
 
@@ -559,7 +576,7 @@ static void {namespace}_{name}_decode_inner(
 '''
 
 ENCODE_INNER_MEMBER_FMT = '''\
-    encoder_write_{type}(encoder_p, 1, self_p->{name});
+    encoder_write_{type}(encoder_p, {field_number}, self_p->{name});
 '''
 
 DECODE_INNER_MEMBER_FMT = '''\
@@ -708,6 +725,7 @@ def generate_message_encode_body(message):
         if field.type in PRIMITIVE_TYPES:
             members.append(
                 ENCODE_INNER_MEMBER_FMT.format(type=field.type,
+                                               field_number=field.tag,
                                                name=field.name))
 
     return '\n'.join(members)
@@ -755,6 +773,7 @@ def generate_encoder_helpers(definitions, namespace_upper):
         ('encoder_write_int64(', ENCODER_WRITE_INT64),
         ('encoder_write_int32(', ENCODER_WRITE_INT32),
         ('encoder_write_varint(', ENCODER_WRITE_VARINT),
+        ('encoder_write_tag(', ENCODER_WRITE_TAG),
         ('encoder_write(', ENCODER_WRITE),
         ('encoder_put(', ENCODER_PUT)
     ]

@@ -5,3 +5,7 @@ package int32;
 message Message {
     int32 value = 1;
 }
+
+message Message2 {
+    int32 value = 16;
+}
