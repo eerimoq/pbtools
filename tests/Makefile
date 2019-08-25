@@ -18,5 +18,6 @@ all:
 	    files/c_source/bytes.c \
 	    files/c_source/enum.c \
 	    files/c_source/address_book.c \
+	    files/c_source/tags.c \
 	    main.c
 	./a.out

@@ -23,6 +23,7 @@
 #include "files/c_source/bytes.h"
 #include "files/c_source/enum.h"
 #include "files/c_source/address_book.h"
+#include "files/c_source/tags.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -980,6 +981,132 @@ TEST(address_book_default_person)
     ASSERT_EQ(person_p->phones.length, 0);
 }
 
+TEST(tags_1)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct tags_message_1_t *message_p;
+
+    message_p = tags_message_1_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = true;
+    size = tags_message_1_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(memcmp(&encoded[0], "\x08\x01", size), 0);
+
+    message_p = tags_message_1_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = tags_message_1_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->value, true);
+}
+
+TEST(tags_2)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct tags_message_2_t *message_p;
+
+    message_p = tags_message_2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = true;
+    size = tags_message_2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(memcmp(&encoded[0], "\x78\x01", size), 0);
+
+    message_p = tags_message_2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = tags_message_2_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->value, true);
+}
+
+TEST(tags_3)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct tags_message_3_t *message_p;
+
+    message_p = tags_message_3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = true;
+    size = tags_message_3_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(memcmp(&encoded[0], "\x80\x01\x01", size), 0);
+
+    message_p = tags_message_3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = tags_message_3_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(message_p->value, true);
+}
+
+TEST(tags_4)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct tags_message_4_t *message_p;
+
+    message_p = tags_message_4_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = true;
+    size = tags_message_4_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(memcmp(&encoded[0], "\xf8\x7f\x01", size), 0);
+
+    message_p = tags_message_4_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = tags_message_4_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(message_p->value, true);
+}
+
+TEST(tags_5)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct tags_message_5_t *message_p;
+
+    message_p = tags_message_5_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = true;
+    size = tags_message_5_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(memcmp(&encoded[0], "\x80\x80\x01\x01", size), 0);
+
+    message_p = tags_message_5_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = tags_message_5_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->value, true);
+}
+
+TEST(tags_6)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct tags_message_6_t *message_p;
+
+    message_p = tags_message_6_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value = true;
+    size = tags_message_6_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 6);
+    ASSERT_EQ(memcmp(&encoded[0], "\xf8\xff\xff\xff\x0f\x01", size), 0);
+
+    message_p = tags_message_6_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = tags_message_6_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 6);
+    ASSERT_EQ(message_p->value, true);
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -1001,6 +1128,12 @@ int main(void)
         enum_,
         address_book,
         address_book_default,
-        address_book_default_person
+        address_book_default_person,
+        tags_1,
+        tags_2,
+        tags_3,
+        tags_4,
+        tags_5,
+        tags_6
     );
 }

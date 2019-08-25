@@ -2,9 +2,32 @@ syntax = "proto3";
 
 package tags;
 
-message Message {
-    bool v1 = 1;
-    bool v2 = 15;
-    bool v3 = 16;
-    bool v4 = 128;
+message Message1 {
+    // 0801
+    bool value = 1;
+}
+
+message Message2 {
+    // 7801
+    bool value = 15;
+}
+
+message Message3 {
+    // 8001 01
+    bool value = 16;
+}
+
+message Message4 {
+    // f87f 01
+    bool value = 2047;
+}
+
+message Message5 {
+    // 8080 0101
+    bool value = 2048;
+}
+
+message Message6 {
+    // f8ff ffff 0f01
+    bool value = 536870911;
 }
