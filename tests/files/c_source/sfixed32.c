@@ -107,11 +107,11 @@ static int encoder_get_result(struct encoder_t *self_p)
     return (length);
 }
 
-static void encoder_prepend_byte(struct encoder_t *self_p,
-                                 uint8_t value)
+static void encoder_put(struct encoder_t *self_p,
+                        uint8_t value)
 {
     if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_prepend_byte: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
         exit(1);
     }
 
@@ -119,20 +119,20 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_bytes(struct encoder_t *self_p,
-                                  uint8_t *buf_p,
-                                  int size)
+static void encoder_write(struct encoder_t *self_p,
+                          uint8_t *buf_p,
+                          int size)
 {
     int i;
 
     for (i = size - 1; i >= 0; i--) {
-        encoder_prepend_byte(self_p, buf_p[i]);
+        encoder_put(self_p, buf_p[i]);
     }
 }
 
-static void encoder_prepend_sfixed32(struct encoder_t *self_p,
-                                  int field_number,
-                                  int32_t value)
+static void encoder_write_sfixed32(struct encoder_t *self_p,
+                                   int field_number,
+                                   int32_t value)
 {
     uint8_t buf[5];
 
@@ -142,7 +142,7 @@ static void encoder_prepend_sfixed32(struct encoder_t *self_p,
         buf[2] = ((value >> 8) & 0xff);
         buf[3] = ((value >> 16) & 0xff);
         buf[4] = ((value >> 24) & 0xff);
-        encoder_prepend_bytes(self_p, &buf[0], 5);
+        encoder_write(self_p, &buf[0], 5);
     }
 }
 
@@ -175,7 +175,7 @@ static bool decoder_available(struct decoder_t *self_p)
     return (self_p->pos < self_p->size);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
@@ -195,7 +195,7 @@ static int decoder_read_tag(struct decoder_t *self_p,
 {
     uint8_t value;
 
-    value = decoder_read_byte(self_p);
+    value = decoder_get(self_p);
     *wire_type_p = (value & 0x7);
 
     return (value >> 3);
@@ -206,12 +206,38 @@ static int32_t decoder_read_sfixed32(struct decoder_t *self_p,
 {
     uint32_t value;
 
-    value = decoder_read_byte(self_p);
-    value |= (decoder_read_byte(self_p) << 8);
-    value |= (decoder_read_byte(self_p) << 16);
-    value |= (decoder_read_byte(self_p) << 24);
+    value = decoder_get(self_p);
+    value |= (decoder_get(self_p) << 8);
+    value |= (decoder_get(self_p) << 16);
+    value |= (decoder_get(self_p) << 24);
 
     return (value);
+}
+
+static void sfixed32_message_encode_inner(
+    struct encoder_t *encoder_p,
+    struct sfixed32_message_t *message_p)
+{
+    encoder_write_sfixed32(encoder_p, 1, message_p->value);
+}
+
+static void sfixed32_message_decode_inner(
+    struct decoder_t *decoder_p,
+    struct sfixed32_message_t *message_p)
+{
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {
+        switch (decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            message_p->value = decoder_read_sfixed32(decoder_p, wire_type);
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 struct sfixed32_message_t *sfixed32_message_new(
@@ -235,32 +261,6 @@ struct sfixed32_message_t *sfixed32_message_new(
     }
 
     return (message_p);
-}
-
-void sfixed32_message_encode_inner(
-    struct encoder_t *encoder_p,
-    struct sfixed32_message_t *message_p)
-{
-    encoder_prepend_sfixed32(encoder_p, 1, message_p->value);
-}
-
-void sfixed32_message_decode_inner(
-    struct decoder_t *decoder_p,
-    struct sfixed32_message_t *message_p)
-{
-    int wire_type;
-
-    while (decoder_available(decoder_p)) {
-        switch (decoder_read_tag(decoder_p, &wire_type)) {
-
-        case 1:
-            message_p->value = decoder_read_sfixed32(decoder_p, wire_type);
-            break;
-
-        default:
-            break;
-        }
-    }
 }
 
 int sfixed32_message_encode(

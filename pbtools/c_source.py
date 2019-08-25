@@ -41,6 +41,9 @@ HEADER_FMT = '''\
 #include <stdint.h>
 #include <stdbool.h>
 
+#define EBADWIRETYPE                                   1
+#define EOUTOFDATA                                     2
+
 struct {namespace}_heap_t {{
     char *buf_p;
     int size;
@@ -211,13 +214,7 @@ static void encoder_write_int32(struct encoder_t *self_p,
                                 int field_number,
                                 int32_t value)
 {{
-    if (value < 0) {{
-        encoder_write_varint(self_p,
-                             field_number,
-                             value | 0xffffffff00000000ll);
-    }} else {{
-        encoder_write_varint(self_p, field_number, (uint64_t)value);
-    }}
+    encoder_write_varint(self_p, field_number, (uint64_t)(int64_t)value);
 }}
 
 static void decoder_init(struct decoder_t *self_p,
@@ -244,6 +241,15 @@ static int decoder_get_result(struct decoder_t *self_p)
     return (res);
 }}
 
+static void decoder_abort(struct decoder_t *self_p,
+                          int error)
+{{
+    if (self_p->size >= 0) {{
+        self_p->size = -error;
+        self_p->pos = -error;
+    }}
+}}
+
 static bool decoder_available(struct decoder_t *self_p)
 {{
     return (self_p->pos < self_p->size);
@@ -257,29 +263,25 @@ static uint8_t decoder_get(struct decoder_t *self_p)
         value = self_p->buf_p[self_p->pos];
         self_p->pos++;
     }} else {{
-        self_p->size = -1;
+        decoder_abort(self_p, EOUTOFDATA);
         value = 0;
     }}
 
     return (value);
 }}
 
-static int decoder_read_tag(struct decoder_t *self_p,
-                            int *wire_type_p)
-{{
-    uint8_t value;
-
-    value = decoder_get(self_p);
-    *wire_type_p = (value & 0x7);
-
-    return (value >> 3);
-}}
-
-static uint64_t decoder_read_varint(struct decoder_t *self_p)
+static uint64_t decoder_read_varint(struct decoder_t *self_p,
+                                    int wire_type)
 {{
     uint64_t value;
     uint8_t byte;
     int offset;
+
+    if (wire_type != 0) {{
+        decoder_abort(self_p, EBADWIRETYPE);
+
+        return (0);
+    }}
 
     value = 0;
     offset = 0;
@@ -293,14 +295,21 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p)
     return (value);
 }}
 
+static int decoder_read_tag(struct decoder_t *self_p,
+                            int *wire_type_p)
+{{
+    uint8_t value;
+
+    value = decoder_read_varint(self_p, 0);
+    *wire_type_p = (value & 0x7);
+
+    return (value >> 3);
+}}
+
 static int32_t decoder_read_int32(struct decoder_t *self_p,
                                   int wire_type)
 {{
-    if (wire_type != 0) {{
-        return (0);
-    }}
-
-    return (decoder_read_varint(self_p));
+    return (decoder_read_varint(self_p, wire_type));
 }}
 
 {helpers}\
@@ -381,7 +390,6 @@ static void {namespace}_{name}_decode_inner(
             break;
 
         default:
-            fprintf(stderr, "bad tag\\n");
             break;
         }}
     }}

@@ -107,11 +107,11 @@ static int encoder_get_result(struct encoder_t *self_p)
     return (length);
 }
 
-static void encoder_prepend_byte(struct encoder_t *self_p,
-                                 uint8_t value)
+static void encoder_put(struct encoder_t *self_p,
+                               uint8_t value)
 {
     if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_prepend_byte: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
         exit(1);
     }
 
@@ -119,9 +119,9 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_float(struct encoder_t *self_p,
-                                  int field_number,
-                                  float value)
+static void encoder_write_float(struct encoder_t *self_p,
+                                int field_number,
+                                float value)
 {
     uint32_t data;
 
@@ -130,11 +130,11 @@ static void encoder_prepend_float(struct encoder_t *self_p,
     }
     
     memcpy(&data, &value, sizeof(data));
-    encoder_prepend_byte(self_p, data >> 24);
-    encoder_prepend_byte(self_p, data >> 16);
-    encoder_prepend_byte(self_p, data >> 8);
-    encoder_prepend_byte(self_p, data >> 0);
-    encoder_prepend_byte(self_p, tag(field_number, 5));
+    encoder_put(self_p, data >> 24);
+    encoder_put(self_p, data >> 16);
+    encoder_put(self_p, data >> 8);
+    encoder_put(self_p, data >> 0);
+    encoder_put(self_p, tag(field_number, 5));
 }
 
 static void decoder_init(struct decoder_t *self_p,
@@ -166,7 +166,7 @@ static bool decoder_available(struct decoder_t *self_p)
     return (self_p->pos < self_p->size);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
@@ -186,7 +186,7 @@ static int decoder_read_tag(struct decoder_t *self_p,
 {
     uint8_t value;
 
-    value = decoder_read_byte(self_p);
+    value = decoder_get(self_p);
     *wire_type_p = (value & 0x7);
 
     return (value >> 3);
@@ -202,13 +202,39 @@ static float decoder_read_float(struct decoder_t *self_p,
         return (0.0);
     }
     
-    data = decoder_read_byte(self_p);
-    data |= (decoder_read_byte(self_p) << 8);
-    data |= (decoder_read_byte(self_p) << 16);
-    data |= (decoder_read_byte(self_p) << 24);
+    data = decoder_get(self_p);
+    data |= (decoder_get(self_p) << 8);
+    data |= (decoder_get(self_p) << 16);
+    data |= (decoder_get(self_p) << 24);
     memcpy(&value, &data, sizeof(value));
     
     return (value);
+}
+
+static void float_message_encode_inner(
+    struct encoder_t *encoder_p,
+    struct float_message_t *message_p)
+{
+    encoder_write_float(encoder_p, 1, message_p->value);
+}
+
+static void float_message_decode_inner(
+    struct decoder_t *decoder_p,
+    struct float_message_t *message_p)
+{
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {
+        switch (decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            message_p->value = decoder_read_float(decoder_p, wire_type);
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 struct float_message_t *float_message_new(
@@ -232,32 +258,6 @@ struct float_message_t *float_message_new(
     }
 
     return (message_p);
-}
-
-void float_message_encode_inner(
-    struct encoder_t *encoder_p,
-    struct float_message_t *message_p)
-{
-    encoder_prepend_float(encoder_p, 1, message_p->value);
-}
-
-void float_message_decode_inner(
-    struct decoder_t *decoder_p,
-    struct float_message_t *message_p)
-{
-    int wire_type;
-
-    while (decoder_available(decoder_p)) {
-        switch (decoder_read_tag(decoder_p, &wire_type)) {
-
-        case 1:
-            message_p->value = decoder_read_float(decoder_p, wire_type);
-            break;
-
-        default:
-            break;
-        }
-    }
 }
 
 int float_message_encode(

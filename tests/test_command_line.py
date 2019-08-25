@@ -22,7 +22,8 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source(self):
         specs = [
-            'int32'
+            'int32',
+            # 'int64'
         ]
 
         for spec in specs:

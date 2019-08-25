@@ -6,8 +6,6 @@ test-python:
 	python3 setup.py test
 
 test-c:
-	make -C examples/address_book
-	make -C examples/benchmarks/c_source
 	make -C tests
 
 release-to-pypi:

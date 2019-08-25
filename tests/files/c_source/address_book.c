@@ -107,11 +107,11 @@ static int encoder_get_result(struct encoder_t *self_p)
     return (length);
 }
 
-static void encoder_prepend_byte(struct encoder_t *self_p,
-                                 uint8_t value)
+static void encoder_put(struct encoder_t *self_p,
+                        uint8_t value)
 {
     if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_prepend_byte: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_write_byte: %d\n", self_p->pos);
         exit(1);
     }
 
@@ -119,64 +119,64 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_bytes(struct encoder_t *self_p,
-                                  const uint8_t *buf_p,
-                                  size_t size)
+static void encoder_write(struct encoder_t *self_p,
+                          const uint8_t *buf_p,
+                          size_t size)
 {
     int i;
 
     for (i = (int)size - 1; i >= 0; i--) {
-        encoder_prepend_byte(self_p, buf_p[i]);
+        encoder_put(self_p, buf_p[i]);
     }
 }
 
-static void encoder_prepend_tag(struct encoder_t *self_p,
-                                int tag,
-                                int wire_type)
+static void encoder_write_tag(struct encoder_t *self_p,
+                              int tag,
+                              int wire_type)
 {
-    encoder_prepend_byte(self_p, (tag << 3) | wire_type);
+    encoder_put(self_p, (tag << 3) | wire_type);
 }
 
-static void encoder_prepend_varint_value(struct encoder_t *self_p,
-                                         uint64_t value)
+static void encoder_write_varint_value(struct encoder_t *self_p,
+                                       uint64_t value)
 {
     if (value > 127) {
-        fprintf(stderr, "encoder_prepend_varint_value: %llu\n", (unsigned long long)value);
+        fprintf(stderr, "encoder_write_varint_value: %llu\n", (unsigned long long)value);
         exit(1);
     }
 
-    encoder_prepend_byte(self_p, value);
+    encoder_put(self_p, value);
 }
 
-static void encoder_prepend_varint(struct encoder_t *self_p,
-                                   int tag,
-                                   uint64_t value)
+static void encoder_write_varint(struct encoder_t *self_p,
+                                 int tag,
+                                 uint64_t value)
 {
     if (value > 0) {
-        encoder_prepend_varint_value(self_p, value);
-        encoder_prepend_tag(self_p, tag, 0);
+        encoder_write_varint_value(self_p, value);
+        encoder_write_tag(self_p, tag, 0);
     }
 }
 
-static void encoder_prepend_length_delimited(struct encoder_t *self_p,
-                                             int tag,
-                                             uint64_t length)
+static void encoder_write_length_delimited(struct encoder_t *self_p,
+                                           int tag,
+                                           uint64_t length)
 {
-    encoder_prepend_varint_value(self_p, length);
-    encoder_prepend_tag(self_p, tag, 2);
+    encoder_write_varint_value(self_p, length);
+    encoder_write_tag(self_p, tag, 2);
 }
 
-static void encoder_prepend_string(struct encoder_t *self_p,
-                                   int tag,
-                                   const char *value_p)
+static void encoder_write_string(struct encoder_t *self_p,
+                                 int tag,
+                                 const char *value_p)
 {
     int length;
 
     length = strlen(value_p);
 
     if (length > 0) {
-        encoder_prepend_bytes(self_p, (uint8_t *)value_p, length);
-        encoder_prepend_length_delimited(self_p, tag, length);
+        encoder_write(self_p, (uint8_t *)value_p, length);
+        encoder_write_length_delimited(self_p, tag, length);
     }
 }
 
@@ -229,12 +229,12 @@ static int decoder_get_result(struct decoder_t *self_p)
     return (res);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
     if (self_p->pos >= self_p->size) {
-        fprintf(stderr, "decoder_read_byte: %d %d\n", self_p->pos, self_p->size);
+        fprintf(stderr, "decoder_get: %d %d\n", self_p->pos, self_p->size);
         exit(1);
     }
 
@@ -244,14 +244,14 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
     return (value);
 }
 
-static void decoder_read_bytes(struct decoder_t *self_p,
-                               uint8_t *buf_p,
-                               size_t size)
+static void decoder_read(struct decoder_t *self_p,
+                         uint8_t *buf_p,
+                         size_t size)
 {
     int i;
 
     for (i = 0; i < size; i++) {
-        buf_p[i] = decoder_read_byte(self_p);
+        buf_p[i] = decoder_get(self_p);
     }
 }
 
@@ -261,7 +261,7 @@ static void decoder_read_tag(struct decoder_t *self_p,
 {
     uint8_t value;
 
-    value = decoder_read_byte(self_p);
+    value = decoder_get(self_p);
 
     if (value != ((tag << 3) | wire_type)) {
         fprintf(stderr, "decoder_read_tag: %02x %02x\n", value, (tag << 3) | wire_type);
@@ -283,7 +283,7 @@ static int decoder_peek_tag_2(struct decoder_t *self_p)
 
 static uint64_t decoder_read_varint_value(struct decoder_t *self_p)
 {
-    return (decoder_read_byte(self_p));
+    return (decoder_get(self_p));
 }
 
 static uint64_t decoder_read_varint(struct decoder_t *self_p,
@@ -331,7 +331,7 @@ static char *decoder_read_string(struct decoder_t *self_p,
     value_p = heap_alloc(self_p->heap_p, length + 1);
 
     if (value_p != NULL) {
-        decoder_read_bytes(self_p, (uint8_t *)value_p, length);
+        decoder_read(self_p, (uint8_t *)value_p, length);
         value_p[length] = '\0';
     }
 
@@ -342,8 +342,8 @@ static void address_book_person_phone_number_encode_inner(
     struct encoder_t *encoder_p,
     struct address_book_person_phone_number_t *phone_number_p)
 {
-    encoder_prepend_varint(encoder_p, 2, phone_number_p->type);
-    encoder_prepend_string(encoder_p, 1, phone_number_p->number_p);
+    encoder_write_varint(encoder_p, 2, phone_number_p->type);
+    encoder_write_string(encoder_p, 1, phone_number_p->number_p);
 }
 
 static void address_book_person_phone_number_decode_inner(
@@ -381,14 +381,14 @@ static void address_book_person_encode_inner(
         address_book_person_phone_number_encode_inner(
             encoder_p,
             &person_p->phones.items_p[i]);
-        encoder_prepend_length_delimited(encoder_p,
-                                         4,
-                                         pos - encoder_pos(encoder_p));
+        encoder_write_length_delimited(encoder_p,
+                                       4,
+                                       pos - encoder_pos(encoder_p));
     }
 
-    encoder_prepend_string(encoder_p, 3, person_p->email_p);
-    encoder_prepend_varint(encoder_p, 2, person_p->id);
-    encoder_prepend_string(encoder_p, 1, person_p->name_p);
+    encoder_write_string(encoder_p, 3, person_p->email_p);
+    encoder_write_varint(encoder_p, 2, person_p->id);
+    encoder_write_string(encoder_p, 1, person_p->name_p);
 }
 
 static void address_book_person_decode_inner(
@@ -431,9 +431,7 @@ static void address_book_person_decode_inner(
             break;
 
         default:
-            fprintf(stderr, "address_book_person_decode_inner\n");
-            exit(1);
-            return;
+            break;
         }
     }
 }
@@ -449,9 +447,9 @@ static void address_book_address_book_encode_inner(
         pos = encoder_pos(encoder_p);
         address_book_person_encode_inner(encoder_p,
                                          &address_book_p->people.items_p[i]);
-        encoder_prepend_length_delimited(encoder_p,
-                                         1,
-                                         pos - encoder_pos(encoder_p));
+        encoder_write_length_delimited(encoder_p,
+                                       1,
+                                       pos - encoder_pos(encoder_p));
     }
 }
 

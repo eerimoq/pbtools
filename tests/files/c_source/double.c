@@ -107,11 +107,11 @@ static int encoder_get_result(struct encoder_t *self_p)
     return (length);
 }
 
-static void encoder_prepend_byte(struct encoder_t *self_p,
-                                 uint8_t value)
+static void encoder_put(struct encoder_t *self_p,
+                        uint8_t value)
 {
     if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_prepend_byte: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
         exit(1);
     }
 
@@ -119,9 +119,9 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_double(struct encoder_t *self_p,
-                                   int field_number,
-                                   double value)
+static void encoder_write_double(struct encoder_t *self_p,
+                                 int field_number,
+                                 double value)
 {
     uint64_t data;
 
@@ -130,15 +130,15 @@ static void encoder_prepend_double(struct encoder_t *self_p,
     }
     
     memcpy(&data, &value, sizeof(data));
-    encoder_prepend_byte(self_p, data >> 56);
-    encoder_prepend_byte(self_p, data >> 48);
-    encoder_prepend_byte(self_p, data >> 40);
-    encoder_prepend_byte(self_p, data >> 32);
-    encoder_prepend_byte(self_p, data >> 24);
-    encoder_prepend_byte(self_p, data >> 16);
-    encoder_prepend_byte(self_p, data >> 8);
-    encoder_prepend_byte(self_p, data >> 0);
-    encoder_prepend_byte(self_p, tag(field_number, 1));
+    encoder_put(self_p, data >> 56);
+    encoder_put(self_p, data >> 48);
+    encoder_put(self_p, data >> 40);
+    encoder_put(self_p, data >> 32);
+    encoder_put(self_p, data >> 24);
+    encoder_put(self_p, data >> 16);
+    encoder_put(self_p, data >> 8);
+    encoder_put(self_p, data >> 0);
+    encoder_put(self_p, tag(field_number, 1));
 }
 
 static void decoder_init(struct decoder_t *self_p,
@@ -170,7 +170,7 @@ static bool decoder_available(struct decoder_t *self_p)
     return (self_p->pos < self_p->size);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
@@ -190,14 +190,14 @@ static int decoder_read_tag(struct decoder_t *self_p,
 {
     uint8_t value;
 
-    value = decoder_read_byte(self_p);
+    value = decoder_get(self_p);
     *wire_type_p = (value & 0x7);
 
     return (value >> 3);
 }
 
 static double decoder_read_double(struct decoder_t *self_p,
-                                int wire_type)
+                                  int wire_type)
 {
     uint64_t data;
     double value;
@@ -206,17 +206,43 @@ static double decoder_read_double(struct decoder_t *self_p,
         return (0.0);
     }
     
-    data = decoder_read_byte(self_p);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 8);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 16);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 24);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 32);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 40);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 48);
-    data |= ((uint64_t)decoder_read_byte(self_p) << 56);
+    data = decoder_get(self_p);
+    data |= ((uint64_t)decoder_get(self_p) << 8);
+    data |= ((uint64_t)decoder_get(self_p) << 16);
+    data |= ((uint64_t)decoder_get(self_p) << 24);
+    data |= ((uint64_t)decoder_get(self_p) << 32);
+    data |= ((uint64_t)decoder_get(self_p) << 40);
+    data |= ((uint64_t)decoder_get(self_p) << 48);
+    data |= ((uint64_t)decoder_get(self_p) << 56);
     memcpy(&value, &data, sizeof(value));
     
     return (value);
+}
+
+static void double_message_encode_inner(
+    struct encoder_t *encoder_p,
+    struct double_message_t *message_p)
+{
+    encoder_write_double(encoder_p, 1, message_p->value);
+}
+
+static void double_message_decode_inner(
+    struct decoder_t *decoder_p,
+    struct double_message_t *message_p)
+{
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {
+        switch (decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            message_p->value = decoder_read_double(decoder_p, wire_type);
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 struct double_message_t *double_message_new(
@@ -240,32 +266,6 @@ struct double_message_t *double_message_new(
     }
 
     return (message_p);
-}
-
-void double_message_encode_inner(
-    struct encoder_t *encoder_p,
-    struct double_message_t *message_p)
-{
-    encoder_prepend_double(encoder_p, 1, message_p->value);
-}
-
-void double_message_decode_inner(
-    struct decoder_t *decoder_p,
-    struct double_message_t *message_p)
-{
-    int wire_type;
-
-    while (decoder_available(decoder_p)) {
-        switch (decoder_read_tag(decoder_p, &wire_type)) {
-
-        case 1:
-            message_p->value = decoder_read_double(decoder_p, wire_type);
-            break;
-
-        default:
-            break;
-        }
-    }
 }
 
 int double_message_encode(

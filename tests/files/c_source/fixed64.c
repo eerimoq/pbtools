@@ -107,11 +107,11 @@ static int encoder_get_result(struct encoder_t *self_p)
     return (length);
 }
 
-static void encoder_prepend_byte(struct encoder_t *self_p,
-                                 uint8_t value)
+static void encoder_put(struct encoder_t *self_p,
+                               uint8_t value)
 {
     if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_prepend_byte: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
         exit(1);
     }
 
@@ -119,20 +119,20 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_bytes(struct encoder_t *self_p,
-                                  uint8_t *buf_p,
-                                  int size)
+static void encoder_write(struct encoder_t *self_p,
+                          uint8_t *buf_p,
+                          int size)
 {
     int i;
 
     for (i = size - 1; i >= 0; i--) {
-        encoder_prepend_byte(self_p, buf_p[i]);
+        encoder_put(self_p, buf_p[i]);
     }
 }
 
-static void encoder_prepend_fixed64(struct encoder_t *self_p,
-                                    int field_number,
-                                    uint64_t value)
+static void encoder_write_fixed64(struct encoder_t *self_p,
+                                  int field_number,
+                                  uint64_t value)
 {
     uint8_t buf[9];
 
@@ -146,7 +146,7 @@ static void encoder_prepend_fixed64(struct encoder_t *self_p,
         buf[6] = ((value >> 40) & 0xff);
         buf[7] = ((value >> 48) & 0xff);
         buf[8] = ((value >> 56) & 0xff);
-        encoder_prepend_bytes(self_p, &buf[0], 9);
+        encoder_write(self_p, &buf[0], 9);
     }
 }
 
@@ -179,7 +179,7 @@ static bool decoder_available(struct decoder_t *self_p)
     return (self_p->pos < self_p->size);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
@@ -199,7 +199,7 @@ static int decoder_read_tag(struct decoder_t *self_p,
 {
     uint8_t value;
 
-    value = decoder_read_byte(self_p);
+    value = decoder_get(self_p);
     *wire_type_p = (value & 0x7);
 
     return (value >> 3);
@@ -210,16 +210,42 @@ static uint64_t decoder_read_fixed64(struct decoder_t *self_p,
 {
     uint64_t value;
 
-    value = decoder_read_byte(self_p);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 8);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 16);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 24);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 32);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 40);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 48);
-    value |= ((uint64_t)decoder_read_byte(self_p) << 56);
+    value = decoder_get(self_p);
+    value |= ((uint64_t)decoder_get(self_p) << 8);
+    value |= ((uint64_t)decoder_get(self_p) << 16);
+    value |= ((uint64_t)decoder_get(self_p) << 24);
+    value |= ((uint64_t)decoder_get(self_p) << 32);
+    value |= ((uint64_t)decoder_get(self_p) << 40);
+    value |= ((uint64_t)decoder_get(self_p) << 48);
+    value |= ((uint64_t)decoder_get(self_p) << 56);
 
     return (value);
+}
+
+static void fixed64_message_encode_inner(
+    struct encoder_t *encoder_p,
+    struct fixed64_message_t *message_p)
+{
+    encoder_write_fixed64(encoder_p, 1, message_p->value);
+}
+
+static void fixed64_message_decode_inner(
+    struct decoder_t *decoder_p,
+    struct fixed64_message_t *message_p)
+{
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {
+        switch (decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            message_p->value = decoder_read_fixed64(decoder_p, wire_type);
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 struct fixed64_message_t *fixed64_message_new(
@@ -243,32 +269,6 @@ struct fixed64_message_t *fixed64_message_new(
     }
 
     return (message_p);
-}
-
-void fixed64_message_encode_inner(
-    struct encoder_t *encoder_p,
-    struct fixed64_message_t *message_p)
-{
-    encoder_prepend_fixed64(encoder_p, 1, message_p->value);
-}
-
-void fixed64_message_decode_inner(
-    struct decoder_t *decoder_p,
-    struct fixed64_message_t *message_p)
-{
-    int wire_type;
-
-    while (decoder_available(decoder_p)) {
-        switch (decoder_read_tag(decoder_p, &wire_type)) {
-
-        case 1:
-            message_p->value = decoder_read_fixed64(decoder_p, wire_type);
-            break;
-
-        default:
-            break;
-        }
-    }
 }
 
 int fixed64_message_encode(

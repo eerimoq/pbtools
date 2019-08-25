@@ -107,11 +107,11 @@ static int encoder_get_result(struct encoder_t *self_p)
     return (length);
 }
 
-static void encoder_prepend_byte(struct encoder_t *self_p,
-                                 uint8_t value)
+static void encoder_put(struct encoder_t *self_p,
+                        uint8_t value)
 {
     if (self_p->pos < 0) {
-        fprintf(stderr, "encoder_prepend_byte: %d\n", self_p->pos);
+        fprintf(stderr, "encoder_put: %d\n", self_p->pos);
         exit(1);
     }
 
@@ -119,20 +119,20 @@ static void encoder_prepend_byte(struct encoder_t *self_p,
     self_p->pos--;
 }
 
-static void encoder_prepend_bytes(struct encoder_t *self_p,
-                                  uint8_t *buf_p,
-                                  int size)
+static void encoder_write(struct encoder_t *self_p,
+                          uint8_t *buf_p,
+                          int size)
 {
     int i;
 
     for (i = size - 1; i >= 0; i--) {
-        encoder_prepend_byte(self_p, buf_p[i]);
+        encoder_put(self_p, buf_p[i]);
     }
 }
 
-static void encoder_prepend_varint(struct encoder_t *self_p,
-                                   int field_number,
-                                   uint64_t value)
+static void encoder_write_varint(struct encoder_t *self_p,
+                                 int field_number,
+                                 uint64_t value)
 {
     uint8_t buf[11];
     int pos;
@@ -150,17 +150,17 @@ static void encoder_prepend_varint(struct encoder_t *self_p,
     }
 
     buf[pos - 1] &= 0x7f;
-    encoder_prepend_bytes(self_p, &buf[0], pos);
+    encoder_write(self_p, &buf[0], pos);
 }
 
-static void encoder_prepend_sint32(struct encoder_t *self_p,
-                                   int field_number,
-                                   int32_t value)
+static void encoder_write_sint32(struct encoder_t *self_p,
+                                 int field_number,
+                                 int32_t value)
 {
     if (value < 0) {
-        encoder_prepend_varint(self_p, field_number, ~((uint64_t)value << 1));
+        encoder_write_varint(self_p, field_number, ~((uint64_t)value << 1));
     } else {
-        encoder_prepend_varint(self_p, field_number, (uint64_t)value << 1);
+        encoder_write_varint(self_p, field_number, (uint64_t)value << 1);
     }
 }
 
@@ -193,7 +193,7 @@ static bool decoder_available(struct decoder_t *self_p)
     return (self_p->pos < self_p->size);
 }
 
-static uint8_t decoder_read_byte(struct decoder_t *self_p)
+static uint8_t decoder_get(struct decoder_t *self_p)
 {
     uint8_t value;
 
@@ -208,17 +208,6 @@ static uint8_t decoder_read_byte(struct decoder_t *self_p)
     return (value);
 }
 
-static int decoder_read_tag(struct decoder_t *self_p,
-                            int *wire_type_p)
-{
-    uint8_t value;
-
-    value = decoder_read_byte(self_p);
-    *wire_type_p = (value & 0x7);
-
-    return (value >> 3);
-}
-
 static uint64_t decoder_read_varint(struct decoder_t *self_p)
 {
     uint64_t value;
@@ -229,12 +218,23 @@ static uint64_t decoder_read_varint(struct decoder_t *self_p)
     offset = 0;
 
     do {
-        byte = decoder_read_byte(self_p);
+        byte = decoder_get(self_p);
         value |= (((uint64_t)byte & 0x7f) << offset);
         offset += 7;
     } while (byte & 0x80);
 
     return (value);
+}
+
+static int decoder_read_tag(struct decoder_t *self_p,
+                            int *wire_type_p)
+{
+    uint8_t value;
+
+    value = decoder_read_varint(self_p);
+    *wire_type_p = (value & 0x7);
+
+    return (value >> 3);
 }
 
 static int32_t decoder_read_sint32(struct decoder_t *self_p,
@@ -258,6 +258,32 @@ static int32_t decoder_read_sint32(struct decoder_t *self_p,
     return (value);
 }
 
+static void sint32_message_encode_inner(
+    struct encoder_t *encoder_p,
+    struct sint32_message_t *message_p)
+{
+    encoder_write_sint32(encoder_p, 1, message_p->value);
+}
+
+static void sint32_message_decode_inner(
+    struct decoder_t *decoder_p,
+    struct sint32_message_t *message_p)
+{
+    int wire_type;
+
+    while (decoder_available(decoder_p)) {
+        switch (decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            message_p->value = decoder_read_sint32(decoder_p, wire_type);
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
 struct sint32_message_t *sint32_message_new(
     void *workspace_p,
     size_t size)
@@ -279,32 +305,6 @@ struct sint32_message_t *sint32_message_new(
     }
 
     return (message_p);
-}
-
-void sint32_message_encode_inner(
-    struct encoder_t *encoder_p,
-    struct sint32_message_t *message_p)
-{
-    encoder_prepend_sint32(encoder_p, 1, message_p->value);
-}
-
-void sint32_message_decode_inner(
-    struct decoder_t *decoder_p,
-    struct sint32_message_t *message_p)
-{
-    int wire_type;
-
-    while (decoder_available(decoder_p)) {
-        switch (decoder_read_tag(decoder_p, &wire_type)) {
-
-        case 1:
-            message_p->value = decoder_read_sint32(decoder_p, wire_type);
-            break;
-
-        default:
-            break;
-        }
-    }
 }
 
 int sint32_message_encode(
