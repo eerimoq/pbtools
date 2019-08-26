@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package enum;
 
+enum Enum {
+    C = 0;
+    D = 1;
+}
+
 message Message {
     enum Enum {
         A = 0;
@@ -9,4 +14,14 @@ message Message {
     }
 
     Enum value = 1;
+}
+
+message Message2 {
+    enum InnerEnum {
+        E = 0;
+        F = 1;
+    }
+
+    Enum outer = 1;
+    InnerEnum inner = 2;
 }

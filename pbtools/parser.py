@@ -130,13 +130,13 @@ class EnumField:
 
     def __init__(self, tokens):
         self.name = tokens[0]
-        self.tag = int(tokens[2])
+        self.field_number = int(tokens[2])
 
 
 class Enum:
 
     def __init__(self, tokens):
-        self.name = tokens[2]
+        self.name = tokens[1]
         self.fields = []
 
         for item in tokens[3]:
@@ -154,7 +154,7 @@ class MessageField:
     def __init__(self, tokens):
         self.type = load_message_type(tokens[1])
         self.name = tokens[2]
-        self.tag = int(tokens[4])
+        self.field_number = int(tokens[4])
         self.repeated = bool(tokens[0])
 
 
@@ -234,12 +234,22 @@ def load_services(tokens):
     return services
 
 
+def load_enums(tokens):
+    enums = []
+
+    for enum in tokens[1].get('enum', []):
+        enums.append(Enum(enum))
+
+    return enums
+
+
 class Proto:
 
     def __init__(self, tree):
         self.package = load_package(tree)
         self.messages = load_messages(tree)
         self.services = load_services(tree)
+        self.enums = load_enums(tree)
 
 
 def parse_string(text):

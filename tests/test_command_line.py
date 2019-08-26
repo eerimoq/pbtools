@@ -70,7 +70,10 @@ class CommandLineTest(unittest.TestCase):
             'bytes',
             # 'enum',
             # 'repeated',
-            # 'address_book'
+            # 'address_book',
+            # 'message',
+            # 'oneof',
+            # 'service'
         ]
 
         for spec in specs:

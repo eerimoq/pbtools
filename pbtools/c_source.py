@@ -996,7 +996,7 @@ def generate_message_encode_body(message):
         if field.type in PRIMITIVE_TYPES:
             members.append(
                 ENCODE_INNER_MEMBER_FMT.format(type=field.type,
-                                               field_number=field.tag,
+                                               field_number=field.field_number,
                                                name=field.name))
 
     return '\n'.join(members)
@@ -1007,7 +1007,7 @@ def generate_message_decode_body(message):
     for field in message.fields:
         if field.type in PRIMITIVE_TYPES:
             members.append(
-                DECODE_INNER_MEMBER_FMT.format(field_number=field.tag,
+                DECODE_INNER_MEMBER_FMT.format(field_number=field.field_number,
                                                type=field.type))
 
     return '\n'.join(members)

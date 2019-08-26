@@ -5,6 +5,11 @@ package message;
 message Foo {
 };
 
+message Bar {
+    int32 fie = 333;
+};
+
 message Message {
     Foo foo = 1;
+    Bar bar = 832;
 }

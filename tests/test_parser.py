@@ -19,7 +19,7 @@ class ParserTest(unittest.TestCase):
         field = message.fields[0]
         self.assertEqual(field.type, 'int32')
         self.assertEqual(field.name, 'value')
-        self.assertEqual(field.tag, 1)
+        self.assertEqual(field.field_number, 1)
         self.assertFalse(field.repeated)
 
         message = parsed.messages[1]
@@ -30,7 +30,7 @@ class ParserTest(unittest.TestCase):
         field = message.fields[0]
         self.assertEqual(field.type, 'int32')
         self.assertEqual(field.name, 'value')
-        self.assertEqual(field.tag, 16)
+        self.assertEqual(field.field_number, 16)
         self.assertFalse(field.repeated)
 
     def test_repeated(self):
@@ -47,13 +47,13 @@ class ParserTest(unittest.TestCase):
         field = message.fields[0]
         self.assertEqual(field.type, 'int32')
         self.assertEqual(field.name, 'int32s')
-        self.assertEqual(field.tag, 1)
+        self.assertEqual(field.field_number, 1)
         self.assertTrue(field.repeated)
 
         field = message.fields[1]
         self.assertEqual(field.type, 'Message')
         self.assertEqual(field.name, 'messages')
-        self.assertEqual(field.tag, 2)
+        self.assertEqual(field.field_number, 2)
         self.assertTrue(field.repeated)
 
     def test_address_book(self):
@@ -71,25 +71,25 @@ class ParserTest(unittest.TestCase):
         field = message.fields[0]
         self.assertEqual(field.type, 'string')
         self.assertEqual(field.name, 'name')
-        self.assertEqual(field.tag, 1)
+        self.assertEqual(field.field_number, 1)
         self.assertFalse(field.repeated)
 
         field = message.fields[1]
         self.assertEqual(field.type, 'int32')
         self.assertEqual(field.name, 'id')
-        self.assertEqual(field.tag, 2)
+        self.assertEqual(field.field_number, 2)
         self.assertFalse(field.repeated)
 
         field = message.fields[2]
         self.assertEqual(field.type, 'string')
         self.assertEqual(field.name, 'email')
-        self.assertEqual(field.tag, 3)
+        self.assertEqual(field.field_number, 3)
         self.assertFalse(field.repeated)
 
         field = message.fields[3]
         self.assertEqual(field.type, 'PhoneNumber')
         self.assertEqual(field.name, 'phones')
-        self.assertEqual(field.tag, 4)
+        self.assertEqual(field.field_number, 4)
         self.assertTrue(field.repeated)
 
         # Person.PhoneType
@@ -98,15 +98,15 @@ class ParserTest(unittest.TestCase):
 
         field = enum.fields[0]
         self.assertEqual(field.name, 'MOBILE')
-        self.assertEqual(field.tag, 0)
+        self.assertEqual(field.field_number, 0)
 
         field = enum.fields[1]
         self.assertEqual(field.name, 'HOME')
-        self.assertEqual(field.tag, 1)
+        self.assertEqual(field.field_number, 1)
 
         field = enum.fields[2]
         self.assertEqual(field.name, 'WORK')
-        self.assertEqual(field.tag, 2)
+        self.assertEqual(field.field_number, 2)
 
         # Person.PhoneNumber
         inner_message = message.messages[0]
@@ -117,13 +117,13 @@ class ParserTest(unittest.TestCase):
         field = inner_message.fields[0]
         self.assertEqual(field.type, 'string')
         self.assertEqual(field.name, 'number')
-        self.assertEqual(field.tag, 1)
+        self.assertEqual(field.field_number, 1)
         self.assertFalse(field.repeated)
 
         field = inner_message.fields[1]
         self.assertEqual(field.type, 'PhoneType')
         self.assertEqual(field.name, 'type')
-        self.assertEqual(field.tag, 2)
+        self.assertEqual(field.field_number, 2)
         self.assertFalse(field.repeated)
 
         # AddressBook.
@@ -133,7 +133,7 @@ class ParserTest(unittest.TestCase):
         field = message.fields[0]
         self.assertEqual(field.type, 'Person')
         self.assertEqual(field.name, 'people')
-        self.assertEqual(field.tag, 1)
+        self.assertEqual(field.field_number, 1)
         self.assertTrue(field.repeated)
 
     def test_service(self):
@@ -170,6 +170,50 @@ class ParserTest(unittest.TestCase):
         oneof = message.oneofs[0]
         self.assertEqual(oneof.name, 'value')
 
+    def test_enum(self):
+        parsed = pbtools.parse_file('tests/files/enum.proto')
+
+        self.assertEqual(parsed.package, 'enum')
+        self.assertEqual(len(parsed.messages), 2)
+        self.assertEqual(len(parsed.enums), 1)
+
+        enum = parsed.enums[0]
+        self.assertEqual(enum.name, 'Enum')
+        self.assertEqual(len(enum.fields), 2)
+
+        field = enum.fields[0]
+        self.assertEqual(field.name, 'C')
+        self.assertEqual(field.field_number, 0)
+
+        field = enum.fields[1]
+        self.assertEqual(field.name, 'D')
+        self.assertEqual(field.field_number, 1)
+
+        message = parsed.messages[0]
+        enum = message.enums[0]
+        self.assertEqual(enum.name, 'Enum')
+        self.assertEqual(len(enum.fields), 2)
+
+        field = enum.fields[0]
+        self.assertEqual(field.name, 'A')
+        self.assertEqual(field.field_number, 0)
+
+        field = enum.fields[1]
+        self.assertEqual(field.name, 'B')
+        self.assertEqual(field.field_number, 1)
+
+        message = parsed.messages[1]
+        enum = message.enums[0]
+        self.assertEqual(enum.name, 'InnerEnum')
+        self.assertEqual(len(enum.fields), 2)
+
+        field = enum.fields[0]
+        self.assertEqual(field.name, 'E')
+        self.assertEqual(field.field_number, 0)
+
+        field = enum.fields[1]
+        self.assertEqual(field.name, 'F')
+        self.assertEqual(field.field_number, 1)
 
 if __name__ == '__main__':
     unittest.main()
