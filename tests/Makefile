@@ -19,5 +19,6 @@ all:
 	    files/c_source/enum.c \
 	    files/c_source/address_book.c \
 	    files/c_source/tags.c \
+	    files/c_source/oneof.c \
 	    main.c
 	./a.out
