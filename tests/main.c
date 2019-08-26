@@ -1192,6 +1192,10 @@ TEST(oneof_v1)
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
+
+    ASSERT_EQ(message_p->value.choice, oneof_message_value_v1_e);
+    ASSERT_EQ(message_p->value.value.v1, 0);
+
     message_p->value.choice = oneof_message_value_v1_e;
     message_p->value.value.v1 = 65;
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
