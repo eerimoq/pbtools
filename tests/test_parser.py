@@ -160,6 +160,16 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(rpc.response_type, 'Response')
         self.assertFalse(rpc.response_stream)
 
+    def test_oneof(self):
+        parsed = pbtools.parse_file('tests/files/oneof.proto')
+
+        self.assertEqual(parsed.package, 'oneof')
+        self.assertEqual(len(parsed.messages), 1)
+
+        message = parsed.messages[0]
+        oneof = message.oneofs[0]
+        self.assertEqual(oneof.name, 'value')
+
 
 if __name__ == '__main__':
     unittest.main()

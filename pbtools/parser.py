@@ -41,7 +41,8 @@ class Parser(textparser.Parser):
             'rpc',
             'returns',
             'stream',
-            'import'
+            'import',
+            'oneof'
         ])
 
     def grammar(self):
@@ -55,7 +56,8 @@ class Parser(textparser.Parser):
                        'rpc',
                        'returns',
                        'stream',
-                       'import')
+                       'import',
+                       'oneof')
         full_ident = choice(ident, 'LIDENT')
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
@@ -76,13 +78,21 @@ class Parser(textparser.Parser):
                         '}')
 
         field = Sequence(Optional('repeated'), message_type, ident, '=', 'INT', ';')
+        oneof_field = Sequence(message_type, ident, '=', 'INT', ';')
+        oneof = Sequence('oneof',
+                         ident,
+                         '{',
+                         ZeroOrMore(choice(oneof_field, empty_statement)),
+                         '}')
         message = Forward()
         message <<= Sequence('message',
                              ident,
                              '{',
                              ZeroOrMore(choice(Tag('field', field),
                                                enum,
-                                               message)),
+                                               message,
+                                               oneof,
+                                               empty_statement)),
                              '}')
 
         rpc = Sequence('rpc',
@@ -133,6 +143,12 @@ class Enum:
             self.fields.append(EnumField(item))
 
 
+class Oneof:
+
+    def __init__(self, tokens):
+        self.name = tokens[1]
+
+
 class MessageField:
 
     def __init__(self, tokens):
@@ -149,6 +165,7 @@ class Message:
         self.fields = []
         self.enums = []
         self.messages = []
+        self.oneofs = []
 
         for item in tokens[3]:
             kind = item[0]
@@ -159,6 +176,10 @@ class Message:
                 self.enums.append(Enum(item))
             elif kind == 'message':
                 self.messages.append(Message(item))
+            elif kind == 'oneof':
+                self.oneofs.append(Oneof(item))
+            elif kind == ';':
+                pass
             else:
                 raise RuntimeError(kind)
 
