@@ -25,7 +25,7 @@ int main(int argc, const char *argv[])
     foo_p = hello_world_foo_new(&workspace[0], sizeof(workspace));
 
     if (foo_p != NULL) {
-        size = hello_world_foo_decode(foo_p, &encoded[0], sizeof(encoded));
+        size = hello_world_foo_decode(foo_p, &encoded[0], size);
 
         if (size >= 0) {
             printf("Successfully decoded %d bytes into Foo.\n", size);
