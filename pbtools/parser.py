@@ -154,10 +154,23 @@ class Enum:
             self.fields.append(EnumField(item))
 
 
+class OneofField:
+
+    def __init__(self, tokens):
+        print(tokens)
+        self.type = load_message_type(tokens[0])
+        self.name = tokens[1]
+        self.field_number = int(tokens[3])
+
+
 class Oneof:
 
     def __init__(self, tokens):
         self.name = tokens[1]
+        self.fields = []
+
+        for item in tokens[3]:
+            self.fields.append(OneofField(item))
 
 
 class MessageField:

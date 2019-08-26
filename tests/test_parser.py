@@ -169,6 +169,17 @@ class ParserTest(unittest.TestCase):
         message = parsed.messages[0]
         oneof = message.oneofs[0]
         self.assertEqual(oneof.name, 'value')
+        self.assertEqual(len(oneof.fields), 2)
+
+        field = oneof.fields[0]
+        self.assertEqual(field.type, 'int32')
+        self.assertEqual(field.name, 'v1')
+        self.assertEqual(field.field_number, 1)
+
+        field = oneof.fields[1]
+        self.assertEqual(field.type, 'string')
+        self.assertEqual(field.name, 'v2')
+        self.assertEqual(field.field_number, 2)
 
     def test_enum(self):
         parsed = pbtools.parse_file('tests/files/enum.proto')
