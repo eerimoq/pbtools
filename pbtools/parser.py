@@ -64,6 +64,7 @@ class Parser(textparser.Parser):
         full_ident = choice(ident, 'LIDENT')
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
+        constant = full_ident
 
         import_ = Sequence('import',
                            Optional(choice('weak', 'public')),
@@ -80,7 +81,13 @@ class Parser(textparser.Parser):
                         ZeroOrMore(choice(enum_field, empty_statement)),
                         '}')
 
-        constant = full_ident
+
+        oneof_field = Sequence(message_type, ident, '=', 'INT', ';')
+        oneof = Sequence('oneof',
+                         ident,
+                         '{',
+                         ZeroOrMore(choice(oneof_field, empty_statement)),
+                         '}')
 
         field = Sequence(Optional('repeated'),
                          message_type, ident, '=', 'INT',
@@ -89,12 +96,6 @@ class Parser(textparser.Parser):
                                                Sequence(ident, '=', constant)),
                                            ']')),
                          ';')
-        oneof_field = Sequence(message_type, ident, '=', 'INT', ';')
-        oneof = Sequence('oneof',
-                         ident,
-                         '{',
-                         ZeroOrMore(choice(oneof_field, empty_statement)),
-                         '}')
         message = Forward()
         message <<= Sequence('message',
                              ident,
