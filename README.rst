@@ -143,6 +143,8 @@ generated files.
 
 .. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.c
 
+.. _hello_world.proto: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/hello_world.proto
+
 .. _hello_world.h: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.h
 
 .. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.c
