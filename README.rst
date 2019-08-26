@@ -54,6 +54,7 @@ We'll use the generated types and functions below.
 .. code-block:: c
 
    struct hello_world_foo_t {
+      struct hello_world_heap_t *heap_p;
       int32_t bar;
    };
 
@@ -68,7 +69,7 @@ We'll use the generated types and functions below.
 
    int hello_world_foo_decode(
        struct hello_world_foo_t *self_p,
-       uint8_t *encoded_p,
+       const uint8_t *encoded_p,
        size_t size);
 
 Encode and decode the Foo-message.
