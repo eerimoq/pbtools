@@ -1195,13 +1195,13 @@ TEST(oneof_v1)
     message_p->value.choice = oneof_message_value_v1_e;
     message_p->value.value.v1 = 65;
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
-    ASSERT_EQ(size, 3);
-    ASSERT_EQ(memcmp(&encoded[0], "\x00\x00\x00", size), 0);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(memcmp(&encoded[0], "\x08\x41", size), 0);
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
-    ASSERT_EQ(size, 3);
+    ASSERT_EQ(size, 2);
     ASSERT_EQ(message_p->value.choice, oneof_message_value_v1_e);
     ASSERT_EQ(message_p->value.value.v1, 65);
 }
@@ -1218,13 +1218,13 @@ TEST(oneof_v2)
     message_p->value.choice = oneof_message_value_v2_e;
     message_p->value.value.v2_p = "Hello!";
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
-    ASSERT_EQ(size, 3);
-    ASSERT_EQ(memcmp(&encoded[0], "\x00\x00\x00", size), 0);
+    ASSERT_EQ(size, 8);
+    ASSERT_EQ(memcmp(&encoded[0], "\x12\x06Hello!", size), 0);
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
-    ASSERT_EQ(size, 3);
+    ASSERT_EQ(size, 8);
     ASSERT_EQ(message_p->value.choice, oneof_message_value_v2_e);
     ASSERT_EQ(strcmp(message_p->value.value.v2_p, "Hello!"), 0);
 }
@@ -1261,9 +1261,7 @@ int main(void)
         tags_4,
         tags_5,
         tags_6,
-#if 0
         oneof_v1,
         oneof_v2
-#endif
     );
 }
