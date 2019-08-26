@@ -1,6 +1,7 @@
 import textparser
 from textparser import Sequence
 from textparser import ZeroOrMore
+from textparser import OneOrMore
 from textparser import ZeroOrMoreDict
 from textparser import choice
 from textparser import Optional
@@ -27,6 +28,8 @@ class Parser(textparser.Parser):
             ('RBRACE',   '}', r'}'),
             ('LPAREN',   '(', r'\('),
             ('RPAREN',   ')', r'\)'),
+            ('LBRACK',   '[', r'\['),
+            ('RBRACK',   ']', r'\]'),
             ('MISMATCH',      r'.')
         ]
 
@@ -77,7 +80,15 @@ class Parser(textparser.Parser):
                         ZeroOrMore(choice(enum_field, empty_statement)),
                         '}')
 
-        field = Sequence(Optional('repeated'), message_type, ident, '=', 'INT', ';')
+        constant = full_ident
+
+        field = Sequence(Optional('repeated'),
+                         message_type, ident, '=', 'INT',
+                         Optional(Sequence('[',
+                                           OneOrMore(
+                                               Sequence(ident, '=', constant)),
+                                           ']')),
+                         ';')
         oneof_field = Sequence(message_type, ident, '=', 'INT', ';')
         oneof = Sequence('oneof',
                          ident,

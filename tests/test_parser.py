@@ -215,5 +215,12 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.name, 'F')
         self.assertEqual(field.field_number, 1)
 
+    def test_options(self):
+        parsed = pbtools.parse_file('tests/files/options.proto')
+
+        self.assertEqual(parsed.package, 'options')
+        self.assertEqual(len(parsed.messages), 1)
+
+
 if __name__ == '__main__':
     unittest.main()
