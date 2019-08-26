@@ -139,4 +139,4 @@ generated files.
 
 .. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.c
 
-.. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world
+.. _hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world
