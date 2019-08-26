@@ -34,7 +34,8 @@ class CommandLineTest(unittest.TestCase):
             'sfixed64',
             'float',
             'double',
-            'bool'
+            'bool',
+            'tags'
         ]
 
         for spec in specs:
@@ -69,7 +70,6 @@ class CommandLineTest(unittest.TestCase):
             'bytes',
             # 'enum',
             # 'repeated',
-            # 'tags',
             # 'address_book'
         ]
 
