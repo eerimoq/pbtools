@@ -66,7 +66,11 @@ class CommandLineTest(unittest.TestCase):
     def test_command_line_generate_c_source_headers(self):
         specs = [
             'string',
-            'bytes'
+            'bytes',
+            # 'enum',
+            # 'repeated',
+            # 'tags',
+            # 'address_book'
         ]
 
         for spec in specs:

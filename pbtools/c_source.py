@@ -58,6 +58,7 @@ HEADER_FMT = '''\
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define {namespace_upper}_BAD_WIRE_TYPE                                   1
 #define {namespace_upper}_OUT_OF_DATA                                     2
