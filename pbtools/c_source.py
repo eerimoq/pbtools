@@ -274,6 +274,7 @@ static void encoder_write_tag(struct encoder_t *self_p,
 ENCODER_WRITE_VARINT = '''\
 static void encoder_write_varint(struct encoder_t *self_p,
                                  int field_number,
+                                 int wire_type,
                                  uint64_t value)
 {{
     uint8_t buf[10];
@@ -292,7 +293,7 @@ static void encoder_write_varint(struct encoder_t *self_p,
 
     buf[pos - 1] &= 0x7f;
     encoder_write(self_p, &buf[0], pos);
-    encoder_write_tag(self_p, field_number, 0);
+    encoder_write_tag(self_p, field_number, wire_type);
 }}
 '''
 
@@ -301,7 +302,7 @@ static void encoder_write_int32(struct encoder_t *self_p,
                                 int field_number,
                                 int32_t value)
 {{
-    encoder_write_varint(self_p, field_number, (uint64_t)(int64_t)value);
+    encoder_write_varint(self_p, field_number, 0, (uint64_t)(int64_t)value);
 }}
 '''
 
@@ -310,7 +311,7 @@ static void encoder_write_int64(struct encoder_t *self_p,
                                 int field_number,
                                 int64_t value)
 {{
-    encoder_write_varint(self_p, field_number, (uint64_t)value);
+    encoder_write_varint(self_p, field_number, 0, (uint64_t)value);
 }}
 '''
 
@@ -320,9 +321,9 @@ static void encoder_write_sint32(struct encoder_t *self_p,
                                  int32_t value)
 {{
     if (value < 0) {{
-        encoder_write_varint(self_p, field_number, ~((uint64_t)value << 1));
+        encoder_write_varint(self_p, field_number, 0, ~((uint64_t)value << 1));
     }} else {{
-        encoder_write_varint(self_p, field_number, (uint64_t)value << 1);
+        encoder_write_varint(self_p, field_number, 0, (uint64_t)value << 1);
     }}
 }}
 '''
@@ -333,9 +334,9 @@ static void encoder_write_sint64(struct encoder_t *self_p,
                                  int64_t value)
 {{
     if (value < 0) {{
-        encoder_write_varint(self_p, field_number, ~((uint64_t)value << 1));
+        encoder_write_varint(self_p, field_number, 0, ~((uint64_t)value << 1));
     }} else {{
-        encoder_write_varint(self_p, field_number, (uint64_t)value << 1);
+        encoder_write_varint(self_p, field_number, 0, (uint64_t)value << 1);
     }}
 }}
 '''
@@ -345,7 +346,7 @@ static void encoder_write_uint32(struct encoder_t *self_p,
                                  int field_number,
                                  uint32_t value)
 {{
-    encoder_write_varint(self_p, field_number, (uint64_t)value);
+    encoder_write_varint(self_p, field_number, 0, (uint64_t)value);
 }}
 '''
 
@@ -354,7 +355,7 @@ static void encoder_write_uint64(struct encoder_t *self_p,
                                  int field_number,
                                  uint64_t value)
 {{
-    encoder_write_varint(self_p, field_number, value);
+    encoder_write_varint(self_p, field_number, 0, value);
 }}
 '''
 
@@ -448,7 +449,7 @@ static void encoder_write_float(struct encoder_t *self_p,
     if (value == 0) {{
         return;
     }}
-    
+
     memcpy(&data, &value, sizeof(data));
     encoder_put(self_p, data >> 24);
     encoder_put(self_p, data >> 16);
@@ -468,7 +469,7 @@ static void encoder_write_double(struct encoder_t *self_p,
     if (value == 0) {{
         return;
     }}
-    
+
     memcpy(&data, &value, sizeof(data));
     encoder_put(self_p, data >> 56);
     encoder_put(self_p, data >> 48);
@@ -490,6 +491,22 @@ static void encoder_write_bool(struct encoder_t *self_p,
     if (value) {{
         encoder_put(self_p, 1);
         encoder_write_tag(self_p, field_number, 0);
+    }}
+}}
+'''
+
+ENCODER_WRITE_STRING = '''\
+static void encoder_write_string(struct encoder_t *self_p,
+                                 int field_number,
+                                 char *value_p)
+{{
+    int length;
+
+    length = strlen(value_p);
+
+    if (length > 0) {{
+        encoder_write(self_p, (uint8_t *)value_p, length);
+        encoder_write_varint(self_p, field_number, 2, length);
     }}
 }}
 '''
@@ -526,6 +543,19 @@ static uint8_t decoder_get(struct decoder_t *self_p)
     }}
 
     return (value);
+}}
+'''
+
+DECODER_READ = '''\
+static void decoder_read(struct decoder_t *self_p,
+                         uint8_t *buf_p,
+                         int size)
+{{
+    int i;
+
+    for (i = 0; i < size; i++) {{
+        buf_p[i] = decoder_get(self_p);
+    }}
 }}
 '''
 
@@ -721,13 +751,13 @@ static float decoder_read_float(struct decoder_t *self_p,
     if (wire_type != 5) {{
         return (0.0);
     }}
-    
+
     data = decoder_get(self_p);
     data |= (decoder_get(self_p) << 8);
     data |= (decoder_get(self_p) << 16);
     data |= (decoder_get(self_p) << 24);
     memcpy(&value, &data, sizeof(value));
-    
+
     return (value);
 }}
 '''
@@ -742,7 +772,7 @@ static double decoder_read_double(struct decoder_t *self_p,
     if (wire_type != 1) {{
         return (0.0);
     }}
-    
+
     data = decoder_get(self_p);
     data |= ((uint64_t)decoder_get(self_p) << 8);
     data |= ((uint64_t)decoder_get(self_p) << 16);
@@ -752,7 +782,7 @@ static double decoder_read_double(struct decoder_t *self_p,
     data |= ((uint64_t)decoder_get(self_p) << 48);
     data |= ((uint64_t)decoder_get(self_p) << 56);
     memcpy(&value, &data, sizeof(value));
-    
+
     return (value);
 }}
 '''
@@ -766,6 +796,31 @@ static bool decoder_read_bool(struct decoder_t *self_p,
     }}
 
     return (decoder_get(self_p) == 1);
+}}
+'''
+
+DECODER_READ_STRING = '''\
+static char *decoder_read_string(struct decoder_t *self_p,
+                                 int wire_type)
+{{
+    uint64_t length;
+    char *value_p;
+
+    if (wire_type != 2) {{
+        return ("");
+    }}
+
+    length = decoder_read_varint(self_p, 0);
+    value_p = heap_alloc(self_p->heap_p, length + 1);
+
+    if (value_p == NULL) {{
+        return ("");
+    }}
+
+    decoder_read(self_p, (uint8_t *)value_p, length);
+    value_p[length] = '\\0';
+
+    return (value_p);
 }}
 '''
 
@@ -850,9 +905,19 @@ ENCODE_INNER_MEMBER_FMT = '''\
     encoder_write_{type}(encoder_p, {field_number}, self_p->{name});
 '''
 
+ENCODE_INNER_MEMBER_STRING_FMT = '''\
+    encoder_write_{type}(encoder_p, {field_number}, self_p->{name}_p);
+'''
+
 DECODE_INNER_MEMBER_FMT = '''\
         case {field_number}:
-            self_p->value = decoder_read_{type}(decoder_p, wire_type);
+            self_p->{name} = decoder_read_{type}(decoder_p, wire_type);
+            break;
+'''
+
+DECODE_INNER_MEMBER_STRING_FMT = '''\
+        case {field_number}:
+            self_p->{name}_p = decoder_read_{type}(decoder_p, wire_type);
             break;
 '''
 
@@ -874,7 +939,7 @@ struct {namespace}_{name}_t *{namespace}_{name}_new(
 
     if (self_p != NULL) {{
         self_p->heap_p = heap_p;
-        self_p->value = 0;
+{members_init}
     }}
 
     return (self_p);
@@ -953,11 +1018,6 @@ def _generate_members(message):
     for field in message.fields:
         members.append(_generate_member_fmt(field.type, field.name))
 
-    if not members:
-        members = [
-            '    uint8_t dummy;'
-        ]
-
     return members
 
 
@@ -993,24 +1053,50 @@ def generate_message_encode_body(message):
     members = []
 
     for field in message.fields:
-        if field.type in PRIMITIVE_TYPES:
+        if field.type == 'string':
+            members.append(
+                ENCODE_INNER_MEMBER_STRING_FMT.format(type=field.type,
+                                                      field_number=field.field_number,
+                                                      name=field.name))
+        elif field.type in PRIMITIVE_TYPES:
             members.append(
                 ENCODE_INNER_MEMBER_FMT.format(type=field.type,
                                                field_number=field.field_number,
                                                name=field.name))
 
-    return '\n'.join(members)
+    return ''.join(members)
+
 
 def generate_message_decode_body(message):
     members = []
 
     for field in message.fields:
-        if field.type in PRIMITIVE_TYPES:
+        if field.type == 'string':
+            members.append(
+                DECODE_INNER_MEMBER_STRING_FMT.format(field_number=field.field_number,
+                                                      type=field.type,
+                                                      name=field.name))
+        elif field.type in PRIMITIVE_TYPES:
             members.append(
                 DECODE_INNER_MEMBER_FMT.format(field_number=field.field_number,
-                                               type=field.type))
+                                               type=field.type,
+                                               name=field.name))
 
     return '\n'.join(members)
+
+
+def generate_message_members_init(message):
+    members = []
+
+    for field in message.fields:
+        name = field.name
+
+        if field.type == 'string':
+            members.append(f'        self_p->{name}_p = "";')
+        elif field.type in PRIMITIVE_TYPES:
+            members.append(f'        self_p->{name} = 0;')
+
+    return ''.join(members)
 
 
 def generate_definitions(namespace, parsed):
@@ -1019,6 +1105,7 @@ def generate_definitions(namespace, parsed):
     for message in parsed.messages:
         encode_body = generate_message_encode_body(message)
         decode_body = generate_message_decode_body(message)
+        members_init = generate_message_members_init(message)
         definitions.append(
             MESSAGE_INNER_FMT.format(namespace=namespace,
                                      name=camel_to_snake_case(message.name),
@@ -1028,7 +1115,8 @@ def generate_definitions(namespace, parsed):
             MESSAGE_DEFINITION_FMT.format(namespace=namespace,
                                           package=parsed.package,
                                           proto_name=message.name,
-                                          name=camel_to_snake_case(message.name)))
+                                          name=camel_to_snake_case(message.name),
+                                          members_init=members_init))
 
     return '\n'.join(definitions)
 
@@ -1037,6 +1125,7 @@ def generate_encoder_helpers(definitions, namespace_upper):
     helpers = []
 
     functions = [
+        ('encoder_write_string(', ENCODER_WRITE_STRING),
         ('encoder_write_bool(', ENCODER_WRITE_BOOL),
         ('encoder_write_double(', ENCODER_WRITE_DOUBLE),
         ('encoder_write_float(', ENCODER_WRITE_FLOAT),
@@ -1070,6 +1159,7 @@ def generate_decode_helpers(definitions, namespace_upper):
     helpers = []
 
     functions = [
+        ('decoder_read_string(', DECODER_READ_STRING),
         ('decoder_read_bool(', DECODER_READ_BOOL),
         ('decoder_read_double(', DECODER_READ_DOUBLE),
         ('decoder_read_float(', DECODER_READ_FLOAT),
@@ -1085,6 +1175,7 @@ def generate_decode_helpers(definitions, namespace_upper):
         ('decoder_read_int32(', DECODER_READ_INT32),
         ('decoder_read_tag(', DECODER_READ_TAG),
         ('decoder_read_varint(', DECODER_READ_VARINT),
+        ('decoder_read(', DECODER_READ),
         ('decoder_get(', DECODER_GET),
         ('decoder_available(', DECODER_AVAILABLE),
         ('decoder_abort(', DECODER_ABORT)
