@@ -159,60 +159,60 @@ void pbtools_decoder_init(struct pbtools_decoder_t *self_p,
 int pbtools_decoder_get_result(struct pbtools_decoder_t *self_p);
 
 void pbtools_decoder_abort(struct pbtools_decoder_t *self_p,
-                   int error);
+                           int error);
 
 bool pbtools_decoder_available(struct pbtools_decoder_t *self_p);
 
 uint8_t pbtools_decoder_get(struct pbtools_decoder_t *self_p);
 
 void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
-                  uint8_t *buf_p,
-                  int size);
+                          uint8_t *buf_p,
+                          int size);
 
 uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
-                             int wire_type);
+                                     int wire_type);
 
 int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
-                     int *wire_type_p);
+                             int *wire_type_p);
 
 int32_t pbtools_decoder_read_int32(struct pbtools_decoder_t *self_p,
-                           int wire_type);
+                                   int wire_type);
 
 int64_t pbtools_decoder_read_int64(struct pbtools_decoder_t *self_p,
-                           int wire_type);
+                                   int wire_type);
 
 int32_t pbtools_decoder_read_sint32(struct pbtools_decoder_t *self_p,
-                            int wire_type);
+                                    int wire_type);
 
 int64_t pbtools_decoder_read_sint64(struct pbtools_decoder_t *self_p,
-                            int wire_type);
+                                    int wire_type);
 
 uint32_t pbtools_decoder_read_uint32(struct pbtools_decoder_t *self_p,
-                             int wire_type);
+                                     int wire_type);
 
 uint64_t pbtools_decoder_read_uint64(struct pbtools_decoder_t *self_p,
-                             int wire_type);
+                                     int wire_type);
 
 uint32_t pbtools_decoder_read_fixed32(struct pbtools_decoder_t *self_p,
-                              int wire_type);
+                                      int wire_type);
 
 uint64_t pbtools_decoder_read_fixed64(struct pbtools_decoder_t *self_p,
-                              int wire_type);
+                                      int wire_type);
 
 int32_t pbtools_decoder_read_sfixed32(struct pbtools_decoder_t *self_p,
-                              int wire_type);
+                                      int wire_type);
 
 int64_t pbtools_decoder_read_sfixed64(struct pbtools_decoder_t *self_p,
-                              int wire_type);
+                                      int wire_type);
 
 float pbtools_decoder_read_float(struct pbtools_decoder_t *self_p,
-                         int wire_type);
+                                 int wire_type);
 
 double pbtools_decoder_read_double(struct pbtools_decoder_t *self_p,
-                           int wire_type);
+                                   int wire_type);
 
 bool pbtools_decoder_read_bool(struct pbtools_decoder_t *self_p,
-                       int wire_type);
+                               int wire_type);
 
 char *pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                   int wire_type);
