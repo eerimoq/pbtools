@@ -44,8 +44,8 @@ struct enum_heap_t {
  * Message Message in package enum.
  */
 enum enum_message_enum_e {
-                          enum_message_enum_a_e = 0,
-                          enum_message_enum_b_e = 1
+    enum_message_enum_a_e = 0,
+    enum_message_enum_b_e = 1
 };
 
 struct enum_message_t {
