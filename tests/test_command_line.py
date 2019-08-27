@@ -73,7 +73,6 @@ class CommandLineTest(unittest.TestCase):
             # 'address_book',
             # 'message',
             # 'oneof',
-            # 'service'
         ]
 
         for spec in specs:
