@@ -1,6 +1,7 @@
 all:
-	gcc -Wall -g -Og -std=gnu11 \
+	gcc -Wall -g -Og -std=gnu11 -I../src \
 	    narwhal.c \
+	    ../src/pbtools.c \
 	    files/c_source/int32.c \
 	    files/c_source/int64.c \
 	    files/c_source/sint32.c \

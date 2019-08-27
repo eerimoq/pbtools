@@ -40,7 +40,7 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(len(parsed.messages), 1)
 
         message = parsed.messages[0]
-        self.assertEqual(len(message.fields), 2)
+        self.assertEqual(len(message.fields), 4)
         self.assertEqual(len(message.enums), 0)
         self.assertEqual(len(message.messages), 0)
 
@@ -54,6 +54,18 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.type, 'Message')
         self.assertEqual(field.name, 'messages')
         self.assertEqual(field.field_number, 2)
+        self.assertTrue(field.repeated)
+
+        field = message.fields[2]
+        self.assertEqual(field.type, 'string')
+        self.assertEqual(field.name, 'strings')
+        self.assertEqual(field.field_number, 3)
+        self.assertTrue(field.repeated)
+
+        field = message.fields[3]
+        self.assertEqual(field.type, 'bytes')
+        self.assertEqual(field.name, 'bytes')
+        self.assertEqual(field.field_number, 4)
         self.assertTrue(field.repeated)
 
     def test_address_book(self):

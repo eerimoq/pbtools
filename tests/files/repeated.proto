@@ -8,4 +8,7 @@ message Message {
 
     // Can not be packed.
     repeated Message messages = 2;
+
+    repeated string strings = 3;
+    repeated bytes bytes = 4;
 }

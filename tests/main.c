@@ -111,12 +111,12 @@ TEST(int32_decode_out_of_data)
     message_p = int32_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = int32_message_decode(message_p, (uint8_t *)"\x08", 1);
-    ASSERT_EQ(size, -EOUTOFDATA);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 
     message_p = int32_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = int32_message_decode(message_p, (uint8_t *)"\x08\x80", 2);
-    ASSERT_EQ(size, -EOUTOFDATA);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 }
 
 TEST(int64)
@@ -771,7 +771,7 @@ TEST(string)
     }
 }
 
-TEST(string_encode_out_of_memory)
+TEST(string_encode_buffer_full)
 {
     uint8_t encoded[150];
     int size;
@@ -785,7 +785,7 @@ TEST(string_encode_out_of_memory)
         "123456789012345678901234567890123456789012345678901234567890"
         "123456789012345678901234567890");
     size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
-    ASSERT_EQ(size, -STRING_ENCODE_BUFFER_FULL);
+    ASSERT_EQ(size, -PBTOOLS_ENCODE_BUFFER_FULL);
 }
 
 TEST(string_decode_out_of_data)
@@ -797,14 +797,14 @@ TEST(string_decode_out_of_data)
     message_p = string_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = string_message_decode(message_p, (uint8_t *)"\x0a\x01", 2);
-    ASSERT_EQ(size, -EOUTOFDATA);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 
     message_p = string_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = string_message_decode(message_p,
                                  (uint8_t *)"\x0a\x96\x01\x31",
                                  4);
-    ASSERT_EQ(size, -EOUTOFDATA);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 }
 
 TEST(bytes)
@@ -1252,7 +1252,7 @@ int main(void)
         double_,
         bool_,
         string,
-        string_encode_out_of_memory,
+        string_encode_buffer_full,
         string_decode_out_of_data,
         bytes,
         enum_,

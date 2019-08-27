@@ -30,17 +30,19 @@
 
 #include <string.h>
 
-#include "bytes.h"
+#include "repeated.h"
 
-static void bytes_message_encode_inner(
-    struct bytes_message_t *self_p,
+static void repeated_message_encode_inner(
+    struct repeated_message_t *self_p,
     struct pbtools_encoder_t *encoder_p)
 {
-    pbtools_encoder_write_bytes(encoder_p, 1, &self_p->value);
+    pbtools_encoder_write_int32(encoder_p, 1, self_p->int32s);
+    pbtools_encoder_write_string(encoder_p, 3, self_p->strings_p);
+    pbtools_encoder_write_bytes(encoder_p, 4, &self_p->bytes);
 }
 
-static void bytes_message_decode_inner(
-    struct bytes_message_t *self_p,
+static void repeated_message_decode_inner(
+    struct repeated_message_t *self_p,
     struct pbtools_decoder_t *decoder_p)
 {
     int wire_type;
@@ -49,9 +51,17 @@ static void bytes_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
+            self_p->int32s = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 3:
+            self_p->strings_p = pbtools_decoder_read_string(decoder_p, wire_type);
+            break;
+
+        case 4:
             pbtools_decoder_read_bytes(decoder_p,
                                        wire_type,
-                                       &self_p->value);
+                                       &self_p->bytes);
             break;
 
         default:
@@ -60,11 +70,11 @@ static void bytes_message_decode_inner(
     }
 }
 
-struct bytes_message_t *bytes_message_new(
+struct repeated_message_t *repeated_message_new(
     void *workspace_p,
     size_t size)
 {
-    struct bytes_message_t *self_p;
+    struct repeated_message_t *self_p;
     struct pbtools_heap_t *heap_p;
 
     heap_p = pbtools_heap_new(workspace_p, size);
@@ -77,34 +87,34 @@ struct bytes_message_t *bytes_message_new(
 
     if (self_p != NULL) {
         self_p->heap_p = heap_p;
-        self_p->value.size = 0;
+        self_p->int32s = 0;        self_p->strings_p = "";        self_p->bytes.size = 0;
     }
 
     return (self_p);
 }
 
-int bytes_message_encode(
-    struct bytes_message_t *self_p,
+int repeated_message_encode(
+    struct repeated_message_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
     struct pbtools_encoder_t encoder;
 
     pbtools_encoder_init(&encoder, encoded_p, size);
-    bytes_message_encode_inner(self_p, &encoder);
+    repeated_message_encode_inner(self_p, &encoder);
 
     return (pbtools_encoder_get_result(&encoder));
 }
 
-int bytes_message_decode(
-    struct bytes_message_t *self_p,
+int repeated_message_decode(
+    struct repeated_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
     struct pbtools_decoder_t decoder;
 
     pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    bytes_message_decode_inner(self_p, &decoder);
+    repeated_message_decode_inner(self_p, &decoder);
 
     return (pbtools_decoder_get_result(&decoder));
 }

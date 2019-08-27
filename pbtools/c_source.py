@@ -59,17 +59,7 @@ HEADER_FMT = '''\
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-
-#define {namespace_upper}_BAD_WIRE_TYPE                                   1
-#define {namespace_upper}_OUT_OF_DATA                                     2
-#define {namespace_upper}_OUT_OF_MEMORY                                   3
-#define {namespace_upper}_ENCODE_BUFFER_FULL                              4
-
-struct {namespace}_heap_t {{
-    char *buf_p;
-    int size;
-    int pos;
-}};
+#include "pbtools.h"
 
 {structs}
 {declarations}
@@ -111,756 +101,7 @@ SOURCE_FMT = '''\
 
 #include "{header}"
 
-struct encoder_t {{
-    uint8_t *buf_p;
-    int size;
-    int pos;
-}};
-
-struct decoder_t {{
-    const uint8_t *buf_p;
-    int size;
-    int pos;
-    struct {namespace}_heap_t *heap_p;
-}};
-
-static struct {namespace}_heap_t *heap_new(void *buf_p, size_t size)
-{{
-    struct {namespace}_heap_t *heap_p;
-
-    if (size >= sizeof(*heap_p)) {{
-        heap_p = (struct {namespace}_heap_t *)buf_p;
-        heap_p->buf_p = buf_p;
-        heap_p->size = size;
-        heap_p->pos = sizeof(*heap_p);
-    }} else {{
-        heap_p = NULL;
-    }}
-
-    return (heap_p);
-}}
-
-static void *heap_alloc(struct {namespace}_heap_t *self_p, size_t size)
-{{
-    void *buf_p;
-    int left;
-
-    left = (self_p->size - self_p->pos);
-
-    if (size <= left) {{
-        buf_p = &self_p->buf_p[self_p->pos];
-        self_p->pos += size;
-    }} else {{
-        buf_p = NULL;
-    }}
-
-    return (buf_p);
-}}
-
-static void encoder_init(struct encoder_t *self_p,
-                         uint8_t *buf_p,
-                         size_t size)
-{{
-    self_p->buf_p = buf_p;
-    self_p->size = size;
-    self_p->pos = (size - 1);
-}}
-
-static int encoder_get_result(struct encoder_t *self_p)
-{{
-    int length;
-
-    if (self_p->pos >= 0) {{
-        length = (self_p->size - self_p->pos - 1);
-        memmove(self_p->buf_p,
-                &self_p->buf_p[self_p->pos + 1],
-                length);
-    }} else {{
-        length = self_p->pos;
-    }}
-
-    return (length);
-}}
-
-{encoder_helpers}
-static void decoder_init(struct decoder_t *self_p,
-                         const uint8_t *buf_p,
-                         size_t size,
-                         struct {namespace}_heap_t *heap_p)
-{{
-    self_p->buf_p = buf_p;
-    self_p->size = size;
-    self_p->pos = 0;
-    self_p->heap_p = heap_p;
-}}
-
-static int decoder_get_result(struct decoder_t *self_p)
-{{
-    int res;
-
-    if (self_p->pos == self_p->size) {{
-        res = self_p->pos;
-    }} else {{
-        res = -1;
-    }}
-
-    return (res);
-}}
-
-{decoder_helpers}
-{helpers}\
 {definitions}\
-'''
-
-ENCODER_ABORT = '''\
-static void encoder_abort(struct encoder_t *self_p,
-                          int error)
-{{
-    if (self_p->size >= 0) {{
-        self_p->size = -error;
-        self_p->pos = -error;
-    }}
-}}
-'''
-
-ENCODER_PUT = '''\
-static void encoder_put(struct encoder_t *self_p,
-                        uint8_t value)
-{{
-    if (self_p->pos >= 0) {{
-        self_p->buf_p[self_p->pos] = value;
-        self_p->pos--;
-    }} else {{
-        encoder_abort(self_p, {namespace_upper}_ENCODE_BUFFER_FULL);
-    }}
-}}
-'''
-
-ENCODER_WRITE = '''\
-static void encoder_write(struct encoder_t *self_p,
-                          uint8_t *buf_p,
-                          int size)
-{{
-    int i;
-
-    for (i = size - 1; i >= 0; i--) {{
-        encoder_put(self_p, buf_p[i]);
-    }}
-}}
-'''
-
-ENCODER_WRITE_TAG = '''\
-static void encoder_write_tag(struct encoder_t *self_p,
-                              int field_number,
-                              int wire_type)
-{{
-    uint8_t buf[5];
-    int pos;
-    uint32_t value;
-
-    value = ((field_number << 3) | wire_type);
-    pos = 0;
-
-    while (value > 0) {{
-        buf[pos++] = (value | 0x80);
-        value >>= 7;
-    }}
-
-    buf[pos - 1] &= 0x7f;
-    encoder_write(self_p, &buf[0], pos);
-}}
-'''
-
-ENCODER_WRITE_VARINT = '''\
-static void encoder_write_varint(struct encoder_t *self_p,
-                                 int field_number,
-                                 int wire_type,
-                                 uint64_t value)
-{{
-    uint8_t buf[10];
-    int pos;
-
-    if (value == 0) {{
-        return;
-    }}
-
-    pos = 0;
-
-    while (value > 0) {{
-        buf[pos++] = (value | 0x80);
-        value >>= 7;
-    }}
-
-    buf[pos - 1] &= 0x7f;
-    encoder_write(self_p, &buf[0], pos);
-    encoder_write_tag(self_p, field_number, wire_type);
-}}
-'''
-
-ENCODER_WRITE_INT32 = '''\
-static void encoder_write_int32(struct encoder_t *self_p,
-                                int field_number,
-                                int32_t value)
-{{
-    encoder_write_varint(self_p, field_number, 0, (uint64_t)(int64_t)value);
-}}
-'''
-
-ENCODER_WRITE_INT64 = '''\
-static void encoder_write_int64(struct encoder_t *self_p,
-                                int field_number,
-                                int64_t value)
-{{
-    encoder_write_varint(self_p, field_number, 0, (uint64_t)value);
-}}
-'''
-
-ENCODER_WRITE_SINT32 = '''\
-static void encoder_write_sint32(struct encoder_t *self_p,
-                                 int field_number,
-                                 int32_t value)
-{{
-    if (value < 0) {{
-        encoder_write_varint(self_p, field_number, 0, ~((uint64_t)value << 1));
-    }} else {{
-        encoder_write_varint(self_p, field_number, 0, (uint64_t)value << 1);
-    }}
-}}
-'''
-
-ENCODER_WRITE_SINT64 = '''\
-static void encoder_write_sint64(struct encoder_t *self_p,
-                                 int field_number,
-                                 int64_t value)
-{{
-    if (value < 0) {{
-        encoder_write_varint(self_p, field_number, 0, ~((uint64_t)value << 1));
-    }} else {{
-        encoder_write_varint(self_p, field_number, 0, (uint64_t)value << 1);
-    }}
-}}
-'''
-
-ENCODER_WRITE_UINT32 = '''\
-static void encoder_write_uint32(struct encoder_t *self_p,
-                                 int field_number,
-                                 uint32_t value)
-{{
-    encoder_write_varint(self_p, field_number, 0, (uint64_t)value);
-}}
-'''
-
-ENCODER_WRITE_UINT64 = '''\
-static void encoder_write_uint64(struct encoder_t *self_p,
-                                 int field_number,
-                                 uint64_t value)
-{{
-    encoder_write_varint(self_p, field_number, 0, value);
-}}
-'''
-
-ENCODER_WRITE_FIXED32 = '''\
-static void encoder_write_fixed32(struct encoder_t *self_p,
-                                  int field_number,
-                                  uint32_t value)
-{{
-    uint8_t buf[4];
-
-    if (value > 0) {{
-        buf[0] = (value & 0xff);
-        buf[1] = ((value >> 8) & 0xff);
-        buf[2] = ((value >> 16) & 0xff);
-        buf[3] = ((value >> 24) & 0xff);
-        encoder_write(self_p, &buf[0], 4);
-        encoder_write_tag(self_p, field_number, 5);
-    }}
-}}
-'''
-
-ENCODER_WRITE_FIXED64 = '''\
-static void encoder_write_fixed64(struct encoder_t *self_p,
-                                  int field_number,
-                                  uint64_t value)
-{{
-    uint8_t buf[8];
-
-    if (value > 0) {{
-        buf[0] = (value & 0xff);
-        buf[1] = ((value >> 8) & 0xff);
-        buf[2] = ((value >> 16) & 0xff);
-        buf[3] = ((value >> 24) & 0xff);
-        buf[4] = ((value >> 32) & 0xff);
-        buf[5] = ((value >> 40) & 0xff);
-        buf[6] = ((value >> 48) & 0xff);
-        buf[7] = ((value >> 56) & 0xff);
-        encoder_write(self_p, &buf[0], 8);
-        encoder_write_tag(self_p, field_number, 1);
-    }}
-}}
-'''
-
-ENCODER_WRITE_SFIXED32 = '''\
-static void encoder_write_sfixed32(struct encoder_t *self_p,
-                                   int field_number,
-                                   int32_t value)
-{{
-    uint8_t buf[4];
-
-    if (value != 0) {{
-        buf[0] = (value & 0xff);
-        buf[1] = ((value >> 8) & 0xff);
-        buf[2] = ((value >> 16) & 0xff);
-        buf[3] = ((value >> 24) & 0xff);
-        encoder_write(self_p, &buf[0], 4);
-        encoder_write_tag(self_p, field_number, 5);
-    }}
-}}
-'''
-
-ENCODER_WRITE_SFIXED64 = '''\
-static void encoder_write_sfixed64(struct encoder_t *self_p,
-                                   int field_number,
-                                   int64_t value)
-{{
-    uint8_t buf[8];
-
-    if (value != 0) {{
-        buf[0] = (value & 0xff);
-        buf[1] = ((value >> 8) & 0xff);
-        buf[2] = ((value >> 16) & 0xff);
-        buf[3] = ((value >> 24) & 0xff);
-        buf[4] = ((value >> 32) & 0xff);
-        buf[5] = ((value >> 40) & 0xff);
-        buf[6] = ((value >> 48) & 0xff);
-        buf[7] = ((value >> 56) & 0xff);
-        encoder_write(self_p, &buf[0], 8);
-        encoder_write_tag(self_p, field_number, 1);
-    }}
-}}
-'''
-
-ENCODER_WRITE_FLOAT = '''\
-static void encoder_write_float(struct encoder_t *self_p,
-                                int field_number,
-                                float value)
-{{
-    uint32_t data;
-
-    if (value == 0) {{
-        return;
-    }}
-
-    memcpy(&data, &value, sizeof(data));
-    encoder_put(self_p, data >> 24);
-    encoder_put(self_p, data >> 16);
-    encoder_put(self_p, data >> 8);
-    encoder_put(self_p, data >> 0);
-    encoder_write_tag(self_p, field_number, 5);
-}}
-'''
-
-ENCODER_WRITE_DOUBLE = '''\
-static void encoder_write_double(struct encoder_t *self_p,
-                                 int field_number,
-                                 double value)
-{{
-    uint64_t data;
-
-    if (value == 0) {{
-        return;
-    }}
-
-    memcpy(&data, &value, sizeof(data));
-    encoder_put(self_p, data >> 56);
-    encoder_put(self_p, data >> 48);
-    encoder_put(self_p, data >> 40);
-    encoder_put(self_p, data >> 32);
-    encoder_put(self_p, data >> 24);
-    encoder_put(self_p, data >> 16);
-    encoder_put(self_p, data >> 8);
-    encoder_put(self_p, data >> 0);
-    encoder_write_tag(self_p, field_number, 1);
-}}
-'''
-
-ENCODER_WRITE_BOOL = '''\
-static void encoder_write_bool(struct encoder_t *self_p,
-                               int field_number,
-                               bool value)
-{{
-    if (value) {{
-        encoder_put(self_p, 1);
-        encoder_write_tag(self_p, field_number, 0);
-    }}
-}}
-'''
-
-ENCODER_WRITE_STRING = '''\
-static void encoder_write_string(struct encoder_t *self_p,
-                                 int field_number,
-                                 char *value_p)
-{{
-    int length;
-
-    length = strlen(value_p);
-
-    if (length > 0) {{
-        encoder_write(self_p, (uint8_t *)value_p, length);
-        encoder_write_varint(self_p, field_number, 2, length);
-    }}
-}}
-'''
-
-ENCODER_WRITE_BYTES = '''\
-static void encoder_write_bytes(struct encoder_t *self_p,
-                                int field_number,
-                                uint8_t *buf_p,
-                                size_t size)
-{{
-    if (size > 0) {{
-        encoder_write(self_p, buf_p, size);
-        encoder_write_varint(self_p, field_number, 2, size);
-    }}
-}}
-'''
-
-DECODER_ABORT = '''\
-static void decoder_abort(struct decoder_t *self_p,
-                          int error)
-{{
-    if (self_p->size >= 0) {{
-        self_p->size = -error;
-        self_p->pos = -error;
-    }}
-}}
-'''
-
-DECODER_AVAILABLE = '''\
-static bool decoder_available(struct decoder_t *self_p)
-{{
-    return (self_p->pos < self_p->size);
-}}
-'''
-
-DECODER_GET = '''\
-static uint8_t decoder_get(struct decoder_t *self_p)
-{{
-    uint8_t value;
-
-    if (decoder_available(self_p)) {{
-        value = self_p->buf_p[self_p->pos];
-        self_p->pos++;
-    }} else {{
-        decoder_abort(self_p, {namespace_upper}_OUT_OF_DATA);
-        value = 0;
-    }}
-
-    return (value);
-}}
-'''
-
-DECODER_READ = '''\
-static void decoder_read(struct decoder_t *self_p,
-                         uint8_t *buf_p,
-                         int size)
-{{
-    int i;
-
-    for (i = 0; i < size; i++) {{
-        buf_p[i] = decoder_get(self_p);
-    }}
-}}
-'''
-
-DECODER_READ_VARINT = '''\
-static uint64_t decoder_read_varint(struct decoder_t *self_p,
-                                    int wire_type)
-{{
-    uint64_t value;
-    uint8_t byte;
-    int offset;
-
-    if (wire_type != 0) {{
-        decoder_abort(self_p, {namespace_upper}_BAD_WIRE_TYPE);
-
-        return (0);
-    }}
-
-    value = 0;
-    offset = 0;
-
-    do {{
-        byte = decoder_get(self_p);
-        value |= (((uint64_t)byte & 0x7f) << offset);
-        offset += 7;
-    }} while (byte & 0x80);
-
-    return (value);
-}}
-'''
-
-DECODER_READ_TAG = '''\
-static int decoder_read_tag(struct decoder_t *self_p,
-                            int *wire_type_p)
-{{
-    uint32_t value;
-
-    value = decoder_read_varint(self_p, 0);
-    *wire_type_p = (value & 0x7);
-
-    return (value >> 3);
-}}
-'''
-
-DECODER_READ_INT32 = '''\
-static int32_t decoder_read_int32(struct decoder_t *self_p,
-                                  int wire_type)
-{{
-    return (decoder_read_varint(self_p, wire_type));
-}}
-'''
-
-DECODER_READ_INT64 = '''\
-static int64_t decoder_read_int64(struct decoder_t *self_p,
-                                  int wire_type)
-{{
-    return (decoder_read_varint(self_p, wire_type));
-}}
-'''
-
-DECODER_READ_SINT32 = '''\
-static int32_t decoder_read_sint32(struct decoder_t *self_p,
-                                   int wire_type)
-{{
-   uint64_t value;
-
-   if (wire_type != 0) {{
-       return (0);
-   }}
-
-   value = decoder_read_varint(self_p, 0);
-
-   if (value & 0x1) {{
-       value >>= 1;
-       value = ~value;
-   }} else {{
-       value >>= 1;
-   }}
-
-   return (value);
-}}
-'''
-
-DECODER_READ_SINT64 = '''\
-static int64_t decoder_read_sint64(struct decoder_t *self_p,
-                                   int wire_type)
-{{
-    uint64_t value;
-
-    value = decoder_read_varint(self_p, wire_type);
-
-    if (value & 0x1) {{
-        value >>= 1;
-        value = ~value;
-    }} else {{
-        value >>= 1;
-    }}
-
-    return (value);
-}}
-'''
-
-DECODER_READ_UINT32 = '''\
-static uint32_t decoder_read_uint32(struct decoder_t *self_p,
-                                    int wire_type)
-{{
-    return (decoder_read_varint(self_p, wire_type));
-}}
-'''
-
-DECODER_READ_UINT64 = '''\
-static uint64_t decoder_read_uint64(struct decoder_t *self_p,
-                                    int wire_type)
-{{
-    return (decoder_read_varint(self_p, wire_type));
-}}
-'''
-
-DECODER_READ_FIXED32 = '''\
-static uint32_t decoder_read_fixed32(struct decoder_t *self_p,
-                                     int wire_type)
-{{
-    uint32_t value;
-
-    value = decoder_get(self_p);
-    value |= (decoder_get(self_p) << 8);
-    value |= (decoder_get(self_p) << 16);
-    value |= (decoder_get(self_p) << 24);
-
-    return (value);
-}}
-'''
-
-DECODER_READ_FIXED64 = '''\
-static uint64_t decoder_read_fixed64(struct decoder_t *self_p,
-                                     int wire_type)
-{{
-    uint64_t value;
-
-    value = decoder_get(self_p);
-    value |= ((uint64_t)decoder_get(self_p) << 8);
-    value |= ((uint64_t)decoder_get(self_p) << 16);
-    value |= ((uint64_t)decoder_get(self_p) << 24);
-    value |= ((uint64_t)decoder_get(self_p) << 32);
-    value |= ((uint64_t)decoder_get(self_p) << 40);
-    value |= ((uint64_t)decoder_get(self_p) << 48);
-    value |= ((uint64_t)decoder_get(self_p) << 56);
-
-    return (value);
-}}
-'''
-
-DECODER_READ_SFIXED32 = '''\
-static int32_t decoder_read_sfixed32(struct decoder_t *self_p,
-                                     int wire_type)
-{{
-    uint32_t value;
-
-    value = decoder_get(self_p);
-    value |= (decoder_get(self_p) << 8);
-    value |= (decoder_get(self_p) << 16);
-    value |= (decoder_get(self_p) << 24);
-
-    return (value);
-}}
-'''
-
-DECODER_READ_SFIXED64 = '''\
-static int64_t decoder_read_sfixed64(struct decoder_t *self_p,
-                                     int wire_type)
-{{
-    uint64_t value;
-
-    value = decoder_get(self_p);
-    value |= ((uint64_t)decoder_get(self_p) << 8);
-    value |= ((uint64_t)decoder_get(self_p) << 16);
-    value |= ((uint64_t)decoder_get(self_p) << 24);
-    value |= ((uint64_t)decoder_get(self_p) << 32);
-    value |= ((uint64_t)decoder_get(self_p) << 40);
-    value |= ((uint64_t)decoder_get(self_p) << 48);
-    value |= ((uint64_t)decoder_get(self_p) << 56);
-
-    return (value);
-}}
-'''
-
-DECODER_READ_FLOAT = '''\
-static float decoder_read_float(struct decoder_t *self_p,
-                                int wire_type)
-{{
-    uint32_t data;
-    float value;
-
-    if (wire_type != 5) {{
-        return (0.0);
-    }}
-
-    data = decoder_get(self_p);
-    data |= (decoder_get(self_p) << 8);
-    data |= (decoder_get(self_p) << 16);
-    data |= (decoder_get(self_p) << 24);
-    memcpy(&value, &data, sizeof(value));
-
-    return (value);
-}}
-'''
-
-DECODER_READ_DOUBLE = '''\
-static double decoder_read_double(struct decoder_t *self_p,
-                                  int wire_type)
-{{
-    uint64_t data;
-    double value;
-
-    if (wire_type != 1) {{
-        return (0.0);
-    }}
-
-    data = decoder_get(self_p);
-    data |= ((uint64_t)decoder_get(self_p) << 8);
-    data |= ((uint64_t)decoder_get(self_p) << 16);
-    data |= ((uint64_t)decoder_get(self_p) << 24);
-    data |= ((uint64_t)decoder_get(self_p) << 32);
-    data |= ((uint64_t)decoder_get(self_p) << 40);
-    data |= ((uint64_t)decoder_get(self_p) << 48);
-    data |= ((uint64_t)decoder_get(self_p) << 56);
-    memcpy(&value, &data, sizeof(value));
-
-    return (value);
-}}
-'''
-
-DECODER_READ_BOOL = '''\
-static bool decoder_read_bool(struct decoder_t *self_p,
-                              int wire_type)
-{{
-    if (wire_type != 0) {{
-        return (false);
-    }}
-
-    return (decoder_get(self_p) == 1);
-}}
-'''
-
-DECODER_READ_STRING = '''\
-static char *decoder_read_string(struct decoder_t *self_p,
-                                 int wire_type)
-{{
-    uint64_t length;
-    char *value_p;
-
-    if (wire_type != 2) {{
-        return ("");
-    }}
-
-    length = decoder_read_varint(self_p, 0);
-    value_p = heap_alloc(self_p->heap_p, length + 1);
-
-    if (value_p == NULL) {{
-        return ("");
-    }}
-
-    decoder_read(self_p, (uint8_t *)value_p, length);
-    value_p[length] = '\\0';
-
-    return (value_p);
-}}
-'''
-
-DECODER_READ_BYTES = '''\
-static uint8_t *decoder_read_bytes(struct decoder_t *self_p,
-                                   int wire_type,
-                                   size_t *size_p)
-{{
-    uint64_t size;
-    uint8_t *value_p;
-
-    if (wire_type != 2) {{
-        return (NULL);
-    }}
-
-    size = decoder_read_varint(self_p, 0);
-    value_p = heap_alloc(self_p->heap_p, size);
-
-    if (value_p == NULL) {{
-        return (NULL);
-    }}
-
-    decoder_read(self_p, value_p, size);
-    *size_p = size;
-
-    return (value_p);
-}}
 '''
 
 MESSAGE_STRUCT_FMT = '''\
@@ -868,7 +109,7 @@ MESSAGE_STRUCT_FMT = '''\
  * Message {proto_name} in package {package}.
  */
 struct {namespace}_{name}_t {{
-    struct {namespace}_heap_t *heap_p;
+    struct pbtools_heap_t *heap_p;
 {members}
 }};
 '''
@@ -918,19 +159,19 @@ int {namespace}_{name}_decode(
 MESSAGE_INNER_FMT = '''\
 static void {namespace}_{name}_encode_inner(
     struct {namespace}_{name}_t *self_p,
-    struct encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p)
 {{
 {encode_body}\
 }}
 
 static void {namespace}_{name}_decode_inner(
     struct {namespace}_{name}_t *self_p,
-    struct decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p)
 {{
     int wire_type;
 
-    while (decoder_available(decoder_p)) {{
-        switch (decoder_read_tag(decoder_p, &wire_type)) {{
+    while (pbtools_decoder_available(decoder_p)) {{
+        switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {{
 
 {decode_body}
         default:
@@ -941,38 +182,34 @@ static void {namespace}_{name}_decode_inner(
 '''
 
 ENCODE_INNER_MEMBER_FMT = '''\
-    encoder_write_{type}(encoder_p, {field_number}, self_p->{name});
+    pbtools_encoder_write_{type}(encoder_p, {field_number}, self_p->{name});
 '''
 
 ENCODE_INNER_MEMBER_STRING_FMT = '''\
-    encoder_write_string(encoder_p, {field_number}, self_p->{name}_p);
+    pbtools_encoder_write_string(encoder_p, {field_number}, self_p->{name}_p);
 '''
 
 ENCODE_INNER_MEMBER_BYTES_FMT = '''\
-    encoder_write_bytes(encoder_p,
-                        {field_number},
-                        self_p->{name}.buf_p,
-                        self_p->{name}.size);
+    pbtools_encoder_write_bytes(encoder_p, {field_number}, &self_p->{name});
 '''
 
 DECODE_INNER_MEMBER_FMT = '''\
         case {field_number}:
-            self_p->{name} = decoder_read_{type}(decoder_p, wire_type);
+            self_p->{name} = pbtools_decoder_read_{type}(decoder_p, wire_type);
             break;
 '''
 
 DECODE_INNER_MEMBER_STRING_FMT = '''\
         case {field_number}:
-            self_p->{name}_p = decoder_read_string(decoder_p, wire_type);
+            self_p->{name}_p = pbtools_decoder_read_string(decoder_p, wire_type);
             break;
 '''
 
 DECODE_INNER_MEMBER_BYTES_FMT = '''\
         case {field_number}:
-            self_p->{name}.buf_p = decoder_read_bytes(
-                decoder_p,
-                wire_type,
-                &self_p->{name}.size);
+            pbtools_decoder_read_bytes(decoder_p,
+                                       wire_type,
+                                       &self_p->{name});
             break;
 '''
 
@@ -982,15 +219,15 @@ struct {namespace}_{name}_t *{namespace}_{name}_new(
     size_t size)
 {{
     struct {namespace}_{name}_t *self_p;
-    struct {namespace}_heap_t *heap_p;
+    struct pbtools_heap_t *heap_p;
 
-    heap_p = heap_new(workspace_p, size);
+    heap_p = pbtools_heap_new(workspace_p, size);
 
     if (heap_p == NULL) {{
         return (NULL);
     }}
 
-    self_p = heap_alloc(heap_p, sizeof(*self_p));
+    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
 
     if (self_p != NULL) {{
         self_p->heap_p = heap_p;
@@ -1005,12 +242,12 @@ int {namespace}_{name}_encode(
     uint8_t *encoded_p,
     size_t size)
 {{
-    struct encoder_t encoder;
+    struct pbtools_encoder_t encoder;
 
-    encoder_init(&encoder, encoded_p, size);
+    pbtools_encoder_init(&encoder, encoded_p, size);
     {namespace}_{name}_encode_inner(self_p, &encoder);
 
-    return (encoder_get_result(&encoder));
+    return (pbtools_encoder_get_result(&encoder));
 }}
 
 int {namespace}_{name}_decode(
@@ -1018,12 +255,12 @@ int {namespace}_{name}_decode(
     const uint8_t *encoded_p,
     size_t size)
 {{
-    struct decoder_t decoder;
+    struct pbtools_decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
     {namespace}_{name}_decode_inner(self_p, &decoder);
 
-    return (decoder_get_result(&decoder));
+    return (pbtools_decoder_get_result(&decoder));
 }}
 '''
 
@@ -1045,7 +282,7 @@ def camel_to_snake_case(value):
     return value
 
 
-def _generate_member_fmt(type, name):
+def generate_struct_member_fmt(type, name):
     if type in ['int32', 'int64', 'uint32', 'uint64']:
         return f'    {type}_t {name};'
     elif type in ['sint32', 'sint64']:
@@ -1059,19 +296,58 @@ def _generate_member_fmt(type, name):
     elif type == 'string':
         return f'    char *{name}_p;'
     elif type == 'bytes':
-        return '\n'.join(['    struct {',
-                          '        uint8_t *buf_p;',
-                          '        size_t size;',
-                          f'    }} {name};'])
+        return f'    struct pbtools_bytes_t {name};'
     else:
         return f'    {camel_to_snake_case(type)}_t {name};'
 
 
-def _generate_members(message):
+REPEATED_STRUCT_MEMBER_BYTES_FMT = '''\
+    struct {{
+        uint8_t *buf_p;
+        size_t size;
+    }} \
+'''
+
+
+REPEATED_STRUCT_MEMBER_FMT = '''\
+    struct {{
+        int length;
+        {type}*items_p;
+    }} {name};\
+'''
+
+
+def generate_repeated_struct_member_fmt(type, name):
+    if type in ['int32', 'int64', 'uint32', 'uint64']:
+        type = f'{type}_t '
+    elif type in ['sint32', 'sint64']:
+        type = f'{type[1:]}_t '
+    elif type in ['fixed32', 'fixed64']:
+        type = f'uint{type[5:]}_t '
+    elif type in ['sfixed32', 'sfixed64']:
+        type = f'int{type[6:]}_t '
+    elif type in ['float', 'double', 'bool']:
+        type = f'{type} ;'
+    elif type == 'string':
+        type = f'char *'
+    elif type == 'bytes':
+        type = REPEATED_STRUCT_MEMBER_BYTES_FMT.format(name=name)
+    else:
+        type = f'{camel_to_snake_case(type)}_t '
+
+    return REPEATED_STRUCT_MEMBER_FMT.format(type=type, name=name)
+
+
+def generate_struct_members(message):
     members = []
 
     for field in message.fields:
-        members.append(_generate_member_fmt(field.type, field.name))
+        if field.repeated:
+            members.append(generate_repeated_struct_member_fmt(field.type,
+                                                               field.name))
+        else:
+            members.append(generate_struct_member_fmt(field.type,
+                                                      field.name))
 
     return members
 
@@ -1080,7 +356,7 @@ def generate_structs(namespace, parsed):
     structs = []
 
     for message in parsed.messages:
-        members = _generate_members(message)
+        members = generate_struct_members(message)
         structs.append(
             MESSAGE_STRUCT_FMT.format(namespace=namespace,
                                       package=parsed.package,
@@ -1184,100 +460,19 @@ def generate_definitions(namespace, parsed):
     return '\n'.join(definitions)
 
 
-def generate_encoder_helpers(definitions, namespace_upper):
-    helpers = []
-
-    functions = [
-        ('encoder_write_bytes(', ENCODER_WRITE_BYTES),
-        ('encoder_write_string(', ENCODER_WRITE_STRING),
-        ('encoder_write_bool(', ENCODER_WRITE_BOOL),
-        ('encoder_write_double(', ENCODER_WRITE_DOUBLE),
-        ('encoder_write_float(', ENCODER_WRITE_FLOAT),
-        ('encoder_write_sfixed64(', ENCODER_WRITE_SFIXED64),
-        ('encoder_write_sfixed32(', ENCODER_WRITE_SFIXED32),
-        ('encoder_write_fixed64(', ENCODER_WRITE_FIXED64),
-        ('encoder_write_fixed32(', ENCODER_WRITE_FIXED32),
-        ('encoder_write_uint64(', ENCODER_WRITE_UINT64),
-        ('encoder_write_uint32(', ENCODER_WRITE_UINT32),
-        ('encoder_write_sint64(', ENCODER_WRITE_SINT64),
-        ('encoder_write_sint32(', ENCODER_WRITE_SINT32),
-        ('encoder_write_int64(', ENCODER_WRITE_INT64),
-        ('encoder_write_int32(', ENCODER_WRITE_INT32),
-        ('encoder_write_varint(', ENCODER_WRITE_VARINT),
-        ('encoder_write_tag(', ENCODER_WRITE_TAG),
-        ('encoder_write(', ENCODER_WRITE),
-        ('encoder_put(', ENCODER_PUT),
-        ('encoder_abort(', ENCODER_ABORT)
-    ]
-
-    for pattern, definition in functions:
-        is_in_helpers = any([pattern in helper for helper in helpers])
-
-        if pattern in definitions or is_in_helpers:
-            helpers.insert(0, definition)
-
-    return '\n'.join(helpers).format(namespace_upper=namespace_upper)
-
-
-def generate_decode_helpers(definitions, namespace_upper):
-    helpers = []
-
-    functions = [
-        ('decoder_read_bytes(', DECODER_READ_BYTES),
-        ('decoder_read_string(', DECODER_READ_STRING),
-        ('decoder_read_bool(', DECODER_READ_BOOL),
-        ('decoder_read_double(', DECODER_READ_DOUBLE),
-        ('decoder_read_float(', DECODER_READ_FLOAT),
-        ('decoder_read_sfixed64(', DECODER_READ_SFIXED64),
-        ('decoder_read_sfixed32(', DECODER_READ_SFIXED32),
-        ('decoder_read_fixed64(', DECODER_READ_FIXED64),
-        ('decoder_read_fixed32(', DECODER_READ_FIXED32),
-        ('decoder_read_uint64(', DECODER_READ_UINT64),
-        ('decoder_read_uint32(', DECODER_READ_UINT32),
-        ('decoder_read_sint64(', DECODER_READ_SINT64),
-        ('decoder_read_sint32(', DECODER_READ_SINT32),
-        ('decoder_read_int64(', DECODER_READ_INT64),
-        ('decoder_read_int32(', DECODER_READ_INT32),
-        ('decoder_read_tag(', DECODER_READ_TAG),
-        ('decoder_read_varint(', DECODER_READ_VARINT),
-        ('decoder_read(', DECODER_READ),
-        ('decoder_get(', DECODER_GET),
-        ('decoder_available(', DECODER_AVAILABLE),
-        ('decoder_abort(', DECODER_ABORT)
-    ]
-
-    for pattern, definition in functions:
-        is_in_helpers = any([pattern in helper for helper in helpers])
-
-        if pattern in definitions or is_in_helpers:
-            helpers.insert(0, definition)
-
-    return '\n'.join(helpers).format(namespace_upper=namespace_upper)
-
-
-def generate_helpers(definitions, namespace_upper):
-    encoder_helpers = generate_encoder_helpers(definitions, namespace_upper)
-    decoder_helpers = generate_decode_helpers(definitions, namespace_upper)
-
-    return encoder_helpers, decoder_helpers
-
-
 def generate(namespace, parsed, header_name):
     """Generate C source code from given parsed proto-file.
 
     """
 
     date = time.ctime()
-    namespace = camel_to_snake_case(namespace)
+    namespace = camel_to_snake_case(parsed.package)
     namespace_upper = namespace.upper()
     include_guard = '{}_H'.format(namespace_upper)
 
     structs = generate_structs(namespace, parsed)
     declarations = generate_declarations(namespace, parsed)
     definitions = generate_definitions(namespace, parsed)
-    encoder_helpers, decoder_helpers = generate_helpers(definitions,
-                                                        namespace_upper)
-    helpers = ''
 
     header = HEADER_FMT.format(version=__version__,
                                date=date,
@@ -1292,9 +487,6 @@ def generate(namespace, parsed, header_name):
                                namespace=namespace,
                                namespace_upper=namespace.upper(),
                                header=header_name,
-                               encoder_helpers=encoder_helpers,
-                               decoder_helpers=decoder_helpers,
-                               helpers=helpers,
                                definitions=definitions)
 
     return header, source

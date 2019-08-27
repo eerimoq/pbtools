@@ -69,7 +69,7 @@ class CommandLineTest(unittest.TestCase):
     def test_command_line_generate_c_source_headers(self):
         specs = [
             # 'enum',
-            # 'repeated',
+            'repeated',
             # 'address_book',
             # 'message',
             # 'oneof',
