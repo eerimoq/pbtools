@@ -511,6 +511,19 @@ static void encoder_write_string(struct encoder_t *self_p,
 }}
 '''
 
+ENCODER_WRITE_BYTES = '''\
+static void encoder_write_bytes(struct encoder_t *self_p,
+                                int field_number,
+                                uint8_t *buf_p,
+                                size_t size)
+{{
+    if (size > 0) {{
+        encoder_write(self_p, buf_p, size);
+        encoder_write_varint(self_p, field_number, 2, size);
+    }}
+}}
+'''
+
 DECODER_ABORT = '''\
 static void decoder_abort(struct decoder_t *self_p,
                           int error)
@@ -824,6 +837,32 @@ static char *decoder_read_string(struct decoder_t *self_p,
 }}
 '''
 
+DECODER_READ_BYTES = '''\
+static uint8_t *decoder_read_bytes(struct decoder_t *self_p,
+                                   int wire_type,
+                                   size_t *size_p)
+{{
+    uint64_t size;
+    uint8_t *value_p;
+
+    if (wire_type != 2) {{
+        return (NULL);
+    }}
+
+    size = decoder_read_varint(self_p, 0);
+    value_p = heap_alloc(self_p->heap_p, size);
+
+    if (value_p == NULL) {{
+        return (NULL);
+    }}
+
+    decoder_read(self_p, value_p, size);
+    *size_p = size;
+
+    return (value_p);
+}}
+'''
+
 MESSAGE_STRUCT_FMT = '''\
 /**
  * Message {proto_name} in package {package}.
@@ -906,7 +945,14 @@ ENCODE_INNER_MEMBER_FMT = '''\
 '''
 
 ENCODE_INNER_MEMBER_STRING_FMT = '''\
-    encoder_write_{type}(encoder_p, {field_number}, self_p->{name}_p);
+    encoder_write_string(encoder_p, {field_number}, self_p->{name}_p);
+'''
+
+ENCODE_INNER_MEMBER_BYTES_FMT = '''\
+    encoder_write_bytes(encoder_p,
+                        {field_number},
+                        self_p->{name}.buf_p,
+                        self_p->{name}.size);
 '''
 
 DECODE_INNER_MEMBER_FMT = '''\
@@ -917,7 +963,16 @@ DECODE_INNER_MEMBER_FMT = '''\
 
 DECODE_INNER_MEMBER_STRING_FMT = '''\
         case {field_number}:
-            self_p->{name}_p = decoder_read_{type}(decoder_p, wire_type);
+            self_p->{name}_p = decoder_read_string(decoder_p, wire_type);
+            break;
+'''
+
+DECODE_INNER_MEMBER_BYTES_FMT = '''\
+        case {field_number}:
+            self_p->{name}.buf_p = decoder_read_bytes(
+                decoder_p,
+                wire_type,
+                &self_p->{name}.size);
             break;
 '''
 
@@ -1055,9 +1110,12 @@ def generate_message_encode_body(message):
     for field in message.fields:
         if field.type == 'string':
             members.append(
-                ENCODE_INNER_MEMBER_STRING_FMT.format(type=field.type,
-                                                      field_number=field.field_number,
+                ENCODE_INNER_MEMBER_STRING_FMT.format(field_number=field.field_number,
                                                       name=field.name))
+        elif field.type == 'bytes':
+            members.append(
+                ENCODE_INNER_MEMBER_BYTES_FMT.format(field_number=field.field_number,
+                                                     name=field.name))
         elif field.type in PRIMITIVE_TYPES:
             members.append(
                 ENCODE_INNER_MEMBER_FMT.format(type=field.type,
@@ -1074,8 +1132,11 @@ def generate_message_decode_body(message):
         if field.type == 'string':
             members.append(
                 DECODE_INNER_MEMBER_STRING_FMT.format(field_number=field.field_number,
-                                                      type=field.type,
                                                       name=field.name))
+        elif field.type == 'bytes':
+            members.append(
+                DECODE_INNER_MEMBER_BYTES_FMT.format(field_number=field.field_number,
+                                                     name=field.name))
         elif field.type in PRIMITIVE_TYPES:
             members.append(
                 DECODE_INNER_MEMBER_FMT.format(field_number=field.field_number,
@@ -1093,6 +1154,8 @@ def generate_message_members_init(message):
 
         if field.type == 'string':
             members.append(f'        self_p->{name}_p = "";')
+        elif field.type == 'bytes':
+            members.append(f'        self_p->{name}.size = 0;')
         elif field.type in PRIMITIVE_TYPES:
             members.append(f'        self_p->{name} = 0;')
 
@@ -1125,6 +1188,7 @@ def generate_encoder_helpers(definitions, namespace_upper):
     helpers = []
 
     functions = [
+        ('encoder_write_bytes(', ENCODER_WRITE_BYTES),
         ('encoder_write_string(', ENCODER_WRITE_STRING),
         ('encoder_write_bool(', ENCODER_WRITE_BOOL),
         ('encoder_write_double(', ENCODER_WRITE_DOUBLE),
@@ -1159,6 +1223,7 @@ def generate_decode_helpers(definitions, namespace_upper):
     helpers = []
 
     functions = [
+        ('decoder_read_bytes(', DECODER_READ_BYTES),
         ('decoder_read_string(', DECODER_READ_STRING),
         ('decoder_read_bool(', DECODER_READ_BOOL),
         ('decoder_read_double(', DECODER_READ_DOUBLE),
