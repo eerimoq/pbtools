@@ -25,6 +25,7 @@
 #include "files/c_source/address_book.h"
 #include "files/c_source/tags.h"
 #include "files/c_source/oneof.h"
+#include "files/c_source/repeated.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 

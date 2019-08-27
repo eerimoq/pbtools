@@ -47,18 +47,15 @@ struct repeated_message_t {
     } int32s;
     struct {
         int length;
-        message_t *items_p;
+        struct repeated_message_t *items_p;
     } messages;
     struct {
         int length;
-        char **items_p;
+        char **items_pp;
     } strings;
     struct {
         int length;
-            struct {
-        uint8_t *buf_p;
-        size_t size;
-    } *items_p;
+        struct pbtools_bytes_t *items_p;
     } bytes;
 };
 

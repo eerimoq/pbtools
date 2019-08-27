@@ -21,5 +21,6 @@ all:
 	    files/c_source/address_book.c \
 	    files/c_source/tags.c \
 	    files/c_source/oneof.c \
+	    files/c_source/repeated.c \
 	    main.c
 	./a.out
