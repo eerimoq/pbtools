@@ -42,9 +42,40 @@ struct pbtools_heap_t {
     int pos;
 };
 
+struct pbtools_int32_t {
+    int32_t value;
+    struct pbtools_int32_t *next_p;
+};
+
+struct pbtools_int64_t {
+    int64_t value;
+    struct pbtools_int64_t *next_p;
+};
+
+struct pbtools_uint32_t {
+    uint32_t value;
+    struct pbtools_uint32_t *next_p;
+};
+
+struct pbtools_uint64_t {
+    uint64_t value;
+    struct pbtools_uint64_t *next_p;
+};
+
+struct pbtools_bool_t {
+    bool value;
+    struct pbtools_bool_t *next_p;
+};
+
+struct pbtools_string_t {
+    char *value_p;
+    struct pbtools_string_t *next_p;
+};
+
 struct pbtools_bytes_t {
     uint8_t *buf_p;
     size_t size;
+    struct pbtools_bytes_t *next_p;
 };
 
 struct pbtools_encoder_t {

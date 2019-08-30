@@ -41,21 +41,22 @@
  */
 struct repeated_message_t {
     struct pbtools_heap_t *heap_p;
+    struct repeated_message_t *next_p;
     struct {
-        int length;
-        int32_t *items_p;
+        struct pbtools_int32_t *head_p;
+        struct pbtools_int32_t *tail_p;
     } int32s;
     struct {
-        int length;
-        struct repeated_message_t *items_p;
+        struct repeated_message_t *head_p;
+        struct repeated_message_t *tail_p;
     } messages;
     struct {
-        int length;
-        char **items_pp;
+        struct pbtools_string_t *head_p;
+        struct pbtools_string_t *tail_p;
     } strings;
     struct {
-        int length;
-        struct pbtools_bytes_t *items_p;
+        struct pbtools_bytes_t *head_p;
+        struct pbtools_bytes_t *tail_p;
     } bytes;
 };
 

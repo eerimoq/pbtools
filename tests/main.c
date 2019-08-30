@@ -910,6 +910,8 @@ TEST(enum_)
     }
 }
 
+#if 0
+
 TEST(address_book)
 {
     uint8_t encoded[75];
@@ -925,8 +927,7 @@ TEST(address_book)
 
     /* Add one person to the address book. */
     ASSERT_EQ(address_book_address_book_people_alloc(address_book_p, 1), 0);
-    person_p = &address_book_p->people.items_p[0];
-    ASSERT_NE(person_p, NULL);
+    person_p = address_book_address_book_people_get(address_book_p, 0);
     person_p->name_p = "Kalle Kula";
     person_p->id = 56;
     person_p->email_p = "kalle.kula@foobar.com";
@@ -935,14 +936,12 @@ TEST(address_book)
     ASSERT_EQ(address_book_person_phones_alloc(person_p, 2), 0);
 
     /* Home. */
-    phone_number_p = &person_p->phones.items_p[0];
-    ASSERT_NE(phone_number_p, NULL);
+    phone_number_p = person_p->phones.items_pp[0];
     phone_number_p->number_p = "+46701232345";
     phone_number_p->type = address_book_person_phone_type_home_e;
 
     /* Work. */
-    phone_number_p = &person_p->phones.items_p[1];
-    ASSERT_NE(phone_number_p, NULL);
+    phone_number_p = person_p->phones.items_pp[1];
     phone_number_p->number_p = "+46999999999";
     phone_number_p->type = address_book_person_phone_type_work_e;
 
@@ -968,25 +967,26 @@ TEST(address_book)
     ASSERT_NE(address_book_p, NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
     ASSERT_EQ(size, 75);
-    ASSERT_EQ(address_book_p->people.length, 1);
 
     /* Check the decoded person. */
-    person_p = &address_book_p->people.items_p[0];
-    ASSERT_NE(person_p, NULL);
+    ASSERT_EQ(address_book_p->people.length, 1);
+    person_p = address_book_p->people.items_pp[0];
     ASSERT_NE(person_p->name_p, NULL);
     ASSERT_SUBSTRING(person_p->name_p, "Kalle Kula");
     ASSERT_EQ(person_p->id, 56);
     ASSERT_NE(person_p->email_p, NULL);
     ASSERT_SUBSTRING(person_p->email_p, "kalle.kula@foobar.com");
+
+    /* Check phone numbers. */
     ASSERT_EQ(person_p->phones.length, 2);
 
-    /* Check home phone number. */
-    phone_number_p = &person_p->phones.items_p[0];
+    /* Home. */
+    phone_number_p = person_p->phones.items_pp[0];
     ASSERT_SUBSTRING(phone_number_p->number_p, "+46701232345");
     ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_home_e);
 
-    /* Check work phone number. */
-    phone_number_p = &person_p->phones.items_p[1];
+    /* Work. */
+    phone_number_p = person_p->phones.items_pp[1];
     ASSERT_SUBSTRING(phone_number_p->number_p, "+46999999999");
     ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_work_e);
 }
@@ -1014,7 +1014,7 @@ TEST(address_book_default)
     ASSERT_NE(address_book_p, NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
     ASSERT_EQ(size, 0);
-    ASSERT_EQ(address_book_p->people.length, 0);
+    ASSERT_EQ(address_book_address_book_people_length(address_book_p), 0);
 }
 
 TEST(address_book_default_person)
@@ -1045,18 +1045,19 @@ TEST(address_book_default_person)
     ASSERT_NE(address_book_p, NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(address_book_p->people.length, 1);
+    ASSERT_EQ(address_book_address_book_people_length(address_book_p), 1);
 
     /* Check the decoded person. */
-    person_p = &address_book_p->people.items_p[0];
-    ASSERT_NE(person_p, NULL);
+    person_p = address_book_address_book_people_get(address_book_p, 0);
     ASSERT_NE(person_p->name_p, NULL);
     ASSERT_SUBSTRING(person_p->name_p, "");
     ASSERT_EQ(person_p->id, 0);
     ASSERT_NE(person_p->email_p, NULL);
     ASSERT_SUBSTRING(person_p->email_p, "");
-    ASSERT_EQ(person_p->phones.length, 0);
+    ASSERT_EQ(address_book_person_phones_length(person_p), 0);
 }
+
+#endif
 
 TEST(tags_1)
 {
@@ -1234,6 +1235,197 @@ TEST(oneof_v2)
     ASSERT_EQ(strcmp(message_p->value.value.v2_p, "Hello!"), 0);
 }
 
+#if 0
+
+TEST(repeated_int32s_one_item)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+    struct pbtools_int32_t *int32_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_int32s_alloc(message_p, 1), 0);
+    message_p->items_pp[0]->value = 1;
+    size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(memcmp(&encoded[0], "\x0a\x01\x01", size), 0);
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 3);
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->messages.length, 0);
+    ASSERT_EQ(message_p->strings.length, 0);
+    ASSERT_EQ(message_p->bytes.length, 0);
+}
+
+TEST(repeated_int32s_two_items)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+    struct pbtools_int32_t *int32_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_int32s_alloc(message_p, 2), 0);
+    message_p->int32s.items_pp[0]->value = 1;
+    message_p->int32s.items_pp[1]->value = 1000;
+    size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(memcmp(&encoded[0], "\x0a\x03\x01\xe8\x07", size), 0);
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(message_p->int32s.length, 2);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[1]->value, 1000);
+}
+
+TEST(repeated_int32s_decode_segments)
+{
+    int i;
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+    struct pbtools_int32_t *int32_p;
+    struct {
+        int size;
+        const char *encoded_p;
+    } datas[] = {
+        { 5, "\x0a\x03\x01\x02\x03" },
+        { 7, "\x0a\x01\x01\x0a\x02\x02\x03" }
+    };
+
+    for (i = 0; i < membersof(datas); i++) {
+        message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+        size = repeated_message_decode(message_p,
+                                       (uint8_t *)datas[i].encoded_p,
+                                       datas[i].size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->int32s.length, 3);
+        ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+        ASSERT_EQ(message_p->int32s.items_pp[1]->value, 2);
+        ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
+    }
+}
+
+TEST(repeated_nested)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+    struct repeated_message_t *message_1_p;
+    struct repeated_message_t *message_2_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+
+    /* int32s[0..2]. */
+    ASSERT_EQ(repeated_message_int32s_alloc(message_p, 3), 0);
+    message_p->int32s.items_pp[0]->value = 1;
+    message_p->int32s.items_pp[1]->value = 2;
+    message_p->int32s.items_pp[2]->value = 3;
+
+    /* strings[0..1]. */
+    ASSERT_EQ(repeated_message_strings_alloc(message_p, 2), 0);
+    message_p->strings.items_pp[0]->value_p = "foo";
+    message_p->strings.items_pp[1]->value_p = "bar";
+
+    /* messages[0]. */
+    ASSERT_EQ(repeated_message_messages_alloc(message_p, 2), 0);
+    message_1_p = message_p->messages.items_pp[0];
+
+    /* messages[0].int32s[0]. */
+    ASSERT_EQ(repeated_message_int32s_alloc(message_1_p, 1), 0);
+    message_1_p->int32s.items_pp[0]->value = 9;
+
+    /* messages[0].messages[0]. */
+    ASSERT_EQ(repeated_message_messages_alloc(message_1_p, 1), 0);
+    message_2_p = message_1->messages.items_pp[0];
+
+    /* messages[0].messages[0].int32s[0..1]. */
+    ASSERT_EQ(repeated_message_int32s_alloc(message_2_p, 2), 0);
+    message_2_p->int32s.items_pp[0]->value = 5;
+    message_2_p->int32s.items_pp[1]->value = 7;
+
+    /* messages[1].int32s[0]. */
+    message_1_p = message_p->messages.items_pp[1];
+    ASSERT_EQ(repeated_message_int32s_alloc(message_1_p, 1), 0);
+    message_1_p->int32s.items_pp[0]->value = 5;
+
+    size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 31);
+    ASSERT_EQ(memcmp(&encoded[0],
+                     "\x0a\x03\x01\x02\x03\x12\x09\x0a\x01\x09"
+                     "\x12\x04\x0a\x02\x05\x07\x12\x03\x0a\x01"
+                     "\x05\x1a\x03\x66\x6f\x6f\x1a\x03\x62\x61"
+                     "\x72",
+                     size), 0);
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 31);
+
+    /* int32s[0..2]. */
+    ASSERT_EQ(message_p->int32s.length, 3);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[1]->value, 2);
+    ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
+
+    /* strings[0..1]. */
+    ASSERT_EQ(message_p->strings.length, 2);
+    ASSERT_SUBSTRING(message_p->strings.items_pp[0]->value_p, "foo");
+    ASSERT_SUBSTRING(message_p->strings.items_pp[1]->value_p, "bar");
+
+    /* messages[0]. */
+    ASSERT_EQ(message_p->messages.length, 2);
+    message_1_p = message_p->messages.items_pp[0];
+
+    /* messages[0].int32s[0]. */
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_1_p->int32s.items_pp[0]->value, 9);
+
+    /* messages[0].messages[0]. */
+    ASSERT_EQ(message_1_p->messages.length, 1);
+    message_2_p = message_1->messages.items_pp[0];
+
+    /* messages[0].messages[0].int32s[0..1]. */
+    ASSERT_EQ(message_2_p->int32s.length, 2);
+    ASSERT_EQ(message_2_p->int32s.items_pp[0]->value, 5);
+    ASSERT_EQ(message_2_p->int32s.items_pp[1]->value, 7);
+
+    /* messages[1].int32s[0]. */
+    message_1_p = message_p->messages.items_pp[1];
+    ASSERT_EQ(message_1_p->int32s.length, 1);
+    ASSERT_EQ(message_1_p->int32s.items_pp[0]->value, 5);
+}
+
+TEST(repeated_nested_decode_out_of_order)
+{
+    // \x0a\x03\x01\x02\x03\x1a\x03\x66\x6f\x6f
+    // \x12\x09\x0a\x01\x09\x12\x04\x0a\x02\x05
+    // \x07\x12\x03\x0a\x01\x05\x1a\x03\x62\x61
+    // \x72
+
+    // \x0a\x03\x01\x02\x03\x1a\x03\x66\x6f\x6f
+    // \x12\x09\x0a\x01\x09\x12\x04\x0a\x02\x05
+    // \x07\x1a\x03\x62\x61\x72\x12\x03\x0a\x01
+    // \x05
+}
+
+#endif
+
 int main(void)
 {
     return RUN_TESTS(
@@ -1257,9 +1449,9 @@ int main(void)
         string_decode_out_of_data,
         bytes,
         enum_,
-        address_book,
-        address_book_default,
-        address_book_default_person,
+        /* address_book, */
+        /* address_book_default, */
+        /* address_book_default_person, */
         tags_1,
         tags_2,
         tags_3,
@@ -1267,6 +1459,10 @@ int main(void)
         tags_5,
         tags_6,
         oneof_v1,
-        oneof_v2
+        oneof_v2,
+        /* repeated_int32s, */
+        /* repeated_int32s_decode_segments, */
+        /* repeated_nested, */
+        /* repeated_nested_decode_out_of_order */
     );
 }

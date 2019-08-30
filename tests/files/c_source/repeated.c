@@ -36,19 +36,19 @@ static void repeated_message_encode_inner(
     struct repeated_message_t *self_p,
     struct pbtools_encoder_t *encoder_p)
 {
-    int i;
+    /* int i; */
 
-    for (i = 0; i < self_p->int32s.length; i++) {
-        pbtools_encoder_write_int32(encoder_p, 1, self_p->int32s.items_p[i]);
-    }
+    /* for (i = 0; i < self_p->int32s.length; i++) { */
+    /*     pbtools_encoder_write_int32(encoder_p, 1, self_p->int32s.items_p[i]); */
+    /* } */
 
-    for (i = 0; i < self_p->strings.length; i++) {
-        pbtools_encoder_write_string(encoder_p, 3, self_p->strings.items_pp[i]);
-    }
+    /* for (i = 0; i < self_p->strings.length; i++) { */
+    /*     pbtools_encoder_write_string(encoder_p, 3, self_p->strings.items_pp[i]); */
+    /* } */
 
-    for (i = 0; i < self_p->bytes.length; i++) {
-        pbtools_encoder_write_bytes(encoder_p, 4, &self_p->bytes.items_p[i]);
-    }
+    /* for (i = 0; i < self_p->bytes.length; i++) { */
+    /*     pbtools_encoder_write_bytes(encoder_p, 4, &self_p->bytes.items_p[i]); */
+    /* } */
 }
 
 static void repeated_message_decode_inner(
@@ -95,9 +95,10 @@ struct repeated_message_t *repeated_message_new(
 
     if (self_p != NULL) {
         self_p->heap_p = heap_p;
-        self_p->int32s.length = 0;
-        self_p->strings.length = 0;
-        self_p->bytes.length = 0;
+        self_p->int32s.head_p = NULL;
+        self_p->messages.head_p = NULL;
+        self_p->strings.head_p = NULL;
+        self_p->bytes.head_p = NULL;
     }
 
     return (self_p);
