@@ -1,5 +1,5 @@
 /*
-Narwhal v0.3.1 (https://github.com/vberlier/narwhal)
+Narwhal v0.3.3 (https://github.com/vberlier/narwhal)
 Amalgamated header file
 
 Generated with amalgamate.py (https://github.com/edlund/amalgamate)
@@ -145,27 +145,35 @@ bool narwhal_check_assertion(NarwhalTest *test,
 
 bool narwhal_check_string_equal(char *actual, char *expected);
 bool narwhal_check_substring(char *string, char *substring);
+bool narwhal_check_memory_equal(const void *actual, const void *expected, size_t size);
 
 char *narwhal_assertion_process_string(char *string);
 
 #define _NARWHAL_TEST_FAILURE(...)                             \
-    ({                                                         \
+    do                                                         \
+    {                                                          \
         narwhal_fail_test(_narwhal_current_test, __VA_ARGS__); \
         return;                                                \
-    })
+    } while (0)
 
-#define FAIL(...)                                                         \
-    if (({                                                                \
-            narwhal_pipe_assertion_failure(                               \
-                _narwhal_current_test->result, NULL, __FILE__, __LINE__); \
-            true;                                                         \
-        }))                                                               \
-    _NARWHAL_TEST_FAILURE("" __VA_ARGS__)
+#define FAIL(...)                                                                            \
+    do                                                                                       \
+    {                                                                                        \
+        if (narwhal_check_assertion(_narwhal_current_test, false, NULL, __FILE__, __LINE__)) \
+        {                                                                                    \
+            _NARWHAL_TEST_FAILURE("" __VA_ARGS__);                                           \
+        }                                                                                    \
+    } while (0)
 
-#define ASSERT(assertion, ...)                                                   \
-    if (narwhal_check_assertion(                                                 \
-            _narwhal_current_test, (assertion), #assertion, __FILE__, __LINE__)) \
-    _NARWHAL_TEST_FAILURE("" __VA_ARGS__)
+#define ASSERT(assertion, ...)                                                       \
+    do                                                                               \
+    {                                                                                \
+        if (narwhal_check_assertion(                                                 \
+                _narwhal_current_test, (assertion), #assertion, __FILE__, __LINE__)) \
+        {                                                                            \
+            _NARWHAL_TEST_FAILURE("" __VA_ARGS__);                                   \
+        }                                                                            \
+    } while (0)
 
 #define _NARWHAL_PRINT_FORMAT(value) \
     _Generic((value), \
@@ -295,6 +303,19 @@ char *narwhal_assertion_process_string(char *string);
                               _NARWHAL_CHECK_NOT_SUBSTRING,                  \
                               "strstr(" #string ", " #substring ") == NULL", \
                               "First argument %s contains %s.")
+
+#define ASSERT_MEMORY(left, right, size)                                                 \
+    do                                                                                   \
+    {                                                                                    \
+        if (narwhal_check_assertion(_narwhal_current_test,                               \
+                                    narwhal_check_memory_equal((left), (right), (size)), \
+                                    "memcmp(" #left ", " #right ", " #size ") == 0",     \
+                                    __FILE__,                                            \
+                                    __LINE__))                                           \
+        {                                                                                \
+            _NARWHAL_TEST_FAILURE("");                                                   \
+        }                                                                                \
+    } while (0)
 
 #endif
 
@@ -569,15 +590,14 @@ void narwhal_free_test_group(NarwhalTestGroup *test_group);
 
 #endif
 
-// #include "narwhal/mock.h"
-#ifndef NARWHAL_MOCK_H
-#define NARWHAL_MOCK_H
+// #include "narwhal/hexdump/hexdump.h"
+#ifndef NARWHAL_HEXDUMP_H
+#define NARWHAL_HEXDUMP_H
 
-#define MOCK(function)        \
-    ({                        \
-        (void)function;       \
-        narmock_##function(); \
-    })
+#include <stdint.h>
+#include <stdlib.h>
+
+char *narwhal_hexdump(const uint8_t *buffer, size_t size);
 
 #endif
 

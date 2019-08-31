@@ -41,20 +41,20 @@ TEST(int32)
         int size;
         const char *encoded_p;
     } datas[] = {
-         { -0x80000000, 11, "\x08\x80\x80\x80\x80\xf8\xff\xff\xff\xff\x01" },
-         { -0x2,        11, "\x08\xfe\xff\xff\xff\xff\xff\xff\xff\xff\x01" },
-         { -0x1,        11, "\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01" },
-         { 0x0,         0, "" },
-         { 0x1,         2, "\x08\x01" },
-         { 0x7f,        2, "\x08\x7f" },
-         { 0x80,        3, "\x08\x80\x01" },
-         { 0x3fff,      3, "\x08\xff\x7f" },
-         { 0x4000,      4, "\x08\x80\x80\x01" },
-         { 0x1fffff,    4, "\x08\xff\xff\x7f" },
-         { 0x200000,    5, "\x08\x80\x80\x80\x01" },
-         { 0xfffffff,   5, "\x08\xff\xff\xff\x7f" },
-         { 0x10000000,  6, "\x08\x80\x80\x80\x80\x01" },
-         { 0x7fffffff,  6, "\x08\xff\xff\xff\xff\x07" }
+        { -0x80000000, 11, "\x08\x80\x80\x80\x80\xf8\xff\xff\xff\xff\x01" },
+        { -0x2,        11, "\x08\xfe\xff\xff\xff\xff\xff\xff\xff\xff\x01" },
+        { -0x1,        11, "\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01" },
+        { 0x0,         0, "" },
+        { 0x1,         2, "\x08\x01" },
+        { 0x7f,        2, "\x08\x7f" },
+        { 0x80,        3, "\x08\x80\x01" },
+        { 0x3fff,      3, "\x08\xff\x7f" },
+        { 0x4000,      4, "\x08\x80\x80\x01" },
+        { 0x1fffff,    4, "\x08\xff\xff\x7f" },
+        { 0x200000,    5, "\x08\x80\x80\x80\x01" },
+        { 0xfffffff,   5, "\x08\xff\xff\xff\x7f" },
+        { 0x10000000,  6, "\x08\x80\x80\x80\x80\x01" },
+        { 0x7fffffff,  6, "\x08\xff\xff\xff\xff\x07" }
     };
 
     /* Default. */
@@ -71,7 +71,7 @@ TEST(int32)
         message_p->value = datas[i].decoded;
         size = int32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = int32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -94,7 +94,7 @@ TEST(int32_message_2)
     message_p->value = 1;
     size = int32_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 3);
-    ASSERT_EQ(memcmp(&encoded[0], encoded_p, size), 0);
+    ASSERT_MEMORY(&encoded[0], encoded_p, size);
 
     message_p = int32_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -169,7 +169,7 @@ TEST(int64)
         message_p->value = datas[i].decoded;
         size = int64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = int64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -228,7 +228,7 @@ TEST(sint32)
         message_p->value = datas[i].decoded;
         size = sint32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = sint32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -307,7 +307,7 @@ TEST(sint64)
         message_p->value = datas[i].decoded;
         size = sint64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = sint64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -356,7 +356,7 @@ TEST(uint32)
         message_p->value = datas[i].decoded;
         size = uint32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = uint32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -413,7 +413,7 @@ TEST(uint64)
         message_p->value = datas[i].decoded;
         size = uint64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = uint64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -454,7 +454,7 @@ TEST(fixed32)
         message_p->value = datas[i].decoded;
         size = fixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = fixed32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -495,7 +495,7 @@ TEST(fixed64)
         message_p->value = datas[i].decoded;
         size = fixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = fixed64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -538,7 +538,7 @@ TEST(sfixed32)
         message_p->value = datas[i].decoded;
         size = sfixed32_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = sfixed32_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -581,7 +581,7 @@ TEST(sfixed64)
         message_p->value = datas[i].decoded;
         size = sfixed64_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = sfixed64_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -624,7 +624,7 @@ TEST(float_)
         message_p->value = datas[i].decoded;
         size = float_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = float_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -667,7 +667,7 @@ TEST(double_)
         message_p->value = datas[i].decoded;
         size = double_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = double_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -707,7 +707,7 @@ TEST(bool_)
         message_p->value = datas[i].decoded;
         size = bool_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = bool_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -762,7 +762,7 @@ TEST(string)
         message_p->value_p = datas[i].decoded_p;
         size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = string_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -857,16 +857,16 @@ TEST(bytes)
         message_p->value.size = datas[i].decoded_size;
         size = bytes_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = bytes_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
         size = bytes_message_decode(message_p, &encoded[0], size);
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(message_p->value.size, datas[i].decoded_size);
-        ASSERT_EQ(memcmp(message_p->value.buf_p,
-                         datas[i].decoded_p,
-                         datas[i].decoded_size), 0);
+        ASSERT_MEMORY(message_p->value.buf_p,
+                      datas[i].decoded_p,
+                      datas[i].decoded_size);
     }
 }
 
@@ -900,7 +900,7 @@ TEST(enum_)
         message_p->value = datas[i].decoded;
         size = enum_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(memcmp(&encoded[0], datas[i].encoded_p, size), 0);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
 
         message_p = enum_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
@@ -950,16 +950,16 @@ TEST(address_book)
                                             &encoded[0],
                                             sizeof(encoded));
     ASSERT_EQ(size, 75);
-    ASSERT_EQ(memcmp(&encoded[0],
-                     "\x0a\x49\x0a\x0a\x4b\x61\x6c\x6c\x65\x20"
-                     "\x4b\x75\x6c\x61\x10\x38\x1a\x15\x6b\x61"
-                     "\x6c\x6c\x65\x2e\x6b\x75\x6c\x61\x40\x66"
-                     "\x6f\x6f\x62\x61\x72\x2e\x63\x6f\x6d\x22"
-                     "\x10\x0a\x0c\x2b\x34\x36\x37\x30\x31\x32"
-                     "\x33\x32\x33\x34\x35\x10\x01\x22\x10\x0a"
-                     "\x0c\x2b\x34\x36\x39\x39\x39\x39\x39\x39"
-                     "\x39\x39\x39\x10\x02",
-                     size), 0);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x49\x0a\x0a\x4b\x61\x6c\x6c\x65\x20"
+                  "\x4b\x75\x6c\x61\x10\x38\x1a\x15\x6b\x61"
+                  "\x6c\x6c\x65\x2e\x6b\x75\x6c\x61\x40\x66"
+                  "\x6f\x6f\x62\x61\x72\x2e\x63\x6f\x6d\x22"
+                  "\x10\x0a\x0c\x2b\x34\x36\x37\x30\x31\x32"
+                  "\x33\x32\x33\x34\x35\x10\x01\x22\x10\x0a"
+                  "\x0c\x2b\x34\x36\x39\x39\x39\x39\x39\x39"
+                  "\x39\x39\x39\x10\x02",
+                  size);
 
     /* Decode the message. */
     address_book_p = address_book_address_book_new(&workspace[0],
@@ -1037,7 +1037,7 @@ TEST(address_book_default_person)
                                             &encoded[0],
                                             sizeof(encoded));
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(memcmp(&encoded[0], "\x0a\x00", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x00", size);
 
     /* Decode the message. */
     address_book_p = address_book_address_book_new(&workspace[0],
@@ -1071,7 +1071,7 @@ TEST(tags_1)
     message_p->value = true;
     size = tags_message1_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(memcmp(&encoded[0], "\x08\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x08\x01", size);
 
     message_p = tags_message1_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1092,7 +1092,7 @@ TEST(tags_2)
     message_p->value = true;
     size = tags_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(memcmp(&encoded[0], "\x78\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x78\x01", size);
 
     message_p = tags_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1113,7 +1113,7 @@ TEST(tags_3)
     message_p->value = true;
     size = tags_message3_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 3);
-    ASSERT_EQ(memcmp(&encoded[0], "\x80\x01\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x80\x01\x01", size);
 
     message_p = tags_message3_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1134,7 +1134,7 @@ TEST(tags_4)
     message_p->value = true;
     size = tags_message4_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 3);
-    ASSERT_EQ(memcmp(&encoded[0], "\xf8\x7f\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\xf8\x7f\x01", size);
 
     message_p = tags_message4_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1155,7 +1155,7 @@ TEST(tags_5)
     message_p->value = true;
     size = tags_message5_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 4);
-    ASSERT_EQ(memcmp(&encoded[0], "\x80\x80\x01\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x80\x80\x01\x01", size);
 
     message_p = tags_message5_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1176,7 +1176,7 @@ TEST(tags_6)
     message_p->value = true;
     size = tags_message6_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 6);
-    ASSERT_EQ(memcmp(&encoded[0], "\xf8\xff\xff\xff\x0f\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\xf8\xff\xff\xff\x0f\x01", size);
 
     message_p = tags_message6_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1202,7 +1202,7 @@ TEST(oneof_v1)
     message_p->value.value.v1 = 65;
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(memcmp(&encoded[0], "\x08\x41", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x08\x41", size);
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1225,7 +1225,7 @@ TEST(oneof_v2)
     message_p->value.value.v2_p = "Hello!";
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 8);
-    ASSERT_EQ(memcmp(&encoded[0], "\x12\x06Hello!", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x12\x06Hello!", size);
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1251,7 +1251,7 @@ TEST(repeated_int32s_one_item)
     message_p->items_pp[0]->value = 1;
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 3);
-    ASSERT_EQ(memcmp(&encoded[0], "\x0a\x01\x01", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x01\x01", size);
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1279,7 +1279,7 @@ TEST(repeated_int32s_two_items)
     message_p->int32s.items_pp[1]->value = 1000;
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 5);
-    ASSERT_EQ(memcmp(&encoded[0], "\x0a\x03\x01\xe8\x07", size), 0);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x03\x01\xe8\x07", size);
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1365,12 +1365,12 @@ TEST(repeated_nested)
 
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 31);
-    ASSERT_EQ(memcmp(&encoded[0],
-                     "\x0a\x03\x01\x02\x03\x12\x09\x0a\x01\x09"
-                     "\x12\x04\x0a\x02\x05\x07\x12\x03\x0a\x01"
-                     "\x05\x1a\x03\x66\x6f\x6f\x1a\x03\x62\x61"
-                     "\x72",
-                     size), 0);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x03\x01\x02\x03\x12\x09\x0a\x01\x09"
+                  "\x12\x04\x0a\x02\x05\x07\x12\x03\x0a\x01"
+                  "\x05\x1a\x03\x66\x6f\x6f\x1a\x03\x62\x61"
+                  "\x72",
+                  size);
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
