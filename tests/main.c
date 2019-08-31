@@ -1318,13 +1318,11 @@ TEST(repeated_int32s_decode_segments)
     }
 }
 
-#if 0
-
 TEST(repeated_nested)
 {
     uint8_t encoded[128];
     int size;
-    uint8_t workspace[512];
+    uint8_t workspace[1024];
     struct repeated_message_t *message_p;
     struct repeated_message_t *message_1_p;
     struct repeated_message_t *message_2_p;
@@ -1338,11 +1336,6 @@ TEST(repeated_nested)
     message_p->int32s.items_pp[1]->value = 2;
     message_p->int32s.items_pp[2]->value = 3;
 
-    /* strings[0..1]. */
-    ASSERT_EQ(repeated_message_strings_alloc(message_p, 2), 0);
-    message_p->strings.items_pp[0]->value_p = "foo";
-    message_p->strings.items_pp[1]->value_p = "bar";
-
     /* messages[0]. */
     ASSERT_EQ(repeated_message_messages_alloc(message_p, 2), 0);
     message_1_p = message_p->messages.items_pp[0];
@@ -1353,7 +1346,7 @@ TEST(repeated_nested)
 
     /* messages[0].messages[0]. */
     ASSERT_EQ(repeated_message_messages_alloc(message_1_p, 1), 0);
-    message_2_p = message_1->messages.items_pp[0];
+    message_2_p = message_1_p->messages.items_pp[0];
 
     /* messages[0].messages[0].int32s[0..1]. */
     ASSERT_EQ(repeated_message_int32s_alloc(message_2_p, 2), 0);
@@ -1364,6 +1357,11 @@ TEST(repeated_nested)
     message_1_p = message_p->messages.items_pp[1];
     ASSERT_EQ(repeated_message_int32s_alloc(message_1_p, 1), 0);
     message_1_p->int32s.items_pp[0]->value = 5;
+
+    /* strings[0..1]. */
+    ASSERT_EQ(repeated_message_strings_alloc(message_p, 2), 0);
+    message_p->strings.items_pp[0]->value_p = "foo";
+    message_p->strings.items_pp[1]->value_p = "bar";
 
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 31);
@@ -1395,38 +1393,99 @@ TEST(repeated_nested)
     message_1_p = message_p->messages.items_pp[0];
 
     /* messages[0].int32s[0]. */
-    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_1_p->int32s.length, 1);
     ASSERT_EQ(message_1_p->int32s.items_pp[0]->value, 9);
 
     /* messages[0].messages[0]. */
     ASSERT_EQ(message_1_p->messages.length, 1);
-    message_2_p = message_1->messages.items_pp[0];
+    message_2_p = message_1_p->messages.items_pp[0];
 
     /* messages[0].messages[0].int32s[0..1]. */
     ASSERT_EQ(message_2_p->int32s.length, 2);
     ASSERT_EQ(message_2_p->int32s.items_pp[0]->value, 5);
     ASSERT_EQ(message_2_p->int32s.items_pp[1]->value, 7);
 
+    /* messages[0].bytes. */
+    ASSERT_EQ(message_2_p->bytes.length, 0);
+
     /* messages[1].int32s[0]. */
     message_1_p = message_p->messages.items_pp[1];
     ASSERT_EQ(message_1_p->int32s.length, 1);
     ASSERT_EQ(message_1_p->int32s.items_pp[0]->value, 5);
+
+    /* messages[1]. */
+    ASSERT_EQ(message_1_p->messages.length, 0);
+    ASSERT_EQ(message_1_p->strings.length, 0);
+    ASSERT_EQ(message_1_p->bytes.length, 0);
 }
 
 TEST(repeated_nested_decode_out_of_order)
 {
-    // \x0a\x03\x01\x02\x03\x1a\x03\x66\x6f\x6f
-    // \x12\x09\x0a\x01\x09\x12\x04\x0a\x02\x05
-    // \x07\x12\x03\x0a\x01\x05\x1a\x03\x62\x61
-    // \x72
+    int i;
+    int size;
+    uint8_t workspace[1024];
+    struct repeated_message_t *message_p;
+    struct repeated_message_t *message_1_p;
+    struct repeated_message_t *message_2_p;
+    struct {
+        char *encoded_p;
+    } datas[] = {
+         {
+          "\x0a\x03\x01\x02\x03\x1a\x03\x66\x6f\x6f"
+          "\x12\x09\x0a\x01\x09\x12\x04\x0a\x02\x05"
+          "\x07\x12\x03\x0a\x01\x05\x1a\x03\x62\x61"
+          "\x72"
+         },
+         {
+          "\x0a\x03\x01\x02\x03\x1a\x03\x66\x6f\x6f"
+          "\x12\x09\x0a\x01\x09\x12\x04\x0a\x02\x05"
+          "\x07\x1a\x03\x62\x61\x72\x12\x03\x0a\x01"
+          "\x05"
+         }
+    };
 
-    // \x0a\x03\x01\x02\x03\x1a\x03\x66\x6f\x6f
-    // \x12\x09\x0a\x01\x09\x12\x04\x0a\x02\x05
-    // \x07\x1a\x03\x62\x61\x72\x12\x03\x0a\x01
-    // \x05
+    for (i = 0; i < membersof(datas); i++) {
+        message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = repeated_message_decode(message_p,
+                                       (uint8_t *)datas[i].encoded_p,
+                                       31);
+        ASSERT_EQ(size, 31);
+
+        /* int32s[0..2]. */
+        ASSERT_EQ(message_p->int32s.length, 3);
+        ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+        ASSERT_EQ(message_p->int32s.items_pp[1]->value, 2);
+        ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
+
+        /* strings[0..1]. */
+        ASSERT_EQ(message_p->strings.length, 2);
+        ASSERT_SUBSTRING(message_p->strings.items_pp[0]->value_p, "foo");
+        ASSERT_SUBSTRING(message_p->strings.items_pp[1]->value_p, "bar");
+
+        /* messages[0]. */
+        ASSERT_EQ(message_p->messages.length, 2);
+        message_1_p = message_p->messages.items_pp[0];
+
+        /* messages[0].int32s[0]. */
+        ASSERT_EQ(message_1_p->int32s.length, 1);
+        ASSERT_EQ(message_1_p->int32s.items_pp[0]->value, 9);
+
+        /* messages[0].messages[0]. */
+        ASSERT_EQ(message_1_p->messages.length, 1);
+        message_2_p = message_1_p->messages.items_pp[0];
+
+        /* messages[0].messages[0].int32s[0..1]. */
+        ASSERT_EQ(message_2_p->int32s.length, 2);
+        ASSERT_EQ(message_2_p->int32s.items_pp[0]->value, 5);
+        ASSERT_EQ(message_2_p->int32s.items_pp[1]->value, 7);
+
+        /* messages[1].int32s[0]. */
+        message_1_p = message_p->messages.items_pp[1];
+        ASSERT_EQ(message_1_p->int32s.length, 1);
+        ASSERT_EQ(message_1_p->int32s.items_pp[0]->value, 5);
+    }
 }
-
-#endif
 
 int main(void)
 {
@@ -1465,7 +1524,7 @@ int main(void)
         repeated_int32s_one_item,
         repeated_int32s_two_items,
         repeated_int32s_decode_segments,
-        /* repeated_nested, */
-        /* repeated_nested_decode_out_of_order */
+        repeated_nested,
+        repeated_nested_decode_out_of_order
     );
 }
