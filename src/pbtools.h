@@ -118,9 +118,12 @@ void pbtools_encoder_write_tag(struct pbtools_encoder_t *self_p,
                                int wire_type);
 
 void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
-                                  int field_number,
-                                  int wire_type,
                                   uint64_t value);
+
+void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         int wire_type,
+                                         uint64_t value);
 
 void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
                                  int field_number,
@@ -199,6 +202,12 @@ uint8_t pbtools_decoder_get(struct pbtools_decoder_t *self_p);
 void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
                           uint8_t *buf_p,
                           int size);
+
+uint64_t pbtools_decoder_read_varint_value(struct pbtools_decoder_t *self_p);
+
+uint64_t pbtools_decoder_read_varint_todo(struct pbtools_decoder_t *self_p,
+                                          int wire_type,
+                                          int expected_wire_type);
 
 uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
                                      int wire_type);

@@ -32,15 +32,55 @@
 
 #include "repeated.h"
 
+int repeated_message_int32s_alloc(
+    struct repeated_message_t *self_p,
+    int length)
+{
+    int res;
+    int i;
+    struct pbtools_int32_t *items_p;
+
+    res = -1;
+    self_p->int32s.items_pp = pbtools_heap_alloc(
+        self_p->heap_p,
+        sizeof(items_p) * length);
+
+    if (self_p->int32s.items_pp != NULL) {
+        items_p = pbtools_heap_alloc(self_p->heap_p, sizeof(*items_p) * length);
+
+        if (items_p != NULL) {
+            for (i = 0; i < length; i++) {
+                items_p[i].value = 0;
+                items_p[i].next_p = &items_p[i + 1];
+                self_p->int32s.items_pp[i] = &items_p[i];
+            }
+
+            items_p[length - 1].next_p = NULL;
+            self_p->int32s.length = length;
+            self_p->int32s.head_p = &items_p[0];
+            self_p->int32s.tail_p = &items_p[i];
+            res = 0;
+        }
+    }
+
+    return (res);
+}
+
 static void repeated_message_encode_inner(
     struct repeated_message_t *self_p,
     struct pbtools_encoder_t *encoder_p)
 {
-    /* int i; */
+    int i;
+    int pos;
 
-    /* for (i = 0; i < self_p->int32s.length; i++) { */
-    /*     pbtools_encoder_write_int32(encoder_p, 1, self_p->int32s.items_p[i]); */
-    /* } */
+    pos = encoder_p->pos;
+
+    for (i = self_p->int32s.length - 1; i >= 0; i--) {
+        pbtools_encoder_write_varint(encoder_p,
+                                     self_p->int32s.items_pp[i]->value);
+    }
+
+    pbtools_encoder_write_tagged_varint(encoder_p, 1, 2, pos - encoder_p->pos);
 
     /* for (i = 0; i < self_p->strings.length; i++) { */
     /*     pbtools_encoder_write_string(encoder_p, 3, self_p->strings.items_pp[i]); */
@@ -50,18 +90,46 @@ static void repeated_message_encode_inner(
     /*     pbtools_encoder_write_bytes(encoder_p, 4, &self_p->bytes.items_p[i]); */
     /* } */
 }
-
+#include "stdio.h"
 static void repeated_message_decode_inner(
     struct repeated_message_t *self_p,
     struct pbtools_decoder_t *decoder_p)
 {
     int wire_type;
+    size_t size;
+    int pos;
+    struct pbtools_int32_t *item_p;
+    int i;
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            // self_p->int32s = pbtools_decoder_read_int32(decoder_p, wire_type);
+            size = pbtools_decoder_read_varint_todo(decoder_p, wire_type, 2);
+            pos = decoder_p->pos;
+
+            while (decoder_p->pos < pos + size) {
+                item_p = pbtools_heap_alloc(self_p->heap_p, sizeof(*item_p));
+
+                if (item_p == NULL) {
+                    pbtools_decoder_abort(decoder_p, PBTOOLS_OUT_OF_MEMORY);
+
+                    return;
+                }
+
+                item_p->value = pbtools_decoder_read_varint_value(decoder_p);
+                item_p->next_p = NULL;
+
+                if (self_p->int32s.length == 0) {
+                    self_p->int32s.head_p = item_p;
+                } else {
+                    self_p->int32s.tail_p->next_p = item_p;
+                }
+
+                self_p->int32s.tail_p = item_p;
+                self_p->int32s.length++;
+            }
+
             break;
 
         case 3:
@@ -74,6 +142,25 @@ static void repeated_message_decode_inner(
 
         default:
             break;
+        }
+    }
+
+    if (self_p->int32s.length > 0) {
+        self_p->int32s.items_pp = pbtools_heap_alloc(
+            self_p->heap_p,
+            sizeof(item_p) * self_p->int32s.length);
+
+        if (self_p->int32s.items_pp == NULL) {
+            pbtools_decoder_abort(decoder_p, PBTOOLS_OUT_OF_MEMORY);
+
+            return;
+        }
+
+        item_p = self_p->int32s.head_p;
+
+        for (i = 0; i < self_p->int32s.length; i++) {
+            self_p->int32s.items_pp[i] = item_p;
+            item_p = item_p->next_p;
         }
     }
 }
@@ -95,10 +182,10 @@ struct repeated_message_t *repeated_message_new(
 
     if (self_p != NULL) {
         self_p->heap_p = heap_p;
-        self_p->int32s.head_p = NULL;
-        self_p->messages.head_p = NULL;
-        self_p->strings.head_p = NULL;
-        self_p->bytes.head_p = NULL;
+        self_p->int32s.length = 0;
+        self_p->messages.length = 0;
+        self_p->strings.length = 0;
+        self_p->bytes.length = 0;
     }
 
     return (self_p);

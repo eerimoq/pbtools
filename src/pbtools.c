@@ -140,8 +140,6 @@ void pbtools_encoder_write_tag(struct pbtools_encoder_t *self_p,
 }
 
 void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
-                                  int field_number,
-                                  int wire_type,
                                   uint64_t value)
 {
     uint8_t buf[10];
@@ -160,6 +158,18 @@ void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
 
     buf[pos - 1] &= 0x7f;
     pbtools_encoder_write(self_p, &buf[0], pos);
+}
+
+void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         int wire_type,
+                                         uint64_t value)
+{
+    if (value == 0) {
+        return;
+    }
+
+    pbtools_encoder_write_varint(self_p, value);
     pbtools_encoder_write_tag(self_p, field_number, wire_type);
 }
 
@@ -167,17 +177,17 @@ void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  int32_t value)
 {
-    pbtools_encoder_write_varint(self_p,
-                                 field_number,
-                                 0,
-                                 (uint64_t)(int64_t)value);
+    pbtools_encoder_write_tagged_varint(self_p,
+                                        field_number,
+                                        0,
+                                        (uint64_t)(int64_t)value);
 }
 
 void pbtools_encoder_write_int64(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  int64_t value)
 {
-    pbtools_encoder_write_varint(self_p, field_number, 0, (uint64_t)value);
+    pbtools_encoder_write_tagged_varint(self_p, field_number, 0, (uint64_t)value);
 }
 
 void pbtools_encoder_write_sint32(struct pbtools_encoder_t *self_p,
@@ -185,15 +195,15 @@ void pbtools_encoder_write_sint32(struct pbtools_encoder_t *self_p,
                                   int32_t value)
 {
     if (value < 0) {
-        pbtools_encoder_write_varint(self_p,
-                                     field_number,
-                                     0,
-                                     ~((uint64_t)value << 1));
+        pbtools_encoder_write_tagged_varint(self_p,
+                                            field_number,
+                                            0,
+                                            ~((uint64_t)value << 1));
     } else {
-        pbtools_encoder_write_varint(self_p,
-                                     field_number,
-                                     0,
-                                     (uint64_t)value << 1);
+        pbtools_encoder_write_tagged_varint(self_p,
+                                            field_number,
+                                            0,
+                                            (uint64_t)value << 1);
     }
 }
 
@@ -202,15 +212,15 @@ void pbtools_encoder_write_sint64(struct pbtools_encoder_t *self_p,
                                   int64_t value)
 {
     if (value < 0) {
-        pbtools_encoder_write_varint(self_p,
-                                     field_number,
-                                     0,
-                                     ~((uint64_t)value << 1));
+        pbtools_encoder_write_tagged_varint(self_p,
+                                            field_number,
+                                            0,
+                                            ~((uint64_t)value << 1));
     } else {
-        pbtools_encoder_write_varint(self_p,
-                                     field_number,
-                                     0,
-                                     (uint64_t)value << 1);
+        pbtools_encoder_write_tagged_varint(self_p,
+                                            field_number,
+                                            0,
+                                            (uint64_t)value << 1);
     }
 }
 
@@ -218,17 +228,17 @@ void pbtools_encoder_write_uint32(struct pbtools_encoder_t *self_p,
                                   int field_number,
                                   uint32_t value)
 {
-    pbtools_encoder_write_varint(self_p,
-                                 field_number,
-                                 0,
-                                 (uint64_t)value);
+    pbtools_encoder_write_tagged_varint(self_p,
+                                        field_number,
+                                        0,
+                                        (uint64_t)value);
 }
 
 void pbtools_encoder_write_uint64(struct pbtools_encoder_t *self_p,
                                   int field_number,
                                   uint64_t value)
 {
-    pbtools_encoder_write_varint(self_p, field_number, 0, value);
+    pbtools_encoder_write_tagged_varint(self_p, field_number, 0, value);
 }
 
 void pbtools_encoder_write_fixed32(struct pbtools_encoder_t *self_p,
@@ -363,7 +373,7 @@ void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
 
     if (length > 0) {
         pbtools_encoder_write(self_p, (uint8_t *)value_p, length);
-        pbtools_encoder_write_varint(self_p, field_number, 2, length);
+        pbtools_encoder_write_tagged_varint(self_p, field_number, 2, length);
     }
 }
 
@@ -373,7 +383,7 @@ void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
 {
     if (value_p->size > 0) {
         pbtools_encoder_write(self_p, value_p->buf_p, value_p->size);
-        pbtools_encoder_write_varint(self_p, field_number, 2, value_p->size);
+        pbtools_encoder_write_tagged_varint(self_p, field_number, 2, value_p->size);
     }
 }
 
@@ -441,18 +451,11 @@ void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
     }
 }
 
-uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
-                                     int wire_type)
+uint64_t pbtools_decoder_read_varint_value(struct pbtools_decoder_t *self_p)
 {
     uint64_t value;
     uint8_t byte;
     int offset;
-
-    if (wire_type != 0) {
-        pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
-
-        return (0);
-    }
 
     value = 0;
     offset = 0;
@@ -464,6 +467,25 @@ uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
     } while (byte & 0x80);
 
     return (value);
+}
+
+uint64_t pbtools_decoder_read_varint_todo(struct pbtools_decoder_t *self_p,
+                                          int wire_type,
+                                          int expected_wire_type)
+{
+    if (wire_type != expected_wire_type) {
+        pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
+
+        return (0);
+    }
+
+    return (pbtools_decoder_read_varint_value(self_p));
+}
+
+uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
+                                     int wire_type)
+{
+    return (pbtools_decoder_read_varint_todo(self_p, wire_type, 0));
 }
 
 int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,

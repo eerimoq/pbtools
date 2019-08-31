@@ -1235,30 +1235,32 @@ TEST(oneof_v2)
     ASSERT_EQ(strcmp(message_p->value.value.v2_p, "Hello!"), 0);
 }
 
-#if 0
-
 TEST(repeated_int32s_one_item)
 {
     uint8_t encoded[128];
     int size;
     uint8_t workspace[512];
     struct repeated_message_t *message_p;
-    struct pbtools_int32_t *int32_p;
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(message_p->int32s.length, 0);
+    ASSERT_EQ(message_p->messages.length, 0);
+    ASSERT_EQ(message_p->strings.length, 0);
+    ASSERT_EQ(message_p->bytes.length, 0);
     ASSERT_EQ(repeated_message_int32s_alloc(message_p, 1), 0);
-    message_p->items_pp[0]->value = 1;
+    ASSERT_EQ(message_p->int32s.length, 1);
+    message_p->int32s.items_pp[0]->value = 7;
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 3);
-    ASSERT_MEMORY(&encoded[0], "\x0a\x01\x01", size);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x01\x07", size);
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = repeated_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 3);
     ASSERT_EQ(message_p->int32s.length, 1);
-    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 7);
     ASSERT_EQ(message_p->messages.length, 0);
     ASSERT_EQ(message_p->strings.length, 0);
     ASSERT_EQ(message_p->bytes.length, 0);
@@ -1270,7 +1272,6 @@ TEST(repeated_int32s_two_items)
     int size;
     uint8_t workspace[512];
     struct repeated_message_t *message_p;
-    struct pbtools_int32_t *int32_p;
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -1296,7 +1297,6 @@ TEST(repeated_int32s_decode_segments)
     int size;
     uint8_t workspace[512];
     struct repeated_message_t *message_p;
-    struct pbtools_int32_t *int32_p;
     struct {
         int size;
         const char *encoded_p;
@@ -1317,6 +1317,8 @@ TEST(repeated_int32s_decode_segments)
         ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
     }
 }
+
+#if 0
 
 TEST(repeated_nested)
 {
@@ -1460,8 +1462,9 @@ int main(void)
         tags_6,
         oneof_v1,
         oneof_v2,
-        /* repeated_int32s, */
-        /* repeated_int32s_decode_segments, */
+        repeated_int32s_one_item,
+        repeated_int32s_two_items,
+        repeated_int32s_decode_segments,
         /* repeated_nested, */
         /* repeated_nested_decode_out_of_order */
     );

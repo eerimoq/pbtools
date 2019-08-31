@@ -43,22 +43,34 @@ struct repeated_message_t {
     struct pbtools_heap_t *heap_p;
     struct repeated_message_t *next_p;
     struct {
+        int length;
+        struct pbtools_int32_t **items_pp;
         struct pbtools_int32_t *head_p;
         struct pbtools_int32_t *tail_p;
     } int32s;
     struct {
+        int length;
+        struct repeated_message_t **items_pp;
         struct repeated_message_t *head_p;
         struct repeated_message_t *tail_p;
     } messages;
     struct {
+        int length;
+        struct pbtools_string_t **items_pp;
         struct pbtools_string_t *head_p;
         struct pbtools_string_t *tail_p;
     } strings;
     struct {
+        int length;
+        struct pbtools_bytes_t **items_pp;
         struct pbtools_bytes_t *head_p;
         struct pbtools_bytes_t *tail_p;
     } bytes;
 };
+
+int repeated_message_int32s_alloc(
+    struct repeated_message_t *self_p,
+    int length);
 
 /**
  * Create a new message Message in given workspace.
