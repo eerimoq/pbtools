@@ -115,7 +115,7 @@ int repeated_message_bytes_alloc(struct repeated_message_t *self_p,
 static void repeated_message_message_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct repeated_message_message_t *repeated_p)
+    struct repeated_message_message_repeated_t *repeated_p)
 {
     int i;
     int pos;
@@ -132,7 +132,7 @@ static void repeated_message_message_encode_repeated_inner(
 
 static void repeated_message_message_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct repeated_message_message_t *repeated_p)
+    struct repeated_message_message_repeated_t *repeated_p)
 {
     size_t size;
     struct pbtools_decoder_t decoder;
@@ -163,7 +163,7 @@ static void repeated_message_message_decode_repeated_inner(
 
 static void repeated_message_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct repeated_message_message_t *repeated_p)
+    struct repeated_message_message_repeated_t *repeated_p)
 {
     int i;
     struct repeated_message_t *item_p;

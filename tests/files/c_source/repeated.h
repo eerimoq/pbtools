@@ -39,7 +39,7 @@
 /**
  * Message Message in package repeated.
  */
-struct repeated_message_message_t {
+struct repeated_message_message_repeated_t {
     int length;
     struct repeated_message_t **items_pp;
     struct repeated_message_t *head_p;
@@ -50,7 +50,7 @@ struct repeated_message_t {
     struct pbtools_heap_t *heap_p;
     struct repeated_message_t *next_p;
     struct pbtools_repeated_int32_t int32s;
-    struct repeated_message_message_t messages;
+    struct repeated_message_message_repeated_t messages;
     struct pbtools_repeated_string_t strings;
     struct pbtools_repeated_bytes_t bytes;
 };
