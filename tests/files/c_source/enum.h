@@ -33,12 +33,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-struct enum_heap_t {
-    char *buf_p;
-    int size;
-    int pos;
-};
+#include <string.h>
+#include "pbtools.h"
 
 /**
  * Message Message in package enum.
@@ -49,7 +45,7 @@ enum enum_message_enum_e {
 };
 
 struct enum_message_t {
-    struct enum_heap_t *heap_p;
+    struct pbtools_heap_t *heap_p;
     enum enum_message_enum_e value;
 };
 

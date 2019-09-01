@@ -210,6 +210,10 @@ void pbtools_encoder_write_bool(struct pbtools_encoder_t *self_p,
                                 int field_number,
                                 bool value);
 
+void pbtools_encoder_write_enum(struct pbtools_encoder_t *self_p,
+                                int field_number,
+                                int value);
+
 void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
                                   int field_number,
                                   char *value_p);
@@ -313,6 +317,9 @@ double pbtools_decoder_read_double(struct pbtools_decoder_t *self_p,
 
 bool pbtools_decoder_read_bool(struct pbtools_decoder_t *self_p,
                                int wire_type);
+
+int pbtools_decoder_read_enum(struct pbtools_decoder_t *self_p,
+                              int wire_type);
 
 char *pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                   int wire_type);

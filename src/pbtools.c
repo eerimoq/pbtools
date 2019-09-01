@@ -409,6 +409,13 @@ void pbtools_encoder_write_bool(struct pbtools_encoder_t *self_p,
     }
 }
 
+void pbtools_encoder_write_enum(struct pbtools_encoder_t *self_p,
+                                int field_number,
+                                int value)
+{
+    pbtools_encoder_write_tagged_varint(self_p, field_number, 0, value);
+}
+
 void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
                                   int field_number,
                                   char *value_p)
@@ -855,6 +862,13 @@ bool pbtools_decoder_read_bool(struct pbtools_decoder_t *self_p,
     }
 
     return (pbtools_decoder_get(self_p) == 1);
+}
+
+int pbtools_decoder_read_enum(struct pbtools_decoder_t *self_p,
+                              int wire_type)
+{
+    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type));
 }
 
 char *pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
