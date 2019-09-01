@@ -39,7 +39,6 @@
 #define PBTOOLS_VARINT_OVERFLOW                                 6
 #define PBTOOLS_SEEK_OVERFLOW                                   7
 #define PBTOOLS_LENGTH_DELIMITED_OVERFLOW                       8
-#define PBTOOLS_INT32_OVERFLOW                                  9
 
 struct pbtools_heap_t {
     char *buf_p;

@@ -156,6 +156,33 @@ TEST(int32_decode_duplicated_field_number)
     ASSERT_EQ(message_p->value, 7);
 }
 
+TEST(int32_decode_oveflow)
+{
+    int i;
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+    struct {
+        int size;
+        const char *encoded_p;
+    } datas[] = {
+        { 11, "\x08\x80\x80\x80\x80\xf0\xff\xff\xff\xff\x01" },
+        {  6, "\x08\xff\xff\xff\xff\x0f" },
+        { 11, "\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x03" }
+    };
+
+    for (i = 0; i < membersof(datas); i++) {
+        printf("int32: %d\n", i);
+
+        message_p = int32_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = int32_message_decode(message_p,
+                                    (uint8_t *)datas[i].encoded_p,
+                                    datas[i].size);
+        ASSERT_EQ(size, -PBTOOLS_VARINT_OVERFLOW);
+    }
+}
+
 TEST(int64)
 {
     int i;
@@ -1823,6 +1850,7 @@ int main(void)
         int32_decode_out_of_data,
         int32_decode_unknown_field_number,
         int32_decode_duplicated_field_number,
+        int32_decode_oveflow,
         int64,
         sint32,
         sint64,
