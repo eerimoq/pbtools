@@ -1330,6 +1330,31 @@ TEST(repeated_int32s_decode_zero_items)
     ASSERT_EQ(message_p->int32s.length, 0);
 }
 
+TEST(repeated_int32s_decode_error_out_of_memory)
+{
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    size = repeated_message_decode(
+        message_p,
+        (uint8_t *)
+        "\x0a\x64"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",
+        104);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_MEMORY);
+}
+
 TEST(repeated_messages_decode_zero_items)
 {
     int size;
@@ -1606,6 +1631,7 @@ int main(void)
         repeated_int32s_two_items,
         repeated_int32s_decode_segments,
         repeated_int32s_decode_zero_items,
+        repeated_int32s_decode_error_out_of_memory,
         repeated_messages_decode_zero_items,
         repeated_messages_decode_error_too_big,
         repeated_bytes_two_items,

@@ -216,8 +216,7 @@ static void repeated_message_decode_inner(
         case 1:
             pbtools_decoder_read_repeated_int32(decoder_p,
                                                 wire_type,
-                                                &self_p->int32s,
-                                                self_p->heap_p);
+                                                &self_p->int32s);
             break;
 
         case 2:
@@ -229,15 +228,13 @@ static void repeated_message_decode_inner(
         case 3:
             pbtools_decoder_read_repeated_string(decoder_p,
                                                  wire_type,
-                                                 &self_p->strings,
-                                                 self_p->heap_p);
+                                                 &self_p->strings);
             break;
 
         case 4:
             pbtools_decoder_read_repeated_bytes(decoder_p,
                                                 wire_type,
-                                                &self_p->bytes,
-                                                self_p->heap_p);
+                                                &self_p->bytes);
             break;
 
         default:
@@ -246,17 +243,14 @@ static void repeated_message_decode_inner(
     }
 
     pbtools_decoder_finalize_repeated_int32(decoder_p,
-                                            &self_p->int32s,
-                                            self_p->heap_p);
+                                            &self_p->int32s);
     repeated_message_message_finalize_repeated_inner(
         decoder_p,
         &self_p->messages);
     pbtools_decoder_finalize_repeated_string(decoder_p,
-                                             &self_p->strings,
-                                             self_p->heap_p);
+                                             &self_p->strings);
     pbtools_decoder_finalize_repeated_bytes(decoder_p,
-                                            &self_p->bytes,
-                                            self_p->heap_p);
+                                            &self_p->bytes);
 }
 
 struct repeated_message_t *repeated_message_new(

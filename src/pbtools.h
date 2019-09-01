@@ -274,13 +274,11 @@ int pbtools_alloc_repeated_int32(struct pbtools_repeated_int32_t *repeated_p,
 void pbtools_decoder_read_repeated_int32(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_repeated_int32_t *repeated_p,
-    struct pbtools_heap_t *heap_p);
+    struct pbtools_repeated_int32_t *repeated_p);
 
 void pbtools_decoder_finalize_repeated_int32(
     struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_int32_t *repeated_p,
-    struct pbtools_heap_t *heap_p);
+    struct pbtools_repeated_int32_t *repeated_p);
 
 int64_t pbtools_decoder_read_int64(struct pbtools_decoder_t *self_p,
                                    int wire_type);
@@ -331,13 +329,11 @@ int pbtools_alloc_repeated_string(struct pbtools_repeated_string_t *repeated_p,
 void pbtools_decoder_read_repeated_string(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_repeated_string_t *repeated_p,
-    struct pbtools_heap_t *heap_p);
+    struct pbtools_repeated_string_t *repeated_p);
 
 void pbtools_decoder_finalize_repeated_string(
     struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_string_t *repeated_p,
-    struct pbtools_heap_t *heap_p);
+    struct pbtools_repeated_string_t *repeated_p);
 
 void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
                                 int wire_type,
@@ -350,13 +346,11 @@ int pbtools_alloc_repeated_bytes(struct pbtools_repeated_bytes_t *repeated_p,
 void pbtools_decoder_read_repeated_bytes(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_repeated_bytes_t *repeated_p,
-    struct pbtools_heap_t *heap_p);
+    struct pbtools_repeated_bytes_t *repeated_p);
 
 void pbtools_decoder_finalize_repeated_bytes(
     struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_bytes_t *repeated_p,
-    struct pbtools_heap_t *heap_p);
+    struct pbtools_repeated_bytes_t *repeated_p);
 
 void pbtools_decoder_init_slice(struct pbtools_decoder_t *self_p,
                                 struct pbtools_decoder_t *parent_p,

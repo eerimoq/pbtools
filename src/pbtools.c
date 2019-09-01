@@ -634,8 +634,7 @@ int pbtools_alloc_repeated_int32(struct pbtools_repeated_int32_t *repeated_p,
 void pbtools_decoder_read_repeated_int32(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_repeated_int32_t *repeated_p,
-    struct pbtools_heap_t *heap_p)
+    struct pbtools_repeated_int32_t *repeated_p)
 {
     size_t size;
     int pos;
@@ -645,11 +644,9 @@ void pbtools_decoder_read_repeated_int32(
     pos = self_p->pos;
 
     while (self_p->pos < pos + size) {
-        item_p = pbtools_heap_alloc(heap_p, sizeof(*item_p));
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
 
         if (item_p == NULL) {
-            pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
-
             return;
         }
 
@@ -669,20 +666,17 @@ void pbtools_decoder_read_repeated_int32(
 
 void pbtools_decoder_finalize_repeated_int32(
     struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_int32_t *repeated_p,
-    struct pbtools_heap_t *heap_p)
+    struct pbtools_repeated_int32_t *repeated_p)
 {
     struct pbtools_int32_t *item_p;
     int i;
 
     if (repeated_p->length > 0) {
-        repeated_p->items_pp = pbtools_heap_alloc(
-            heap_p,
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
             sizeof(item_p) * repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
-            pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
-
             return;
         }
 
@@ -931,16 +925,13 @@ int pbtools_alloc_repeated_string(struct pbtools_repeated_string_t *repeated_p,
 void pbtools_decoder_read_repeated_string(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_repeated_string_t *repeated_p,
-    struct pbtools_heap_t *heap_p)
+    struct pbtools_repeated_string_t *repeated_p)
 {
     struct pbtools_string_t *item_p;
 
-    item_p = pbtools_heap_alloc(heap_p, sizeof(*item_p));
+    item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
 
     if (item_p == NULL) {
-        pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
-
         return;
     }
 
@@ -958,20 +949,17 @@ void pbtools_decoder_read_repeated_string(
 
 void pbtools_decoder_finalize_repeated_string(
     struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_string_t *repeated_p,
-    struct pbtools_heap_t *heap_p)
+    struct pbtools_repeated_string_t *repeated_p)
 {
     struct pbtools_string_t *item_p;
     int i;
 
     if (repeated_p->length > 0) {
-        repeated_p->items_pp = pbtools_heap_alloc(
-            heap_p,
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
             sizeof(item_p) * repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
-            pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
-
             return;
         }
 
@@ -1039,16 +1027,13 @@ int pbtools_alloc_repeated_bytes(struct pbtools_repeated_bytes_t *repeated_p,
 void pbtools_decoder_read_repeated_bytes(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_repeated_bytes_t *repeated_p,
-    struct pbtools_heap_t *heap_p)
+    struct pbtools_repeated_bytes_t *repeated_p)
 {
     struct pbtools_bytes_t *item_p;
 
-    item_p = pbtools_heap_alloc(heap_p, sizeof(*item_p));
+    item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
 
     if (item_p == NULL) {
-        pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
-
         return;
     }
 
@@ -1066,20 +1051,17 @@ void pbtools_decoder_read_repeated_bytes(
 
 void pbtools_decoder_finalize_repeated_bytes(
     struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_bytes_t *repeated_p,
-    struct pbtools_heap_t *heap_p)
+    struct pbtools_repeated_bytes_t *repeated_p)
 {
     struct pbtools_bytes_t *item_p;
     int i;
 
     if (repeated_p->length > 0) {
-        repeated_p->items_pp = pbtools_heap_alloc(
-            heap_p,
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
             sizeof(item_p) * repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
-            pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
-
             return;
         }
 
