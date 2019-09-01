@@ -120,6 +120,42 @@ TEST(int32_decode_out_of_data)
     ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 }
 
+TEST(int32_decode_unknown_field_number)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p, (uint8_t *)"\x10\x01", 2);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->value, 0);
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p,
+                                (uint8_t *)"\x10\x01\x08\x44",
+                                4);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->value, 68);
+}
+
+TEST(int32_decode_duplicated_field_number)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p,
+                                (uint8_t *)"\x08\x01\x08\x07",
+                                4);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->value, 7);
+}
+
 TEST(int64)
 {
     int i;
@@ -1640,6 +1676,8 @@ int main(void)
         int32,
         int32_message_2,
         int32_decode_out_of_data,
+        int32_decode_unknown_field_number,
+        int32_decode_duplicated_field_number,
         int64,
         sint32,
         sint64,
