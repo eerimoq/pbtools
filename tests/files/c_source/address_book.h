@@ -31,9 +31,6 @@
 #ifndef ADDRESS_BOOK_H
 #define ADDRESS_BOOK_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

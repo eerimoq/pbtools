@@ -31,9 +31,6 @@
 #ifndef INT64_H
 #define INT64_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

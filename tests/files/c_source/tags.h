@@ -31,9 +31,6 @@
 #ifndef TAGS_H
 #define TAGS_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

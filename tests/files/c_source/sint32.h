@@ -31,9 +31,6 @@
 #ifndef SINT32_H
 #define SINT32_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

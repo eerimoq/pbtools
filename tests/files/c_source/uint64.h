@@ -31,9 +31,6 @@
 #ifndef UINT64_H
 #define UINT64_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

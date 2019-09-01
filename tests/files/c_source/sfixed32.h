@@ -31,9 +31,6 @@
 #ifndef SFIXED32_H
 #define SFIXED32_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

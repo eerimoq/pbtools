@@ -31,9 +31,6 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**

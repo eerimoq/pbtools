@@ -31,9 +31,6 @@
 #ifndef FIXED32_H
 #define FIXED32_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "pbtools.h"
 
 /**
