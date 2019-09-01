@@ -270,6 +270,34 @@ TEST(int64)
     }
 }
 
+TEST(int64_decode)
+{
+    int i;
+    int size;
+    uint8_t workspace[512];
+    struct int64_message_t *message_p;
+    struct {
+        int64_t decoded;
+        int size;
+        const char *encoded_p;
+    } datas[] = {
+        // Python decoder behaviour.
+        { -0x1,       11, "\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x7f" }
+    };
+
+    for (i = 0; i < membersof(datas); i++) {
+        printf("int64: %lld\n", (long long)datas[i].decoded);
+
+        message_p = int64_message_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = int64_message_decode(message_p,
+                                    (uint8_t *)datas[i].encoded_p,
+                                    datas[i].size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
+    }
+}
+
 TEST(sint32)
 {
     int i;
@@ -1888,6 +1916,7 @@ int main(void)
         int32_decode_duplicated_field_number,
         int32_decode_oveflow,
         int64,
+        int64_decode,
         sint32,
         sint64,
         uint32,
