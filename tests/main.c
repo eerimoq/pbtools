@@ -1055,6 +1055,45 @@ TEST(address_book_default_person)
     ASSERT_EQ(person_p->phones.length, 0);
 }
 
+TEST(address_book_person)
+{
+    uint8_t encoded[75];
+    int size;
+    uint8_t workspace[512];
+    struct address_book_person_t *person_p;
+
+    person_p = address_book_person_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(person_p, NULL);
+
+    person_p->name_p = "Kalle Kula";
+    person_p->id = 56;
+    person_p->email_p = "kalle.kula@foobar.com";
+
+    /* Encode the message. */
+    size = address_book_person_encode(person_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 37);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x0a\x4b\x61\x6c\x6c\x65\x20\x4b\x75"
+                  "\x6c\x61\x10\x38\x1a\x15\x6b\x61\x6c\x6c"
+                  "\x65\x2e\x6b\x75\x6c\x61\x40\x66\x6f\x6f"
+                  "\x62\x61\x72\x2e\x63\x6f\x6d",
+                  size);
+
+    /* Decode the message. */
+    person_p = address_book_person_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(person_p, NULL);
+    size = address_book_person_decode(person_p, &encoded[0], size);
+    ASSERT_EQ(size, 37);
+
+    /* Check the decoded person. */
+    ASSERT_NE(person_p->name_p, NULL);
+    ASSERT_SUBSTRING(person_p->name_p, "Kalle Kula");
+    ASSERT_EQ(person_p->id, 56);
+    ASSERT_NE(person_p->email_p, NULL);
+    ASSERT_SUBSTRING(person_p->email_p, "kalle.kula@foobar.com");
+    ASSERT_EQ(person_p->phones.length, 0);
+}
+
 TEST(tags_1)
 {
     uint8_t encoded[128];
@@ -1621,6 +1660,7 @@ int main(void)
         address_book,
         address_book_default,
         address_book_default_person,
+        address_book_person,
         tags_1,
         tags_2,
         tags_3,
