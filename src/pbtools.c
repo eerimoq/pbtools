@@ -73,7 +73,7 @@ void *pbtools_decoder_heap_alloc(struct pbtools_decoder_t *self_p,
     if (buf_p == NULL) {
         pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
     }
-    
+
     return (buf_p);
 }
 
@@ -526,7 +526,7 @@ void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
     }
 }
 
-uint64_t pbtools_decoder_read_varint_value(struct pbtools_decoder_t *self_p)
+uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p)
 {
     uint64_t value;
     uint8_t byte;
@@ -544,9 +544,10 @@ uint64_t pbtools_decoder_read_varint_value(struct pbtools_decoder_t *self_p)
     return (value);
 }
 
-uint64_t pbtools_decoder_read_varint_todo(struct pbtools_decoder_t *self_p,
-                                          int wire_type,
-                                          int expected_wire_type)
+uint64_t pbtools_decoder_read_varint_check_wire_type(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    int expected_wire_type)
 {
     if (wire_type != expected_wire_type) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
@@ -554,13 +555,14 @@ uint64_t pbtools_decoder_read_varint_todo(struct pbtools_decoder_t *self_p,
         return (0);
     }
 
-    return (pbtools_decoder_read_varint_value(self_p));
+    return (pbtools_decoder_read_varint(self_p));
 }
 
-uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
-                                     int wire_type)
+uint64_t pbtools_decoder_read_varint_check_wire_type_varint(
+    struct pbtools_decoder_t *self_p,
+    int wire_type)
 {
-    return (pbtools_decoder_read_varint_todo(self_p, wire_type, 0));
+    return (pbtools_decoder_read_varint_check_wire_type(self_p, wire_type, 0));
 }
 
 int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
@@ -568,7 +570,7 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
 {
     uint32_t value;
 
-    value = pbtools_decoder_read_varint(self_p, 0);
+    value = pbtools_decoder_read_varint(self_p);
     *wire_type_p = (value & 0x7);
 
     return (value >> 3);
@@ -577,7 +579,8 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
 int32_t pbtools_decoder_read_int32(struct pbtools_decoder_t *self_p,
                                    int wire_type)
 {
-    return (pbtools_decoder_read_varint(self_p, wire_type));
+    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type));
 }
 
 int pbtools_alloc_repeated_int32(struct pbtools_repeated_int32_t *repeated_p,
@@ -624,7 +627,7 @@ void pbtools_decoder_read_repeated_int32(
     int pos;
     struct pbtools_int32_t *item_p;
 
-    size = pbtools_decoder_read_varint_todo(self_p, wire_type, 2);
+    size = pbtools_decoder_read_varint_check_wire_type(self_p, wire_type, 2);
     pos = self_p->pos;
 
     while (self_p->pos < pos + size) {
@@ -636,7 +639,7 @@ void pbtools_decoder_read_repeated_int32(
             return;
         }
 
-        item_p->value = pbtools_decoder_read_varint_value(self_p);
+        item_p->value = pbtools_decoder_read_varint(self_p);
         item_p->next_p = NULL;
 
         if (repeated_p->length == 0) {
@@ -681,7 +684,8 @@ void pbtools_decoder_finalize_repeated_int32(
 int64_t pbtools_decoder_read_int64(struct pbtools_decoder_t *self_p,
                                    int wire_type)
 {
-    return (pbtools_decoder_read_varint(self_p, wire_type));
+    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type));
 }
 
 int32_t pbtools_decoder_read_sint32(struct pbtools_decoder_t *self_p,
@@ -689,11 +693,8 @@ int32_t pbtools_decoder_read_sint32(struct pbtools_decoder_t *self_p,
 {
     uint64_t value;
 
-    if (wire_type != 0) {
-        return (0);
-    }
-
-    value = pbtools_decoder_read_varint(self_p, 0);
+    value = pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type);
 
     if (value & 0x1) {
         value >>= 1;
@@ -710,7 +711,8 @@ int64_t pbtools_decoder_read_sint64(struct pbtools_decoder_t *self_p,
 {
     uint64_t value;
 
-    value = pbtools_decoder_read_varint(self_p, wire_type);
+    value = pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type);
 
     if (value & 0x1) {
         value >>= 1;
@@ -725,13 +727,15 @@ int64_t pbtools_decoder_read_sint64(struct pbtools_decoder_t *self_p,
 uint32_t pbtools_decoder_read_uint32(struct pbtools_decoder_t *self_p,
                                      int wire_type)
 {
-    return (pbtools_decoder_read_varint(self_p, wire_type));
+    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type));
 }
 
 uint64_t pbtools_decoder_read_uint64(struct pbtools_decoder_t *self_p,
                                      int wire_type)
 {
-    return (pbtools_decoder_read_varint(self_p, wire_type));
+    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type));
 }
 
 uint32_t pbtools_decoder_read_fixed32(struct pbtools_decoder_t *self_p,
@@ -856,7 +860,7 @@ char *pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
         return ("");
     }
 
-    length = pbtools_decoder_read_varint(self_p, 0);
+    length = pbtools_decoder_read_varint(self_p);
     value_p = pbtools_heap_alloc(self_p->heap_p, length + 1);
 
     if (value_p == NULL) {
@@ -967,7 +971,7 @@ void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
         return;
     }
 
-    bytes_p->size = pbtools_decoder_read_varint(self_p, 0);
+    bytes_p->size = pbtools_decoder_read_varint(self_p);
     bytes_p->buf_p = pbtools_heap_alloc(self_p->heap_p, bytes_p->size);
 
     if (bytes_p->buf_p == NULL) {

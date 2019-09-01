@@ -242,14 +242,16 @@ void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
                           uint8_t *buf_p,
                           int size);
 
-uint64_t pbtools_decoder_read_varint_value(struct pbtools_decoder_t *self_p);
+uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p);
 
-uint64_t pbtools_decoder_read_varint_todo(struct pbtools_decoder_t *self_p,
-                                          int wire_type,
-                                          int expected_wire_type);
+uint64_t pbtools_decoder_read_varint_check_wire_type(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    int expected_wire_type);
 
-uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p,
-                                     int wire_type);
+uint64_t pbtools_decoder_read_varint_check_wire_type_varint(
+    struct pbtools_decoder_t *self_p,
+    int wire_type);
 
 int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
                              int *wire_type_p);

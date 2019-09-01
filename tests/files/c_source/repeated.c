@@ -138,7 +138,7 @@ static void repeated_message_message_decode_repeated_inner(
     struct pbtools_decoder_t decoder;
     struct repeated_message_t *item_p;
 
-    size = pbtools_decoder_read_varint(decoder_p, 0);
+    size = pbtools_decoder_read_varint(decoder_p);
 
     if (size == 0) {
         return;
