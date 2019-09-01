@@ -123,10 +123,9 @@ static void repeated_message_message_encode_repeated_inner(
     for (i = repeated_p->length - 1; i >= 0; i--) {
         pos = encoder_p->pos;
         repeated_message_encode_inner(repeated_p->items_pp[i], encoder_p);
-        pbtools_encoder_write_tagged_varint(encoder_p,
-                                            field_number,
-                                            2,
-                                            pos - encoder_p->pos);
+        pbtools_encoder_write_length_delimited(encoder_p,
+                                               field_number,
+                                               pos - encoder_p->pos);
     }
 }
 

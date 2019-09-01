@@ -187,6 +187,13 @@ void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
     pbtools_encoder_write_tag(self_p, field_number, wire_type);
 }
 
+void pbtools_encoder_write_length_delimited(struct pbtools_encoder_t *self_p,
+                                            int field_number,
+                                            uint64_t value)
+{
+    pbtools_encoder_write_tagged_varint(self_p, field_number, 2, value);
+}
+
 void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  int32_t value)
