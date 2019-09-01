@@ -34,28 +34,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include "pbtools.h"
 
-#define ONEOF_BAD_WIRE_TYPE                                   1
-#define ONEOF_OUT_OF_DATA                                     2
-#define ONEOF_OUT_OF_MEMORY                                   3
-#define ONEOF_ENCODE_BUFFER_FULL                              4
-
-struct oneof_heap_t {
-    char *buf_p;
-    int size;
-    int pos;
-};
-
+/**
+ * Message Message in package oneof.
+ */
 enum oneof_message_value_e {
     oneof_message_value_v1_e = 0,
     oneof_message_value_v2_e
 };
 
-/**
- * Message Message in package oneof.
- */
 struct oneof_message_t {
-    struct oneof_heap_t *heap_p;
+    struct pbtools_heap_t *heap_p;
     struct {
         enum oneof_message_value_e choice;
         union {

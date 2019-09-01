@@ -32,314 +32,22 @@
 
 #include "oneof.h"
 
-struct encoder_t {
-    uint8_t *buf_p;
-    int size;
-    int pos;
-};
-
-struct decoder_t {
-    const uint8_t *buf_p;
-    int size;
-    int pos;
-    struct oneof_heap_t *heap_p;
-};
-
-static struct oneof_heap_t *heap_new(void *buf_p, size_t size)
-{
-    struct oneof_heap_t *heap_p;
-
-    if (size >= sizeof(*heap_p)) {
-        heap_p = (struct oneof_heap_t *)buf_p;
-        heap_p->buf_p = buf_p;
-        heap_p->size = size;
-        heap_p->pos = sizeof(*heap_p);
-    } else {
-        heap_p = NULL;
-    }
-
-    return (heap_p);
-}
-
-static void *heap_alloc(struct oneof_heap_t *self_p, size_t size)
-{
-    void *buf_p;
-    int left;
-
-    left = (self_p->size - self_p->pos);
-
-    if (size <= left) {
-        buf_p = &self_p->buf_p[self_p->pos];
-        self_p->pos += size;
-    } else {
-        buf_p = NULL;
-    }
-
-    return (buf_p);
-}
-
-static void encoder_init(struct encoder_t *self_p,
-                         uint8_t *buf_p,
-                         size_t size)
-{
-    self_p->buf_p = buf_p;
-    self_p->size = size;
-    self_p->pos = (size - 1);
-}
-
-static int encoder_get_result(struct encoder_t *self_p)
-{
-    int length;
-
-    if (self_p->pos >= 0) {
-        length = (self_p->size - self_p->pos - 1);
-        memmove(self_p->buf_p,
-                &self_p->buf_p[self_p->pos + 1],
-                length);
-    } else {
-        length = self_p->pos;
-    }
-
-    return (length);
-}
-
-static void encoder_abort(struct encoder_t *self_p,
-                          int error)
-{
-    if (self_p->size >= 0) {
-        self_p->size = -error;
-        self_p->pos = -error;
-    }
-}
-
-static void encoder_put(struct encoder_t *self_p,
-                        uint8_t value)
-{
-    if (self_p->pos >= 0) {
-        self_p->buf_p[self_p->pos] = value;
-        self_p->pos--;
-    } else {
-        encoder_abort(self_p, ONEOF_ENCODE_BUFFER_FULL);
-    }
-}
-
-static void encoder_write(struct encoder_t *self_p,
-                          uint8_t *buf_p,
-                          int size)
-{
-    int i;
-
-    for (i = size - 1; i >= 0; i--) {
-        encoder_put(self_p, buf_p[i]);
-    }
-}
-
-static void encoder_write_tag(struct encoder_t *self_p,
-                              int field_number,
-                              int wire_type)
-{
-    uint8_t buf[5];
-    int pos;
-    uint32_t value;
-
-    value = ((field_number << 3) | wire_type);
-    pos = 0;
-
-    while (value > 0) {
-        buf[pos++] = (value | 0x80);
-        value >>= 7;
-    }
-
-    buf[pos - 1] &= 0x7f;
-    encoder_write(self_p, &buf[0], pos);
-}
-
-static void encoder_write_varint(struct encoder_t *self_p,
-                                 int field_number,
-                                 int wire_type,
-                                 uint64_t value)
-{
-    uint8_t buf[10];
-    int pos;
-
-    if (value == 0) {
-        return;
-    }
-
-    pos = 0;
-
-    while (value > 0) {
-        buf[pos++] = (value | 0x80);
-        value >>= 7;
-    }
-
-    buf[pos - 1] &= 0x7f;
-    encoder_write(self_p, &buf[0], pos);
-    encoder_write_tag(self_p, field_number, wire_type);
-}
-
-static void encoder_write_int32(struct encoder_t *self_p,
-                                int field_number,
-                                int32_t value)
-{
-    encoder_write_varint(self_p, field_number, 0, (uint64_t)(int64_t)value);
-}
-
-static void encoder_write_string(struct encoder_t *self_p,
-                                 int field_number,
-                                 char *value_p)
-{
-    int length;
-
-    length = strlen(value_p);
-
-    if (length > 0) {
-        encoder_write(self_p, (uint8_t *)value_p, length);
-        encoder_write_varint(self_p, field_number, 2, length);
-    }
-}
-
-static void decoder_init(struct decoder_t *self_p,
-                         const uint8_t *buf_p,
-                         size_t size,
-                         struct oneof_heap_t *heap_p)
-{
-    self_p->buf_p = buf_p;
-    self_p->size = size;
-    self_p->pos = 0;
-    self_p->heap_p = heap_p;
-}
-
-static int decoder_get_result(struct decoder_t *self_p)
-{
-    int res;
-
-    if (self_p->pos == self_p->size) {
-        res = self_p->pos;
-    } else {
-        res = -1;
-    }
-
-    return (res);
-}
-
-static void decoder_abort(struct decoder_t *self_p,
-                          int error)
-{
-    if (self_p->size >= 0) {
-        self_p->size = -error;
-        self_p->pos = -error;
-    }
-}
-
-static bool decoder_available(struct decoder_t *self_p)
-{
-    return (self_p->pos < self_p->size);
-}
-
-static uint8_t decoder_get(struct decoder_t *self_p)
-{
-    uint8_t value;
-
-    if (decoder_available(self_p)) {
-        value = self_p->buf_p[self_p->pos];
-        self_p->pos++;
-    } else {
-        decoder_abort(self_p, ONEOF_OUT_OF_DATA);
-        value = 0;
-    }
-
-    return (value);
-}
-
-static void decoder_read(struct decoder_t *self_p,
-                         uint8_t *buf_p,
-                         int size)
-{
-    int i;
-
-    for (i = 0; i < size; i++) {
-        buf_p[i] = decoder_get(self_p);
-    }
-}
-
-static uint64_t decoder_read_varint(struct decoder_t *self_p,
-                                    int wire_type)
-{
-    uint64_t value;
-    uint8_t byte;
-    int offset;
-
-    if (wire_type != 0) {
-        decoder_abort(self_p, ONEOF_BAD_WIRE_TYPE);
-
-        return (0);
-    }
-
-    value = 0;
-    offset = 0;
-
-    do {
-        byte = decoder_get(self_p);
-        value |= (((uint64_t)byte & 0x7f) << offset);
-        offset += 7;
-    } while (byte & 0x80);
-
-    return (value);
-}
-
-static int decoder_read_tag(struct decoder_t *self_p,
-                            int *wire_type_p)
-{
-    uint32_t value;
-
-    value = decoder_read_varint(self_p, 0);
-    *wire_type_p = (value & 0x7);
-
-    return (value >> 3);
-}
-
-static int32_t decoder_read_int32(struct decoder_t *self_p,
-                                  int wire_type)
-{
-    return (decoder_read_varint(self_p, wire_type));
-}
-
-static char *decoder_read_string(struct decoder_t *self_p,
-                                 int wire_type)
-{
-    uint64_t length;
-    char *value_p;
-
-    if (wire_type != 2) {
-        return ("");
-    }
-
-    length = decoder_read_varint(self_p, 0);
-    value_p = heap_alloc(self_p->heap_p, length + 1);
-
-    if (value_p == NULL) {
-        return ("");
-    }
-
-    decoder_read(self_p, (uint8_t *)value_p, length);
-    value_p[length] = '\0';
-
-    return (value_p);
-}
-
 static void oneof_message_encode_inner(
     struct oneof_message_t *self_p,
-    struct encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p)
 {
     switch (self_p->value.choice) {
 
     case oneof_message_value_v1_e:
-        encoder_write_int32(encoder_p, 1, self_p->value.value.v1);
+        pbtools_encoder_write_int32(encoder_p,
+                                    1,
+                                    self_p->value.value.v1);
         break;
 
     case oneof_message_value_v2_e:
-        encoder_write_string(encoder_p, 2, self_p->value.value.v2_p);
+        pbtools_encoder_write_string(encoder_p,
+                                     2,
+                                     self_p->value.value.v2_p);
         break;
 
     default:
@@ -349,21 +57,25 @@ static void oneof_message_encode_inner(
 
 static void oneof_message_decode_inner(
     struct oneof_message_t *self_p,
-    struct decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p)
 {
     int wire_type;
 
-    while (decoder_available(decoder_p)) {
-        switch (decoder_read_tag(decoder_p, &wire_type)) {
+    while (pbtools_decoder_available(decoder_p)) {
+        switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
             self_p->value.choice = oneof_message_value_v1_e;
-            self_p->value.value.v1 = decoder_read_int32(decoder_p, wire_type);
+            self_p->value.value.v1 = pbtools_decoder_read_int32(
+                decoder_p,
+                wire_type);
             break;
 
         case 2:
             self_p->value.choice = oneof_message_value_v2_e;
-            self_p->value.value.v2_p = decoder_read_string(decoder_p, wire_type);
+            self_p->value.value.v2_p = pbtools_decoder_read_string(
+                decoder_p,
+                wire_type);
             break;
 
         default:
@@ -377,15 +89,15 @@ struct oneof_message_t *oneof_message_new(
     size_t size)
 {
     struct oneof_message_t *self_p;
-    struct oneof_heap_t *heap_p;
+    struct pbtools_heap_t *heap_p;
 
-    heap_p = heap_new(workspace_p, size);
+    heap_p = pbtools_heap_new(workspace_p, size);
 
     if (heap_p == NULL) {
         return (NULL);
     }
 
-    self_p = heap_alloc(heap_p, sizeof(*self_p));
+    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
 
     if (self_p != NULL) {
         self_p->heap_p = heap_p;
@@ -401,12 +113,12 @@ int oneof_message_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct encoder_t encoder;
+    struct pbtools_encoder_t encoder;
 
-    encoder_init(&encoder, encoded_p, size);
+    pbtools_encoder_init(&encoder, encoded_p, size);
     oneof_message_encode_inner(self_p, &encoder);
 
-    return (encoder_get_result(&encoder));
+    return (pbtools_encoder_get_result(&encoder));
 }
 
 int oneof_message_decode(
@@ -414,10 +126,10 @@ int oneof_message_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct decoder_t decoder;
+    struct pbtools_decoder_t decoder;
 
-    decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
     oneof_message_decode_inner(self_p, &decoder);
 
-    return (decoder_get_result(&decoder));
+    return (pbtools_decoder_get_result(&decoder));
 }
