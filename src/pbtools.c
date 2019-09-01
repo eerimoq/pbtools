@@ -559,7 +559,7 @@ uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p)
         offset += 7;
     } while ((offset < 64) && (byte & 0x80));
 
-    if (((offset == 70) && ((byte & 0x7e) != 0)) || (byte & 0x80)) {
+    if ((offset == 70) && ((byte & 0xfe) != 0)) {
         pbtools_decoder_abort(self_p, PBTOOLS_VARINT_OVERFLOW);
         value = 0;
     }
