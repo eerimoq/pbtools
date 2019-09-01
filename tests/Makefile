@@ -14,16 +14,19 @@ FUZZER_CFLAGS = \
 	-fno-sanitize-recover=all
 FUZZER_EXECUTION_TIME ?= 30
 
+CFLAGS ?= \
+	-fprofile-arcs \
+	-ftest-coverage \
+	-fsanitize=address \
+	-fsanitize=signed-integer-overflow
+
 all:
 	gcc \
 	    -Wall \
 	    -g \
 	    -Og \
 	    -std=gnu11  \
-	    -fprofile-arcs \
-	    -ftest-coverage \
-	    -fsanitize=address \
-	    -fsanitize=signed-integer-overflow \
+	    $(CFLAGS) \
 	    -I../src \
 	    narwhal.c \
 	    ../src/pbtools.c \

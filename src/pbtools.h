@@ -367,8 +367,8 @@ void pbtools_set_string(struct pbtools_bytes_t *self_p,
 
 char *pbtools_get_string(struct pbtools_bytes_t *self_p);
 
-//#include <stdio.h>
-//#define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
-#define PRINTF(fmt, ...)
+#include <stdio.h>
+#define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
+//#define PRINTF(fmt, ...)
 
 #endif

@@ -559,7 +559,8 @@ uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p)
         offset += 7;
     } while ((offset < 64) && (byte & 0x80));
 
-    if ((offset == 70) && ((byte & 0xfe) != 0)) {
+    if (byte & 0x80) {
+        PRINTF("overflow\n");
         pbtools_decoder_abort(self_p, PBTOOLS_VARINT_OVERFLOW);
         value = 0;
     }
@@ -614,17 +615,8 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
 int32_t pbtools_decoder_read_int32(struct pbtools_decoder_t *self_p,
                                    int wire_type)
 {
-    int64_t value;
-
-    value = pbtools_decoder_read_varint_check_wire_type_varint(self_p,
-                                                               wire_type);
-
-    if ((value > 0x7fffffff) || (value < -2147483648)) {
-        pbtools_decoder_abort(self_p, PBTOOLS_VARINT_OVERFLOW);
-        value = 0;
-    }
-
-    return (value);
+    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
+                                                               wire_type));
 }
 
 int pbtools_alloc_repeated_int32(struct pbtools_repeated_int32_t *repeated_p,
