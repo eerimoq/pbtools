@@ -33,12 +33,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-struct address_book_heap_t {
-    char *buf_p;
-    int size;
-    int pos;
-};
+#include <string.h>
+#include "pbtools.h"
 
 /**
  * Message Person in package address_book.
@@ -50,30 +46,41 @@ enum address_book_person_phone_type_e {
 };
 
 struct address_book_person_phone_number_t {
+    struct pbtools_heap_t *heap_p;
     char *number_p;
     enum address_book_person_phone_type_e type;
+    struct address_book_person_phone_number_t *next_p;
+};
+
+struct address_book_person_phone_number_repeated_t {
+    int length;
+    struct address_book_person_phone_number_t **items_pp;
+    struct address_book_person_phone_number_t *head_p;
+    struct address_book_person_phone_number_t *tail_p;
 };
 
 struct address_book_person_t {
-    struct address_book_heap_t *heap_p;
+    struct pbtools_heap_t *heap_p;
     char *name_p;
     int32_t id;
     char *email_p;
-    struct {
-        int length;
-        struct address_book_person_phone_number_t *items_p;
-    } phones;
+    struct address_book_person_phone_number_repeated_t phones;
+    struct address_book_person_t *next_p;
 };
 
 /**
  * Message AddressBook in package address_book.
  */
+struct address_book_person_repeated_t {
+    int length;
+    struct address_book_person_t **items_pp;
+    struct address_book_person_t *head_p;
+    struct address_book_person_t *tail_p;
+};
+
 struct address_book_address_book_t {
-    struct address_book_heap_t *heap_p;
-    struct {
-        int length;
-        struct address_book_person_t *items_p;
-    } people;
+    struct pbtools_heap_t *heap_p;
+    struct address_book_person_repeated_t people;
 };
 
 /**

@@ -910,13 +910,11 @@ TEST(enum_)
     }
 }
 
-#if 0
-
 TEST(address_book)
 {
-    uint8_t encoded[75];
+    uint8_t encoded[128];
     int size;
-    uint8_t workspace[512];
+    uint8_t workspace[1024];
     struct address_book_address_book_t *address_book_p;
     struct address_book_person_t *person_p;
     struct address_book_person_phone_number_t *phone_number_p;
@@ -927,7 +925,7 @@ TEST(address_book)
 
     /* Add one person to the address book. */
     ASSERT_EQ(address_book_address_book_people_alloc(address_book_p, 1), 0);
-    person_p = address_book_address_book_people_get(address_book_p, 0);
+    person_p = address_book_p->people.items_pp[0];
     person_p->name_p = "Kalle Kula";
     person_p->id = 56;
     person_p->email_p = "kalle.kula@foobar.com";
@@ -1014,7 +1012,7 @@ TEST(address_book_default)
     ASSERT_NE(address_book_p, NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
     ASSERT_EQ(size, 0);
-    ASSERT_EQ(address_book_address_book_people_length(address_book_p), 0);
+    ASSERT_EQ(address_book_p->people.length, 0);
 }
 
 TEST(address_book_default_person)
@@ -1045,19 +1043,17 @@ TEST(address_book_default_person)
     ASSERT_NE(address_book_p, NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(address_book_address_book_people_length(address_book_p), 1);
+    ASSERT_EQ(address_book_p->people.length, 1);
 
     /* Check the decoded person. */
-    person_p = address_book_address_book_people_get(address_book_p, 0);
+    person_p = address_book_p->people.items_pp[0];
     ASSERT_NE(person_p->name_p, NULL);
     ASSERT_SUBSTRING(person_p->name_p, "");
     ASSERT_EQ(person_p->id, 0);
     ASSERT_NE(person_p->email_p, NULL);
     ASSERT_SUBSTRING(person_p->email_p, "");
-    ASSERT_EQ(address_book_person_phones_length(person_p), 0);
+    ASSERT_EQ(person_p->phones.length, 0);
 }
-
-#endif
 
 TEST(tags_1)
 {
@@ -1360,11 +1356,17 @@ TEST(repeated_messages_decode_zero_items)
     int size;
     uint8_t workspace[512];
     struct repeated_message_t *message_p;
+    struct repeated_message_t *message_1_p;
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     size = repeated_message_decode(message_p, (uint8_t *)"\x12\x00", 2);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->messages.length, 0);
+    ASSERT_EQ(message_p->messages.length, 1);
+    message_1_p = message_p->messages.items_pp[0];
+    ASSERT_EQ(message_1_p->int32s.length, 0);
+    ASSERT_EQ(message_1_p->messages.length, 0);
+    ASSERT_EQ(message_1_p->strings.length, 0);
+    ASSERT_EQ(message_1_p->bytes.length, 0);
 }
 
 TEST(repeated_messages_decode_error_too_big)
@@ -1616,9 +1618,9 @@ int main(void)
         string_decode_out_of_data,
         bytes,
         enum_,
-        /* address_book, */
-        /* address_book_default, */
-        /* address_book_default_person, */
+        address_book,
+        address_book_default,
+        address_book_default_person,
         tags_1,
         tags_2,
         tags_3,

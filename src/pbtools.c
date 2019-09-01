@@ -160,18 +160,18 @@ void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
     int pos;
 
     if (value == 0) {
-        return;
+        pbtools_encoder_put(self_p, 0);
+    } else {
+        pos = 0;
+
+        while (value > 0) {
+            buf[pos++] = (value | 0x80);
+            value >>= 7;
+        }
+
+        buf[pos - 1] &= 0x7f;
+        pbtools_encoder_write(self_p, &buf[0], pos);
     }
-
-    pos = 0;
-
-    while (value > 0) {
-        buf[pos++] = (value | 0x80);
-        value >>= 7;
-    }
-
-    buf[pos - 1] &= 0x7f;
-    pbtools_encoder_write(self_p, &buf[0], pos);
 }
 
 void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
@@ -191,7 +191,8 @@ void pbtools_encoder_write_length_delimited(struct pbtools_encoder_t *self_p,
                                             int field_number,
                                             uint64_t value)
 {
-    pbtools_encoder_write_tagged_varint(self_p, field_number, 2, value);
+    pbtools_encoder_write_varint(self_p, value);
+    pbtools_encoder_write_tag(self_p, field_number, 2);
 }
 
 void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
