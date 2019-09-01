@@ -1318,6 +1318,30 @@ TEST(repeated_int32s_decode_segments)
     }
 }
 
+TEST(repeated_int32s_decode_zero_items)
+{
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    size = repeated_message_decode(message_p, (uint8_t *)"\x0a\x00", 2);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->int32s.length, 0);
+}
+
+TEST(repeated_messages_decode_zero_items)
+{
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    size = repeated_message_decode(message_p, (uint8_t *)"\x12\x00", 2);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->messages.length, 0);
+}
+
 TEST(repeated_nested)
 {
     uint8_t encoded[128];
@@ -1524,6 +1548,8 @@ int main(void)
         repeated_int32s_one_item,
         repeated_int32s_two_items,
         repeated_int32s_decode_segments,
+        repeated_int32s_decode_zero_items,
+        repeated_messages_decode_zero_items,
         repeated_nested,
         repeated_nested_decode_out_of_order
     );
