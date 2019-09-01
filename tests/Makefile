@@ -1,5 +1,12 @@
 all:
-	gcc -Wall -g -Og -std=gnu11 -I../src \
+	gcc \
+	    -Wall \
+	    -g \
+	    -Og \
+	    -std=gnu11  \
+	    -fprofile-arcs \
+	    -ftest-coverage \
+	    -I../src \
 	    narwhal.c \
 	    ../src/pbtools.c \
 	    files/c_source/int32.c \

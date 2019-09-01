@@ -1,5 +1,6 @@
 |buildstatus|_
 |coverage|_
+|codecov|_
 
 About
 =====
@@ -140,6 +141,9 @@ generated files.
 
 .. |coverage| image:: https://coveralls.io/repos/github/eerimoq/pbtools/badge.svg?branch=master
 .. _coverage: https://coveralls.io/github/eerimoq/pbtools
+
+.. |codecov| image:: https://codecov.io/gh/eerimoq/pbtools/branch/master/graph/badge.svg
+.. _codecov: https://codecov.io/gh/eerimoq/pbtools
 
 .. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.h
 
