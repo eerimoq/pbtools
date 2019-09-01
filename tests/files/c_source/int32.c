@@ -51,6 +51,7 @@ static void int32_message_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -126,6 +127,7 @@ static void int32_message2_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }

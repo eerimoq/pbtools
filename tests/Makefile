@@ -1,3 +1,19 @@
+FUZZER_CC ?= clang
+FUZZER_EXE = main_fuzzer
+FUZZER_C_SOURCES = \
+	main_fuzzer.c \
+	../src/pbtools.c \
+	files/c_source/address_book.c
+FUZZER_CFLAGS = \
+	-fprofile-instr-generate \
+	-fcoverage-mapping \
+	-I../src \
+	-g \
+	-fsanitize=address,fuzzer \
+	-fsanitize=signed-integer-overflow \
+	-fno-sanitize-recover=all
+FUZZER_EXECUTION_TIME ?= 30
+
 all:
 	gcc \
 	    -Wall \
@@ -6,6 +22,8 @@ all:
 	    -std=gnu11  \
 	    -fprofile-arcs \
 	    -ftest-coverage \
+	    -fsanitize=address \
+	    -fsanitize=signed-integer-overflow \
 	    -I../src \
 	    narwhal.c \
 	    ../src/pbtools.c \
@@ -31,3 +49,16 @@ all:
 	    files/c_source/repeated.c \
 	    main.c
 	./a.out
+
+fuzzer:
+	$(FUZZER_CC) $(FUZZER_CFLAGS) $(FUZZER_C_SOURCES) -o $(FUZZER_EXE)
+	rm -f $(FUZZER_EXE).profraw
+	LLVM_PROFILE_FILE="$(FUZZER_EXE).profraw" \
+	    ./$(FUZZER_EXE) \
+	    -max_total_time=$(FUZZER_EXECUTION_TIME) \
+	    -print_final_stats
+	llvm-profdata merge \
+	    -sparse $(FUZZER_EXE).profraw \
+	    -o $(FUZZER_EXE).profdata
+	llvm-cov show ./$(FUZZER_EXE) \
+	    -instr-profile=$(FUZZER_EXE).profdata

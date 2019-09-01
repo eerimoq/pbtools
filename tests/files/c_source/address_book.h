@@ -44,7 +44,7 @@ enum address_book_person_phone_type_e {
 
 struct address_book_person_phone_number_t {
     struct pbtools_heap_t *heap_p;
-    char *number_p;
+    struct pbtools_bytes_t number;
     enum address_book_person_phone_type_e type;
     struct address_book_person_phone_number_t *next_p;
 };
@@ -58,9 +58,9 @@ struct address_book_person_phone_number_repeated_t {
 
 struct address_book_person_t {
     struct pbtools_heap_t *heap_p;
-    char *name_p;
+    struct pbtools_bytes_t name;
     int32_t id;
-    char *email_p;
+    struct pbtools_bytes_t email;
     struct address_book_person_phone_number_repeated_t phones;
     struct address_book_person_t *next_p;
 };

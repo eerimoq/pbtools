@@ -73,3 +73,5 @@ main
 /*.[hc]
 *.gcda
 *.gcno
+tests/crash-*
+tests/main_fuzzer*

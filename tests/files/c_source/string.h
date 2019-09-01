@@ -38,7 +38,7 @@
  */
 struct string_message_t {
     struct pbtools_heap_t *heap_p;
-    char *value_p;
+    struct pbtools_bytes_t value;
 };
 
 /**

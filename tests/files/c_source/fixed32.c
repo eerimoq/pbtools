@@ -51,6 +51,7 @@ static void fixed32_message_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }

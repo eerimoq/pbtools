@@ -761,13 +761,15 @@ TEST(string)
     uint8_t workspace[512];
     struct string_message_t *message_p;
     struct {
+        int decoded_size;
         char *decoded_p;
         int size;
         const char *encoded_p;
     } datas[] = {
-        { "",  0, "" },
-        { "1", 3, "\x0a\x01\x31" },
-        { "123456789012345678901234567890123456789012345678901234567890"
+        { 0, "",  0, "" },
+        { 1, "1", 3, "\x0a\x01\x31" },
+        { 150,
+          "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890123456789012345678901234567890"
           "123456789012345678901234567890",
           153,
@@ -795,7 +797,7 @@ TEST(string)
 
         message_p = string_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
-        message_p->value_p = datas[i].decoded_p;
+        pbtools_set_string(&message_p->value, datas[i].decoded_p);
         size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
@@ -804,7 +806,10 @@ TEST(string)
         ASSERT_NE(message_p, NULL);
         size = string_message_decode(message_p, &encoded[0], size);
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(message_p->value_p, datas[i].decoded_p);
+        ASSERT_EQ(message_p->value.size, datas[i].decoded_size);
+        ASSERT_MEMORY(message_p->value.buf_p,
+                      datas[i].decoded_p,
+                      datas[i].decoded_size + 1);
     }
 }
 
@@ -817,10 +822,12 @@ TEST(string_encode_buffer_full)
 
     message_p = string_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    message_p->value_p = (
+    pbtools_set_string(
+        &message_p->value,
         "123456789012345678901234567890123456789012345678901234567890"
         "123456789012345678901234567890123456789012345678901234567890"
         "123456789012345678901234567890");
+    message_p->value.size = 150;
     size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, -PBTOOLS_ENCODE_BUFFER_FULL);
 }
@@ -842,6 +849,29 @@ TEST(string_decode_out_of_data)
                                  (uint8_t *)"\x0a\x96\x01\x31",
                                  4);
     ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
+}
+
+TEST(string_embedded_zero_termination)
+{
+    uint8_t encoded[256];
+    int size;
+    uint8_t workspace[512];
+    struct string_message_t *message_p;
+
+    message_p = string_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->value.buf_p = (uint8_t *)"\x31\x00\x32";
+    message_p->value.size = 3;
+    size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 5);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x03\x31\x00\x32", size);
+
+    message_p = string_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = string_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(message_p->value.size, 3);
+    ASSERT_MEMORY(message_p->value.buf_p, "\x31\x00\x32\x00", 4);
 }
 
 TEST(bytes)
@@ -962,21 +992,21 @@ TEST(address_book)
     /* Add one person to the address book. */
     ASSERT_EQ(address_book_address_book_people_alloc(address_book_p, 1), 0);
     person_p = address_book_p->people.items_pp[0];
-    person_p->name_p = "Kalle Kula";
+    pbtools_set_string(&person_p->name, "Kalle Kula");
     person_p->id = 56;
-    person_p->email_p = "kalle.kula@foobar.com";
+    pbtools_set_string(&person_p->email, "kalle.kula@foobar.com");
 
     /* Add phone numbers. */
     ASSERT_EQ(address_book_person_phones_alloc(person_p, 2), 0);
 
     /* Home. */
     phone_number_p = person_p->phones.items_pp[0];
-    phone_number_p->number_p = "+46701232345";
+    pbtools_set_string(&phone_number_p->number, "+46701232345");
     phone_number_p->type = address_book_person_phone_type_home_e;
 
     /* Work. */
     phone_number_p = person_p->phones.items_pp[1];
-    phone_number_p->number_p = "+46999999999";
+    pbtools_set_string(&phone_number_p->number, "+46999999999");
     phone_number_p->type = address_book_person_phone_type_work_e;
 
     /* Encode the message. */
@@ -1005,23 +1035,24 @@ TEST(address_book)
     /* Check the decoded person. */
     ASSERT_EQ(address_book_p->people.length, 1);
     person_p = address_book_p->people.items_pp[0];
-    ASSERT_NE(person_p->name_p, NULL);
-    ASSERT_SUBSTRING(person_p->name_p, "Kalle Kula");
+    ASSERT_SUBSTRING(pbtools_get_string(&person_p->name), "Kalle Kula");
     ASSERT_EQ(person_p->id, 56);
-    ASSERT_NE(person_p->email_p, NULL);
-    ASSERT_SUBSTRING(person_p->email_p, "kalle.kula@foobar.com");
+    ASSERT_SUBSTRING(pbtools_get_string(&person_p->email),
+                     "kalle.kula@foobar.com");
 
     /* Check phone numbers. */
     ASSERT_EQ(person_p->phones.length, 2);
 
     /* Home. */
     phone_number_p = person_p->phones.items_pp[0];
-    ASSERT_SUBSTRING(phone_number_p->number_p, "+46701232345");
+    ASSERT_SUBSTRING(pbtools_get_string(&phone_number_p->number),
+                     "+46701232345");
     ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_home_e);
 
     /* Work. */
     phone_number_p = person_p->phones.items_pp[1];
-    ASSERT_SUBSTRING(phone_number_p->number_p, "+46999999999");
+    ASSERT_SUBSTRING(pbtools_get_string(&phone_number_p->number),
+                     "+46999999999");
     ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_work_e);
 }
 
@@ -1083,11 +1114,9 @@ TEST(address_book_default_person)
 
     /* Check the decoded person. */
     person_p = address_book_p->people.items_pp[0];
-    ASSERT_NE(person_p->name_p, NULL);
-    ASSERT_SUBSTRING(person_p->name_p, "");
+    ASSERT_SUBSTRING(pbtools_get_string(&person_p->name), "");
     ASSERT_EQ(person_p->id, 0);
-    ASSERT_NE(person_p->email_p, NULL);
-    ASSERT_SUBSTRING(person_p->email_p, "");
+    ASSERT_SUBSTRING(pbtools_get_string(&person_p->email), "");
     ASSERT_EQ(person_p->phones.length, 0);
 }
 
@@ -1101,9 +1130,9 @@ TEST(address_book_person)
     person_p = address_book_person_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(person_p, NULL);
 
-    person_p->name_p = "Kalle Kula";
+    pbtools_set_string(&person_p->name, "Kalle Kula");
     person_p->id = 56;
-    person_p->email_p = "kalle.kula@foobar.com";
+    pbtools_set_string(&person_p->email, "kalle.kula@foobar.com");
 
     /* Encode the message. */
     size = address_book_person_encode(person_p, &encoded[0], sizeof(encoded));
@@ -1122,12 +1151,123 @@ TEST(address_book_person)
     ASSERT_EQ(size, 37);
 
     /* Check the decoded person. */
-    ASSERT_NE(person_p->name_p, NULL);
-    ASSERT_SUBSTRING(person_p->name_p, "Kalle Kula");
+    ASSERT_SUBSTRING(pbtools_get_string(&person_p->name),
+                     "Kalle Kula");
     ASSERT_EQ(person_p->id, 56);
-    ASSERT_NE(person_p->email_p, NULL);
-    ASSERT_SUBSTRING(person_p->email_p, "kalle.kula@foobar.com");
+    ASSERT_SUBSTRING(pbtools_get_string(&person_p->email),
+                     "kalle.kula@foobar.com");
     ASSERT_EQ(person_p->phones.length, 0);
+}
+
+TEST(address_book_decode_issue_1)
+{
+    int size;
+    uint8_t workspace[4096];
+    struct address_book_address_book_t *address_book_p;
+
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(address_book_p,
+                                            (uint8_t *)"\x00\x0c\x2e\x00",
+                                            4);
+    ASSERT_EQ(size, -PBTOOLS_BAD_FIELD_NUMBER);
+}
+
+TEST(address_book_decode_issue_2)
+{
+    int size;
+    uint8_t workspace[4096];
+    struct address_book_address_book_t *address_book_p;
+
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(address_book_p,
+                                            (uint8_t *)"\x0b\x02\x00\x0e\x00",
+                                            5);
+    ASSERT_EQ(size, -PBTOOLS_BAD_WIRE_TYPE);
+}
+
+TEST(address_book_decode_issue_3)
+{
+    int size;
+    uint8_t workspace[4096];
+    struct address_book_address_book_t *address_book_p;
+
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(
+        address_book_p,
+        (uint8_t *)"\x41\x0a\x02\x08\x00\x02",
+        6);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
+}
+
+TEST(address_book_decode_issue_4)
+{
+    int size;
+    uint8_t workspace[4096];
+    struct address_book_address_book_t *address_book_p;
+
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(
+        address_book_p,
+        (uint8_t *)"\x8a\x00\x01\x1e",
+        4);
+    ASSERT_EQ(size, -PBTOOLS_BAD_WIRE_TYPE);
+}
+
+TEST(address_book_decode_issue_5)
+{
+    int size;
+    uint8_t workspace[4096];
+    struct address_book_address_book_t *address_book_p;
+
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(
+        address_book_p,
+        (uint8_t *)"\x0a\x0a\x00\x8a\x02\x0a\xff\xff\x02\x00\xd2\x00\x00\x00",
+        14);
+    ASSERT_EQ(size, -PBTOOLS_BAD_FIELD_NUMBER);
+}
+
+TEST(address_book_decode_issue_6)
+{
+    int size;
+    uint8_t workspace[4096];
+    struct address_book_address_book_t *address_book_p;
+
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(
+        address_book_p,
+        (uint8_t *)"\x0a\x07\x4a\xff\xff\xff\xff\x07\xff\x0e",
+        10);
+    ASSERT_EQ(size, -PBTOOLS_SEEK_OVERFLOW);
+}
+
+TEST(address_book_decode_issue_7)
+{
+    int size;
+    uint8_t workspace[1024];
+    struct address_book_address_book_t *address_book_p;
+
+    /* Decode the message. */
+    address_book_p = address_book_address_book_new(&workspace[0],
+                                                   sizeof(workspace));
+    ASSERT_NE(address_book_p, NULL);
+    size = address_book_address_book_decode(
+        address_book_p,
+        (uint8_t *)"\x0a\x0a\x10\xff\xff\xff\xff\xfd\xff\xfb\x8f\x70",
+        12);
+    ASSERT_EQ(size, -PBTOOLS_VARINT_OVERFLOW);
 }
 
 TEST(tags_1)
@@ -1293,7 +1433,7 @@ TEST(oneof_v2)
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     message_p->value.choice = oneof_message_value_v2_e;
-    message_p->value.value.v2_p = "Hello!";
+    pbtools_set_string(&message_p->value.value.v2, "Hello!");
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 8);
     ASSERT_MEMORY(&encoded[0], "\x12\x06Hello!", size);
@@ -1303,7 +1443,8 @@ TEST(oneof_v2)
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 8);
     ASSERT_EQ(message_p->value.choice, oneof_message_value_v2_e);
-    ASSERT_EQ(strcmp(message_p->value.value.v2_p, "Hello!"), 0);
+    ASSERT_SUBSTRING(pbtools_get_string(&message_p->value.value.v2),
+                     "Hello!");
 }
 
 TEST(repeated_int32s_one_item)
@@ -1452,7 +1593,7 @@ TEST(repeated_messages_decode_error_too_big)
 
     message_p = repeated_message_new(&workspace[0], sizeof(workspace));
     size = repeated_message_decode(message_p, (uint8_t *)"\x12\xff\xff\x00", 4);
-    ASSERT_EQ(size, -PBTOOLS_OUT_OF_MEMORY);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 }
 
 TEST(repeated_bytes_two_items)
@@ -1543,8 +1684,8 @@ TEST(repeated_nested)
 
     /* strings[0..1]. */
     ASSERT_EQ(repeated_message_strings_alloc(message_p, 2), 0);
-    message_p->strings.items_pp[0]->value_p = "foo";
-    message_p->strings.items_pp[1]->value_p = "bar";
+    pbtools_set_string(message_p->strings.items_pp[0], "foo");
+    pbtools_set_string(message_p->strings.items_pp[1], "bar");
 
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 31);
@@ -1568,8 +1709,10 @@ TEST(repeated_nested)
 
     /* strings[0..1]. */
     ASSERT_EQ(message_p->strings.length, 2);
-    ASSERT_SUBSTRING(message_p->strings.items_pp[0]->value_p, "foo");
-    ASSERT_SUBSTRING(message_p->strings.items_pp[1]->value_p, "bar");
+    ASSERT_SUBSTRING(pbtools_get_string(message_p->strings.items_pp[0]),
+                     "foo");
+    ASSERT_SUBSTRING(pbtools_get_string(message_p->strings.items_pp[1]),
+                     "bar");
 
     /* messages[0]. */
     ASSERT_EQ(message_p->messages.length, 2);
@@ -1643,8 +1786,10 @@ TEST(repeated_nested_decode_out_of_order)
 
         /* strings[0..1]. */
         ASSERT_EQ(message_p->strings.length, 2);
-        ASSERT_SUBSTRING(message_p->strings.items_pp[0]->value_p, "foo");
-        ASSERT_SUBSTRING(message_p->strings.items_pp[1]->value_p, "bar");
+        ASSERT_SUBSTRING(pbtools_get_string(message_p->strings.items_pp[0]),
+                         "foo");
+        ASSERT_SUBSTRING(pbtools_get_string(message_p->strings.items_pp[1]),
+                         "bar");
 
         /* messages[0]. */
         ASSERT_EQ(message_p->messages.length, 2);
@@ -1693,12 +1838,20 @@ int main(void)
         string,
         string_encode_buffer_full,
         string_decode_out_of_data,
+        string_embedded_zero_termination,
         bytes,
         enum_,
         address_book,
         address_book_default,
         address_book_default_person,
         address_book_person,
+        address_book_decode_issue_1,
+        address_book_decode_issue_2,
+        address_book_decode_issue_3,
+        address_book_decode_issue_4,
+        address_book_decode_issue_5,
+        address_book_decode_issue_6,
+        address_book_decode_issue_7,
         tags_1,
         tags_2,
         tags_3,

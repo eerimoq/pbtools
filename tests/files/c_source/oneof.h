@@ -47,7 +47,7 @@ struct oneof_message_t {
         enum oneof_message_value_e choice;
         union {
             int32_t v1;
-            char *v2_p;
+            struct pbtools_bytes_t v2;
         } value;
     } value;
 };

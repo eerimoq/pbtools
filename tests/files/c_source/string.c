@@ -34,7 +34,7 @@ static void string_message_encode_inner(
     struct string_message_t *self_p,
     struct pbtools_encoder_t *encoder_p)
 {
-    pbtools_encoder_write_string(encoder_p, 1, self_p->value_p);
+    pbtools_encoder_write_string(encoder_p, 1, &self_p->value);
 }
 
 static void string_message_decode_inner(
@@ -47,10 +47,13 @@ static void string_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            self_p->value_p = pbtools_decoder_read_string(decoder_p, wire_type);
+            pbtools_decoder_read_string(decoder_p,
+                                        wire_type,
+                                        &self_p->value);
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -73,7 +76,8 @@ struct string_message_t *string_message_new(
 
     if (self_p != NULL) {
         self_p->heap_p = heap_p;
-        self_p->value_p = "";
+        self_p->value.buf_p = (uint8_t *)"";
+        self_p->value.size = 0;
     }
 
     return (self_p);

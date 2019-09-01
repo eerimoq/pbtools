@@ -51,6 +51,7 @@ static void tags_message1_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -126,6 +127,7 @@ static void tags_message2_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -201,6 +203,7 @@ static void tags_message3_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -276,6 +279,7 @@ static void tags_message4_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -351,6 +355,7 @@ static void tags_message5_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -426,6 +431,7 @@ static void tags_message6_decode_inner(
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }

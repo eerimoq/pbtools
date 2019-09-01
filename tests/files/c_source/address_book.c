@@ -36,7 +36,8 @@ static void address_book_person_phone_number_init(
     struct address_book_person_phone_number_t *next_p)
 {
     self_p->heap_p = heap_p;
-    self_p->number_p = "";
+    self_p->number.buf_p = (uint8_t *)"";
+    self_p->number.size = 0;
     self_p->type = address_book_person_phone_type_mobile_e;
     self_p->next_p = next_p;
 }
@@ -47,9 +48,11 @@ static void address_book_person_init(
     struct address_book_person_t *next_p)
 {
     self_p->heap_p = heap_p;
-    self_p->name_p = "";
+    self_p->name.buf_p = (uint8_t *)"";
+    self_p->name.size = 0;
     self_p->id = 0;
-    self_p->email_p = "";
+    self_p->email.buf_p = (uint8_t *)"";
+    self_p->email.size = 0;
     self_p->phones.length = 0;
     self_p->next_p = next_p;
 }
@@ -59,7 +62,9 @@ static void address_book_person_phone_number_encode_inner(
     struct pbtools_encoder_t *encoder_p)
 {
     pbtools_encoder_write_enum(encoder_p, 2, phone_number_p->type);
-    pbtools_encoder_write_string(encoder_p, 1, phone_number_p->number_p);
+    pbtools_encoder_write_string(encoder_p,
+                                 1,
+                                 &phone_number_p->number);
 }
 
 static void address_book_person_phone_number_encode_repeated_inner(
@@ -90,9 +95,9 @@ static void address_book_person_phone_number_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            phone_number_p->number_p = pbtools_decoder_read_string(
-                decoder_p,
-                wire_type);
+            pbtools_decoder_read_string(decoder_p,
+                                        wire_type,
+                                        &phone_number_p->number);
             break;
 
         case 2:
@@ -102,7 +107,8 @@ static void address_book_person_phone_number_decode_inner(
             break;
 
         default:
-            return;
+            pbtools_decoder_skip_field(decoder_p, wire_type);
+            break;
         }
     }
 }
@@ -115,18 +121,26 @@ static void address_book_person_encode_inner(
         encoder_p,
         4,
         &person_p->phones);
-    pbtools_encoder_write_string(encoder_p, 3, person_p->email_p);
+    pbtools_encoder_write_string(encoder_p, 3, &person_p->email);
     pbtools_encoder_write_int32(encoder_p, 2, person_p->id);
-    pbtools_encoder_write_string(encoder_p, 1, person_p->name_p);
+    pbtools_encoder_write_string(encoder_p, 1, &person_p->name);
 }
 
 static void address_book_person_phone_number_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
+    int wire_type,
     struct address_book_person_phone_number_repeated_t *repeated_p)
 {
     size_t size;
     struct pbtools_decoder_t decoder;
     struct address_book_person_phone_number_t *item_p;
+    int res;
+    
+    if (wire_type != 2) {
+        pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
+
+        return;
+    }
 
     item_p = pbtools_decoder_heap_alloc(decoder_p, sizeof(*item_p));
 
@@ -138,7 +152,14 @@ static void address_book_person_phone_number_decode_repeated_inner(
     address_book_person_phone_number_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     address_book_person_phone_number_decode_inner(&decoder, item_p);
-    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
+    res = pbtools_decoder_get_result(&decoder);
+
+    if (res < 0) {
+        pbtools_decoder_abort(decoder_p, -res);
+        return;
+    }
+
+    pbtools_decoder_seek(decoder_p, res);
     item_p->next_p = NULL;
 
     if (repeated_p->length == 0) {
@@ -183,32 +204,42 @@ static void address_book_person_decode_inner(
     struct address_book_person_t *person_p)
 {
     int wire_type;
+    PRINTF("address_book_person_decode_inner() begin\n");
 
     while (pbtools_decoder_available(decoder_p)) {
+        PRINTF("available\n");
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            person_p->name_p = pbtools_decoder_read_string(decoder_p,
-                                                           wire_type);
+            PRINTF("1\n");
+            pbtools_decoder_read_string(decoder_p,
+                                        wire_type,
+                                        &person_p->name);
             break;
 
         case 2:
+            PRINTF("2\n");
             person_p->id = pbtools_decoder_read_int32(decoder_p,
                                                       wire_type);
             break;
 
         case 3:
-            person_p->email_p = pbtools_decoder_read_string(decoder_p,
-                                                            wire_type);
+            PRINTF("3\n");
+            pbtools_decoder_read_string(decoder_p,
+                                        wire_type,
+                                        &person_p->email);
             break;
 
         case 4:
+            PRINTF("4\n");
             address_book_person_phone_number_decode_repeated_inner(
                 decoder_p,
+                wire_type,
                 &person_p->phones);
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }
@@ -216,6 +247,8 @@ static void address_book_person_decode_inner(
     address_book_person_phone_number_finalize_repeated_inner(
         decoder_p,
         &person_p->phones);
+
+    PRINTF("address_book_person_decode_inner() end\n");
 }
 
 static void address_book_person_encode_repeated_inner(
@@ -246,11 +279,21 @@ static void address_book_address_book_encode_inner(
 
 static void address_book_person_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
+    int wire_type,
     struct address_book_person_repeated_t *repeated_p)
 {
     size_t size;
     struct pbtools_decoder_t decoder;
     struct address_book_person_t *item_p;
+    int res;
+    
+    PRINTF("address_book_person_decode_repeated_inner() begin\n");
+
+    if (wire_type != 2) {
+        pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
+
+        return;
+    }
 
     item_p = pbtools_decoder_heap_alloc(decoder_p, sizeof(*item_p));
 
@@ -259,10 +302,19 @@ static void address_book_person_decode_repeated_inner(
     }
 
     size = pbtools_decoder_read_varint(decoder_p);
+    PRINTF("size: %lu\n", size);
     address_book_person_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     address_book_person_decode_inner(&decoder, item_p);
-    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
+    PRINTF("done\n");
+    res = pbtools_decoder_get_result(&decoder);
+
+    if (res < 0) {
+        pbtools_decoder_abort(decoder_p, -res);
+        return;
+    }
+
+    pbtools_decoder_seek(decoder_p, res);
     item_p->next_p = NULL;
 
     if (repeated_p->length == 0) {
@@ -273,6 +325,8 @@ static void address_book_person_decode_repeated_inner(
 
     repeated_p->tail_p = item_p;
     repeated_p->length++;
+
+    PRINTF("address_book_person_decode_repeated_inner() end\n");
 }
 
 static void address_book_person_finalize_repeated_inner(
@@ -309,14 +363,18 @@ static void address_book_address_book_decode_inner(
     int wire_type;
 
     while (pbtools_decoder_available(decoder_p)) {
+        PRINTF("availble\n");
+        
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
             address_book_person_decode_repeated_inner(decoder_p,
+                                                      wire_type,
                                                       &address_book_p->people);
             break;
 
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }
     }

@@ -35,6 +35,11 @@
 #define PBTOOLS_OUT_OF_DATA                                     2
 #define PBTOOLS_OUT_OF_MEMORY                                   3
 #define PBTOOLS_ENCODE_BUFFER_FULL                              4
+#define PBTOOLS_BAD_FIELD_NUMBER                                5
+#define PBTOOLS_VARINT_OVERFLOW                                 6
+#define PBTOOLS_SEEK_OVERFLOW                                   7
+#define PBTOOLS_LENGTH_DELIMITED_OVERFLOW                       8
+#define PBTOOLS_INT32_OVERFLOW                                  9
 
 struct pbtools_heap_t {
     char *buf_p;
@@ -74,16 +79,11 @@ struct pbtools_bool_t {
     struct pbtools_bool_t *next_p;
 };
 
-struct pbtools_string_t {
-    char *value_p;
-    struct pbtools_string_t *next_p;
-};
-
 struct pbtools_repeated_string_t {
     int length;
-    struct pbtools_string_t **items_pp;
-    struct pbtools_string_t *head_p;
-    struct pbtools_string_t *tail_p;
+    struct pbtools_bytes_t **items_pp;
+    struct pbtools_bytes_t *head_p;
+    struct pbtools_bytes_t *tail_p;
 };
 
 struct pbtools_bytes_t {
@@ -216,7 +216,7 @@ void pbtools_encoder_write_enum(struct pbtools_encoder_t *self_p,
 
 void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
                                   int field_number,
-                                  char *value_p);
+                                  struct pbtools_bytes_t *string_p);
 
 void pbtools_encoder_write_repeated_string(
     struct pbtools_encoder_t *self_p,
@@ -319,8 +319,9 @@ bool pbtools_decoder_read_bool(struct pbtools_decoder_t *self_p,
 int pbtools_decoder_read_enum(struct pbtools_decoder_t *self_p,
                               int wire_type);
 
-char *pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
-                                  int wire_type);
+void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
+                                 int wire_type,
+                                 struct pbtools_bytes_t *string_p);
 
 int pbtools_alloc_repeated_string(struct pbtools_repeated_string_t *repeated_p,
                                   struct pbtools_heap_t *heap_p,
@@ -358,5 +359,17 @@ void pbtools_decoder_init_slice(struct pbtools_decoder_t *self_p,
 
 void pbtools_decoder_seek(struct pbtools_decoder_t *self_p,
                           int offset);
+
+void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
+                                int wire_type);
+
+void pbtools_set_string(struct pbtools_bytes_t *self_p,
+                        char *string_p);
+
+char *pbtools_get_string(struct pbtools_bytes_t *self_p);
+
+//#include <stdio.h>
+//#define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#define PRINTF(fmt, ...)
 
 #endif

@@ -170,6 +170,7 @@ static void {namespace}_{name}_decode_inner(
 
 {decode_body}
         default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
         }}
     }}
@@ -181,7 +182,7 @@ ENCODE_INNER_MEMBER_FMT = '''\
 '''
 
 ENCODE_INNER_MEMBER_STRING_FMT = '''\
-    pbtools_encoder_write_string(encoder_p, {field_number}, self_p->{name}_p);
+    pbtools_encoder_write_string(encoder_p, {field_number}, &self_p->{name});
 '''
 
 ENCODE_INNER_MEMBER_BYTES_FMT = '''\
@@ -196,7 +197,9 @@ DECODE_INNER_MEMBER_FMT = '''\
 
 DECODE_INNER_MEMBER_STRING_FMT = '''\
         case {field_number}:
-            self_p->{name}_p = pbtools_decoder_read_string(decoder_p, wire_type);
+            pbtools_decoder_read_string(decoder_p,
+                                        wire_type,
+                                        &self_p->{name});
             break;
 '''
 
@@ -288,9 +291,7 @@ def generate_struct_member_fmt(type, name):
         return f'    int{type[6:]}_t {name};'
     elif type in ['float', 'double', 'bool']:
         return f'    {type} {name};'
-    elif type == 'string':
-        return f'    char *{name}_p;'
-    elif type == 'bytes':
+    elif type in ['string', 'bytes']:
         return f'    struct pbtools_bytes_t {name};'
     else:
         return f'    {camel_to_snake_case(type)}_t {name};'
@@ -424,13 +425,14 @@ def generate_message_members_init(message):
         name = field.name
 
         if field.type == 'string':
-            members.append(f'        self_p->{name}_p = "";')
+            members.append(f'        self_p->{name}.buf_p = (uint8_t *)"";')
+            members.append(f'        self_p->{name}.size = 0;')
         elif field.type == 'bytes':
             members.append(f'        self_p->{name}.size = 0;')
         elif field.type in PRIMITIVE_TYPES:
             members.append(f'        self_p->{name} = 0;')
 
-    return ''.join(members)
+    return '\n'.join(members)
 
 
 def generate_definitions(namespace, parsed):
