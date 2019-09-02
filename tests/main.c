@@ -1410,38 +1410,6 @@ TEST(address_book_decode_issue_8)
     ASSERT_EQ(size, -PBTOOLS_STRING_TOO_LONG);
 }
 
-TEST(address_book_decode_issue_9)
-{
-    /* int size; */
-    /* uint8_t encoded[12]; */
-    /* uint8_t workspace[4096]; */
-    /* struct address_book_address_book_t *address_book_p; */
-    /* struct address_book_person_t *person_p; */
-
-    /* /\* Decode the message. *\/ */
-    /* address_book_p = address_book_address_book_new(&workspace[0], */
-    /*                                                sizeof(workspace)); */
-    /* ASSERT_NE(address_book_p, NULL); */
-    /* size = address_book_address_book_decode( */
-    /*     address_book_p, */
-    /*     (uint8_t *)"\x0a\x08\x10\x10\x10\xf0\xef\xef\xf8\x7a", */
-    /*     10); */
-    /* ASSERT_EQ(size, 10); */
-    /* ASSERT_EQ(address_book_p->people.length, 1); */
-
-    /* person_p = address_book_p->people.items_pp[0]; */
-    /* ASSERT_SUBSTRING(pbtools_get_string(&person_p->name), ""); */
-    /* ASSERT_EQ(person_p->id, -1357121552); */
-    /* ASSERT_SUBSTRING(pbtools_get_string(&person_p->email), ""); */
-    /* ASSERT_EQ(person_p->phones.length, 0); */
-
-    /* /\* Encode the message. *\/ */
-    /* size = address_book_address_book_encode(address_book_p, */
-    /*                                         &encoded[0], */
-    /*                                         sizeof(encoded)); */
-    /* ASSERT_EQ(size, 37); */
-}
-
 TEST(tags_1)
 {
     uint8_t encoded[128];
@@ -2122,7 +2090,6 @@ int main(void)
         address_book_decode_issue_6,
         address_book_decode_issue_7,
         address_book_decode_issue_8,
-        address_book_decode_issue_9,
         tags_1,
         tags_2,
         tags_3,
