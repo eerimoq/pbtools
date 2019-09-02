@@ -26,6 +26,7 @@
 #include "files/c_source/tags.h"
 #include "files/c_source/oneof.h"
 #include "files/c_source/repeated.h"
+#include "files/c_source/scalar_value_types.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -1929,6 +1930,44 @@ TEST(repeated_nested_decode_out_of_order)
     }
 }
 
+TEST(scalar_value_types_decode_bad_wire_types)
+{
+    int i;
+    int size;
+    uint8_t workspace[1024];
+    struct scalar_value_types_message_t *message_p;
+    struct {
+        size_t size;
+        char *encoded_p;
+    } datas[] = {
+        { 1, "\x0f" },
+        { 1, "\x17" },
+        { 1, "\x1f" },
+        { 1, "\x27" },
+        { 1, "\x2f" },
+        { 1, "\x37" },
+        { 1, "\x3f" },
+        { 1, "\x47" },
+        { 1, "\x4f" },
+        { 1, "\x57" },
+        { 1, "\x5f" },
+        { 1, "\x67" },
+        { 1, "\x6f" },
+        { 1, "\x77" },
+        { 1, "\x7f" }
+    };
+
+    for (i = 0; i < membersof(datas); i++) {
+        message_p = scalar_value_types_message_new(&workspace[0],
+                                                   sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = scalar_value_types_message_decode(message_p,
+                                                 (uint8_t *)datas[i].encoded_p,
+                                                 datas[i].size);
+        ASSERT_EQ(size, -PBTOOLS_BAD_WIRE_TYPE);
+    }
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -1988,6 +2027,7 @@ int main(void)
         repeated_bytes_two_items,
         repeated_bytes_decode_element_of_zero_bytes,
         repeated_nested,
-        repeated_nested_decode_out_of_order
+        repeated_nested_decode_out_of_order,
+        scalar_value_types_decode_bad_wire_types
     );
 }

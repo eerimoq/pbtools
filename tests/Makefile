@@ -50,6 +50,7 @@ all:
 	    files/c_source/tags.c \
 	    files/c_source/oneof.c \
 	    files/c_source/repeated.c \
+	    files/c_source/scalar_value_types.c \
 	    main.c
 	./a.out
 

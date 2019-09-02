@@ -37,7 +37,8 @@ class CommandLineTest(unittest.TestCase):
             'bool',
             'tags',
             'string',
-            'bytes'
+            'bytes',
+            'scalar_value_types'
         ]
 
         for spec in specs:

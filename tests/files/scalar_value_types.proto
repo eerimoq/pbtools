@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package scalar_value_types;
+
+message Message {
+    bool v1 = 1;
+    bytes v2 = 2;
+    double v3 = 3;
+    fixed32 v4 = 4;
+    fixed64 v5 = 5;
+    float v6 = 6;
+    int32 v7 = 7;
+    int64 v8 = 8;
+    sfixed32 v9 = 9;
+    sfixed64 v10 = 10;
+    sint32 v11 = 11;
+    sint64 v12 = 12;
+    string v13 = 13;
+    uint32 v14 = 14;
+    uint64 v15 = 15;
+}
