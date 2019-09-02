@@ -168,19 +168,15 @@ void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
     uint8_t buf[10];
     int pos;
 
-    if (value == 0) {
-        pbtools_encoder_put(self_p, 0);
-    } else {
-        pos = 0;
+    pos = 0;
 
-        while (value > 0) {
-            buf[pos++] = (value | 0x80);
-            value >>= 7;
-        }
+    do {
+        buf[pos++] = (value | 0x80);
+        value >>= 7;
+    } while (value > 0);
 
-        buf[pos - 1] &= 0x7f;
-        pbtools_encoder_write(self_p, &buf[0], pos);
-    }
+    buf[pos - 1] &= 0x7f;
+    pbtools_encoder_write(self_p, &buf[0], pos);
 }
 
 void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
