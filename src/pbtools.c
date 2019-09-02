@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <limits.h>
+#include <stdlib.h>
 #include "pbtools.h"
 
 struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
@@ -1122,6 +1123,8 @@ void pbtools_decoder_init_slice(struct pbtools_decoder_t *self_p,
 void pbtools_decoder_seek(struct pbtools_decoder_t *self_p,
                           int offset)
 {
+    PRINTF("seek: %d\n", offset);
+
     if (self_p->pos >= 0) {
         if (((unsigned int)self_p->pos + (unsigned int)offset) > INT_MAX) {
             pbtools_decoder_abort(self_p, PBTOOLS_SEEK_OVERFLOW);

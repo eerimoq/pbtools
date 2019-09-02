@@ -211,6 +211,30 @@ TEST(int32_decode_oveflow)
     }
 }
 
+TEST(int32_decode_seek_out_of_data)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    /* Ok. */
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p,
+                                (uint8_t *)"\x72\x03\x11\x22\x33",
+                                5);
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(message_p->value, 0);
+
+    /* Not ok. */
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(message_p,
+                                (uint8_t *)"\x72\x04\x11\x22\x33",
+                                5);
+    ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
+}
+
 TEST(int64)
 {
     int i;
@@ -1915,6 +1939,7 @@ int main(void)
         int32_decode_unknown_field_number,
         int32_decode_duplicated_field_number,
         int32_decode_oveflow,
+        int32_decode_seek_out_of_data,
         int64,
         int64_decode,
         sint32,
