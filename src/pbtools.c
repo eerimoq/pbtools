@@ -478,12 +478,13 @@ uint8_t pbtools_decoder_get(struct pbtools_decoder_t *self_p)
 
 void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
                           uint8_t *buf_p,
-                          int size)
+                          size_t size)
 {
-    int i;
-
-    for (i = 0; i < size; i++) {
-        buf_p[i] = pbtools_decoder_get(self_p);
+    if ((self_p->size - self_p->pos) >= size) {
+        memcpy(buf_p, &self_p->buf_p[self_p->pos], size);
+        self_p->pos += size;
+    } else {
+        pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_DATA);
     }
 }
 

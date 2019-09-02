@@ -247,7 +247,7 @@ uint8_t pbtools_decoder_get(struct pbtools_decoder_t *self_p);
 
 void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
                           uint8_t *buf_p,
-                          int size);
+                          size_t size);
 
 uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p);
 
