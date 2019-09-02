@@ -1968,6 +1968,52 @@ TEST(scalar_value_types_decode_bad_wire_types)
     }
 }
 
+TEST(skip_error_too_long_length_delimited)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(
+        message_p,
+        (uint8_t *)"\x32\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01",
+        11);
+    ASSERT_EQ(size, -PBTOOLS_LENGTH_DELIMITED_OVERFLOW);
+}
+
+TEST(skip_error_bad_wire_type)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(
+        message_p,
+        (uint8_t *)"\x37\x01",
+        2);
+    ASSERT_EQ(size, -PBTOOLS_BAD_WIRE_TYPE);
+}
+
+TEST(skip_fixed_32)
+{
+    int size;
+    uint8_t workspace[512];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = int32_message_decode(
+        message_p,
+        (uint8_t *)"\x35\x01\x01\x01\x01\x08\x01",
+        7);
+    ASSERT_EQ(size, 7);
+    ASSERT_EQ(message_p->value, 1);
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -2028,6 +2074,9 @@ int main(void)
         repeated_bytes_decode_element_of_zero_bytes,
         repeated_nested,
         repeated_nested_decode_out_of_order,
-        scalar_value_types_decode_bad_wire_types
+        scalar_value_types_decode_bad_wire_types,
+        skip_error_too_long_length_delimited,
+        skip_error_bad_wire_type,
+        skip_fixed_32
     );
 }
