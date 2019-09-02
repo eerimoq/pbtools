@@ -36,7 +36,7 @@ static void address_book_person_phone_number_init(
     struct address_book_person_phone_number_t *next_p)
 {
     self_p->heap_p = heap_p;
-    self_p->number.buf_p = (uint8_t []){0};
+    self_p->number.buf_p = (uint8_t *)"";
     self_p->number.size = 0;
     self_p->type = address_book_person_phone_type_mobile_e;
     self_p->next_p = next_p;
@@ -48,10 +48,10 @@ static void address_book_person_init(
     struct address_book_person_t *next_p)
 {
     self_p->heap_p = heap_p;
-    self_p->name.buf_p = (uint8_t []){0};
+    self_p->name.buf_p = (uint8_t *)"";
     self_p->name.size = 0;
     self_p->id = 0;
-    self_p->email.buf_p = (uint8_t []){0};
+    self_p->email.buf_p = (uint8_t *)"";
     self_p->email.size = 0;
     self_p->phones.length = 0;
     self_p->next_p = next_p;

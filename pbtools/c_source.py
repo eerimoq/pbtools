@@ -425,7 +425,7 @@ def generate_message_members_init(message):
         name = field.name
 
         if field.type == 'string':
-            members.append(f'        self_p->{name}.buf_p = (uint8_t []){{0}};')
+            members.append(f'        self_p->{name}.buf_p = (uint8_t *)"";')
             members.append(f'        self_p->{name}.size = 0;')
         elif field.type == 'bytes':
             members.append(f'        self_p->{name}.size = 0;')
