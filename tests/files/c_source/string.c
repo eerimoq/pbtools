@@ -76,7 +76,7 @@ struct string_message_t *string_message_new(
 
     if (self_p != NULL) {
         self_p->heap_p = heap_p;
-        self_p->value.buf_p = (uint8_t *)"";
+        self_p->value.buf_p = (uint8_t []){0};
         self_p->value.size = 0;
     }
 

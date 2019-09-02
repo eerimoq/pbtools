@@ -160,7 +160,7 @@ struct scalar_value_types_message_t *scalar_value_types_message_new(
         self_p->v10 = 0;
         self_p->v11 = 0;
         self_p->v12 = 0;
-        self_p->v13.buf_p = (uint8_t *)"";
+        self_p->v13.buf_p = (uint8_t []){0};
         self_p->v13.size = 0;
         self_p->v14 = 0;
         self_p->v15 = 0;
