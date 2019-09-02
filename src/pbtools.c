@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include "pbtools.h"
 
+/* Wire types. */
 #define WIRE_TYPE_VARINT            0
 #define WIRE_TYPE_FIXED_64          1
 #define WIRE_TYPE_LENGTH_DELIMITED  2

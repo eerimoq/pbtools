@@ -1940,21 +1940,21 @@ TEST(scalar_value_types_decode_bad_wire_types)
         size_t size;
         char *encoded_p;
     } datas[] = {
-        { 1, "\x0f\x01" },
-        { 1, "\x17\x01\x01" },
-        { 1, "\x1f\x00\x00\x00\x00\x00\x00\x00\x01" },
-        { 1, "\x27\x00\x00\x00\x01" },
-        { 1, "\x2f\x00\x00\x00\x00\x00\x00\x00\x01" },
-        { 1, "\x37\x00\x00\x00\x01" },
-        { 1, "\x3f\x01" },
-        { 1, "\x47\x01" },
-        { 1, "\x4f\x00\x00\x00\x01" },
-        { 1, "\x57\x00\x00\x00\x00\x00\x00\x00\x01" },
-        { 1, "\x5f\x01" },
-        { 1, "\x67\x01" },
-        { 1, "\x6f\x01\x31" },
-        { 1, "\x77\x01" },
-        { 1, "\x7f\x01" }
+        { 2, "\x0f\x01" },
+        { 3, "\x17\x01\x01" },
+        { 9, "\x1f\x00\x00\x00\x00\x00\x00\x00\x01" },
+        { 5, "\x27\x00\x00\x00\x01" },
+        { 9, "\x2f\x00\x00\x00\x00\x00\x00\x00\x01" },
+        { 5, "\x37\x00\x00\x00\x01" },
+        { 2, "\x3f\x01" },
+        { 2, "\x47\x01" },
+        { 5, "\x4f\x00\x00\x00\x01" },
+        { 9, "\x57\x00\x00\x00\x00\x00\x00\x00\x01" },
+        { 2, "\x5f\x01" },
+        { 2, "\x67\x01" },
+        { 3, "\x6f\x01\x31" },
+        { 2, "\x77\x01" },
+        { 2, "\x7f\x01" }
     };
 
     for (i = 0; i < membersof(datas); i++) {
@@ -2012,6 +2012,15 @@ TEST(skip_fixed_32)
         7);
     ASSERT_EQ(size, 7);
     ASSERT_EQ(message_p->value, 1);
+}
+
+TEST(message_does_not_fit_in_workspace)
+{
+    uint8_t workspace[1];
+    struct int32_message_t *message_p;
+
+    message_p = int32_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_EQ(message_p, NULL);
 }
 
 int main(void)
@@ -2077,6 +2086,7 @@ int main(void)
         scalar_value_types_decode_bad_wire_types,
         skip_error_too_long_length_delimited,
         skip_error_bad_wire_type,
-        skip_fixed_32
+        skip_fixed_32,
+        message_does_not_fit_in_workspace
     );
 }
