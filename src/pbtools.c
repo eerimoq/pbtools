@@ -100,7 +100,7 @@ int pbtools_encoder_get_result(struct pbtools_encoder_t *self_p)
     int length;
 
     PRINTF("pbtools_encoder_get_result(): pos: %d\n", self_p->pos);
-    
+
     if (self_p->pos >= 0) {
         length = (self_p->size - self_p->pos - 1);
         memmove(self_p->buf_p,
@@ -129,7 +129,7 @@ void pbtools_encoder_put(struct pbtools_encoder_t *self_p,
     PRINTF("pbtools_encoder_put(): value: 0x%02x, pos: %d\n",
            value,
            self_p->pos);
-    
+
     if (self_p->pos > 0) {
         self_p->buf_p[self_p->pos] = value;
         self_p->pos--;
@@ -142,19 +142,12 @@ void pbtools_encoder_write(struct pbtools_encoder_t *self_p,
                            uint8_t *buf_p,
                            int size)
 {
-    int i;
-
-    for (i = size - 1; i >= 0; i--) {
-        pbtools_encoder_put(self_p, buf_p[i]);
+    if (self_p->pos >= size) {
+        self_p->pos -= size;
+        memcpy(&self_p->buf_p[self_p->pos + 1], buf_p, size);
+    } else {
+        pbtools_encoder_abort(self_p, PBTOOLS_ENCODE_BUFFER_FULL);
     }
-
-    /* if ((self_p->size - self_p->pos) >= size) { */
-    /*     memcpy(buf_p, &self_p->buf_p[self_p->pos], size); */
-    /*     self_p->pos += size; */
-    /* } else { */
-    /*     memset(buf_p, 0, size); */
-    /*     pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_DATA); */
-    /* } */
 }
 
 void pbtools_encoder_write_tag(struct pbtools_encoder_t *self_p,
@@ -185,7 +178,7 @@ void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
 
     PRINTF("pbtools_encoder_write_varint(): value: 0x%llx\n",
            (unsigned long long)value);
-    
+
     pos = 0;
 
     do {
@@ -727,7 +720,7 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                  struct pbtools_bytes_t *string_p)
 {
     uint64_t size;
-    
+
     if (wire_type != WIRE_TYPE_LENGTH_DELIMITED) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
 
@@ -742,7 +735,7 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
         return;
     }
 
-    string_p->size = size;    
+    string_p->size = size;
     string_p->buf_p = pbtools_decoder_heap_alloc(self_p, string_p->size + 1);
 
     if (string_p->buf_p == NULL) {
