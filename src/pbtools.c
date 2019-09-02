@@ -296,7 +296,7 @@ void pbtools_encoder_write_fixed32(struct pbtools_encoder_t *self_p,
         buf[2] = ((value >> 16) & 0xff);
         buf[3] = ((value >> 24) & 0xff);
         pbtools_encoder_write(self_p, &buf[0], 4);
-        pbtools_encoder_write_tag(self_p, field_number, 5);
+        pbtools_encoder_write_tag(self_p, field_number, WIRE_TYPE_FIXED_32);
     }
 }
 
@@ -316,7 +316,7 @@ void pbtools_encoder_write_fixed64(struct pbtools_encoder_t *self_p,
         buf[6] = ((value >> 48) & 0xff);
         buf[7] = ((value >> 56) & 0xff);
         pbtools_encoder_write(self_p, &buf[0], 8);
-        pbtools_encoder_write_tag(self_p, field_number, 1);
+        pbtools_encoder_write_tag(self_p, field_number, WIRE_TYPE_FIXED_64);
     }
 }
 
