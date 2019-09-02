@@ -123,21 +123,6 @@ void pbtools_encoder_abort(struct pbtools_encoder_t *self_p,
     }
 }
 
-void pbtools_encoder_put(struct pbtools_encoder_t *self_p,
-                         uint8_t value)
-{
-    PRINTF("pbtools_encoder_put(): value: 0x%02x, pos: %d\n",
-           value,
-           self_p->pos);
-
-    if (self_p->pos > 0) {
-        self_p->buf_p[self_p->pos] = value;
-        self_p->pos--;
-    } else {
-        pbtools_encoder_abort(self_p, PBTOOLS_ENCODE_BUFFER_FULL);
-    }
-}
-
 void pbtools_encoder_write(struct pbtools_encoder_t *self_p,
                            uint8_t *buf_p,
                            int size)
