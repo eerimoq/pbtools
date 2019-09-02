@@ -3,7 +3,8 @@ FUZZER_EXE = main_fuzzer
 FUZZER_C_SOURCES = \
 	main_fuzzer.c \
 	../src/pbtools.c \
-	files/c_source/address_book.c
+	files/c_source/address_book.c \
+	files/c_source/scalar_value_types.c
 FUZZER_CFLAGS = \
 	-fprofile-instr-generate \
 	-fcoverage-mapping \
@@ -60,7 +61,8 @@ fuzzer:
 	LLVM_PROFILE_FILE="$(FUZZER_EXE).profraw" \
 	    ./$(FUZZER_EXE) \
 	    -max_total_time=$(FUZZER_EXECUTION_TIME) \
-	    -print_final_stats
+	    -print_final_stats \
+	    -max_len=1024
 	llvm-profdata merge \
 	    -sparse $(FUZZER_EXE).profraw \
 	    -o $(FUZZER_EXE).profdata

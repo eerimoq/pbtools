@@ -35,6 +35,7 @@
 #include <stdio.h>
 
 #include "files/c_source/address_book.h"
+#include "files/c_source/scalar_value_types.h"
 
 static void assert_first_encode(ssize_t res)
 {
@@ -62,7 +63,7 @@ static void assert_second_decode_data(const void *decoded_p,
 
     u8_decoded_p = decoded_p;
     u8_decoded_2_p = decoded_2_p;
-    
+
     if (memcmp(decoded_p, decoded_2_p, size) != 0) {
         printf("Second decode data does not match first decoded data.\n");
 
@@ -72,10 +73,10 @@ static void assert_second_decode_data(const void *decoded_p,
             if (u8_decoded_p[i] != u8_decoded_2_p[i]) {
                 printf("- differ");
             }
-            
+
             printf("\n");
         }
-        
+
         __builtin_trap();
     }
 }
@@ -106,21 +107,16 @@ static void assert_second_encode_data(const uint8_t *encoded_p,
     }
 }
 
-
 static void test_address_book(
     const uint8_t *encoded_p,
     size_t size)
 {
     ssize_t res;
-    /* ssize_t res_2; */
     ssize_t i;
-    uint8_t encoded[size + 1];
-    /* uint8_t encoded_2[size + 1]; */
+    uint8_t encoded[4096];
     uint8_t workspace[4096];
-    /* uint8_t workspace_2[4096]; */
     struct address_book_address_book_t *decoded_p;
-    /* struct address_book_address_book_t *decoded_2_p; */
-
+    
     decoded_p = address_book_address_book_new(&workspace[0],
                                               sizeof(workspace));
 
@@ -140,37 +136,45 @@ static void test_address_book(
             sizeof(encoded));
 
         assert_first_encode(res);
+    }
+}
 
-        /* decoded_p = address_book_address_book_new(&workspace_2[0], */
-        /*                                           sizeof(workspace_2)); */
+static void test_scalar_value_types(
+    const uint8_t *encoded_p,
+    size_t size)
+{
+    ssize_t res;
+    ssize_t i;
+    uint8_t encoded[4096];
+    uint8_t workspace[4096];
+    struct scalar_value_types_message_t *decoded_p;
+    
+    decoded_p = scalar_value_types_message_new(&workspace[0],
+                                               sizeof(workspace));
 
-        /* if (decoded_p == NULL) { */
-        /*     return; */
-        /* } */
+    if (decoded_p == NULL) {
+        return;
+    }
 
-        /* res_2 = address_book_address_book_decode( */
-        /*     decoded_p, */
-        /*     &encoded[0], */
-        /*     res); */
+    res = scalar_value_types_message_decode(
+        decoded_p,
+        encoded_p,
+        size);
 
-        /* assert_second_decode(res_2); */
-        /* assert_second_decode_data(&workspace[0], */
-        /*                           &workspace_2[0], */
-        /*                           sizeof(workspace)); */
+    if (res >= 0) {
+        res = scalar_value_types_message_encode(
+            decoded_p,
+            &encoded[0],
+            sizeof(encoded));
 
-        /* res_2 = address_book_address_book_encode( */
-        /*     decoded_p, */
-        /*     &encoded_2[0], */
-        /*     sizeof(encoded_2)); */
-
-        /* assert_second_encode(res, res_2); */
-        /* assert_second_encode_data(&encoded[0], &encoded_2[0], res); */
+        assert_first_encode(res);
     }
 }
 
 int LLVMFuzzerTestOneInput(const uint8_t *data_p, size_t size)
 {
     test_address_book(data_p, size);
+    test_scalar_value_types(data_p, size);
 
     return (0);
 }

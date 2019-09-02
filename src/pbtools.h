@@ -39,6 +39,8 @@
 #define PBTOOLS_VARINT_OVERFLOW                                 6
 #define PBTOOLS_SEEK_OVERFLOW                                   7
 #define PBTOOLS_LENGTH_DELIMITED_OVERFLOW                       8
+#define PBTOOLS_STRING_TOO_LONG                                 9
+#define PBTOOLS_BYTES_TOO_LONG                                 10
 
 struct pbtools_heap_t {
     char *buf_p;
@@ -115,10 +117,10 @@ struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size);
 
 void *pbtools_heap_alloc(struct pbtools_heap_t *self_p,
-                         size_t size);
+                         int size);
 
 void *pbtools_decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                 size_t size);
+                                 int size);
 
 void pbtools_encoder_init(struct pbtools_encoder_t *self_p,
                           uint8_t *buf_p,
@@ -367,8 +369,11 @@ void pbtools_set_string(struct pbtools_bytes_t *self_p,
 
 char *pbtools_get_string(struct pbtools_bytes_t *self_p);
 
-#include <stdio.h>
-#define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
-//#define PRINTF(fmt, ...)
+#if 0
+#    include <stdio.h>
+#    define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#    define PRINTF(fmt, ...)
+#endif
 
 #endif
