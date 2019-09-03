@@ -152,7 +152,17 @@ int {namespace}_{name}_decode(
     size_t size);
 '''
 
-MESSAGE_INNER_FMT = '''\
+MESSAGE_STATIC_DEFINITIONS_FMT = '''\
+static void {namespace}_{name}_init(
+    struct {namespace}_{name}_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct {namespace}_{name}_t *next_p)
+{{
+    self_p->heap_p = heap_p;
+    self_p->next_p = next_p;
+{members_init}
+}}
+
 static void {namespace}_{name}_encode_inner(
     struct {namespace}_{name}_t *self_p,
     struct pbtools_encoder_t *encoder_p)
@@ -213,16 +223,6 @@ DECODE_INNER_MEMBER_BYTES_FMT = '''\
 '''
 
 MESSAGE_DEFINITION_FMT = '''\
-static void {namespace}_{name}_init(
-    struct {namespace}_{name}_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct {namespace}_{name}_t *next_p)
-{{
-    self_p->heap_p = heap_p;
-{members_init}
-    self_p->next_p = next_p;
-}}
-
 struct {namespace}_{name}_t *{namespace}_{name}_new(
     void *workspace_p,
     size_t size)
@@ -453,16 +453,17 @@ def generate_definitions(namespace, parsed):
         decode_body = generate_message_decode_body(message)
         members_init = generate_message_members_init(message)
         definitions.append(
-            MESSAGE_INNER_FMT.format(namespace=namespace,
-                                     name=camel_to_snake_case(message.name),
-                                     encode_body=encode_body,
-                                     decode_body=decode_body))
+            MESSAGE_STATIC_DEFINITIONS_FMT.format(
+                namespace=namespace,
+                name=camel_to_snake_case(message.name),
+                encode_body=encode_body,
+                decode_body=decode_body,
+                members_init=members_init))
         definitions.append(
             MESSAGE_DEFINITION_FMT.format(namespace=namespace,
                                           package=parsed.package,
                                           proto_name=message.name,
-                                          name=camel_to_snake_case(message.name),
-                                          members_init=members_init))
+                                          name=camel_to_snake_case(message.name)))
 
     return '\n'.join(definitions)
 
