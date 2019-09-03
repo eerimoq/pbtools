@@ -434,11 +434,8 @@ def generate_message_members_init(message):
     for field in message.fields:
         name = field.name
 
-        if field.type == 'string':
-            members.append(f'    self_p->{name}.buf_p = (uint8_t *)"";')
-            members.append(f'    self_p->{name}.size = 0;')
-        elif field.type == 'bytes':
-            members.append(f'    self_p->{name}.size = 0;')
+        if field.type in ['bytes', 'string']:
+            members.append(f'    pbtools_{field.type}_init(&self_p->{name});')
         elif field.type in PRIMITIVE_TYPES:
             members.append(f'    self_p->{name} = 0;')
 

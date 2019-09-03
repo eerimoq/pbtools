@@ -1115,3 +1115,14 @@ char *pbtools_get_string(struct pbtools_bytes_t *self_p)
 {
     return ((char *)self_p->buf_p);
 }
+
+void pbtools_string_init(struct pbtools_bytes_t *self_p)
+{
+    self_p->buf_p = (uint8_t *)"";
+    self_p->size = 0;
+}
+
+void pbtools_bytes_init(struct pbtools_bytes_t *self_p)
+{
+    self_p->size = 0;
+}

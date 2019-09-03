@@ -376,6 +376,10 @@ void pbtools_set_string(struct pbtools_bytes_t *self_p,
 
 char *pbtools_get_string(struct pbtools_bytes_t *self_p);
 
+void pbtools_string_init(struct pbtools_bytes_t *self_p);
+
+void pbtools_bytes_init(struct pbtools_bytes_t *self_p);
+
 #if 0
 #    include <stdio.h>
 #    define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
