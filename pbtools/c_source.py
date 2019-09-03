@@ -192,12 +192,8 @@ ENCODE_INNER_MEMBER_FMT = '''\
     pbtools_encoder_write_{type}(encoder_p, {field_number}, self_p->{name});
 '''
 
-ENCODE_INNER_MEMBER_STRING_FMT = '''\
-    pbtools_encoder_write_string(encoder_p, {field_number}, &self_p->{name});
-'''
-
-ENCODE_INNER_MEMBER_BYTES_FMT = '''\
-    pbtools_encoder_write_bytes(encoder_p, {field_number}, &self_p->{name});
+ENCODE_INNER_MEMBER_BYTES_AND_STRING_FMT = '''\
+    pbtools_encoder_write_{type}(encoder_p, {field_number}, &self_p->{name});
 '''
 
 DECODE_INNER_MEMBER_FMT = '''\
@@ -206,19 +202,9 @@ DECODE_INNER_MEMBER_FMT = '''\
             break;
 '''
 
-DECODE_INNER_MEMBER_STRING_FMT = '''\
+DECODE_INNER_MEMBER_BYTES_AND_STRING_FMT = '''\
         case {field_number}:
-            pbtools_decoder_read_string(decoder_p,
-                                        wire_type,
-                                        &self_p->{name});
-            break;
-'''
-
-DECODE_INNER_MEMBER_BYTES_FMT = '''\
-        case {field_number}:
-            pbtools_decoder_read_bytes(decoder_p,
-                                       wire_type,
-                                       &self_p->{name});
+            pbtools_decoder_read_{type}(decoder_p, wire_type, &self_p->{name});
             break;
 '''
 
@@ -301,7 +287,7 @@ def generate_struct_member_fmt(type, name):
         return f'    int{type[6:]}_t {name};'
     elif type in ['float', 'double', 'bool']:
         return f'    {type} {name};'
-    elif type in ['string', 'bytes']:
+    elif type in ['bytes', 'string']:
         return f'    struct pbtools_bytes_t {name};'
     else:
         return f'    {camel_to_snake_case(type)}_t {name};'
@@ -390,14 +376,12 @@ def generate_message_encode_body(message):
     members = []
 
     for field in message.fields:
-        if field.type == 'string':
+        if field.type in ['bytes', 'string']:
             members.append(
-                ENCODE_INNER_MEMBER_STRING_FMT.format(field_number=field.field_number,
-                                                      name=field.name))
-        elif field.type == 'bytes':
-            members.append(
-                ENCODE_INNER_MEMBER_BYTES_FMT.format(field_number=field.field_number,
-                                                     name=field.name))
+                ENCODE_INNER_MEMBER_BYTES_AND_STRING_FMT.format(
+                    type=field.type,
+                    field_number=field.field_number,
+                    name=field.name))
         elif field.type in PRIMITIVE_TYPES:
             members.append(
                 ENCODE_INNER_MEMBER_FMT.format(type=field.type,
@@ -411,14 +395,12 @@ def generate_message_decode_body(message):
     members = []
 
     for field in message.fields:
-        if field.type == 'string':
+        if field.type in ['bytes', 'string']:
             members.append(
-                DECODE_INNER_MEMBER_STRING_FMT.format(field_number=field.field_number,
-                                                      name=field.name))
-        elif field.type == 'bytes':
-            members.append(
-                DECODE_INNER_MEMBER_BYTES_FMT.format(field_number=field.field_number,
-                                                     name=field.name))
+                DECODE_INNER_MEMBER_BYTES_AND_STRING_FMT.format(
+                    type=field.type,
+                    field_number=field.field_number,
+                    name=field.name))
         elif field.type in PRIMITIVE_TYPES:
             members.append(
                 DECODE_INNER_MEMBER_FMT.format(field_number=field.field_number,
