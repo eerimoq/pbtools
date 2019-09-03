@@ -31,6 +31,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+/* Errors. */
 #define PBTOOLS_BAD_WIRE_TYPE                                   1
 #define PBTOOLS_OUT_OF_DATA                                     2
 #define PBTOOLS_OUT_OF_MEMORY                                   3
@@ -41,6 +42,12 @@
 #define PBTOOLS_LENGTH_DELIMITED_OVERFLOW                       8
 #define PBTOOLS_STRING_TOO_LONG                                 9
 #define PBTOOLS_BYTES_TOO_LONG                                 10
+
+/* Wire types. */
+#define PBTOOLS_WIRE_TYPE_VARINT            0
+#define PBTOOLS_WIRE_TYPE_FIXED_64          1
+#define PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED  2
+#define PBTOOLS_WIRE_TYPE_FIXED_32          5
 
 struct pbtools_heap_t {
     char *buf_p;

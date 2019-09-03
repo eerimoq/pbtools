@@ -134,9 +134,8 @@ static void address_book_person_phone_number_decode_repeated_inner(
     size_t size;
     struct pbtools_decoder_t decoder;
     struct address_book_person_phone_number_t *item_p;
-    int res;
     
-    if (wire_type != 2) {
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
 
         return;
@@ -152,14 +151,7 @@ static void address_book_person_phone_number_decode_repeated_inner(
     address_book_person_phone_number_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     address_book_person_phone_number_decode_inner(&decoder, item_p);
-    res = pbtools_decoder_get_result(&decoder);
-
-    if (res < 0) {
-        pbtools_decoder_abort(decoder_p, -res);
-        return;
-    }
-
-    pbtools_decoder_seek(decoder_p, res);
+    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
     item_p->next_p = NULL;
 
     if (repeated_p->length == 0) {
@@ -285,11 +277,10 @@ static void address_book_person_decode_repeated_inner(
     size_t size;
     struct pbtools_decoder_t decoder;
     struct address_book_person_t *item_p;
-    int res;
     
     PRINTF("address_book_person_decode_repeated_inner() begin\n");
 
-    if (wire_type != 2) {
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
 
         return;
@@ -302,19 +293,10 @@ static void address_book_person_decode_repeated_inner(
     }
 
     size = pbtools_decoder_read_varint(decoder_p);
-    PRINTF("size: %lu\n", size);
     address_book_person_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     address_book_person_decode_inner(&decoder, item_p);
-    PRINTF("done\n");
-    res = pbtools_decoder_get_result(&decoder);
-
-    if (res < 0) {
-        pbtools_decoder_abort(decoder_p, -res);
-        return;
-    }
-
-    pbtools_decoder_seek(decoder_p, res);
+    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
     item_p->next_p = NULL;
 
     if (repeated_p->length == 0) {

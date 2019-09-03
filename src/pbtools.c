@@ -31,12 +31,6 @@
 #include <stdlib.h>
 #include "pbtools.h"
 
-/* Wire types. */
-#define WIRE_TYPE_VARINT            0
-#define WIRE_TYPE_FIXED_64          1
-#define WIRE_TYPE_LENGTH_DELIMITED  2
-#define WIRE_TYPE_FIXED_32          5
-
 struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size)
 {
@@ -195,7 +189,9 @@ void pbtools_encoder_write_length_delimited(struct pbtools_encoder_t *self_p,
                                             uint64_t value)
 {
     pbtools_encoder_write_varint(self_p, value);
-    pbtools_encoder_write_tag(self_p, field_number, WIRE_TYPE_LENGTH_DELIMITED);
+    pbtools_encoder_write_tag(self_p,
+                              field_number,
+                              PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
 }
 
 void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
@@ -204,7 +200,7 @@ void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
 {
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
-                                        WIRE_TYPE_VARINT,
+                                        PBTOOLS_WIRE_TYPE_VARINT,
                                         (uint64_t)(int64_t)value);
 }
 
@@ -229,7 +225,7 @@ void pbtools_encoder_write_repeated_int32(
 
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
-                                        WIRE_TYPE_LENGTH_DELIMITED,
+                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
                                         pos - self_p->pos);
 }
 
@@ -239,7 +235,7 @@ void pbtools_encoder_write_int64(struct pbtools_encoder_t *self_p,
 {
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
-                                        WIRE_TYPE_VARINT,
+                                        PBTOOLS_WIRE_TYPE_VARINT,
                                         (uint64_t)value);
 }
 
@@ -278,7 +274,7 @@ void pbtools_encoder_write_uint64(struct pbtools_encoder_t *self_p,
 {
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
-                                        WIRE_TYPE_VARINT,
+                                        PBTOOLS_WIRE_TYPE_VARINT,
                                         value);
 }
 
@@ -294,7 +290,9 @@ void pbtools_encoder_write_fixed32(struct pbtools_encoder_t *self_p,
         buf[2] = ((value >> 16) & 0xff);
         buf[3] = ((value >> 24) & 0xff);
         pbtools_encoder_write(self_p, &buf[0], 4);
-        pbtools_encoder_write_tag(self_p, field_number, WIRE_TYPE_FIXED_32);
+        pbtools_encoder_write_tag(self_p,
+                                  field_number,
+                                  PBTOOLS_WIRE_TYPE_FIXED_32);
     }
 }
 
@@ -314,7 +312,9 @@ void pbtools_encoder_write_fixed64(struct pbtools_encoder_t *self_p,
         buf[6] = ((value >> 48) & 0xff);
         buf[7] = ((value >> 56) & 0xff);
         pbtools_encoder_write(self_p, &buf[0], 8);
-        pbtools_encoder_write_tag(self_p, field_number, WIRE_TYPE_FIXED_64);
+        pbtools_encoder_write_tag(self_p,
+                                  field_number,
+                                  PBTOOLS_WIRE_TYPE_FIXED_64);
     }
 }
 
@@ -401,7 +401,7 @@ void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
         pbtools_encoder_write(self_p, value_p->buf_p, value_p->size);
         pbtools_encoder_write_tagged_varint(self_p,
                                             field_number,
-                                            WIRE_TYPE_LENGTH_DELIMITED,
+                                            PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
                                             value_p->size);
     }
 }
@@ -532,7 +532,7 @@ uint64_t pbtools_decoder_read_varint_check_wire_type_varint(
     return (pbtools_decoder_read_varint_check_wire_type(
                 self_p,
                 wire_type,
-                WIRE_TYPE_VARINT));
+                PBTOOLS_WIRE_TYPE_VARINT));
 }
 
 int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
@@ -612,7 +612,7 @@ uint32_t pbtools_decoder_read_fixed32(struct pbtools_decoder_t *self_p,
     uint32_t value;
     uint8_t buf[4];
 
-    if (wire_type != WIRE_TYPE_FIXED_32) {
+    if (wire_type != PBTOOLS_WIRE_TYPE_FIXED_32) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
 
         return (0);
@@ -633,7 +633,7 @@ uint64_t pbtools_decoder_read_fixed64(struct pbtools_decoder_t *self_p,
     uint64_t value;
     uint8_t buf[8];
 
-    if (wire_type != WIRE_TYPE_FIXED_64) {
+    if (wire_type != PBTOOLS_WIRE_TYPE_FIXED_64) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
 
         return (0);
@@ -706,7 +706,7 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
 {
     uint64_t size;
 
-    if (wire_type != WIRE_TYPE_LENGTH_DELIMITED) {
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
 
         return;
@@ -737,7 +737,7 @@ void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
 {
     uint64_t size;
 
-    if (wire_type != WIRE_TYPE_LENGTH_DELIMITED) {
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
 
         return;
@@ -820,7 +820,7 @@ void pbtools_decoder_read_repeated_int32(
     size = pbtools_decoder_read_varint_check_wire_type(
         self_p,
         wire_type,
-        WIRE_TYPE_LENGTH_DELIMITED);
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
     pos = self_p->pos;
 
     while (self_p->pos < (pos + size)) {
@@ -1053,7 +1053,9 @@ void pbtools_decoder_seek(struct pbtools_decoder_t *self_p,
     PRINTF("seek: %d\n", offset);
 
     if (self_p->pos >= 0) {
-        if (((unsigned int)self_p->pos + (unsigned int)offset) > INT_MAX) {
+        if (offset < 0) {
+            pbtools_decoder_abort(self_p, -offset);
+        } else if (((unsigned int)self_p->pos + (unsigned int)offset) > INT_MAX) {
             pbtools_decoder_abort(self_p, PBTOOLS_SEEK_OVERFLOW);
         } else {
             self_p->pos += offset;
@@ -1073,15 +1075,15 @@ void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
 
     switch (wire_type) {
 
-    case WIRE_TYPE_VARINT:
+    case PBTOOLS_WIRE_TYPE_VARINT:
         (void)pbtools_decoder_read_varint(self_p);
         break;
 
-    case WIRE_TYPE_FIXED_64:
-        (void)pbtools_decoder_read_fixed64(self_p, WIRE_TYPE_FIXED_64);
+    case PBTOOLS_WIRE_TYPE_FIXED_64:
+        (void)pbtools_decoder_read_fixed64(self_p, PBTOOLS_WIRE_TYPE_FIXED_64);
         break;
 
-    case WIRE_TYPE_LENGTH_DELIMITED:
+    case PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED:
         value = pbtools_decoder_read_varint(self_p);
 
         if (value > INT_MAX) {
@@ -1092,8 +1094,8 @@ void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
 
         break;
 
-    case WIRE_TYPE_FIXED_32:
-        (void)pbtools_decoder_read_fixed32(self_p, WIRE_TYPE_FIXED_32);
+    case PBTOOLS_WIRE_TYPE_FIXED_32:
+        (void)pbtools_decoder_read_fixed32(self_p, PBTOOLS_WIRE_TYPE_FIXED_32);
         break;
 
     default:

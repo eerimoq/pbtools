@@ -129,12 +129,18 @@ static void repeated_message_message_encode_repeated_inner(
 
 static void repeated_message_message_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
+    int wire_type,
     struct repeated_message_message_repeated_t *repeated_p)
 {
     size_t size;
     struct pbtools_decoder_t decoder;
     struct repeated_message_t *item_p;
-    int res;
+
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
+        pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
+
+        return;
+    }
 
     item_p = pbtools_decoder_heap_alloc(decoder_p, sizeof(*item_p));
 
@@ -146,14 +152,7 @@ static void repeated_message_message_decode_repeated_inner(
     repeated_message_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     repeated_message_decode_inner(item_p, &decoder);
-    res = pbtools_decoder_get_result(&decoder);
-
-    if (res < 0) {
-        pbtools_decoder_abort(decoder_p, -res);
-        return;
-    }
-
-    pbtools_decoder_seek(decoder_p, res);
+    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
     item_p->next_p = NULL;
 
     if (repeated_p->length == 0) {
@@ -223,6 +222,7 @@ static void repeated_message_decode_inner(
         case 2:
             repeated_message_message_decode_repeated_inner(
                 decoder_p,
+                wire_type,
                 &self_p->messages);
             break;
 
