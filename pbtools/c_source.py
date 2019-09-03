@@ -106,6 +106,7 @@ MESSAGE_STRUCT_FMT = '''\
 struct {namespace}_{name}_t {{
     struct pbtools_heap_t *heap_p;
 {members}
+    struct {namespace}_{name}_t *next_p;
 }};
 '''
 
@@ -212,6 +213,16 @@ DECODE_INNER_MEMBER_BYTES_FMT = '''\
 '''
 
 MESSAGE_DEFINITION_FMT = '''\
+static void {namespace}_{name}_init(
+    struct {namespace}_{name}_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct {namespace}_{name}_t *next_p)
+{{
+    self_p->heap_p = heap_p;
+{members_init}
+    self_p->next_p = next_p;
+}}
+
 struct {namespace}_{name}_t *{namespace}_{name}_new(
     void *workspace_p,
     size_t size)
@@ -228,8 +239,7 @@ struct {namespace}_{name}_t *{namespace}_{name}_new(
     self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
 
     if (self_p != NULL) {{
-        self_p->heap_p = heap_p;
-{members_init}
+        {namespace}_{name}_init(self_p, heap_p, NULL);
     }}
 
     return (self_p);
@@ -425,12 +435,12 @@ def generate_message_members_init(message):
         name = field.name
 
         if field.type == 'string':
-            members.append(f'        self_p->{name}.buf_p = (uint8_t *)"";')
-            members.append(f'        self_p->{name}.size = 0;')
+            members.append(f'    self_p->{name}.buf_p = (uint8_t *)"";')
+            members.append(f'    self_p->{name}.size = 0;')
         elif field.type == 'bytes':
-            members.append(f'        self_p->{name}.size = 0;')
+            members.append(f'    self_p->{name}.size = 0;')
         elif field.type in PRIMITIVE_TYPES:
-            members.append(f'        self_p->{name} = 0;')
+            members.append(f'    self_p->{name} = 0;')
 
     return '\n'.join(members)
 
