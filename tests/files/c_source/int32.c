@@ -61,8 +61,8 @@ static void int32_message_init(
     struct pbtools_heap_t *heap_p,
     struct int32_message_t *next_p)
 {
-    self_p->heap_p = heap_p;
-    self_p->next_p = next_p;
+    self_p->base.heap_p = heap_p;
+    self_p->base.next_p = &next_p->base;
     self_p->value = 0;
 }
 
@@ -109,7 +109,7 @@ int int32_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_encode_inner_t)int32_message_encode_inner));
@@ -121,7 +121,7 @@ int int32_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_decode_inner_t)int32_message_decode_inner));
@@ -132,8 +132,8 @@ static void int32_message2_init(
     struct pbtools_heap_t *heap_p,
     struct int32_message2_t *next_p)
 {
-    self_p->heap_p = heap_p;
-    self_p->next_p = next_p;
+    self_p->base.heap_p = heap_p;
+    self_p->base.next_p = &next_p->base;
     self_p->value = 0;
 }
 
@@ -180,7 +180,7 @@ int int32_message2_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_encode_inner_t)int32_message2_encode_inner));
@@ -192,7 +192,7 @@ int int32_message2_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_decode_inner_t)int32_message2_decode_inner));

@@ -103,8 +103,7 @@ MESSAGE_STRUCT_FMT = '''\
 {repeated_struct}
 
 struct {namespace}_{name}_t {{
-    struct pbtools_heap_t *heap_p;
-    struct {namespace}_{name}_t *next_p;
+    struct pbtools_message_base_t base;
 {members}
 }};
 '''
@@ -172,8 +171,8 @@ static void {namespace}_{name}_init(
     struct pbtools_heap_t *heap_p,
     struct {namespace}_{name}_t *next_p)
 {{
-    self_p->heap_p = heap_p;
-    self_p->next_p = next_p;
+    self_p->base.heap_p = heap_p;
+    self_p->base.next_p = &next_p->base;
 {members_init}
 }}
 
@@ -270,7 +269,7 @@ int {namespace}_{name}_encode(
     size_t size)
 {{
     return (pbtools_message_encode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_encode_inner_t){namespace}_{name}_encode_inner));
@@ -282,7 +281,7 @@ int {namespace}_{name}_decode(
     size_t size)
 {{
     return (pbtools_message_decode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_decode_inner_t){namespace}_{name}_decode_inner));
@@ -311,7 +310,7 @@ int {namespace}_{name}_{field_name}_alloc(
 {{
     return (pbtools_alloc_repeated_{type}(
         &self_p->{field_name},
-        self_p->heap_p,
+        self_p->base.heap_p,
         length));
 }}
 '''
@@ -327,22 +326,22 @@ int {namespace}_{name}_{field_name}_alloc(
 
     res = -1;
     self_p->{field_name}.items_pp = pbtools_heap_alloc(
-        self_p->heap_p,
+        self_p->base.heap_p,
         sizeof(items_p) * length);
 
     if (self_p->{field_name}.items_pp != NULL) {{
-        items_p = pbtools_heap_alloc(self_p->heap_p, sizeof(*items_p) * length);
+        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
 
         if (items_p != NULL) {{
             for (i = 0; i < length; i++) {{
                 {namespace}_{name}_init(
                     &items_p[i],
-                    self_p->heap_p,
+                    self_p->base.heap_p,
                     &items_p[i + 1]);
                 self_p->{field_name}.items_pp[i] = &items_p[i];
             }}
 
-            items_p[length - 1].next_p = NULL;
+            items_p[length - 1].base.next_p = NULL;
             self_p->{field_name}.length = length;
             self_p->{field_name}.head_p = &items_p[0];
             self_p->{field_name}.tail_p = &items_p[length - 1];
@@ -414,12 +413,12 @@ static void {namespace}_{name}_decode_repeated_inner(
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     {namespace}_{name}_decode_inner(item_p, &decoder);
     pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
-    item_p->next_p = NULL;
+    item_p->base.next_p = NULL;
 
     if (repeated_p->length == 0) {{
         repeated_p->head_p = item_p;
     }} else {{
-        repeated_p->tail_p->next_p = item_p;
+        repeated_p->tail_p->base.next_p = &item_p->base;
     }}
 
     repeated_p->tail_p = item_p;
@@ -449,7 +448,7 @@ static void {namespace}_{name}_finalize_repeated_inner(
 
     for (i = 0; i < repeated_p->length; i++) {{
         repeated_p->items_pp[i] = item_p;
-        item_p = item_p->next_p;
+        item_p = (struct {namespace}_{name}_t *)item_p->base.next_p;
     }}
 }}
 '''

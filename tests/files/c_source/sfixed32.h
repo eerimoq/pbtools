@@ -44,8 +44,7 @@ struct sfixed32_message_repeated_t {
 };
 
 struct sfixed32_message_t {
-    struct pbtools_heap_t *heap_p;
-    struct sfixed32_message_t *next_p;
+    struct pbtools_message_base_t base;
     int32_t value;
 };
 

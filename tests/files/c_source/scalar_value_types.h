@@ -44,8 +44,7 @@ struct scalar_value_types_message_repeated_t {
 };
 
 struct scalar_value_types_message_t {
-    struct pbtools_heap_t *heap_p;
-    struct scalar_value_types_message_t *next_p;
+    struct pbtools_message_base_t base;
     bool v1;
     struct pbtools_bytes_t v2;
     double v3;

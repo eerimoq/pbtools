@@ -61,8 +61,8 @@ struct pbtools_message_base_t {
 };
 
 struct pbtools_int32_t {
-    int32_t value;
     struct pbtools_int32_t *next_p;
+    int32_t value;
 };
 
 struct pbtools_repeated_int32_t {
@@ -73,23 +73,23 @@ struct pbtools_repeated_int32_t {
 };
 
 struct pbtools_int64_t {
-    int64_t value;
     struct pbtools_int64_t *next_p;
+    int64_t value;
 };
 
 struct pbtools_uint32_t {
-    uint32_t value;
     struct pbtools_uint32_t *next_p;
+    uint32_t value;
 };
 
 struct pbtools_uint64_t {
-    uint64_t value;
     struct pbtools_uint64_t *next_p;
+    uint64_t value;
 };
 
 struct pbtools_bool_t {
-    bool value;
     struct pbtools_bool_t *next_p;
+    bool value;
 };
 
 struct pbtools_repeated_string_t {
@@ -100,9 +100,9 @@ struct pbtools_repeated_string_t {
 };
 
 struct pbtools_bytes_t {
+    struct pbtools_bytes_t *next_p;
     uint8_t *buf_p;
     size_t size;
-    struct pbtools_bytes_t *next_p;
 };
 
 struct pbtools_repeated_bytes_t {

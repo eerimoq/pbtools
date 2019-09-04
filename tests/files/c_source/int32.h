@@ -44,8 +44,7 @@ struct int32_message_repeated_t {
 };
 
 struct int32_message_t {
-    struct pbtools_heap_t *heap_p;
-    struct int32_message_t *next_p;
+    struct pbtools_message_base_t base;
     int32_t value;
 };
 
@@ -60,8 +59,7 @@ struct int32_message2_repeated_t {
 };
 
 struct int32_message2_t {
-    struct pbtools_heap_t *heap_p;
-    struct int32_message2_t *next_p;
+    struct pbtools_message_base_t base;
     int32_t value;
 };
 

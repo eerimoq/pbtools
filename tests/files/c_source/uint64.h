@@ -44,8 +44,7 @@ struct uint64_message_repeated_t {
 };
 
 struct uint64_message_t {
-    struct pbtools_heap_t *heap_p;
-    struct uint64_message_t *next_p;
+    struct pbtools_message_base_t base;
     uint64_t value;
 };
 

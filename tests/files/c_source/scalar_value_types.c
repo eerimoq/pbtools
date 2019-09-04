@@ -48,8 +48,8 @@ static void scalar_value_types_message_init(
     struct pbtools_heap_t *heap_p,
     struct scalar_value_types_message_t *next_p)
 {
-    self_p->heap_p = heap_p;
-    self_p->next_p = next_p;
+    self_p->base.heap_p = heap_p;
+    self_p->base.next_p = &next_p->base;
     self_p->v1 = 0;
     pbtools_bytes_init(&self_p->v2);
     self_p->v3 = 0;
@@ -180,7 +180,7 @@ int scalar_value_types_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_encode_inner_t)scalar_value_types_message_encode_inner));
@@ -192,7 +192,7 @@ int scalar_value_types_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        (struct pbtools_message_base_t *)self_p,
+        &self_p->base,
         encoded_p,
         size,
         (pbtools_message_decode_inner_t)scalar_value_types_message_decode_inner));

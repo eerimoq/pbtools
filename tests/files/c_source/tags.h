@@ -44,8 +44,7 @@ struct tags_message1_repeated_t {
 };
 
 struct tags_message1_t {
-    struct pbtools_heap_t *heap_p;
-    struct tags_message1_t *next_p;
+    struct pbtools_message_base_t base;
     bool value;
 };
 
@@ -60,8 +59,7 @@ struct tags_message2_repeated_t {
 };
 
 struct tags_message2_t {
-    struct pbtools_heap_t *heap_p;
-    struct tags_message2_t *next_p;
+    struct pbtools_message_base_t base;
     bool value;
 };
 
@@ -76,8 +74,7 @@ struct tags_message3_repeated_t {
 };
 
 struct tags_message3_t {
-    struct pbtools_heap_t *heap_p;
-    struct tags_message3_t *next_p;
+    struct pbtools_message_base_t base;
     bool value;
 };
 
@@ -92,8 +89,7 @@ struct tags_message4_repeated_t {
 };
 
 struct tags_message4_t {
-    struct pbtools_heap_t *heap_p;
-    struct tags_message4_t *next_p;
+    struct pbtools_message_base_t base;
     bool value;
 };
 
@@ -108,8 +104,7 @@ struct tags_message5_repeated_t {
 };
 
 struct tags_message5_t {
-    struct pbtools_heap_t *heap_p;
-    struct tags_message5_t *next_p;
+    struct pbtools_message_base_t base;
     bool value;
 };
 
@@ -124,8 +119,7 @@ struct tags_message6_repeated_t {
 };
 
 struct tags_message6_t {
-    struct pbtools_heap_t *heap_p;
-    struct tags_message6_t *next_p;
+    struct pbtools_message_base_t base;
     bool value;
 };
 

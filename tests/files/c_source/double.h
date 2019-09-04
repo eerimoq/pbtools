@@ -44,8 +44,7 @@ struct double_message_repeated_t {
 };
 
 struct double_message_t {
-    struct pbtools_heap_t *heap_p;
-    struct double_message_t *next_p;
+    struct pbtools_message_base_t base;
     double value;
 };
 
