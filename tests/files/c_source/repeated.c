@@ -56,14 +56,6 @@ static void repeated_message_init(
     self_p->bytes.length = 0;
 }
 
-int repeated_message_int32s_alloc(struct repeated_message_t *self_p,
-                                  int length)
-{
-    return (pbtools_alloc_repeated_int32(&self_p->int32s,
-                                         self_p->heap_p,
-                                         length));
-}
-
 int repeated_message_messages_alloc(
     struct repeated_message_t *self_p,
     int length)
@@ -97,22 +89,6 @@ int repeated_message_messages_alloc(
     }
 
     return (res);
-}
-
-int repeated_message_strings_alloc(struct repeated_message_t *self_p,
-                                   int length)
-{
-    return (pbtools_alloc_repeated_string(&self_p->strings,
-                                          self_p->heap_p,
-                                          length));
-}
-
-int repeated_message_bytes_alloc(struct repeated_message_t *self_p,
-                                 int length)
-{
-    return (pbtools_alloc_repeated_bytes(&self_p->bytes,
-                                         self_p->heap_p,
-                                         length));
 }
 
 static void repeated_message_encode_repeated_inner(
@@ -203,9 +179,10 @@ static void repeated_message_encode_inner(
 {
     pbtools_encoder_write_repeated_bytes(encoder_p, 4, &self_p->bytes);
     pbtools_encoder_write_repeated_string(encoder_p, 3, &self_p->strings);
-    repeated_message_encode_repeated_inner(encoder_p,
-                                           2,
-                                           &self_p->messages);
+    repeated_message_encode_repeated_inner(
+        encoder_p,
+        2,
+        &self_p->messages);
     pbtools_encoder_write_repeated_int32(encoder_p, 1, &self_p->int32s);
 }
 
@@ -261,6 +238,36 @@ static void repeated_message_decode_inner(
                                              &self_p->strings);
     pbtools_decoder_finalize_repeated_bytes(decoder_p,
                                             &self_p->bytes);
+}
+
+int repeated_message_int32s_alloc(
+    struct repeated_message_t *self_p,
+    int length)
+{
+    return (pbtools_alloc_repeated_int32(
+        &self_p->int32s,
+        self_p->heap_p,
+        length));
+}
+
+int repeated_message_strings_alloc(
+    struct repeated_message_t *self_p,
+    int length)
+{
+    return (pbtools_alloc_repeated_string(
+        &self_p->strings,
+        self_p->heap_p,
+        length));
+}
+
+int repeated_message_bytes_alloc(
+    struct repeated_message_t *self_p,
+    int length)
+{
+    return (pbtools_alloc_repeated_bytes(
+        &self_p->bytes,
+        self_p->heap_p,
+        length));
 }
 
 struct repeated_message_t *repeated_message_new(

@@ -71,21 +71,21 @@ static void scalar_value_types_message_encode_inner(
     struct scalar_value_types_message_t *self_p,
     struct pbtools_encoder_t *encoder_p)
 {
-    pbtools_encoder_write_bool(encoder_p, 1, self_p->v1);
-    pbtools_encoder_write_bytes(encoder_p, 2, &self_p->v2);
-    pbtools_encoder_write_double(encoder_p, 3, self_p->v3);
-    pbtools_encoder_write_fixed32(encoder_p, 4, self_p->v4);
-    pbtools_encoder_write_fixed64(encoder_p, 5, self_p->v5);
-    pbtools_encoder_write_float(encoder_p, 6, self_p->v6);
-    pbtools_encoder_write_int32(encoder_p, 7, self_p->v7);
-    pbtools_encoder_write_int64(encoder_p, 8, self_p->v8);
-    pbtools_encoder_write_sfixed32(encoder_p, 9, self_p->v9);
-    pbtools_encoder_write_sfixed64(encoder_p, 10, self_p->v10);
-    pbtools_encoder_write_sint32(encoder_p, 11, self_p->v11);
-    pbtools_encoder_write_sint64(encoder_p, 12, self_p->v12);
-    pbtools_encoder_write_string(encoder_p, 13, &self_p->v13);
-    pbtools_encoder_write_uint32(encoder_p, 14, self_p->v14);
     pbtools_encoder_write_uint64(encoder_p, 15, self_p->v15);
+    pbtools_encoder_write_uint32(encoder_p, 14, self_p->v14);
+    pbtools_encoder_write_string(encoder_p, 13, &self_p->v13);
+    pbtools_encoder_write_sint64(encoder_p, 12, self_p->v12);
+    pbtools_encoder_write_sint32(encoder_p, 11, self_p->v11);
+    pbtools_encoder_write_sfixed64(encoder_p, 10, self_p->v10);
+    pbtools_encoder_write_sfixed32(encoder_p, 9, self_p->v9);
+    pbtools_encoder_write_int64(encoder_p, 8, self_p->v8);
+    pbtools_encoder_write_int32(encoder_p, 7, self_p->v7);
+    pbtools_encoder_write_float(encoder_p, 6, self_p->v6);
+    pbtools_encoder_write_fixed64(encoder_p, 5, self_p->v5);
+    pbtools_encoder_write_fixed32(encoder_p, 4, self_p->v4);
+    pbtools_encoder_write_double(encoder_p, 3, self_p->v3);
+    pbtools_encoder_write_bytes(encoder_p, 2, &self_p->v2);
+    pbtools_encoder_write_bool(encoder_p, 1, self_p->v1);
 }
 
 static void scalar_value_types_message_decode_inner(

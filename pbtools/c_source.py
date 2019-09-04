@@ -206,6 +206,21 @@ ENCODE_INNER_MEMBER_FMT = '''\
     pbtools_encoder_write_{type}(encoder_p, {field_number}, {ref}self_p->{name});
 '''
 
+ENCODE_INNER_REPEATED_MEMBER_FMT = '''\
+    pbtools_encoder_write_repeated_{type}(encoder_p, {field_number}, &self_p->{name});
+'''
+
+ENCODE_INNER_MESSAGE_MEMBER_FMT = '''\
+    {namespace}_{name}_encode_inner(encoder_p, {field_number}, &self_p->{field_name});
+'''
+
+ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
+    {namespace}_{name}_encode_repeated_inner(
+        encoder_p,
+        {field_number},
+        &self_p->{field_name});
+'''
+
 DECODE_INNER_MEMBER_FMT = '''\
         case {field_number}:
             self_p->{name} = pbtools_decoder_read_{type}(decoder_p, wire_type);
@@ -237,6 +252,7 @@ DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
 '''
 
 MESSAGE_DEFINITION_FMT = '''\
+{repeated}\
 struct {namespace}_{name}_t *{namespace}_{name}_new(
     void *workspace_p,
     size_t size)
@@ -299,6 +315,18 @@ REPEATED_DECLARATION_FMT = '''\
 int {namespace}_{name}_{field_name}_alloc(
     struct {namespace}_{name}_t *self_p,
     int length);
+'''
+
+REPEATED_DEFINITION_FMT = '''\
+int {namespace}_{name}_{field_name}_alloc(
+    struct {namespace}_{name}_t *self_p,
+    int length)
+{{
+    return (pbtools_alloc_repeated_{type}(
+        &self_p->{field_name},
+        self_p->heap_p,
+        length));
+}}
 '''
 
 
@@ -398,12 +426,11 @@ def generate_declarations(namespace, parsed):
     for message in parsed.messages:
         message_name = camel_to_snake_case(message.name)
 
-        for field in message.fields:
-            if field.repeated:
-                declarations.append(
-                    REPEATED_DECLARATION_FMT.format(namespace=namespace,
-                                                    name=message_name,
-                                                    field_name=field.name))
+        for field in message.repeated_fields:
+            declarations.append(
+                REPEATED_DECLARATION_FMT.format(namespace=namespace,
+                                                name=message_name,
+                                                field_name=field.name))
 
         declarations.append(
             MESSAGE_DECLARATION_FMT.format(namespace=namespace,
@@ -414,21 +441,46 @@ def generate_declarations(namespace, parsed):
     return '\n'.join(declarations)
 
 
-def generate_message_encode_body(message):
+def generate_message_encode_body(namespace, message):
     members = []
+    message_name = camel_to_snake_case(message.name)
 
-    for field in message.fields:
+    for field in reversed(message.fields):
         if field.type in PRIMITIVE_TYPES:
-            if field.type in ['bytes', 'string']:
-                ref = '&'
+            if field.repeated:
+                members.append(
+                    ENCODE_INNER_REPEATED_MEMBER_FMT.format(
+                        type=field.type,
+                        field_number=field.field_number,
+                        name=field.name))
             else:
-                ref = ''
+                if field.type in ['bytes', 'string']:
+                    ref = '&'
+                else:
+                    ref = ''
 
-            members.append(
-                ENCODE_INNER_MEMBER_FMT.format(type=field.type,
-                                               field_number=field.field_number,
-                                               name=field.name,
-                                               ref=ref))
+                members.append(
+                    ENCODE_INNER_MEMBER_FMT.format(
+                        type=field.type,
+                        field_number=field.field_number,
+                        name=field.name,
+                        ref=ref))
+        else:
+            if field.repeated:
+                members.append(
+                    ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT.format(
+                        namespace=namespace,
+                        name=message_name,
+                        field_number=field.field_number,
+                        field_name=field.name))
+            else:
+                members.append(
+                    ENCODE_INNER_MESSAGE_MEMBER_FMT.format(
+                        namespace=namespace,
+                        name=message_name,
+                        field_number=field.field_number,
+                        field_name=field.name))
+
 
     return ''.join(members)
 
@@ -486,6 +538,24 @@ def generate_message_members_init(message):
     return '\n'.join(members)
 
 
+def generate_repeated_definitions(namespace, message):
+    members = []
+    message_name = camel_to_snake_case(message.name)
+
+    for field in message.repeated_fields:
+        if field.type in PRIMITIVE_TYPES:
+            members.append(
+                REPEATED_DEFINITION_FMT.format(namespace=namespace,
+                                               name=message_name,
+                                               field_name=field.name,
+                                               type=field.type))
+
+    if members:
+        members.append('')
+
+    return '\n'.join(members)
+
+
 def generate_definitions(namespace, parsed):
     definitions = []
 
@@ -496,9 +566,10 @@ def generate_definitions(namespace, parsed):
                 name=camel_to_snake_case(message.name)))
 
     for message in parsed.messages:
-        encode_body = generate_message_encode_body(message)
+        encode_body = generate_message_encode_body(namespace, message)
         decode_body = generate_message_decode_body(namespace, message)
         members_init = generate_message_members_init(message)
+        repeated = generate_repeated_definitions(namespace, message)
         definitions.append(
             MESSAGE_STATIC_DEFINITIONS_FMT.format(
                 namespace=namespace,
@@ -510,7 +581,8 @@ def generate_definitions(namespace, parsed):
             MESSAGE_DEFINITION_FMT.format(namespace=namespace,
                                           package=parsed.package,
                                           proto_name=message.name,
-                                          name=camel_to_snake_case(message.name)))
+                                          name=camel_to_snake_case(message.name),
+                                          repeated=repeated))
 
     return '\n'.join(definitions)
 

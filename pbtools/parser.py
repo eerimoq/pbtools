@@ -207,6 +207,10 @@ class Message:
             else:
                 raise RuntimeError(kind)
 
+    @property
+    def repeated_fields(self):
+        return [field for field in self.fields if field.repeated]
+
 
 class Rpc:
 
