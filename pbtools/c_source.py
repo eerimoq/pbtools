@@ -199,6 +199,7 @@ static void {namespace}_{name}_decode_inner(
             break;
         }}
     }}
+{finalizers}\
 }}
 '''
 
@@ -327,6 +328,156 @@ int {namespace}_{name}_{field_name}_alloc(
         self_p->heap_p,
         length));
 }}
+'''
+
+REPEATED_MESSAGE_DEFINITION_FMT = '''\
+int {namespace}_{name}_{field_name}_alloc(
+    struct {namespace}_{name}_t *self_p,
+    int length)
+{{
+    int res;
+    int i;
+    struct {namespace}_{name}_t *items_p;
+
+    res = -1;
+    self_p->{field_name}.items_pp = pbtools_heap_alloc(
+        self_p->heap_p,
+        sizeof(items_p) * length);
+
+    if (self_p->{field_name}.items_pp != NULL) {{
+        items_p = pbtools_heap_alloc(self_p->heap_p, sizeof(*items_p) * length);
+
+        if (items_p != NULL) {{
+            for (i = 0; i < length; i++) {{
+                {namespace}_{name}_init(
+                    &items_p[i],
+                    self_p->heap_p,
+                    &items_p[i + 1]);
+                self_p->{field_name}.items_pp[i] = &items_p[i];
+            }}
+
+            items_p[length - 1].next_p = NULL;
+            self_p->{field_name}.length = length;
+            self_p->{field_name}.head_p = &items_p[0];
+            self_p->{field_name}.tail_p = &items_p[length - 1];
+            res = 0;
+        }}
+    }}
+
+    return (res);
+}}
+'''
+
+REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT = '''\
+static void {namespace}_{name}_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct {namespace}_{name}_repeated_t *repeated_p);
+
+static void {namespace}_{name}_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct {namespace}_{name}_repeated_t *repeated_p);
+
+static void {namespace}_{name}_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct {namespace}_{name}_repeated_t *repeated_p);
+'''
+
+REPEATED_MESSAGE_STATIC_DEFINITIONS_FMT = '''\
+static void {namespace}_{name}_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct {namespace}_{name}_repeated_t *repeated_p)
+{{
+    int i;
+    int pos;
+
+    for (i = repeated_p->length - 1; i >= 0; i--) {{
+        pos = encoder_p->pos;
+        {namespace}_{name}_encode_inner(repeated_p->items_pp[i], encoder_p);
+        pbtools_encoder_write_length_delimited(encoder_p,
+                                               field_number,
+                                               pos - encoder_p->pos);
+    }}
+}}
+
+static void {namespace}_{name}_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct {namespace}_{name}_repeated_t *repeated_p)
+{{
+    size_t size;
+    struct pbtools_decoder_t decoder;
+    struct {namespace}_{name}_t *item_p;
+
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {{
+        pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
+
+        return;
+    }}
+
+    item_p = pbtools_decoder_heap_alloc(decoder_p, sizeof(*item_p));
+
+    if (item_p == NULL) {{
+        return;
+    }}
+
+    size = pbtools_decoder_read_varint(decoder_p);
+    {namespace}_{name}_init(item_p, decoder_p->heap_p, NULL);
+    pbtools_decoder_init_slice(&decoder, decoder_p, size);
+    {namespace}_{name}_decode_inner(item_p, &decoder);
+    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
+    item_p->next_p = NULL;
+
+    if (repeated_p->length == 0) {{
+        repeated_p->head_p = item_p;
+    }} else {{
+        repeated_p->tail_p->next_p = item_p;
+    }}
+
+    repeated_p->tail_p = item_p;
+    repeated_p->length++;
+}}
+
+static void {namespace}_{name}_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct {namespace}_{name}_repeated_t *repeated_p)
+{{
+    int i;
+    struct {namespace}_{name}_t *item_p;
+
+    if (repeated_p->length == 0) {{
+        return;
+    }}
+
+    repeated_p->items_pp = pbtools_decoder_heap_alloc(
+        decoder_p,
+        sizeof(item_p) * repeated_p->length);
+
+    if (repeated_p->items_pp == NULL) {{
+        return;
+    }}
+
+    item_p = repeated_p->head_p;
+
+    for (i = 0; i < repeated_p->length; i++) {{
+        repeated_p->items_pp[i] = item_p;
+        item_p = item_p->next_p;
+    }}
+}}
+'''
+
+REPEATED_FINALIZER_FMT = '''\
+    pbtools_decoder_finalize_repeated_{type}(
+        decoder_p,
+        &self_p->{field_name});\
+'''
+
+REPEATED_MESSAGE_FINALIZER_FMT = '''\
+    {namespace}_{name}_finalize_repeated_inner(
+        decoder_p,
+        &self_p->{field_name});\
 '''
 
 
@@ -549,6 +700,18 @@ def generate_repeated_definitions(namespace, message):
                                                name=message_name,
                                                field_name=field.name,
                                                type=field.type))
+        else:
+            members.append(
+                REPEATED_MESSAGE_DEFINITION_FMT.format(namespace=namespace,
+                                                       name=message_name,
+                                                       field_name=field.name,
+                                                       type=field.type))
+            members.append(
+                REPEATED_MESSAGE_STATIC_DEFINITIONS_FMT.format(
+                    namespace=namespace,
+                    name=message_name,
+                    field_name=field.name,
+                    type=field.type))
 
     if members:
         members.append('')
@@ -556,27 +719,61 @@ def generate_repeated_definitions(namespace, message):
     return '\n'.join(members)
 
 
+def generate_repeated_finalizers(namespace, message):
+    finalizers = []
+    message_name = camel_to_snake_case(message.name)
+
+    for field in message.repeated_fields:
+        if field.type in PRIMITIVE_TYPES:
+            finalizers.append(
+                REPEATED_FINALIZER_FMT.format(namespace=namespace,
+                                              field_name=field.name,
+                                              type=field.type))
+        else:
+            finalizers.append(
+                REPEATED_MESSAGE_FINALIZER_FMT.format(namespace=namespace,
+                                                      name=message_name,
+                                                      field_name=field.name))
+
+    if finalizers:
+        finalizers = [''] + finalizers + ['']
+
+    return '\n'.join(finalizers)
+
+
 def generate_definitions(namespace, parsed):
     definitions = []
 
     for message in parsed.messages:
+        message_name = camel_to_snake_case(message.name)
         definitions.append(
             MESSAGE_STATIC_DECLARATIONS_FMT.format(
                 namespace=namespace,
-                name=camel_to_snake_case(message.name)))
+                name=message_name))
+
+        for field in message.repeated_fields:
+            if field.type in PRIMITIVE_TYPES:
+                continue
+
+            definitions.append(
+                REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
+                    namespace=namespace,
+                    name=message_name))
 
     for message in parsed.messages:
         encode_body = generate_message_encode_body(namespace, message)
         decode_body = generate_message_decode_body(namespace, message)
         members_init = generate_message_members_init(message)
         repeated = generate_repeated_definitions(namespace, message)
+        finalizers = generate_repeated_finalizers(namespace, message)
         definitions.append(
             MESSAGE_STATIC_DEFINITIONS_FMT.format(
                 namespace=namespace,
                 name=camel_to_snake_case(message.name),
                 encode_body=encode_body,
                 decode_body=decode_body,
-                members_init=members_init))
+                members_init=members_init,
+                finalizers=finalizers))
         definitions.append(
             MESSAGE_DEFINITION_FMT.format(namespace=namespace,
                                           package=parsed.package,
