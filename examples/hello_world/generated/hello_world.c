@@ -95,12 +95,11 @@ int hello_world_foo_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    hello_world_foo_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)hello_world_foo_encode_inner));
 }
 
 int hello_world_foo_decode(
@@ -108,10 +107,9 @@ int hello_world_foo_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    hello_world_foo_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)hello_world_foo_decode_inner));
 }

@@ -160,12 +160,11 @@ int tags_message1_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    tags_message1_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)tags_message1_encode_inner));
 }
 
 int tags_message1_decode(
@@ -173,12 +172,11 @@ int tags_message1_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    tags_message1_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)tags_message1_decode_inner));
 }
 
 static void tags_message2_init(
@@ -233,12 +231,11 @@ int tags_message2_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    tags_message2_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)tags_message2_encode_inner));
 }
 
 int tags_message2_decode(
@@ -246,12 +243,11 @@ int tags_message2_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    tags_message2_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)tags_message2_decode_inner));
 }
 
 static void tags_message3_init(
@@ -306,12 +302,11 @@ int tags_message3_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    tags_message3_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)tags_message3_encode_inner));
 }
 
 int tags_message3_decode(
@@ -319,12 +314,11 @@ int tags_message3_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    tags_message3_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)tags_message3_decode_inner));
 }
 
 static void tags_message4_init(
@@ -379,12 +373,11 @@ int tags_message4_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    tags_message4_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)tags_message4_encode_inner));
 }
 
 int tags_message4_decode(
@@ -392,12 +385,11 @@ int tags_message4_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    tags_message4_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)tags_message4_decode_inner));
 }
 
 static void tags_message5_init(
@@ -452,12 +444,11 @@ int tags_message5_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    tags_message5_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)tags_message5_encode_inner));
 }
 
 int tags_message5_decode(
@@ -465,12 +456,11 @@ int tags_message5_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    tags_message5_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)tags_message5_decode_inner));
 }
 
 static void tags_message6_init(
@@ -525,12 +515,11 @@ int tags_message6_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    tags_message6_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)tags_message6_encode_inner));
 }
 
 int tags_message6_decode(
@@ -538,10 +527,9 @@ int tags_message6_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    tags_message6_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)tags_message6_decode_inner));
 }

@@ -55,6 +55,11 @@ struct pbtools_heap_t {
     int pos;
 };
 
+struct pbtools_message_base_t {
+    struct pbtools_heap_t *heap_p;
+    struct pbtools_message_base_t *next_p;
+};
+
 struct pbtools_int32_t {
     int32_t value;
     struct pbtools_int32_t *next_p;
@@ -123,6 +128,14 @@ struct pbtools_decoder_t {
 typedef void (*pbtools_message_init_t)(void *self_p,
                                        struct pbtools_heap_t *heap_p,
                                        void *next_p);
+
+typedef int (*pbtools_message_encode_inner_t)(
+    void *self_p,
+    struct pbtools_encoder_t *encoder_p);
+
+typedef int (*pbtools_message_decode_inner_t)(
+    void *self_p,
+    struct pbtools_decoder_t *decoder_p);
 
 struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size);
@@ -384,11 +397,20 @@ void pbtools_string_init(struct pbtools_bytes_t *self_p);
 
 void pbtools_bytes_init(struct pbtools_bytes_t *self_p);
 
-void *pbtools_message_new(
-    void *workspace_p,
-    size_t size,
-    size_t message_size,
-    pbtools_message_init_t message_init);
+void *pbtools_message_new(void *workspace_p,
+                          size_t size,
+                          size_t message_size,
+                          pbtools_message_init_t message_init);
+
+int pbtools_message_encode(struct pbtools_message_base_t *self_p,
+                           uint8_t *encoded_p,
+                           size_t size,
+                           pbtools_message_encode_inner_t message_encode_inner);
+
+int pbtools_message_decode(struct pbtools_message_base_t *self_p,
+                           const uint8_t *encoded_p,
+                           size_t size,
+                           pbtools_message_decode_inner_t message_decode_inner);
 
 #if 0
 #    include <stdio.h>

@@ -269,12 +269,11 @@ int {namespace}_{name}_encode(
     uint8_t *encoded_p,
     size_t size)
 {{
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    {namespace}_{name}_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t){namespace}_{name}_encode_inner));
 }}
 
 int {namespace}_{name}_decode(
@@ -282,12 +281,11 @@ int {namespace}_{name}_decode(
     const uint8_t *encoded_p,
     size_t size)
 {{
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    {namespace}_{name}_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+        (struct pbtools_message_base_t *)self_p,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t){namespace}_{name}_decode_inner));
 }}
 '''
 
