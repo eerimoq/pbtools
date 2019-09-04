@@ -7,13 +7,9 @@ from unittest.mock import patch
 import pbtools
 
 
-def remove_date_time(string):
-    return re.sub(r'.* This file was generated.*', '', string)
-
-
 def read_file(filename):
     with open(filename, 'r') as fin:
-        return remove_date_time(fin.read())
+        return fin.read()
 
 
 class CommandLineTest(unittest.TestCase):
@@ -38,7 +34,8 @@ class CommandLineTest(unittest.TestCase):
             'tags',
             'string',
             'bytes',
-            'scalar_value_types'
+            'scalar_value_types',
+            # 'repeated'
         ]
 
         for spec in specs:
@@ -70,7 +67,7 @@ class CommandLineTest(unittest.TestCase):
     def test_command_line_generate_c_source_headers(self):
         specs = [
             # 'enum',
-            # 'repeated',
+            'repeated',
             # 'address_book',
             # 'message',
             # 'oneof',
