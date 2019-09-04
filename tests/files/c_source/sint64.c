@@ -84,22 +84,10 @@ struct sint64_message_t *sint64_message_new(
     void *workspace_p,
     size_t size)
 {
-    struct sint64_message_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        sint64_message_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct sint64_message_t),
+                                (pbtools_message_init_t)sint64_message_init));
 }
 
 int sint64_message_encode(

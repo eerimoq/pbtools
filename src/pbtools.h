@@ -120,6 +120,10 @@ struct pbtools_decoder_t {
     struct pbtools_heap_t *heap_p;
 };
 
+typedef void (*pbtools_message_init_t)(void *self_p,
+                                       struct pbtools_heap_t *heap_p,
+                                       void *next_p);
+
 struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size);
 
@@ -379,6 +383,12 @@ char *pbtools_get_string(struct pbtools_bytes_t *self_p);
 void pbtools_string_init(struct pbtools_bytes_t *self_p);
 
 void pbtools_bytes_init(struct pbtools_bytes_t *self_p);
+
+void *pbtools_message_new(
+    void *workspace_p,
+    size_t size,
+    size_t message_size,
+    pbtools_message_init_t message_init);
 
 #if 0
 #    include <stdio.h>

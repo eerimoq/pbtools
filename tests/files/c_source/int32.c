@@ -97,22 +97,10 @@ struct int32_message_t *int32_message_new(
     void *workspace_p,
     size_t size)
 {
-    struct int32_message_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        int32_message_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct int32_message_t),
+                                (pbtools_message_init_t)int32_message_init));
 }
 
 int int32_message_encode(
@@ -182,22 +170,10 @@ struct int32_message2_t *int32_message2_new(
     void *workspace_p,
     size_t size)
 {
-    struct int32_message2_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        int32_message2_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct int32_message2_t),
+                                (pbtools_message_init_t)int32_message2_init));
 }
 
 int int32_message2_encode(

@@ -149,22 +149,10 @@ struct tags_message1_t *tags_message1_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message1_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        tags_message1_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct tags_message1_t),
+                                (pbtools_message_init_t)tags_message1_init));
 }
 
 int tags_message1_encode(
@@ -234,22 +222,10 @@ struct tags_message2_t *tags_message2_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message2_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        tags_message2_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct tags_message2_t),
+                                (pbtools_message_init_t)tags_message2_init));
 }
 
 int tags_message2_encode(
@@ -319,22 +295,10 @@ struct tags_message3_t *tags_message3_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message3_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        tags_message3_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct tags_message3_t),
+                                (pbtools_message_init_t)tags_message3_init));
 }
 
 int tags_message3_encode(
@@ -404,22 +368,10 @@ struct tags_message4_t *tags_message4_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message4_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        tags_message4_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct tags_message4_t),
+                                (pbtools_message_init_t)tags_message4_init));
 }
 
 int tags_message4_encode(
@@ -489,22 +441,10 @@ struct tags_message5_t *tags_message5_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message5_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        tags_message5_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct tags_message5_t),
+                                (pbtools_message_init_t)tags_message5_init));
 }
 
 int tags_message5_encode(
@@ -574,22 +514,10 @@ struct tags_message6_t *tags_message6_new(
     void *workspace_p,
     size_t size)
 {
-    struct tags_message6_t *self_p;
-    struct pbtools_heap_t *heap_p;
-
-    heap_p = pbtools_heap_new(workspace_p, size);
-
-    if (heap_p == NULL) {
-        return (NULL);
-    }
-
-    self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
-
-    if (self_p != NULL) {
-        tags_message6_init(self_p, heap_p, NULL);
-    }
-
-    return (self_p);
+    return (pbtools_message_new(workspace_p,
+                                size,
+                                sizeof(struct tags_message6_t),
+                                (pbtools_message_init_t)tags_message6_init));
 }
 
 int tags_message6_encode(

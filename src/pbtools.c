@@ -1126,3 +1126,27 @@ void pbtools_bytes_init(struct pbtools_bytes_t *self_p)
 {
     self_p->size = 0;
 }
+
+void *pbtools_message_new(
+    void *workspace_p,
+    size_t size,
+    size_t message_size,
+    pbtools_message_init_t message_init)
+{
+    void *self_p;
+    struct pbtools_heap_t *heap_p;
+
+    heap_p = pbtools_heap_new(workspace_p, size);
+
+    if (heap_p == NULL) {
+        return (NULL);
+    }
+
+    self_p = pbtools_heap_alloc(heap_p, message_size);
+
+    if (self_p != NULL) {
+        message_init(self_p, heap_p, NULL);
+    }
+
+    return (self_p);
+}
