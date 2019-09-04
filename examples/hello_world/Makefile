@@ -1,5 +1,6 @@
 all:
 	gcc \
+	    -O2 \
 	    -Wall \
 	    -I../../src \
 	    -Igenerated \

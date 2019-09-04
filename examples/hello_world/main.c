@@ -18,18 +18,20 @@ int main(int argc, const char *argv[])
 
         if (size >= 0) {
             printf("Successfully encoded Foo into %d bytes.\n", size);
-        }
-    }
 
-    /* Decode. */
-    foo_p = hello_world_foo_new(&workspace[0], sizeof(workspace));
+            /* Decode. */
+            if (size >= 0) {
+                foo_p = hello_world_foo_new(&workspace[0], sizeof(workspace));
 
-    if (foo_p != NULL) {
-        size = hello_world_foo_decode(foo_p, &encoded[0], size);
+                if (foo_p != NULL) {
+                    size = hello_world_foo_decode(foo_p, &encoded[0], size);
 
-        if (size >= 0) {
-            printf("Successfully decoded %d bytes into Foo.\n", size);
-            printf("Foo.bar: %d\n", foo_p->bar);
+                    if (size >= 0) {
+                        printf("Successfully decoded %d bytes into Foo.\n", size);
+                        printf("Foo.bar: %d\n", foo_p->bar);
+                    }
+                }
+            }
         }
     }
 

@@ -44,8 +44,7 @@ struct hello_world_foo_repeated_t {
 };
 
 struct hello_world_foo_t {
-    struct pbtools_heap_t *heap_p;
-    struct hello_world_foo_t *next_p;
+    struct pbtools_message_base_t base;
     int32_t bar;
 };
 
