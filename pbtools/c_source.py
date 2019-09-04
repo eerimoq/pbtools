@@ -480,6 +480,19 @@ REPEATED_MESSAGE_FINALIZER_FMT = '''\
         &self_p->{field_name});\
 '''
 
+ENUM_FMT = '''\
+/**
+ * Enum {proto_name} in package {package}.
+ */
+enum {namespace}_{name}_e {{
+{members}
+}};
+'''
+
+ENUM_MEMBER_FMT = '''\
+    {namespace}_{name}_{field_name}_e = {field_number}\
+'''
+
 
 def canonical(value):
     """Replace anything but 'a-z', 'A-Z' and '0-9' with '_'.
@@ -554,8 +567,29 @@ def generate_repeated_struct(namespace, message):
                                       name=camel_to_snake_case(message.name))
 
 
+def generate_enum_members(namespace, enum):
+    members = []
+
+    for field in enum.fields:
+        members.append(
+            ENUM_MEMBER_FMT.format(namespace=namespace,
+                                   name=camel_to_snake_case(enum.name),
+                                   field_name=camel_to_snake_case(field.name),
+                                   field_number=field.field_number))
+
+    return ',\n'.join(members)
+
+
 def generate_structs(namespace, parsed):
     structs = []
+
+    for enum in parsed.enums:
+        members = generate_enum_members(namespace, enum)
+        structs.append(ENUM_FMT.format(namespace=namespace,
+                                       package=parsed.package,
+                                       proto_name=enum.name,
+                                       name=camel_to_snake_case(enum.name),
+                                       members=members))
 
     for message in parsed.messages:
         repeated_struct = generate_repeated_struct(namespace, message)
