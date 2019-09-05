@@ -60,6 +60,13 @@ struct pbtools_message_base_t {
     struct pbtools_message_base_t *next_p;
 };
 
+struct pbtools_repeated_message_t {
+    int length;
+    struct pbtools_message_base_t **items_pp;
+    struct pbtools_message_base_t *head_p;
+    struct pbtools_message_base_t *tail_p;
+};
+
 struct pbtools_int32_t {
     struct pbtools_int32_t *next_p;
     int32_t value;
@@ -411,6 +418,24 @@ int pbtools_message_decode(struct pbtools_message_base_t *self_p,
                            const uint8_t *encoded_p,
                            size_t size,
                            pbtools_message_decode_inner_t message_decode_inner);
+
+void pbtools_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct pbtools_repeated_message_t *repeated_p,
+    pbtools_message_encode_inner_t message_encode_inner);
+
+void pbtools_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct pbtools_repeated_message_t *repeated_p,
+    size_t item_size,
+    pbtools_message_init_t message_init,
+    pbtools_message_decode_inner_t message_decode_inner);
+
+void pbtools_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_message_t *repeated_p);
 
 #if 0
 #    include <stdio.h>

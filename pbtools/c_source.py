@@ -357,16 +357,11 @@ static void {namespace}_{name}_encode_repeated_inner(
     int field_number,
     struct {namespace}_{name}_repeated_t *repeated_p)
 {{
-    int i;
-    int pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {{
-        pos = encoder_p->pos;
-        {namespace}_{name}_encode_inner(repeated_p->items_pp[i], encoder_p);
-        pbtools_encoder_write_length_delimited(encoder_p,
-                                               field_number,
-                                               pos - encoder_p->pos);
-    }}
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t){namespace}_{name}_encode_inner);
 }}
 
 static void {namespace}_{name}_decode_repeated_inner(
@@ -374,64 +369,22 @@ static void {namespace}_{name}_decode_repeated_inner(
     int wire_type,
     struct {namespace}_{name}_repeated_t *repeated_p)
 {{
-    size_t size;
-    struct pbtools_decoder_t decoder;
-    struct {namespace}_{name}_t *item_p;
-
-    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {{
-        pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
-
-        return;
-    }}
-
-    item_p = pbtools_decoder_heap_alloc(decoder_p, sizeof(*item_p));
-
-    if (item_p == NULL) {{
-        return;
-    }}
-
-    size = pbtools_decoder_read_varint(decoder_p);
-    {namespace}_{name}_init(item_p, decoder_p->heap_p, NULL);
-    pbtools_decoder_init_slice(&decoder, decoder_p, size);
-    {namespace}_{name}_decode_inner(item_p, &decoder);
-    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
-    item_p->base.next_p = NULL;
-
-    if (repeated_p->length == 0) {{
-        repeated_p->head_p = item_p;
-    }} else {{
-        repeated_p->tail_p->base.next_p = &item_p->base;
-    }}
-
-    repeated_p->tail_p = item_p;
-    repeated_p->length++;
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct {namespace}_{name}_t),
+        (pbtools_message_init_t){namespace}_{name}_init,
+        (pbtools_message_decode_inner_t){namespace}_{name}_decode_inner);
 }}
 
 static void {namespace}_{name}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {namespace}_{name}_repeated_t *repeated_p)
 {{
-    int i;
-    struct {namespace}_{name}_t *item_p;
-
-    if (repeated_p->length == 0) {{
-        return;
-    }}
-
-    repeated_p->items_pp = pbtools_decoder_heap_alloc(
+    pbtools_finalize_repeated_inner(
         decoder_p,
-        sizeof(item_p) * repeated_p->length);
-
-    if (repeated_p->items_pp == NULL) {{
-        return;
-    }}
-
-    item_p = repeated_p->head_p;
-
-    for (i = 0; i < repeated_p->length; i++) {{
-        repeated_p->items_pp[i] = item_p;
-        item_p = (struct {namespace}_{name}_t *)item_p->base.next_p;
-    }}
+        (struct pbtools_repeated_message_t *)repeated_p);
 }}
 '''
 
@@ -449,90 +402,6 @@ static void {namespace}_{name}_decode_repeated_inner(
 static void {namespace}_{name}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {namespace}_{name}_repeated_t *repeated_p);
-'''
-
-REPEATED_MESSAGE_STATIC_DEFINITIONS_FMT = '''\
-static void {namespace}_{name}_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct {namespace}_{name}_repeated_t *repeated_p)
-{{
-    int i;
-    int pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {{
-        pos = encoder_p->pos;
-        {namespace}_{name}_encode_inner(repeated_p->items_pp[i], encoder_p);
-        pbtools_encoder_write_length_delimited(encoder_p,
-                                               field_number,
-                                               pos - encoder_p->pos);
-    }}
-}}
-
-static void {namespace}_{name}_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct {namespace}_{name}_repeated_t *repeated_p)
-{{
-    size_t size;
-    struct pbtools_decoder_t decoder;
-    struct {namespace}_{name}_t *item_p;
-
-    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {{
-        pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
-
-        return;
-    }}
-
-    item_p = pbtools_decoder_heap_alloc(decoder_p, sizeof(*item_p));
-
-    if (item_p == NULL) {{
-        return;
-    }}
-
-    size = pbtools_decoder_read_varint(decoder_p);
-    {namespace}_{name}_init(item_p, decoder_p->heap_p, NULL);
-    pbtools_decoder_init_slice(&decoder, decoder_p, size);
-    {namespace}_{name}_decode_inner(item_p, &decoder);
-    pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
-    item_p->base.next_p = NULL;
-
-    if (repeated_p->length == 0) {{
-        repeated_p->head_p = item_p;
-    }} else {{
-        repeated_p->tail_p->base.next_p = &item_p->base;
-    }}
-
-    repeated_p->tail_p = item_p;
-    repeated_p->length++;
-}}
-
-static void {namespace}_{name}_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct {namespace}_{name}_repeated_t *repeated_p)
-{{
-    int i;
-    struct {namespace}_{name}_t *item_p;
-
-    if (repeated_p->length == 0) {{
-        return;
-    }}
-
-    repeated_p->items_pp = pbtools_decoder_heap_alloc(
-        decoder_p,
-        sizeof(item_p) * repeated_p->length);
-
-    if (repeated_p->items_pp == NULL) {{
-        return;
-    }}
-
-    item_p = repeated_p->head_p;
-
-    for (i = 0; i < repeated_p->length; i++) {{
-        repeated_p->items_pp[i] = item_p;
-        item_p = (struct {namespace}_{name}_t *)item_p->base.next_p;
-    }}
-}}
 '''
 
 REPEATED_FINALIZER_FMT = '''\
