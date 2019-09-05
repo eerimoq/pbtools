@@ -73,7 +73,7 @@ struct enum_message_t *enum_message_new(
     self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
 
     if (self_p != NULL) {
-        self_p->heap_p = heap_p;
+        self_p->base.heap_p = heap_p;
         self_p->value = 0;
     }
 
@@ -100,7 +100,7 @@ int enum_message_decode(
 {
     struct pbtools_decoder_t decoder;
 
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    pbtools_decoder_init(&decoder, encoded_p, size, self_p->base.heap_p);
     enum_message_decode_inner(&decoder, self_p);
 
     return (pbtools_decoder_get_result(&decoder));

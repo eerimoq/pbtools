@@ -35,11 +35,11 @@ static void address_book_person_phone_number_init(
     struct pbtools_heap_t *heap_p,
     struct address_book_person_phone_number_t *next_p)
 {
-    self_p->heap_p = heap_p;
+    self_p->base.heap_p = heap_p;
     self_p->number.buf_p = (uint8_t *)"";
     self_p->number.size = 0;
     self_p->type = address_book_person_phone_type_mobile_e;
-    self_p->next_p = next_p;
+    self_p->base.next_p = &next_p->base;
 }
 
 static void address_book_person_init(
@@ -47,14 +47,14 @@ static void address_book_person_init(
     struct pbtools_heap_t *heap_p,
     struct address_book_person_t *next_p)
 {
-    self_p->heap_p = heap_p;
+    self_p->base.heap_p = heap_p;
     self_p->name.buf_p = (uint8_t *)"";
     self_p->name.size = 0;
     self_p->id = 0;
     self_p->email.buf_p = (uint8_t *)"";
     self_p->email.size = 0;
     self_p->phones.length = 0;
-    self_p->next_p = next_p;
+    self_p->base.next_p = &next_p->base;
 }
 
 static void address_book_person_phone_number_encode_inner(
@@ -134,7 +134,7 @@ static void address_book_person_phone_number_decode_repeated_inner(
     size_t size;
     struct pbtools_decoder_t decoder;
     struct address_book_person_phone_number_t *item_p;
-    
+
     if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         pbtools_decoder_abort(decoder_p, PBTOOLS_BAD_WIRE_TYPE);
 
@@ -152,12 +152,12 @@ static void address_book_person_phone_number_decode_repeated_inner(
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     address_book_person_phone_number_decode_inner(&decoder, item_p);
     pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
-    item_p->next_p = NULL;
+    item_p->base.next_p = NULL;
 
     if (repeated_p->length == 0) {
         repeated_p->head_p = item_p;
     } else {
-        repeated_p->tail_p->next_p = item_p;
+        repeated_p->tail_p->base.next_p = &item_p->base;
     }
 
     repeated_p->tail_p = item_p;
@@ -187,7 +187,7 @@ static void address_book_person_phone_number_finalize_repeated_inner(
 
     for (i = 0; i < repeated_p->length; i++) {
         repeated_p->items_pp[i] = item_p;
-        item_p = item_p->next_p;
+        item_p = (struct address_book_person_phone_number_t *)item_p->base.next_p;
     }
 }
 
@@ -277,7 +277,7 @@ static void address_book_person_decode_repeated_inner(
     size_t size;
     struct pbtools_decoder_t decoder;
     struct address_book_person_t *item_p;
-    
+
     PRINTF("address_book_person_decode_repeated_inner() begin\n");
 
     if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
@@ -297,12 +297,12 @@ static void address_book_person_decode_repeated_inner(
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     address_book_person_decode_inner(&decoder, item_p);
     pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
-    item_p->next_p = NULL;
+    item_p->base.next_p = NULL;
 
     if (repeated_p->length == 0) {
         repeated_p->head_p = item_p;
     } else {
-        repeated_p->tail_p->next_p = item_p;
+        repeated_p->tail_p->base.next_p = &item_p->base;
     }
 
     repeated_p->tail_p = item_p;
@@ -334,7 +334,7 @@ static void address_book_person_finalize_repeated_inner(
 
     for (i = 0; i < repeated_p->length; i++) {
         repeated_p->items_pp[i] = item_p;
-        item_p = item_p->next_p;
+        item_p = (struct address_book_person_t *)item_p->base.next_p;
     }
 }
 
@@ -346,7 +346,7 @@ static void address_book_address_book_decode_inner(
 
     while (pbtools_decoder_available(decoder_p)) {
         PRINTF("availble\n");
-        
+
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
@@ -398,21 +398,21 @@ int address_book_person_phones_alloc(
 
     res = -1;
     self_p->phones.items_pp = pbtools_heap_alloc(
-        self_p->heap_p,
+        self_p->base.heap_p,
         sizeof(items_p) * length);
 
     if (self_p->phones.items_pp != NULL) {
-        items_p = pbtools_heap_alloc(self_p->heap_p, sizeof(*items_p) * length);
+        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
 
         if (items_p != NULL) {
             for (i = 0; i < length; i++) {
                 address_book_person_phone_number_init(&items_p[i],
-                                                      self_p->heap_p,
+                                                      self_p->base.heap_p,
                                                       &items_p[i + 1]);
                 self_p->phones.items_pp[i] = &items_p[i];
             }
 
-            items_p[length - 1].next_p = NULL;
+            items_p[length - 1].base.next_p = NULL;
             self_p->phones.length = length;
             self_p->phones.head_p = &items_p[0];
             self_p->phones.tail_p = &items_p[length - 1];
@@ -443,7 +443,7 @@ int address_book_person_decode(
 {
     struct pbtools_decoder_t decoder;
 
-    pbtools_decoder_init(&decoder, encoded_p, size, person_p->heap_p);
+    pbtools_decoder_init(&decoder, encoded_p, size, person_p->base.heap_p);
     address_book_person_decode_inner(&decoder, person_p);
 
     return (pbtools_decoder_get_result(&decoder));
@@ -465,7 +465,7 @@ struct address_book_address_book_t *address_book_address_book_new(
     address_book_p = pbtools_heap_alloc(heap_p, sizeof(*address_book_p));
 
     if (address_book_p != NULL) {
-        address_book_p->heap_p = heap_p;
+        address_book_p->base.heap_p = heap_p;
         address_book_p->people.length = 0;
     }
 
@@ -482,21 +482,21 @@ int address_book_address_book_people_alloc(
 
     res = -1;
     self_p->people.items_pp = pbtools_heap_alloc(
-        self_p->heap_p,
+        self_p->base.heap_p,
         sizeof(items_p) * length);
 
     if (self_p->people.items_pp != NULL) {
-        items_p = pbtools_heap_alloc(self_p->heap_p, sizeof(*items_p) * length);
+        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
 
         if (items_p != NULL) {
             for (i = 0; i < length; i++) {
                 address_book_person_init(&items_p[i],
-                                         self_p->heap_p,
+                                         self_p->base.heap_p,
                                          &items_p[i + 1]);
                 self_p->people.items_pp[i] = &items_p[i];
             }
 
-            items_p[length - 1].next_p = NULL;
+            items_p[length - 1].base.next_p = NULL;
             self_p->people.length = length;
             self_p->people.head_p = &items_p[0];
             self_p->people.tail_p = &items_p[length - 1];
@@ -527,7 +527,7 @@ int address_book_address_book_decode(
 {
     struct pbtools_decoder_t decoder;
 
-    pbtools_decoder_init(&decoder, encoded_p, size, address_book_p->heap_p);
+    pbtools_decoder_init(&decoder, encoded_p, size, address_book_p->base.heap_p);
     address_book_address_book_decode_inner(&decoder, address_book_p);
 
     return (pbtools_decoder_get_result(&decoder));

@@ -57,8 +57,7 @@ struct enum_message_repeated_t {
 };
 
 struct enum_message_t {
-    struct pbtools_heap_t *heap_p;
-    struct enum_message_t *next_p;
+    struct pbtools_message_base_t base;
     enum enum_message_enum_e value;
 };
 
@@ -78,8 +77,7 @@ struct enum_message2_repeated_t {
 };
 
 struct enum_message2_t {
-    struct pbtools_heap_t *heap_p;
-    struct enum_message2_t *next_p;
+    struct pbtools_message_base_t base;
     enum enum_enum_e outer;
     enum enum_message2_inner_enum_e inner;
 };
