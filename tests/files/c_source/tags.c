@@ -36,12 +36,12 @@ static void tags_message1_init(
     struct tags_message1_t *next_p);
 
 static void tags_message1_encode_inner(
-    struct tags_message1_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message1_t *self_p);
 
 static void tags_message1_decode_inner(
-    struct tags_message1_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message1_t *self_p);
 
 static void tags_message2_init(
     struct tags_message2_t *self_p,
@@ -49,12 +49,12 @@ static void tags_message2_init(
     struct tags_message2_t *next_p);
 
 static void tags_message2_encode_inner(
-    struct tags_message2_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message2_t *self_p);
 
 static void tags_message2_decode_inner(
-    struct tags_message2_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message2_t *self_p);
 
 static void tags_message3_init(
     struct tags_message3_t *self_p,
@@ -62,12 +62,12 @@ static void tags_message3_init(
     struct tags_message3_t *next_p);
 
 static void tags_message3_encode_inner(
-    struct tags_message3_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message3_t *self_p);
 
 static void tags_message3_decode_inner(
-    struct tags_message3_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message3_t *self_p);
 
 static void tags_message4_init(
     struct tags_message4_t *self_p,
@@ -75,12 +75,12 @@ static void tags_message4_init(
     struct tags_message4_t *next_p);
 
 static void tags_message4_encode_inner(
-    struct tags_message4_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message4_t *self_p);
 
 static void tags_message4_decode_inner(
-    struct tags_message4_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message4_t *self_p);
 
 static void tags_message5_init(
     struct tags_message5_t *self_p,
@@ -88,12 +88,12 @@ static void tags_message5_init(
     struct tags_message5_t *next_p);
 
 static void tags_message5_encode_inner(
-    struct tags_message5_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message5_t *self_p);
 
 static void tags_message5_decode_inner(
-    struct tags_message5_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message5_t *self_p);
 
 static void tags_message6_init(
     struct tags_message6_t *self_p,
@@ -101,12 +101,12 @@ static void tags_message6_init(
     struct tags_message6_t *next_p);
 
 static void tags_message6_encode_inner(
-    struct tags_message6_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message6_t *self_p);
 
 static void tags_message6_decode_inner(
-    struct tags_message6_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message6_t *self_p);
 
 static void tags_message1_init(
     struct tags_message1_t *self_p,
@@ -119,15 +119,15 @@ static void tags_message1_init(
 }
 
 static void tags_message1_encode_inner(
-    struct tags_message1_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message1_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 1, self_p->value);
 }
 
 static void tags_message1_decode_inner(
-    struct tags_message1_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message1_t *self_p)
 {
     int wire_type;
 
@@ -190,15 +190,15 @@ static void tags_message2_init(
 }
 
 static void tags_message2_encode_inner(
-    struct tags_message2_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message2_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 15, self_p->value);
 }
 
 static void tags_message2_decode_inner(
-    struct tags_message2_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message2_t *self_p)
 {
     int wire_type;
 
@@ -261,15 +261,15 @@ static void tags_message3_init(
 }
 
 static void tags_message3_encode_inner(
-    struct tags_message3_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message3_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 16, self_p->value);
 }
 
 static void tags_message3_decode_inner(
-    struct tags_message3_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message3_t *self_p)
 {
     int wire_type;
 
@@ -332,15 +332,15 @@ static void tags_message4_init(
 }
 
 static void tags_message4_encode_inner(
-    struct tags_message4_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message4_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 2047, self_p->value);
 }
 
 static void tags_message4_decode_inner(
-    struct tags_message4_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message4_t *self_p)
 {
     int wire_type;
 
@@ -403,15 +403,15 @@ static void tags_message5_init(
 }
 
 static void tags_message5_encode_inner(
-    struct tags_message5_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message5_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 2048, self_p->value);
 }
 
 static void tags_message5_decode_inner(
-    struct tags_message5_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message5_t *self_p)
 {
     int wire_type;
 
@@ -474,15 +474,15 @@ static void tags_message6_init(
 }
 
 static void tags_message6_encode_inner(
-    struct tags_message6_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct tags_message6_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 536870911, self_p->value);
 }
 
 static void tags_message6_decode_inner(
-    struct tags_message6_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message6_t *self_p)
 {
     int wire_type;
 

@@ -36,12 +36,12 @@ static void bool_message_init(
     struct bool_message_t *next_p);
 
 static void bool_message_encode_inner(
-    struct bool_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct bool_message_t *self_p);
 
 static void bool_message_decode_inner(
-    struct bool_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct bool_message_t *self_p);
 
 static void bool_message_init(
     struct bool_message_t *self_p,
@@ -54,15 +54,15 @@ static void bool_message_init(
 }
 
 static void bool_message_encode_inner(
-    struct bool_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct bool_message_t *self_p)
 {
     pbtools_encoder_write_bool(encoder_p, 1, self_p->value);
 }
 
 static void bool_message_decode_inner(
-    struct bool_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct bool_message_t *self_p)
 {
     int wire_type;
 

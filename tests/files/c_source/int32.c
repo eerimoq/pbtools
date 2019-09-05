@@ -36,12 +36,12 @@ static void int32_message_init(
     struct int32_message_t *next_p);
 
 static void int32_message_encode_inner(
-    struct int32_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct int32_message_t *self_p);
 
 static void int32_message_decode_inner(
-    struct int32_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message_t *self_p);
 
 static void int32_message2_init(
     struct int32_message2_t *self_p,
@@ -49,12 +49,12 @@ static void int32_message2_init(
     struct int32_message2_t *next_p);
 
 static void int32_message2_encode_inner(
-    struct int32_message2_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct int32_message2_t *self_p);
 
 static void int32_message2_decode_inner(
-    struct int32_message2_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message2_t *self_p);
 
 static void int32_message_init(
     struct int32_message_t *self_p,
@@ -67,15 +67,15 @@ static void int32_message_init(
 }
 
 static void int32_message_encode_inner(
-    struct int32_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct int32_message_t *self_p)
 {
     pbtools_encoder_write_int32(encoder_p, 1, self_p->value);
 }
 
 static void int32_message_decode_inner(
-    struct int32_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message_t *self_p)
 {
     int wire_type;
 
@@ -138,15 +138,15 @@ static void int32_message2_init(
 }
 
 static void int32_message2_encode_inner(
-    struct int32_message2_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct int32_message2_t *self_p)
 {
     pbtools_encoder_write_int32(encoder_p, 16, self_p->value);
 }
 
 static void int32_message2_decode_inner(
-    struct int32_message2_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message2_t *self_p)
 {
     int wire_type;
 

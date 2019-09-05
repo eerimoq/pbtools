@@ -137,12 +137,12 @@ typedef void (*pbtools_message_init_t)(void *self_p,
                                        void *next_p);
 
 typedef int (*pbtools_message_encode_inner_t)(
-    void *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    void *self_p);
 
 typedef int (*pbtools_message_decode_inner_t)(
-    void *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    void *self_p);
 
 struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size);
@@ -299,9 +299,9 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
 int32_t pbtools_decoder_read_int32(struct pbtools_decoder_t *self_p,
                                    int wire_type);
 
-int pbtools_alloc_repeated_int32(struct pbtools_repeated_int32_t *repeated_p,
-                                 struct pbtools_heap_t *heap_p,
-                                 int length);
+int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_int32_t *repeated_p);
 
 void pbtools_decoder_read_repeated_int32(
     struct pbtools_decoder_t *self_p,
@@ -355,9 +355,9 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                  int wire_type,
                                  struct pbtools_bytes_t *string_p);
 
-int pbtools_alloc_repeated_string(struct pbtools_repeated_string_t *repeated_p,
-                                  struct pbtools_heap_t *heap_p,
-                                  int length);
+int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
+                                  int length,
+                                  struct pbtools_repeated_string_t *repeated_p);
 
 void pbtools_decoder_read_repeated_string(
     struct pbtools_decoder_t *self_p,
@@ -372,9 +372,9 @@ void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
                                 int wire_type,
                                 struct pbtools_bytes_t *bytes_p);
 
-int pbtools_alloc_repeated_bytes(struct pbtools_repeated_bytes_t *repeated_p,
-                                 struct pbtools_heap_t *heap_p,
-                                 int length);
+int pbtools_alloc_repeated_bytes(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_bytes_t *repeated_p);
 
 void pbtools_decoder_read_repeated_bytes(
     struct pbtools_decoder_t *self_p,

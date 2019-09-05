@@ -778,15 +778,15 @@ static void *alloc_repeated(void ***items_ppp,
     return (items_p);
 }
 
-int pbtools_alloc_repeated_int32(struct pbtools_repeated_int32_t *repeated_p,
-                                 struct pbtools_heap_t *heap_p,
-                                 int length)
+int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_int32_t *repeated_p)
 {
     int i;
     struct pbtools_int32_t *items_p;
 
     items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             heap_p,
+                             self_p->heap_p,
                              length,
                              sizeof(*items_p));
 
@@ -869,15 +869,15 @@ void pbtools_decoder_finalize_repeated_int32(
     }
 }
 
-int pbtools_alloc_repeated_string(struct pbtools_repeated_string_t *repeated_p,
-                                  struct pbtools_heap_t *heap_p,
-                                  int length)
+int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
+                                  int length,
+                                  struct pbtools_repeated_string_t *repeated_p)
 {
     int i;
     struct pbtools_bytes_t *items_p;
 
     items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             heap_p,
+                             self_p->heap_p,
                              length,
                              sizeof(*items_p));
 
@@ -950,15 +950,15 @@ void pbtools_decoder_finalize_repeated_string(
     }
 }
 
-int pbtools_alloc_repeated_bytes(struct pbtools_repeated_bytes_t *repeated_p,
-                                 struct pbtools_heap_t *heap_p,
-                                 int length)
+int pbtools_alloc_repeated_bytes(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_bytes_t *repeated_p)
 {
     int i;
     struct pbtools_bytes_t *items_p;
 
     items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             heap_p,
+                             self_p->heap_p,
                              length,
                              sizeof(*items_p));
 
@@ -1160,7 +1160,7 @@ int pbtools_message_encode(
     struct pbtools_encoder_t encoder;
 
     pbtools_encoder_init(&encoder, encoded_p, size);
-    message_encode_inner(self_p, &encoder);
+    message_encode_inner(&encoder, self_p);
 
     return (pbtools_encoder_get_result(&encoder));
 }
@@ -1174,7 +1174,7 @@ int pbtools_message_decode(
     struct pbtools_decoder_t decoder;
 
     pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
-    message_decode_inner(self_p, &decoder);
+    message_decode_inner(&decoder, self_p);
 
     return (pbtools_decoder_get_result(&decoder));
 }
@@ -1190,7 +1190,7 @@ void pbtools_encode_repeated_inner(
 
     for (i = repeated_p->length - 1; i >= 0; i--) {
         pos = encoder_p->pos;
-        message_encode_inner(repeated_p->items_pp[i], encoder_p);
+        message_encode_inner(encoder_p, repeated_p->items_pp[i]);
         pbtools_encoder_write_length_delimited(encoder_p,
                                                field_number,
                                                pos - encoder_p->pos);
@@ -1224,7 +1224,7 @@ void pbtools_decode_repeated_inner(
     size = pbtools_decoder_read_varint(decoder_p);
     message_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
-    message_decode_inner(item_p, &decoder);
+    message_decode_inner(&decoder, item_p);
     pbtools_decoder_seek(decoder_p, pbtools_decoder_get_result(&decoder));
     item_p->next_p = NULL;
 

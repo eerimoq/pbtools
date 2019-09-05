@@ -24,8 +24,7 @@ CFLAGS ?= \
 all:
 	gcc \
 	    -Wall \
-	    -g \
-	    -Og \
+	    -O2 \
 	    -std=gnu11  \
 	    $(CFLAGS) \
 	    -I../src \

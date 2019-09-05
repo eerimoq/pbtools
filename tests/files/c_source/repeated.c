@@ -36,12 +36,12 @@ static void repeated_message_init(
     struct repeated_message_t *next_p);
 
 static void repeated_message_encode_inner(
-    struct repeated_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct repeated_message_t *self_p);
 
 static void repeated_message_decode_inner(
-    struct repeated_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct repeated_message_t *self_p);
 
 static void repeated_message_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -71,8 +71,8 @@ static void repeated_message_init(
 }
 
 static void repeated_message_encode_inner(
-    struct repeated_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct repeated_message_t *self_p)
 {
     pbtools_encoder_write_repeated_bytes(encoder_p, 4, &self_p->bytes);
     pbtools_encoder_write_repeated_string(encoder_p, 3, &self_p->strings);
@@ -84,8 +84,8 @@ static void repeated_message_encode_inner(
 }
 
 static void repeated_message_decode_inner(
-    struct repeated_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct repeated_message_t *self_p)
 {
     int wire_type;
 
@@ -145,9 +145,9 @@ int repeated_message_int32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_int32(
-        &self_p->int32s,
-        self_p->base.heap_p,
-        length));
+        &self_p->base,
+        length,
+        &self_p->int32s));
 }
 
 int repeated_message_messages_alloc(
@@ -226,9 +226,9 @@ int repeated_message_strings_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_string(
-        &self_p->strings,
-        self_p->base.heap_p,
-        length));
+        &self_p->base,
+        length,
+        &self_p->strings));
 }
 
 int repeated_message_bytes_alloc(
@@ -236,9 +236,9 @@ int repeated_message_bytes_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_bytes(
-        &self_p->bytes,
-        self_p->base.heap_p,
-        length));
+        &self_p->base,
+        length,
+        &self_p->bytes));
 }
 
 struct repeated_message_t *repeated_message_new(

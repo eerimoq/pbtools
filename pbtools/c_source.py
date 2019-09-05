@@ -157,12 +157,12 @@ static void {namespace}_{name}_init(
     struct {namespace}_{name}_t *next_p);
 
 static void {namespace}_{name}_encode_inner(
-    struct {namespace}_{name}_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct {namespace}_{name}_t *self_p);
 
 static void {namespace}_{name}_decode_inner(
-    struct {namespace}_{name}_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct {namespace}_{name}_t *self_p);
 '''
 
 MESSAGE_STATIC_DEFINITIONS_FMT = '''\
@@ -177,15 +177,15 @@ static void {namespace}_{name}_init(
 }}
 
 static void {namespace}_{name}_encode_inner(
-    struct {namespace}_{name}_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct {namespace}_{name}_t *self_p)
 {{
 {encode_body}\
 }}
 
 static void {namespace}_{name}_decode_inner(
-    struct {namespace}_{name}_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct {namespace}_{name}_t *self_p)
 {{
     int wire_type;
 
@@ -309,9 +309,9 @@ int {namespace}_{name}_{field_name}_alloc(
     int length)
 {{
     return (pbtools_alloc_repeated_{type}(
-        &self_p->{field_name},
-        self_p->base.heap_p,
-        length));
+        &self_p->base,
+        length,
+        &self_p->{field_name}));
 }}
 '''
 

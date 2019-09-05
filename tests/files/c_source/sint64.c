@@ -36,12 +36,12 @@ static void sint64_message_init(
     struct sint64_message_t *next_p);
 
 static void sint64_message_encode_inner(
-    struct sint64_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct sint64_message_t *self_p);
 
 static void sint64_message_decode_inner(
-    struct sint64_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct sint64_message_t *self_p);
 
 static void sint64_message_init(
     struct sint64_message_t *self_p,
@@ -54,15 +54,15 @@ static void sint64_message_init(
 }
 
 static void sint64_message_encode_inner(
-    struct sint64_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct sint64_message_t *self_p)
 {
     pbtools_encoder_write_sint64(encoder_p, 1, self_p->value);
 }
 
 static void sint64_message_decode_inner(
-    struct sint64_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct sint64_message_t *self_p)
 {
     int wire_type;
 

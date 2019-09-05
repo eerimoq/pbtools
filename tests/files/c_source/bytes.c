@@ -36,12 +36,12 @@ static void bytes_message_init(
     struct bytes_message_t *next_p);
 
 static void bytes_message_encode_inner(
-    struct bytes_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct bytes_message_t *self_p);
 
 static void bytes_message_decode_inner(
-    struct bytes_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct bytes_message_t *self_p);
 
 static void bytes_message_init(
     struct bytes_message_t *self_p,
@@ -54,15 +54,15 @@ static void bytes_message_init(
 }
 
 static void bytes_message_encode_inner(
-    struct bytes_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct bytes_message_t *self_p)
 {
     pbtools_encoder_write_bytes(encoder_p, 1, &self_p->value);
 }
 
 static void bytes_message_decode_inner(
-    struct bytes_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct bytes_message_t *self_p)
 {
     int wire_type;
 
