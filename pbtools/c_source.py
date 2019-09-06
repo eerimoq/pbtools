@@ -1,6 +1,5 @@
-import re
-
 from .parser import SCALAR_VALUE_TYPES
+from .parser import camel_to_snake_case
 
 
 HEADER_FMT = '''\
@@ -86,7 +85,7 @@ MESSAGE_STRUCT_FMT = '''\
  */
 {repeated_struct}
 
-struct {namespace}_{name}_t {{
+struct {name}_t {{
     struct pbtools_message_base_t base;
 {members}\
 }};
@@ -101,7 +100,7 @@ MESSAGE_DECLARATION_FMT = '''\
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct {namespace}_{name}_t *{namespace}_{name}_new(
+struct {name}_t *{name}_new(
     void *workspace_p,
     size_t size);
 
@@ -114,8 +113,8 @@ struct {namespace}_{name}_t *{namespace}_{name}_new(
  *
  * @return Encoded data length or negative error code.
  */
-int {namespace}_{name}_encode(
-    struct {namespace}_{name}_t *self_p,
+int {name}_encode(
+    struct {name}_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
@@ -128,48 +127,48 @@ int {namespace}_{name}_encode(
  *
  * @return Number of bytes decoded or negative error code.
  */
-int {namespace}_{name}_decode(
-    struct {namespace}_{name}_t *self_p,
+int {name}_decode(
+    struct {name}_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 '''
 
 MESSAGE_STATIC_DECLARATIONS_FMT = '''\
-static void {namespace}_{name}_init(
-    struct {namespace}_{name}_t *self_p,
+static void {name}_init(
+    struct {name}_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct {namespace}_{name}_t *next_p);
+    struct {name}_t *next_p);
 
-static void {namespace}_{name}_encode_inner(
+static void {name}_encode_inner(
     struct pbtools_encoder_t *encoder_p,
-    struct {namespace}_{name}_t *self_p);
+    struct {name}_t *self_p);
 
-static void {namespace}_{name}_decode_inner(
+static void {name}_decode_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct {namespace}_{name}_t *self_p);
+    struct {name}_t *self_p);
 '''
 
 MESSAGE_STATIC_DEFINITIONS_FMT = '''\
-static void {namespace}_{name}_init(
-    struct {namespace}_{name}_t *self_p,
+static void {name}_init(
+    struct {name}_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct {namespace}_{name}_t *next_p)
+    struct {name}_t *next_p)
 {{
     self_p->base.heap_p = heap_p;
     self_p->base.next_p = &next_p->base;
 {members_init}
 }}
 
-static void {namespace}_{name}_encode_inner(
+static void {name}_encode_inner(
     struct pbtools_encoder_t *encoder_p,
-    struct {namespace}_{name}_t *self_p)
+    struct {name}_t *self_p)
 {{
 {encode_body}\
 }}
 
-static void {namespace}_{name}_decode_inner(
+static void {name}_decode_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct {namespace}_{name}_t *self_p)
+    struct {name}_t *self_p)
 {{
     int wire_type;
 
@@ -195,11 +194,11 @@ ENCODE_INNER_REPEATED_MEMBER_FMT = '''\
 '''
 
 ENCODE_INNER_MESSAGE_MEMBER_FMT = '''\
-    {namespace}_{name}_encode_inner(encoder_p, {field_number}, &self_p->{field_name});
+    {name}_encode_inner(encoder_p, {field_number}, &self_p->{field_name});
 '''
 
 ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
-    {namespace}_{name}_encode_repeated_inner(
+    {name}_encode_repeated_inner(
         encoder_p,
         {field_number},
         &self_p->{field_name});
@@ -228,7 +227,7 @@ DECODE_INNER_REPEATED_MEMBER_FMT = '''\
 
 DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
         case {field_number}:
-            {namespace}_{name}_decode_repeated_inner(
+            {name}_decode_repeated_inner(
                 decoder_p,
                 wire_type,
                 &self_p->{field_name});
@@ -237,18 +236,18 @@ DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
 
 MESSAGE_DEFINITION_FMT = '''\
 {repeated}\
-struct {namespace}_{name}_t *{namespace}_{name}_new(
+struct {name}_t *{name}_new(
     void *workspace_p,
     size_t size)
 {{
     return (pbtools_message_new(workspace_p,
                                 size,
-                                sizeof(struct {namespace}_{name}_t),
-                                (pbtools_message_init_t){namespace}_{name}_init));
+                                sizeof(struct {name}_t),
+                                (pbtools_message_init_t){name}_init));
 }}
 
-int {namespace}_{name}_encode(
-    struct {namespace}_{name}_t *self_p,
+int {name}_encode(
+    struct {name}_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {{
@@ -256,11 +255,11 @@ int {namespace}_{name}_encode(
         &self_p->base,
         encoded_p,
         size,
-        (pbtools_message_encode_inner_t){namespace}_{name}_encode_inner));
+        (pbtools_message_encode_inner_t){name}_encode_inner));
 }}
 
-int {namespace}_{name}_decode(
-    struct {namespace}_{name}_t *self_p,
+int {name}_decode(
+    struct {name}_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {{
@@ -268,28 +267,28 @@ int {namespace}_{name}_decode(
         &self_p->base,
         encoded_p,
         size,
-        (pbtools_message_decode_inner_t){namespace}_{name}_decode_inner));
+        (pbtools_message_decode_inner_t){name}_decode_inner));
 }}
 '''
 
 REPEATED_STRUCT_FMT = '''\
-struct {namespace}_{name}_repeated_t {{
+struct {name}_repeated_t {{
     int length;
-    struct {namespace}_{name}_t **items_pp;
-    struct {namespace}_{name}_t *head_p;
-    struct {namespace}_{name}_t *tail_p;
+    struct {name}_t **items_pp;
+    struct {name}_t *head_p;
+    struct {name}_t *tail_p;
 }};\
 '''
 
 REPEATED_DECLARATION_FMT = '''\
-int {namespace}_{name}_{field_name}_alloc(
-    struct {namespace}_{name}_t *self_p,
+int {name}_{field_name}_alloc(
+    struct {name}_t *self_p,
     int length);
 '''
 
 REPEATED_DEFINITION_FMT = '''\
-int {namespace}_{name}_{field_name}_alloc(
-    struct {namespace}_{name}_t *self_p,
+int {name}_{field_name}_alloc(
+    struct {name}_t *self_p,
     int length)
 {{
     return (pbtools_alloc_repeated_{type}(
@@ -300,13 +299,13 @@ int {namespace}_{name}_{field_name}_alloc(
 '''
 
 REPEATED_MESSAGE_DEFINITION_FMT = '''\
-int {namespace}_{name}_{field_name}_alloc(
-    struct {namespace}_{name}_t *self_p,
+int {name}_{field_name}_alloc(
+    struct {name}_t *self_p,
     int length)
 {{
     int res;
     int i;
-    struct {namespace}_{name}_t *items_p;
+    struct {name}_t *items_p;
 
     res = -1;
     self_p->{field_name}.items_pp = pbtools_heap_alloc(
@@ -318,7 +317,7 @@ int {namespace}_{name}_{field_name}_alloc(
 
         if (items_p != NULL) {{
             for (i = 0; i < length; i++) {{
-                {namespace}_{name}_init(
+                {name}_init(
                     &items_p[i],
                     self_p->base.heap_p,
                     &items_p[i + 1]);
@@ -336,35 +335,35 @@ int {namespace}_{name}_{field_name}_alloc(
     return (res);
 }}
 
-static void {namespace}_{name}_encode_repeated_inner(
+static void {name}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct {namespace}_{name}_repeated_t *repeated_p)
+    struct {name}_repeated_t *repeated_p)
 {{
     pbtools_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
-        (pbtools_message_encode_inner_t){namespace}_{name}_encode_inner);
+        (pbtools_message_encode_inner_t){name}_encode_inner);
 }}
 
-static void {namespace}_{name}_decode_repeated_inner(
+static void {name}_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct {namespace}_{name}_repeated_t *repeated_p)
+    struct {name}_repeated_t *repeated_p)
 {{
     pbtools_decode_repeated_inner(
         decoder_p,
         wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
-        sizeof(struct {namespace}_{name}_t),
-        (pbtools_message_init_t){namespace}_{name}_init,
-        (pbtools_message_decode_inner_t){namespace}_{name}_decode_inner);
+        sizeof(struct {name}_t),
+        (pbtools_message_init_t){name}_init,
+        (pbtools_message_decode_inner_t){name}_decode_inner);
 }}
 
-static void {namespace}_{name}_finalize_repeated_inner(
+static void {name}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct {namespace}_{name}_repeated_t *repeated_p)
+    struct {name}_repeated_t *repeated_p)
 {{
     pbtools_finalize_repeated_inner(
         decoder_p,
@@ -373,19 +372,19 @@ static void {namespace}_{name}_finalize_repeated_inner(
 '''
 
 REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT = '''\
-static void {namespace}_{name}_encode_repeated_inner(
+static void {name}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct {namespace}_{name}_repeated_t *repeated_p);
+    struct {name}_repeated_t *repeated_p);
 
-static void {namespace}_{name}_decode_repeated_inner(
+static void {name}_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct {namespace}_{name}_repeated_t *repeated_p);
+    struct {name}_repeated_t *repeated_p);
 
-static void {namespace}_{name}_finalize_repeated_inner(
+static void {name}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct {namespace}_{name}_repeated_t *repeated_p);
+    struct {name}_repeated_t *repeated_p);
 '''
 
 REPEATED_FINALIZER_FMT = '''\
@@ -395,7 +394,7 @@ REPEATED_FINALIZER_FMT = '''\
 '''
 
 REPEATED_MESSAGE_FINALIZER_FMT = '''\
-    {namespace}_{name}_finalize_repeated_inner(
+    {name}_finalize_repeated_inner(
         decoder_p,
         &self_p->{field_name});\
 '''
@@ -404,31 +403,14 @@ ENUM_FMT = '''\
 /**
  * Enum {proto_name} in package {package}.
  */
-enum {namespace}_{name}_e {{
+enum {name}_e {{
 {members}
 }};
 '''
 
 ENUM_MEMBER_FMT = '''\
-    {namespace}_{name}_{field_name}_e = {field_number}\
+    {name}_{field_name}_e = {field_number}\
 '''
-
-
-def canonical(value):
-    """Replace anything but 'a-z', 'A-Z' and '0-9' with '_'.
-
-    """
-
-    return re.sub(r'[^a-zA-Z0-9]', '_', value)
-
-
-def camel_to_snake_case(value):
-    value = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', value)
-    value = re.sub(r'(_+)', '_', value)
-    value = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', value).lower()
-    value = canonical(value)
-
-    return value
 
 
 class Generator:
@@ -460,7 +442,7 @@ class Generator:
         elif type in ['bytes', 'string']:
             type = f'struct pbtools_bytes_t'
         else:
-            type = f'struct {self.namespace}_{camel_to_snake_case(type)}_t'
+            type = f'struct {type}_t'
 
         return f'    {type} {name};'
 
@@ -475,7 +457,7 @@ class Generator:
 
             type = f'struct pbtools_repeated_{type}_t'
         else:
-            type = f'struct {self.namespace}_{camel_to_snake_case(type)}_repeated_t'
+            type = f'struct {type}_repeated_t'
 
         return f'    {type} {name};'
 
@@ -484,10 +466,13 @@ class Generator:
 
         for field in message.fields:
             if field.repeated:
-                member = self.generate_repeated_struct_member_fmt(field.type,
-                                                                  field.name)
+                member = self.generate_repeated_struct_member_fmt(
+                    field.full_type_snake_case,
+                    field.name)
             else:
-                member = self.generate_struct_member_fmt(field.type, field.name)
+                member = self.generate_struct_member_fmt(
+                    field.full_type_snake_case,
+                    field.name)
 
             members.append(member)
 
@@ -499,31 +484,27 @@ class Generator:
         return members
 
     def generate_repeated_struct(self, message):
-        return REPEATED_STRUCT_FMT.format(namespace=self.namespace,
-                                          name=camel_to_snake_case(message.name))
+        return REPEATED_STRUCT_FMT.format(name=message.full_name_snake_case)
 
     def generate_enum_members(self, enum):
         return ',\n'.join([
-            ENUM_MEMBER_FMT.format(namespace=self.namespace,
-                                   name=camel_to_snake_case(enum.name),
-                                   field_name=camel_to_snake_case(field.name),
+            ENUM_MEMBER_FMT.format(name=enum.full_name_snake_case,
+                                   field_name=field.name_snake_case,
                                    field_number=field.field_number)
             for field in enum.fields])
 
     def generate_types(self):
         return '\n'.join([
-            ENUM_FMT.format(namespace=self.namespace,
-                            package=self.package,
+            ENUM_FMT.format(package=self.package,
                             proto_name=enum.name,
-                            name=camel_to_snake_case(enum.name),
+                            name=enum.full_name_snake_case,
                             members=self.generate_enum_members(enum))
             for enum in self.parsed.enums
         ] + [
             MESSAGE_STRUCT_FMT.format(
-                namespace=self.namespace,
                 package=self.package,
                 proto_name=message.name,
-                name=camel_to_snake_case(message.name),
+                name=message.full_name_snake_case,
                 repeated_struct=self.generate_repeated_struct(message),
                 members=self.generate_struct_members(message))
             for message in self.messages
@@ -533,15 +514,13 @@ class Generator:
         declarations = []
 
         for message in self.messages:
-            message_name = camel_to_snake_case(message.name)
+            message_name = message.full_name_snake_case
             declarations += [
-                REPEATED_DECLARATION_FMT.format(namespace=self.namespace,
-                                                name=message_name,
-                                                field_name=field.name)
+                REPEATED_DECLARATION_FMT.format(name=message_name,
+                                                field_name=field.name_snake_case)
                 for field in message.repeated_fields
             ] + [
-                MESSAGE_DECLARATION_FMT.format(namespace=self.namespace,
-                                               package=self.package,
+                MESSAGE_DECLARATION_FMT.format(package=self.package,
                                                proto_name=message.name,
                                                name=message_name)
             ]
@@ -550,7 +529,7 @@ class Generator:
 
     def generate_message_encode_body(self, message):
         members = []
-        message_name = camel_to_snake_case(message.name)
+        message_name = message.full_name_snake_case
 
         for field in reversed(message.fields):
             if field.type in SCALAR_VALUE_TYPES:
@@ -564,9 +543,8 @@ class Generator:
                 else:
                     fmt = ENCODE_INNER_MESSAGE_MEMBER_FMT
 
-            member = fmt.format(namespace=self.namespace,
-                                name=message_name,
-                                type=field.type,
+            member = fmt.format(name=message_name,
+                                type=field.full_type_snake_case,
                                 field_number=field.field_number,
                                 field_name=field.name,
                                 ref='&' if field.type in ['bytes', 'string'] else '')
@@ -581,9 +559,8 @@ class Generator:
         else:
             fmt = DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT
 
-        return fmt.format(namespace=self.namespace,
-                          name=camel_to_snake_case(message.name),
-                          type=camel_to_snake_case(field.type),
+        return fmt.format(name=message.full_name_snake_case,
+                          type=field.full_type_snake_case,
                           field_number=field.field_number,
                           field_name=field.name)
 
@@ -604,10 +581,9 @@ class Generator:
                 continue
 
             members.append(
-                fmt.format(namespace=self.namespace,
-                           type=field.type,
-                           name=camel_to_snake_case(message.name),
-                           field_name=camel_to_snake_case(field.name),
+                fmt.format(type=field.type,
+                           name=message.full_name_snake_case,
+                           field_name=field.name_snake_case,
                            field_number=field.field_number))
 
         return '\n'.join(members)
@@ -640,8 +616,7 @@ class Generator:
             else:
                 fmt = REPEATED_MESSAGE_DEFINITION_FMT
 
-            members.append(fmt.format(namespace=self.namespace,
-                                      name=camel_to_snake_case(message.name),
+            members.append(fmt.format(name=message.full_name_snake_case,
                                       field_name=field.name,
                                       type=field.type))
 
@@ -659,8 +634,7 @@ class Generator:
             else:
                 fmt = REPEATED_MESSAGE_FINALIZER_FMT
 
-            finalizers.append(fmt.format(namespace=self.namespace,
-                                         name=camel_to_snake_case(message.name),
+            finalizers.append(fmt.format(name=message.full_name_snake_case,
                                          field_name=field.name,
                                          type=field.type))
 
@@ -673,11 +647,9 @@ class Generator:
         definitions = []
 
         for message in self.messages:
-            message_name = camel_to_snake_case(message.name)
+            message_name = message.full_name_snake_case
             definitions.append(
-                MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                    namespace=self.namespace,
-                    name=message_name))
+                MESSAGE_STATIC_DECLARATIONS_FMT.format(name=message_name))
 
             for field in message.repeated_fields:
                 if field.type in SCALAR_VALUE_TYPES:
@@ -685,23 +657,20 @@ class Generator:
 
                 definitions.append(
                     REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                        namespace=self.namespace,
                         name=message_name))
 
         for message in self.messages:
             definitions += [
                 MESSAGE_STATIC_DEFINITIONS_FMT.format(
-                    namespace=self.namespace,
-                    name=camel_to_snake_case(message.name),
+                    name=message.full_name_snake_case,
                     encode_body=self.generate_message_encode_body(message),
                     decode_body=self.generate_message_decode_body(message),
                     members_init=self.generate_message_members_init(message),
                     finalizers=self.generate_repeated_finalizers(message)),
                 MESSAGE_DEFINITION_FMT.format(
-                    namespace=self.namespace,
                     package=self.package,
                     proto_name=message.name,
-                    name=camel_to_snake_case(message.name),
+                    name=message.full_name_snake_case,
                     repeated=self.generate_repeated_definitions(message))
             ]
 
@@ -709,13 +678,11 @@ class Generator:
 
     def generate(self):
         namespace_upper = self.namespace.upper()
-        header = HEADER_FMT.format(namespace=self.namespace,
-                                   namespace_upper=namespace_upper,
+        header = HEADER_FMT.format(namespace_upper=namespace_upper,
                                    include_guard='{}_H'.format(namespace_upper),
                                    types=self.generate_types(),
                                    declarations=self.generate_declarations())
-        source = SOURCE_FMT.format(namespace=self.namespace,
-                                   namespace_upper=namespace_upper,
+        source = SOURCE_FMT.format(namespace_upper=namespace_upper,
                                    header=self.header_name,
                                    definitions=self.generate_definitions())
 

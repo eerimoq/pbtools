@@ -1,3 +1,4 @@
+import re
 import textparser
 from textparser import Sequence
 from textparser import ZeroOrMore
@@ -27,6 +28,23 @@ SCALAR_VALUE_TYPES = [
     'string',
     'bytes'
 ]
+
+
+def canonical(value):
+    """Replace anything but 'a-z', 'A-Z' and '0-9' with '_'.
+
+    """
+
+    return re.sub(r'[^a-zA-Z0-9]', '_', value)
+
+
+def camel_to_snake_case(value):
+    value = canonical(value)
+    value = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', value)
+    value = re.sub(r'(_+)', '_', value)
+    value = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', value).lower()
+
+    return value
 
 
 class Parser(textparser.Parser):
@@ -162,11 +180,10 @@ class EnumField:
     def __init__(self, tokens):
         self.name = tokens[0]
         self.field_number = int(tokens[2])
-        self.namespace = []
 
     @property
-    def full_type(self):
-        return '.'.join(self.namespace + [self.type])
+    def name_snake_case(self):
+        return camel_to_snake_case(self.name)
 
 
 class Enum:
@@ -182,6 +199,10 @@ class Enum:
     @property
     def full_name(self):
         return '.'.join(self.namespace + [self.name])
+
+    @property
+    def full_name_snake_case(self):
+        return camel_to_snake_case(self.full_name)
 
 
 class OneofField:
@@ -215,6 +236,14 @@ class MessageField:
     @property
     def full_type(self):
         return '.'.join(self.namespace + [self.type])
+
+    @property
+    def full_type_snake_case(self):
+        return camel_to_snake_case(self.full_type)
+
+    @property
+    def name_snake_case(self):
+        return camel_to_snake_case(self.name)
 
 
 class Message:
@@ -259,7 +288,11 @@ class Message:
     def full_name(self):
         return '.'.join(self.namespace + [self.name])
 
-    
+    @property
+    def full_name_snake_case(self):
+        return camel_to_snake_case(self.full_name)
+
+
 class Rpc:
 
     def __init__(self, tokens):
