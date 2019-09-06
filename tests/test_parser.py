@@ -325,12 +325,6 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.namespace, ['message', 'Message', 'Fie'])
         self.assertEqual(field.full_type, 'message.Message.Fie.Foo')
 
-        field = fie_message.fields[1]
-        self.assertEqual(field.type, 'Fie')
-        self.assertEqual(field.name, 'fie')
-        self.assertEqual(field.namespace, ['message', 'Message'])
-        self.assertEqual(field.full_type, 'message.Message.Fie')
-
         # message.Message.Fie.Foo.
         fie_foo_message = fie_message.messages[0]
         self.assertEqual(fie_foo_message.name, 'Foo')
@@ -344,10 +338,10 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.full_type, 'bool')
 
         field = fie_foo_message.fields[1]
-        self.assertEqual(field.type, 'Foo')
-        self.assertEqual(field.name, 'foo')
-        self.assertEqual(field.namespace, ['message', 'Message', 'Fie'])
-        self.assertEqual(field.full_type, 'message.Message.Fie.Foo')
+        self.assertEqual(field.type, 'Bar')
+        self.assertEqual(field.name, 'bar')
+        self.assertEqual(field.namespace, ['message'])
+        self.assertEqual(field.full_type, 'message.Bar')
 
 
 if __name__ == '__main__':

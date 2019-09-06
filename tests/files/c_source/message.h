@@ -65,6 +65,35 @@ struct message_bar_t {
 /**
  * Message Message in package message.
  */
+enum message_message_foo_e {
+    message_message_foo_a_e = 0
+};
+
+struct message_message_fie_foo_repeated_t {
+    int length;
+    struct message_message_fie_foo_t **items_pp;
+    struct message_message_fie_foo_t *head_p;
+    struct message_message_fie_foo_t *tail_p;
+};
+
+struct message_message_fie_foo_t {
+    struct pbtools_message_base_t base;
+    bool value;
+    struct message_bar_t bar;
+};
+
+struct message_message_fie_repeated_t {
+    int length;
+    struct message_message_fie_t **items_pp;
+    struct message_message_fie_t *head_p;
+    struct message_message_fie_t *tail_p;
+};
+
+struct message_message_fie_t {
+    struct pbtools_message_base_t base;
+    struct message_message_fie_foo_t foo;
+};
+
 struct message_message_repeated_t {
     int length;
     struct message_message_t **items_pp;
@@ -74,8 +103,9 @@ struct message_message_repeated_t {
 
 struct message_message_t {
     struct pbtools_message_base_t base;
-    struct message_foo_t foo;
+    enum message_message_foo_e foo;
     struct message_bar_t bar;
+    struct message_message_fie_t fie;
 };
 
 /**

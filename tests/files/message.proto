@@ -16,10 +16,9 @@ message Message {
     message Fie {
         message Foo {
             bool value = 5;
-            Foo foo = 1;
+            Bar bar = 1;
         }
         Foo foo = 1;
-        Fie fie = 2;
     }
     Foo foo = 1;
     Bar bar = 832;
