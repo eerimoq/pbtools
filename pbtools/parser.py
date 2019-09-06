@@ -30,6 +30,10 @@ SCALAR_VALUE_TYPES = [
 ]
 
 
+class InternalError(Exception):
+    pass
+
+
 def canonical(value):
     """Replace anything but 'a-z', 'A-Z' and '0-9' with '_'.
 
@@ -271,7 +275,7 @@ class Message:
             elif kind == ';':
                 pass
             else:
-                raise RuntimeError(kind)
+                raise InternalError(kind)
 
     @property
     def repeated_fields(self):
@@ -315,41 +319,35 @@ class Service:
             if kind == 'rpc':
                 self.rpcs.append(Rpc(item))
             else:
-                raise RuntimeError(kind)
+                raise InternalError(kind)
 
 
 def load_package(tokens):
     try:
         return tokens[1]['package'][0][1]
     except KeyError:
-        raise RuntimeError()
+        raise RuntimeError('Package missing.')
 
 
 def load_messages(tokens, namespace):
-    messages = []
-
-    for message in tokens[1].get('message', []):
-        messages.append(Message(message, namespace))
-
-    return messages
+    return [
+        Message(message, namespace)
+        for message in tokens[1].get('message', [])
+    ]
 
 
 def load_services(tokens):
-    services = []
-
-    for service in tokens[1].get('service', []):
-        services.append(Service(service))
-
-    return services
+    return [
+        Service(service)
+        for service in tokens[1].get('service', [])
+    ]
 
 
 def load_enums(tokens, namespace):
-    enums = []
-
-    for enum in tokens[1].get('enum', []):
-        enums.append(Enum(enum, namespace))
-
-    return enums
+    return [
+        Enum(enum, namespace)
+        for enum in tokens[1].get('enum', [])
+    ]
 
 
 class Proto:
@@ -389,6 +387,7 @@ class Proto:
             namespace = [self.package]
 
         field.namespace = namespace
+
 
 def parse_string(text):
     return Proto(Parser().parse(text))
