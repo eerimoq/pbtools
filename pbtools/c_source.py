@@ -1,23 +1,7 @@
 import re
 
+from .parser import SCALAR_VALUE_TYPES
 
-SCALAR_VALUE_TYPES = [
-    'int32',
-    'int64',
-    'sint32',
-    'sint64',
-    'uint32',
-    'uint64',
-    'fixed32',
-    'fixed64',
-    'sfixed32',
-    'sfixed64',
-    'float',
-    'double',
-    'bool',
-    'string',
-    'bytes'
-]
 
 HEADER_FMT = '''\
 /**
@@ -104,7 +88,7 @@ MESSAGE_STRUCT_FMT = '''\
 
 struct {namespace}_{name}_t {{
     struct pbtools_message_base_t base;
-{members}
+{members}\
 }};
 '''
 
@@ -476,7 +460,7 @@ class Generator:
         elif type in ['bytes', 'string']:
             type = f'struct pbtools_bytes_t'
         else:
-            type = f'{camel_to_snake_case(type)}_t'
+            type = f'struct {self.namespace}_{camel_to_snake_case(type)}_t'
 
         return f'    {type} {name};'
 
@@ -507,7 +491,12 @@ class Generator:
 
             members.append(member)
 
-        return '\n'.join(members)
+        members = '\n'.join(members)
+
+        if members:
+            members += '\n'
+
+        return members
 
     def generate_repeated_struct(self, message):
         return REPEATED_STRUCT_FMT.format(namespace=self.namespace,

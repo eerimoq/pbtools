@@ -10,6 +10,25 @@ from textparser import Forward
 from textparser import Tag
 
 
+SCALAR_VALUE_TYPES = [
+    'int32',
+    'int64',
+    'sint32',
+    'sint64',
+    'uint32',
+    'uint64',
+    'fixed32',
+    'fixed64',
+    'sfixed32',
+    'sfixed64',
+    'float',
+    'double',
+    'bool',
+    'string',
+    'bytes'
+]
+
+
 class Parser(textparser.Parser):
 
     def token_specs(self):
@@ -143,16 +162,26 @@ class EnumField:
     def __init__(self, tokens):
         self.name = tokens[0]
         self.field_number = int(tokens[2])
+        self.namespace = []
+
+    @property
+    def full_type(self):
+        return '.'.join(self.namespace + [self.type])
 
 
 class Enum:
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, namespace):
         self.name = tokens[1]
         self.fields = []
+        self.namespace = namespace
 
         for item in tokens[3]:
             self.fields.append(EnumField(item))
+
+    @property
+    def full_name(self):
+        return '.'.join(self.namespace + [self.name])
 
 
 class OneofField:
@@ -168,6 +197,7 @@ class Oneof:
     def __init__(self, tokens):
         self.name = tokens[1]
         self.fields = []
+        self.namespace = []
 
         for item in tokens[3]:
             self.fields.append(OneofField(item))
@@ -180,26 +210,33 @@ class MessageField:
         self.name = tokens[2]
         self.field_number = int(tokens[4])
         self.repeated = bool(tokens[0])
+        self.namespace = []
+
+    @property
+    def full_type(self):
+        return '.'.join(self.namespace + [self.type])
 
 
 class Message:
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, namespace):
         self.name = tokens[1]
         self.fields = []
         self.enums = []
         self.messages = []
         self.oneofs = []
+        self.namespace = namespace
 
         for item in tokens[3]:
             kind = item[0]
+            inner_namespace = namespace + [self.name]
 
             if kind == 'field':
                 self.fields.append(MessageField(item[1]))
             elif kind == 'enum':
-                self.enums.append(Enum(item))
+                self.enums.append(Enum(item, inner_namespace))
             elif kind == 'message':
-                self.messages.append(Message(item))
+                self.messages.append(Message(item, inner_namespace))
             elif kind == 'oneof':
                 self.oneofs.append(Oneof(item))
             elif kind == ';':
@@ -211,7 +248,18 @@ class Message:
     def repeated_fields(self):
         return [field for field in self.fields if field.repeated]
 
+    @property
+    def type_names(self):
+        type_names = [enum.name for enum in self.enums]
+        type_names += [message.name for message in self.messages]
 
+        return type_names
+
+    @property
+    def full_name(self):
+        return '.'.join(self.namespace + [self.name])
+
+    
 class Rpc:
 
     def __init__(self, tokens):
@@ -244,11 +292,11 @@ def load_package(tokens):
         raise RuntimeError()
 
 
-def load_messages(tokens):
+def load_messages(tokens, namespace):
     messages = []
 
     for message in tokens[1].get('message', []):
-        messages.append(Message(message))
+        messages.append(Message(message, namespace))
 
     return messages
 
@@ -262,11 +310,11 @@ def load_services(tokens):
     return services
 
 
-def load_enums(tokens):
+def load_enums(tokens, namespace):
     enums = []
 
     for enum in tokens[1].get('enum', []):
-        enums.append(Enum(enum))
+        enums.append(Enum(enum, namespace))
 
     return enums
 
@@ -275,10 +323,39 @@ class Proto:
 
     def __init__(self, tree):
         self.package = load_package(tree)
-        self.messages = load_messages(tree)
+        self.messages = load_messages(tree, [self.package])
         self.services = load_services(tree)
-        self.enums = load_enums(tree)
+        self.enums = load_enums(tree, [self.package])
+        self.messages_stack = []
+        self.resolve_messages_fields_types()
 
+    def resolve_messages_fields_types(self):
+        for message in self.messages:
+            self.resolve_message_fields_types(message)
+
+    def resolve_message_fields_types(self, message):
+        self.messages_stack.append(message)
+
+        for field in message.fields:
+            if field.type in SCALAR_VALUE_TYPES:
+                continue
+
+            self.resolve_message_field_type(field)
+
+        for inner_message in message.messages:
+            self.resolve_message_fields_types(inner_message)
+
+        self.messages_stack.pop()
+
+    def resolve_message_field_type(self, field):
+        for message in reversed(self.messages_stack):
+            if field.type in message.type_names:
+                namespace = message.namespace + [message.name]
+                break
+        else:
+            namespace = [self.package]
+
+        field.namespace = namespace
 
 def parse_string(text):
     return Proto(Parser().parse(text))

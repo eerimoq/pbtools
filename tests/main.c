@@ -27,6 +27,7 @@
 #include "files/c_source/oneof.h"
 #include "files/c_source/repeated.h"
 #include "files/c_source/scalar_value_types.h"
+#include "files/c_source/message.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -2131,6 +2132,22 @@ TEST(message_does_not_fit_in_workspace)
     ASSERT_EQ(message_p, NULL);
 }
 
+TEST(message)
+{
+#if 0
+    int size;
+    uint8_t workspace[512];
+    struct message_message_t *message_p;
+
+    message_p = message_message_new(&workspace[0], sizeof(workspace));
+    message_p->bar.fie = 1;
+
+    size = message_message_encode(message_p);
+    ASSERT_EQ(size, 6);
+    ASSERT_MEMORY(&encoded[0], "\x82\x34\x03\xe8\x14\x01", size);
+#endif
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -2198,6 +2215,7 @@ int main(void)
         skip_error_too_long_length_delimited,
         skip_error_bad_wire_type,
         skip_fixed_32,
-        message_does_not_fit_in_workspace
+        message_does_not_fit_in_workspace,
+        message
     );
 }
