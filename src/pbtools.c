@@ -31,6 +31,17 @@
 #include <stdlib.h>
 #include "pbtools.h"
 
+#define WRITE_REPEATED_SCALAR_VALUE_TYPE(write_item)                    \
+    write_repeated_scalar_value_type(                                   \
+        self_p,                                                         \
+        field_number,                                                   \
+        (struct pbtools_repeated_scalar_value_type_t *)repeated_p,      \
+        write_item);
+
+typedef void (*pbtools_repeated_scalar_value_type_write_t)(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p);
+
 struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size)
 {
@@ -391,10 +402,11 @@ void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
     }
 }
 
-void pbtools_encoder_write_repeated_int32(
+static void write_repeated_scalar_value_type(
     struct pbtools_encoder_t *self_p,
     int field_number,
-    struct pbtools_repeated_int32_t *repeated_p)
+    struct pbtools_repeated_scalar_value_type_t *repeated_p,
+    pbtools_repeated_scalar_value_type_write_t member_write)
 {
     int i;
     int pos;
@@ -406,14 +418,37 @@ void pbtools_encoder_write_repeated_int32(
     pos = self_p->pos;
 
     for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_varint(self_p,
-                                     repeated_p->items_pp[i]->value);
+        member_write(self_p, repeated_p->items_pp[i]);
     }
 
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
                                         PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
                                         pos - self_p->pos);
+}
+
+static void write_repeated_int32_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_varint(self_p,
+                                 ((struct pbtools_int32_t *)item_p)->value);
+}
+
+void pbtools_encoder_write_repeated_int32(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int32_t *repeated_p)
+{
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_int32_item);
+}
+
+static void write_repeated_int64_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_varint(self_p,
+                                 ((struct pbtools_int64_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_int64(
@@ -421,24 +456,25 @@ void pbtools_encoder_write_repeated_int64(
     int field_number,
     struct pbtools_repeated_int64_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_int64_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
+static void write_repeated_sint32_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    int32_t value;
+    uint32_t data;
+
+    value = ((struct pbtools_int32_t *)item_p)->value;
+
+    if (value < 0) {
+        data = ~((uint32_t)value << 1);
+    } else {
+        data = ((uint32_t)value << 1);
     }
 
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_varint(self_p,
-                                     repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+    pbtools_encoder_write_varint(self_p, data);
 }
 
 void pbtools_encoder_write_repeated_sint32(
@@ -446,33 +482,25 @@ void pbtools_encoder_write_repeated_sint32(
     int field_number,
     struct pbtools_repeated_int32_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_sint32_item);
+}
+
+static void write_repeated_sint64_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
     int64_t value;
     uint64_t data;
 
-    if (repeated_p->length == 0) {
-        return;
+    value = ((struct pbtools_int64_t *)item_p)->value;
+
+    if (value < 0) {
+        data = ~((uint64_t)value << 1);
+    } else {
+        data = ((uint64_t)value << 1);
     }
 
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        value = repeated_p->items_pp[i]->value;
-
-        if (value < 0) {
-            data = ~((uint64_t)value << 1);
-        } else {
-            data = ((uint64_t)value << 1);
-        }
-
-        pbtools_encoder_write_varint(self_p, data);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+    pbtools_encoder_write_varint(self_p, data);
 }
 
 void pbtools_encoder_write_repeated_sint64(
@@ -480,33 +508,15 @@ void pbtools_encoder_write_repeated_sint64(
     int field_number,
     struct pbtools_repeated_int64_t *repeated_p)
 {
-    int i;
-    int pos;
-    int64_t value;
-    uint64_t data;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_sint64_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        value = repeated_p->items_pp[i]->value;
-
-        if (value < 0) {
-            data = ~((uint64_t)value << 1);
-        } else {
-            data = ((uint64_t)value << 1);
-        }
-
-        pbtools_encoder_write_varint(self_p, data);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+static void write_repeated_uint32_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_varint(self_p,
+                                 ((struct pbtools_uint32_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_uint32(
@@ -514,24 +524,15 @@ void pbtools_encoder_write_repeated_uint32(
     int field_number,
     struct pbtools_repeated_uint32_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_uint32_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_varint(self_p,
-                                     repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+static void write_repeated_uint64_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_varint(self_p,
+                                 ((struct pbtools_uint64_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_uint64(
@@ -539,24 +540,15 @@ void pbtools_encoder_write_repeated_uint64(
     int field_number,
     struct pbtools_repeated_uint64_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_uint64_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_varint(self_p,
-                                     repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+static void write_repeated_fixed32_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_fixed32_value(self_p,
+                                        ((struct pbtools_uint32_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_fixed32(
@@ -564,24 +556,15 @@ void pbtools_encoder_write_repeated_fixed32(
     int field_number,
     struct pbtools_repeated_uint32_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_fixed32_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_fixed32_value(self_p,
-                                            repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+static void write_repeated_fixed64_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_fixed64_value(self_p,
+                                        ((struct pbtools_uint64_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_fixed64(
@@ -589,24 +572,15 @@ void pbtools_encoder_write_repeated_fixed64(
     int field_number,
     struct pbtools_repeated_uint64_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_fixed64_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_fixed64_value(self_p,
-                                            repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+static void write_repeated_sfixed32_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_fixed32_value(self_p,
+                                        ((struct pbtools_int32_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_sfixed32(
@@ -614,24 +588,15 @@ void pbtools_encoder_write_repeated_sfixed32(
     int field_number,
     struct pbtools_repeated_int32_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_sfixed32_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_fixed32_value(self_p,
-                                            repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+static void write_repeated_sfixed64_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    pbtools_encoder_write_fixed64_value(self_p,
+                                        ((struct pbtools_int64_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_sfixed64(
@@ -639,24 +604,17 @@ void pbtools_encoder_write_repeated_sfixed64(
     int field_number,
     struct pbtools_repeated_int64_t *repeated_p)
 {
-    int i;
-    int pos;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_sfixed64_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
+static void write_repeated_float_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    uint32_t data;
 
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_fixed64_value(self_p,
-                                            repeated_p->items_pp[i]->value);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+    memcpy(&data, &(((struct pbtools_float_t *)item_p)->value), sizeof(data));
+    pbtools_encoder_write_fixed32_value(self_p, data);
 }
 
 void pbtools_encoder_write_repeated_float(
@@ -664,25 +622,17 @@ void pbtools_encoder_write_repeated_float(
     int field_number,
     struct pbtools_repeated_float_t *repeated_p)
 {
-    int i;
-    int pos;
-    uint32_t data;
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_float_item);
+}
 
-    if (repeated_p->length == 0) {
-        return;
-    }
+static void write_repeated_double_item(
+    struct pbtools_encoder_t *self_p,
+    struct pbtools_scalar_value_type_base_t *item_p)
+{
+    uint64_t data;
 
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        memcpy(&data, &repeated_p->items_pp[i]->value, sizeof(data));
-        pbtools_encoder_write_fixed32_value(self_p, data);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+    memcpy(&data, &(((struct pbtools_double_t *)item_p)->value), sizeof(data));
+    pbtools_encoder_write_fixed64_value(self_p, data);
 }
 
 void pbtools_encoder_write_repeated_double(
@@ -690,25 +640,7 @@ void pbtools_encoder_write_repeated_double(
     int field_number,
     struct pbtools_repeated_double_t *repeated_p)
 {
-    int i;
-    int pos;
-    uint64_t data;
-
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        memcpy(&data, &repeated_p->items_pp[i]->value, sizeof(data));
-        pbtools_encoder_write_fixed64_value(self_p, data);
-    }
-
-    pbtools_encoder_write_tagged_varint(self_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+    WRITE_REPEATED_SCALAR_VALUE_TYPE(write_repeated_double_item);
 }
 
 void pbtools_encoder_write_repeated_bool(

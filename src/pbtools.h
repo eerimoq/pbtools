@@ -67,6 +67,17 @@ struct pbtools_repeated_message_t {
     struct pbtools_message_base_t *tail_p;
 };
 
+struct pbtools_scalar_value_type_base_t {
+    struct pbtools_scalar_value_type_base_t *next_p;
+};
+
+struct pbtools_repeated_scalar_value_type_t {
+    int length;
+    struct pbtools_scalar_value_type_base_t **items_pp;
+    struct pbtools_scalar_value_type_base_t *head_p;
+    struct pbtools_scalar_value_type_base_t *tail_p;
+};
+
 struct pbtools_int32_t {
     struct pbtools_int32_t *next_p;
     int32_t value;
