@@ -2012,7 +2012,39 @@ TEST(repeated_scalar_value_types)
     size = repeated_message_scalar_value_types_decode(message_p,
                                                       &encoded[0],
                                                       95);
-    ASSERT_EQ(size, -PBTOOLS_BAD_FIELD_NUMBER);
+    ASSERT_EQ(size, 95);
+
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, -3);
+    ASSERT_EQ(message_p->int64s.length, 1);
+    ASSERT_EQ(message_p->int64s.items_pp[0]->value, -4);
+    ASSERT_EQ(message_p->sint32s.length, 1);
+    ASSERT_EQ(message_p->sint32s.items_pp[0]->value, -5);
+    ASSERT_EQ(message_p->sint64s.length, 1);
+    ASSERT_EQ(message_p->sint64s.items_pp[0]->value, -6);
+    ASSERT_EQ(message_p->uint32s.length, 1);
+    ASSERT_EQ(message_p->uint32s.items_pp[0]->value, 7);
+    ASSERT_EQ(message_p->uint64s.length, 1);
+    ASSERT_EQ(message_p->uint64s.items_pp[0]->value, 8);
+    ASSERT_EQ(message_p->fixed32s.length, 1);
+    ASSERT_EQ(message_p->fixed32s.items_pp[0]->value, 9);
+    ASSERT_EQ(message_p->fixed64s.length, 1);
+    ASSERT_EQ(message_p->fixed64s.items_pp[0]->value, 10);
+    ASSERT_EQ(message_p->sfixed32s.length, 1);
+    ASSERT_EQ(message_p->sfixed32s.items_pp[0]->value, -11);
+    ASSERT_EQ(message_p->sfixed64s.length, 1);
+    ASSERT_EQ(message_p->sfixed64s.items_pp[0]->value, -12);
+    ASSERT_EQ(message_p->floats.length, 1);
+    ASSERT_EQ(message_p->floats.items_pp[0]->value, 13);
+    ASSERT_EQ(message_p->doubles.length, 1);
+    ASSERT_EQ(message_p->doubles.items_pp[0]->value, 14);
+    ASSERT_EQ(message_p->bools.length, 1);
+    ASSERT_EQ(message_p->bools.items_pp[0]->value, true);
+    ASSERT_EQ(message_p->strings.length, 1);
+    ASSERT_EQ(pbtools_get_string(message_p->strings.items_pp[0]), "16");
+    ASSERT_EQ(message_p->bytess.length, 1);
+    ASSERT_EQ(message_p->bytess.items_pp[0]->size, 2);
+    ASSERT_MEMORY(message_p->bytess.items_pp[0]->buf_p, "17", 2);
 }
 
 TEST(repeated_scalar_value_types_empty)

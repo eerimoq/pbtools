@@ -459,7 +459,7 @@ void pbtools_encoder_write_repeated_sint32(
 
     for (i = repeated_p->length - 1; i >= 0; i--) {
         value = repeated_p->items_pp[i]->value;
-        
+
         if (value < 0) {
             data = ~((uint64_t)value << 1);
         } else {
@@ -493,7 +493,7 @@ void pbtools_encoder_write_repeated_sint64(
 
     for (i = repeated_p->length - 1; i >= 0; i--) {
         value = repeated_p->items_pp[i]->value;
-        
+
         if (value < 0) {
             data = ~((uint64_t)value << 1);
         } else {
@@ -957,6 +957,20 @@ uint64_t pbtools_decoder_read_uint64(struct pbtools_decoder_t *self_p,
                                                                wire_type));
 }
 
+uint32_t pbtools_decoder_read_fixed32_value(struct pbtools_decoder_t *self_p)
+{
+    uint32_t value;
+    uint8_t buf[4];
+
+    pbtools_decoder_read(self_p, &buf[0], sizeof(buf));
+    value = ((uint32_t)buf[0] << 0);
+    value |= ((uint32_t)buf[1] << 8);
+    value |= ((uint32_t)buf[2] << 16);
+    value |= ((uint32_t)buf[3] << 24);
+
+    return (value);
+}
+
 uint32_t pbtools_decoder_read_fixed32(struct pbtools_decoder_t *self_p,
                                       int wire_type)
 {
@@ -1160,7 +1174,7 @@ int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1251,7 +1265,7 @@ int pbtools_alloc_repeated_int64(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1273,12 +1287,60 @@ void pbtools_decoder_read_repeated_int64(
     int wire_type,
     struct pbtools_repeated_int64_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_int64_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = pbtools_decoder_read_varint(self_p);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_int64(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_int64_t *repeated_p)
 {
+    struct pbtools_int64_t *item_p;
+    int i;
+
+    if (repeated_p->length > 0) {
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
+            sizeof(item_p) * repeated_p->length);
+
+        if (repeated_p->items_pp == NULL) {
+            return;
+        }
+
+        item_p = repeated_p->head_p;
+
+        for (i = 0; i < repeated_p->length; i++) {
+            repeated_p->items_pp[i] = item_p;
+            item_p = item_p->next_p;
+        }
+    }
 }
 
 int pbtools_alloc_repeated_uint32(struct pbtools_message_base_t *self_p,
@@ -1294,7 +1356,7 @@ int pbtools_alloc_repeated_uint32(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1316,12 +1378,60 @@ void pbtools_decoder_read_repeated_uint32(
     int wire_type,
     struct pbtools_repeated_uint32_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_uint32_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = pbtools_decoder_read_varint(self_p);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_uint32(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_uint32_t *repeated_p)
 {
+    struct pbtools_uint32_t *item_p;
+    int i;
+
+    if (repeated_p->length > 0) {
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
+            sizeof(item_p) * repeated_p->length);
+
+        if (repeated_p->items_pp == NULL) {
+            return;
+        }
+
+        item_p = repeated_p->head_p;
+
+        for (i = 0; i < repeated_p->length; i++) {
+            repeated_p->items_pp[i] = item_p;
+            item_p = item_p->next_p;
+        }
+    }
 }
 
 int pbtools_alloc_repeated_uint64(struct pbtools_message_base_t *self_p,
@@ -1337,7 +1447,7 @@ int pbtools_alloc_repeated_uint64(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1359,42 +1469,67 @@ void pbtools_decoder_read_repeated_uint64(
     int wire_type,
     struct pbtools_repeated_uint64_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_uint64_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = pbtools_decoder_read_varint(self_p);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_uint64(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_uint64_t *repeated_p)
 {
+    struct pbtools_uint64_t *item_p;
+    int i;
+
+    if (repeated_p->length > 0) {
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
+            sizeof(item_p) * repeated_p->length);
+
+        if (repeated_p->items_pp == NULL) {
+            return;
+        }
+
+        item_p = repeated_p->head_p;
+
+        for (i = 0; i < repeated_p->length; i++) {
+            repeated_p->items_pp[i] = item_p;
+            item_p = item_p->next_p;
+        }
+    }
 }
 
 int pbtools_alloc_repeated_sint32(struct pbtools_message_base_t *self_p,
                                   int length,
                                   struct pbtools_repeated_int32_t *repeated_p)
 {
-    int i;
-    struct pbtools_int32_t *items_p;
-
-    items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             self_p->heap_p,
-                             length,
-                             sizeof(*items_p));
-
-    if (items_p == NULL) {
-        return (-111);
-    }
-
-    for (i = 0; i < length; i++) {
-        items_p[i].value = 0;
-        items_p[i].next_p = &items_p[i + 1];
-        repeated_p->items_pp[i] = &items_p[i];
-    }
-
-    items_p[length - 1].next_p = NULL;
-    repeated_p->length = length;
-    repeated_p->head_p = &items_p[0];
-    repeated_p->tail_p = &items_p[length - 1];
-
-    return (0);
+    return (pbtools_alloc_repeated_int32(self_p, length, repeated_p));
 }
 
 void pbtools_decoder_read_repeated_sint32(
@@ -1402,42 +1537,59 @@ void pbtools_decoder_read_repeated_sint32(
     int wire_type,
     struct pbtools_repeated_int32_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_int32_t *item_p;
+    uint64_t value;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        value = pbtools_decoder_read_varint(self_p);
+
+        if (value & 0x1) {
+            value >>= 1;
+            value = ~value;
+        } else {
+            value >>= 1;
+        }
+
+        item_p->value = value;
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_sint32(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_int32_t *repeated_p)
 {
+    pbtools_decoder_finalize_repeated_int32(self_p, repeated_p);
 }
 
 int pbtools_alloc_repeated_sint64(struct pbtools_message_base_t *self_p,
                                   int length,
                                   struct pbtools_repeated_int64_t *repeated_p)
 {
-    int i;
-    struct pbtools_int64_t *items_p;
-
-    items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             self_p->heap_p,
-                             length,
-                             sizeof(*items_p));
-
-    if (items_p == NULL) {
-        return (-111);
-    }
-
-    for (i = 0; i < length; i++) {
-        items_p[i].value = 0;
-        items_p[i].next_p = &items_p[i + 1];
-        repeated_p->items_pp[i] = &items_p[i];
-    }
-
-    items_p[length - 1].next_p = NULL;
-    repeated_p->length = length;
-    repeated_p->head_p = &items_p[0];
-    repeated_p->tail_p = &items_p[length - 1];
-
-    return (0);
+    return (pbtools_alloc_repeated_int64(self_p, length, repeated_p));
 }
 
 void pbtools_decoder_read_repeated_sint64(
@@ -1445,42 +1597,59 @@ void pbtools_decoder_read_repeated_sint64(
     int wire_type,
     struct pbtools_repeated_int64_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_int64_t *item_p;
+    uint64_t value;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        value = pbtools_decoder_read_varint(self_p);
+
+        if (value & 0x1) {
+            value >>= 1;
+            value = ~value;
+        } else {
+            value >>= 1;
+        }
+
+        item_p->value = value;
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_sint64(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_int64_t *repeated_p)
 {
+    pbtools_decoder_finalize_repeated_int64(self_p, repeated_p);
 }
 
 int pbtools_alloc_repeated_fixed32(struct pbtools_message_base_t *self_p,
                                    int length,
                                    struct pbtools_repeated_uint32_t *repeated_p)
 {
-    int i;
-    struct pbtools_uint32_t *items_p;
-
-    items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             self_p->heap_p,
-                             length,
-                             sizeof(*items_p));
-
-    if (items_p == NULL) {
-        return (-111);
-    }
-
-    for (i = 0; i < length; i++) {
-        items_p[i].value = 0;
-        items_p[i].next_p = &items_p[i + 1];
-        repeated_p->items_pp[i] = &items_p[i];
-    }
-
-    items_p[length - 1].next_p = NULL;
-    repeated_p->length = length;
-    repeated_p->head_p = &items_p[0];
-    repeated_p->tail_p = &items_p[length - 1];
-
-    return (0);
+    return (pbtools_alloc_repeated_uint32(self_p, length, repeated_p));
 }
 
 void pbtools_decoder_read_repeated_fixed32(
@@ -1488,42 +1657,49 @@ void pbtools_decoder_read_repeated_fixed32(
     int wire_type,
     struct pbtools_repeated_uint32_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_uint32_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = pbtools_decoder_read_fixed32_value(self_p);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_fixed32(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_uint32_t *repeated_p)
 {
+    pbtools_decoder_finalize_repeated_uint32(self_p, repeated_p);
 }
 
 int pbtools_alloc_repeated_fixed64(struct pbtools_message_base_t *self_p,
                                    int length,
                                    struct pbtools_repeated_uint64_t *repeated_p)
 {
-    int i;
-    struct pbtools_uint64_t *items_p;
-
-    items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             self_p->heap_p,
-                             length,
-                             sizeof(*items_p));
-
-    if (items_p == NULL) {
-        return (-111);
-    }
-
-    for (i = 0; i < length; i++) {
-        items_p[i].value = 0;
-        items_p[i].next_p = &items_p[i + 1];
-        repeated_p->items_pp[i] = &items_p[i];
-    }
-
-    items_p[length - 1].next_p = NULL;
-    repeated_p->length = length;
-    repeated_p->head_p = &items_p[0];
-    repeated_p->tail_p = &items_p[length - 1];
-
-    return (0);
+    return (pbtools_alloc_repeated_uint64(self_p, length, repeated_p));
 }
 
 void pbtools_decoder_read_repeated_fixed64(
@@ -1566,55 +1742,14 @@ void pbtools_decoder_finalize_repeated_fixed64(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_uint64_t *repeated_p)
 {
-    struct pbtools_uint64_t *item_p;
-    int i;
-
-    if (repeated_p->length > 0) {
-        repeated_p->items_pp = pbtools_decoder_heap_alloc(
-            self_p,
-            sizeof(item_p) * repeated_p->length);
-
-        if (repeated_p->items_pp == NULL) {
-            return;
-        }
-
-        item_p = repeated_p->head_p;
-
-        for (i = 0; i < repeated_p->length; i++) {
-            repeated_p->items_pp[i] = item_p;
-            item_p = item_p->next_p;
-        }
-    }
+    pbtools_decoder_finalize_repeated_uint64(self_p, repeated_p);
 }
 
 int pbtools_alloc_repeated_sfixed32(struct pbtools_message_base_t *self_p,
                                     int length,
                                     struct pbtools_repeated_int32_t *repeated_p)
 {
-    int i;
-    struct pbtools_int32_t *items_p;
-
-    items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             self_p->heap_p,
-                             length,
-                             sizeof(*items_p));
-
-    if (items_p == NULL) {
-        return (-111);
-    }
-
-    for (i = 0; i < length; i++) {
-        items_p[i].value = 0;
-        items_p[i].next_p = &items_p[i + 1];
-        repeated_p->items_pp[i] = &items_p[i];
-    }
-
-    items_p[length - 1].next_p = NULL;
-    repeated_p->length = length;
-    repeated_p->head_p = &items_p[0];
-    repeated_p->tail_p = &items_p[length - 1];
-
-    return (0);
+    return (pbtools_alloc_repeated_int32(self_p, length, repeated_p));
 }
 
 void pbtools_decoder_read_repeated_sfixed32(
@@ -1622,42 +1757,49 @@ void pbtools_decoder_read_repeated_sfixed32(
     int wire_type,
     struct pbtools_repeated_int32_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_int32_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = pbtools_decoder_read_fixed32_value(self_p);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_sfixed32(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_int32_t *repeated_p)
 {
+    pbtools_decoder_finalize_repeated_int32(self_p, repeated_p);
 }
 
 int pbtools_alloc_repeated_sfixed64(struct pbtools_message_base_t *self_p,
                                     int length,
                                     struct pbtools_repeated_int64_t *repeated_p)
 {
-    int i;
-    struct pbtools_int64_t *items_p;
-
-    items_p = alloc_repeated((void ***)&repeated_p->items_pp,
-                             self_p->heap_p,
-                             length,
-                             sizeof(*items_p));
-
-    if (items_p == NULL) {
-        return (-111);
-    }
-
-    for (i = 0; i < length; i++) {
-        items_p[i].value = 0;
-        items_p[i].next_p = &items_p[i + 1];
-        repeated_p->items_pp[i] = &items_p[i];
-    }
-
-    items_p[length - 1].next_p = NULL;
-    repeated_p->length = length;
-    repeated_p->head_p = &items_p[0];
-    repeated_p->tail_p = &items_p[length - 1];
-
-    return (0);
+    return (pbtools_alloc_repeated_int64(self_p, length, repeated_p));
 }
 
 void pbtools_decoder_read_repeated_sfixed64(
@@ -1665,12 +1807,42 @@ void pbtools_decoder_read_repeated_sfixed64(
     int wire_type,
     struct pbtools_repeated_int64_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_int64_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = pbtools_decoder_read_fixed64_value(self_p);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_sfixed64(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_int64_t *repeated_p)
 {
+    pbtools_decoder_finalize_repeated_int64(self_p, repeated_p);
 }
 
 int pbtools_alloc_repeated_float(struct pbtools_message_base_t *self_p,
@@ -1686,7 +1858,7 @@ int pbtools_alloc_repeated_float(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1708,12 +1880,62 @@ void pbtools_decoder_read_repeated_float(
     int wire_type,
     struct pbtools_repeated_float_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_float_t *item_p;
+    uint32_t data;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        data = pbtools_decoder_read_fixed32_value(self_p);
+        memcpy(&item_p->value, &data, sizeof(item_p->value));
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_float(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_float_t *repeated_p)
 {
+    struct pbtools_float_t *item_p;
+    int i;
+
+    if (repeated_p->length > 0) {
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
+            sizeof(item_p) * repeated_p->length);
+
+        if (repeated_p->items_pp == NULL) {
+            return;
+        }
+
+        item_p = repeated_p->head_p;
+
+        for (i = 0; i < repeated_p->length; i++) {
+            repeated_p->items_pp[i] = item_p;
+            item_p = item_p->next_p;
+        }
+    }
 }
 
 int pbtools_alloc_repeated_double(struct pbtools_message_base_t *self_p,
@@ -1729,7 +1951,7 @@ int pbtools_alloc_repeated_double(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1751,12 +1973,62 @@ void pbtools_decoder_read_repeated_double(
     int wire_type,
     struct pbtools_repeated_double_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_double_t *item_p;
+    uint64_t data;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        data = pbtools_decoder_read_fixed64_value(self_p);
+        memcpy(&item_p->value, &data, sizeof(item_p->value));
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_double(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_double_t *repeated_p)
 {
+    struct pbtools_double_t *item_p;
+    int i;
+
+    if (repeated_p->length > 0) {
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
+            sizeof(item_p) * repeated_p->length);
+
+        if (repeated_p->items_pp == NULL) {
+            return;
+        }
+
+        item_p = repeated_p->head_p;
+
+        for (i = 0; i < repeated_p->length; i++) {
+            repeated_p->items_pp[i] = item_p;
+            item_p = item_p->next_p;
+        }
+    }
 }
 
 int pbtools_alloc_repeated_bool(struct pbtools_message_base_t *self_p,
@@ -1772,7 +2044,7 @@ int pbtools_alloc_repeated_bool(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-111);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
@@ -1794,12 +2066,60 @@ void pbtools_decoder_read_repeated_bool(
     int wire_type,
     struct pbtools_repeated_bool_t *repeated_p)
 {
+    size_t size;
+    int pos;
+    struct pbtools_bool_t *item_p;
+
+    size = pbtools_decoder_read_varint_check_wire_type(
+        self_p,
+        wire_type,
+        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+    pos = self_p->pos;
+
+    while (self_p->pos < (pos + size)) {
+        item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
+
+        if (item_p == NULL) {
+            return;
+        }
+
+        item_p->value = (pbtools_decoder_read_varint(self_p) != 0);
+        item_p->next_p = NULL;
+
+        if (repeated_p->length == 0) {
+            repeated_p->head_p = item_p;
+        } else {
+            repeated_p->tail_p->next_p = item_p;
+        }
+
+        repeated_p->tail_p = item_p;
+        repeated_p->length++;
+    }
 }
 
 void pbtools_decoder_finalize_repeated_bool(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_bool_t *repeated_p)
 {
+    struct pbtools_bool_t *item_p;
+    int i;
+
+    if (repeated_p->length > 0) {
+        repeated_p->items_pp = pbtools_decoder_heap_alloc(
+            self_p,
+            sizeof(item_p) * repeated_p->length);
+
+        if (repeated_p->items_pp == NULL) {
+            return;
+        }
+
+        item_p = repeated_p->head_p;
+
+        for (i = 0; i < repeated_p->length; i++) {
+            repeated_p->items_pp[i] = item_p;
+            item_p = item_p->next_p;
+        }
+    }
 }
 
 int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
