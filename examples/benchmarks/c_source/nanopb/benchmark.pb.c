@@ -8,7 +8,10 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(benchmark_Benchmark, benchmark_Benchmark, AUTO)
+PB_BIND(benchmarks_proto3_GoogleMessage1, benchmarks_proto3_GoogleMessage1, 2)
+
+
+PB_BIND(benchmarks_proto3_GoogleMessage1SubMessage, benchmarks_proto3_GoogleMessage1SubMessage, 2)
 
 
 

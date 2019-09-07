@@ -86,7 +86,10 @@ class Parser(textparser.Parser):
             'returns',
             'stream',
             'import',
-            'oneof'
+            'oneof',
+            'option',
+            'true',
+            'false'
         ])
 
     def grammar(self):
@@ -101,11 +104,16 @@ class Parser(textparser.Parser):
                        'returns',
                        'stream',
                        'import',
-                       'oneof')
+                       'oneof',
+                       'option',
+                       'true',
+                       'false')
         full_ident = choice(ident, 'LIDENT')
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
-        constant = full_ident
+        constant = choice(Tag('bool', choice('true', 'false')),
+                          Tag('full_ident', full_ident),
+                          Tag('string', 'STRING'))
 
         import_ = Sequence('import',
                            Optional(choice('weak', 'public')),
@@ -113,7 +121,8 @@ class Parser(textparser.Parser):
 
         package = Sequence('package', full_ident, ';')
 
-        option = NoMatch()
+        option_name = full_ident
+        option = Sequence('option', option_name, '=', constant, ';')
 
         enum_field = Sequence(ident, '=', 'INT', ';')
         enum = Sequence('enum',
@@ -177,6 +186,21 @@ class Parser(textparser.Parser):
 
 def load_message_type(tokens):
     return tokens[1]
+
+
+class Option:
+
+    def __init__(self, tokens):
+        self.name = tokens[1]
+
+        kind, value = tokens[3]
+
+        if kind == 'string':
+            value = value[1:-1]
+        elif kind == 'bool':
+            value = (value == 'true')
+
+        self.value = value
 
 
 class EnumField:
@@ -329,6 +353,13 @@ def load_package(tokens):
         raise RuntimeError('Package missing.')
 
 
+def load_options(tokens):
+    return [
+        Option(option)
+        for option in tokens[1].get('option', [])
+    ]
+
+
 def load_messages(tokens, namespace):
     return [
         Message(message, namespace)
@@ -354,6 +385,7 @@ class Proto:
 
     def __init__(self, tree):
         self.package = load_package(tree)
+        self.options = load_options(tree)
         self.messages = load_messages(tree, [self.package])
         self.services = load_services(tree)
         self.enums = load_enums(tree, [self.package])

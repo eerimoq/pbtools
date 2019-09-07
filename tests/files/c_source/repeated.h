@@ -51,6 +51,35 @@ struct repeated_message_t {
     struct pbtools_repeated_bytes_t bytes;
 };
 
+/**
+ * Message MessageScalarValueTypes in package repeated.
+ */
+struct repeated_message_scalar_value_types_repeated_t {
+    int length;
+    struct repeated_message_scalar_value_types_t **items_pp;
+    struct repeated_message_scalar_value_types_t *head_p;
+    struct repeated_message_scalar_value_types_t *tail_p;
+};
+
+struct repeated_message_scalar_value_types_t {
+    struct pbtools_message_base_t base;
+    struct pbtools_repeated_int32_t int32s;
+    struct pbtools_repeated_int64_t int64s;
+    struct pbtools_repeated_int32_t sint32s;
+    struct pbtools_repeated_int64_t sint64s;
+    struct pbtools_repeated_uint32_t uint32s;
+    struct pbtools_repeated_uint64_t uint64s;
+    struct pbtools_repeated_uint32_t fixed32s;
+    struct pbtools_repeated_uint64_t fixed64s;
+    struct pbtools_repeated_int32_t sfixed32s;
+    struct pbtools_repeated_int64_t sfixed64s;
+    struct pbtools_repeated_float_t floats;
+    struct pbtools_repeated_double_t doubles;
+    struct pbtools_repeated_bool_t bools;
+    struct pbtools_repeated_string_t strings;
+    struct pbtools_repeated_bytes_t bytess;
+};
+
 int repeated_message_int32s_alloc(
     struct repeated_message_t *self_p,
     int length);
@@ -104,6 +133,106 @@ int repeated_message_encode(
  */
 int repeated_message_decode(
     struct repeated_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int repeated_message_scalar_value_types_int32s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_int64s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_sint32s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_sint64s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_uint32s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_uint64s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_fixed32s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_fixed64s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_sfixed32s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_sfixed64s_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_floats_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_doubles_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_bools_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_strings_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_bytess_alloc(
+    struct repeated_message_scalar_value_types_t *self_p,
+    int length);
+
+/**
+ * Create a new message MessageScalarValueTypes in given workspace.
+ *
+ * @param[in] workspace_p Message workspace.
+ * @param[in] size Workspace size.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct repeated_message_scalar_value_types_t *repeated_message_scalar_value_types_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message MessageScalarValueTypes defined in package repeated.
+ *
+ * @param[in] self_p Message to encode.
+ * @param[out] encoded_p Buffer to encode the message into.
+ * @param[in] size Encoded buffer size.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int repeated_message_scalar_value_types_encode(
+    struct repeated_message_scalar_value_types_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message MessageScalarValueTypes defined in package repeated.
+ *
+ * @param[in,out] self_p Initialized message to decode into.
+ * @param[in] encoded_p Buffer to decode.
+ * @param[in] size Size of the encoded message.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int repeated_message_scalar_value_types_decode(
+    struct repeated_message_scalar_value_types_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

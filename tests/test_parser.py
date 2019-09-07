@@ -37,8 +37,9 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/repeated.proto')
 
         self.assertEqual(parsed.package, 'repeated')
-        self.assertEqual(len(parsed.messages), 1)
+        self.assertEqual(len(parsed.messages), 2)
 
+        # Message.
         message = parsed.messages[0]
         self.assertEqual(len(message.fields), 4)
         self.assertEqual(len(message.enums), 0)
@@ -342,6 +343,26 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.name, 'bar')
         self.assertEqual(field.namespace, ['message'])
         self.assertEqual(field.full_type, 'message.Bar')
+
+    def test_benchmark(self):
+        parsed = pbtools.parse_file('tests/files/benchmark.proto')
+
+        self.assertEqual(parsed.package, 'benchmarks.proto3')
+        self.assertEqual(len(parsed.messages), 2)
+        self.assertEqual(len(parsed.options), 3)
+
+        # Options. ToDo: Value as boolean and strip '"' in strings.
+        option = parsed.options[0]
+        self.assertEqual(option.name, 'java_package')
+        self.assertEqual(option.value, 'com.google.protobuf.benchmarks')
+
+        option = parsed.options[1]
+        self.assertEqual(option.name, 'optimize_for')
+        self.assertEqual(option.value, 'SPEED')
+
+        option = parsed.options[2]
+        self.assertEqual(option.name, 'cc_enable_arenas')
+        self.assertEqual(option.value, True)
 
 
 if __name__ == '__main__':

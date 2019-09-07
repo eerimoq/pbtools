@@ -72,13 +72,6 @@ struct pbtools_int32_t {
     int32_t value;
 };
 
-struct pbtools_repeated_int32_t {
-    int length;
-    struct pbtools_int32_t **items_pp;
-    struct pbtools_int32_t *head_p;
-    struct pbtools_int32_t *tail_p;
-};
-
 struct pbtools_int64_t {
     struct pbtools_int64_t *next_p;
     int64_t value;
@@ -94,9 +87,74 @@ struct pbtools_uint64_t {
     uint64_t value;
 };
 
+struct pbtools_float_t {
+    struct pbtools_float_t *next_p;
+    float value;
+};
+
+struct pbtools_double_t {
+    struct pbtools_double_t *next_p;
+    double value;
+};
+
 struct pbtools_bool_t {
     struct pbtools_bool_t *next_p;
     bool value;
+};
+
+struct pbtools_bytes_t {
+    struct pbtools_bytes_t *next_p;
+    uint8_t *buf_p;
+    size_t size;
+};
+
+struct pbtools_repeated_int32_t {
+    int length;
+    struct pbtools_int32_t **items_pp;
+    struct pbtools_int32_t *head_p;
+    struct pbtools_int32_t *tail_p;
+};
+
+struct pbtools_repeated_int64_t {
+    int length;
+    struct pbtools_int64_t **items_pp;
+    struct pbtools_int64_t *head_p;
+    struct pbtools_int64_t *tail_p;
+};
+
+struct pbtools_repeated_uint32_t {
+    int length;
+    struct pbtools_uint32_t **items_pp;
+    struct pbtools_uint32_t *head_p;
+    struct pbtools_uint32_t *tail_p;
+};
+
+struct pbtools_repeated_uint64_t {
+    int length;
+    struct pbtools_uint64_t **items_pp;
+    struct pbtools_uint64_t *head_p;
+    struct pbtools_uint64_t *tail_p;
+};
+
+struct pbtools_repeated_float_t {
+    int length;
+    struct pbtools_float_t **items_pp;
+    struct pbtools_float_t *head_p;
+    struct pbtools_float_t *tail_p;
+};
+
+struct pbtools_repeated_double_t {
+    int length;
+    struct pbtools_double_t **items_pp;
+    struct pbtools_double_t *head_p;
+    struct pbtools_double_t *tail_p;
+};
+
+struct pbtools_repeated_bool_t {
+    int length;
+    struct pbtools_bool_t **items_pp;
+    struct pbtools_bool_t *head_p;
+    struct pbtools_bool_t *tail_p;
 };
 
 struct pbtools_repeated_string_t {
@@ -104,12 +162,6 @@ struct pbtools_repeated_string_t {
     struct pbtools_bytes_t **items_pp;
     struct pbtools_bytes_t *head_p;
     struct pbtools_bytes_t *tail_p;
-};
-
-struct pbtools_bytes_t {
-    struct pbtools_bytes_t *next_p;
-    uint8_t *buf_p;
-    size_t size;
 };
 
 struct pbtools_repeated_bytes_t {
@@ -189,11 +241,6 @@ void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  int32_t value);
 
-void pbtools_encoder_write_repeated_int32(
-    struct pbtools_encoder_t *self_p,
-    int field_number,
-    struct pbtools_repeated_int32_t *repeated_p);
-
 void pbtools_encoder_write_int64(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  int64_t value);
@@ -250,14 +297,79 @@ void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
                                   int field_number,
                                   struct pbtools_bytes_t *string_p);
 
+void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
+                                 int field_number,
+                                 struct pbtools_bytes_t *value_p);
+
+void pbtools_encoder_write_repeated_int32(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_encoder_write_repeated_int64(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_encoder_write_repeated_sint32(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_encoder_write_repeated_sint64(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_encoder_write_repeated_uint32(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_uint32_t *repeated_p);
+
+void pbtools_encoder_write_repeated_uint64(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_uint64_t *repeated_p);
+
+void pbtools_encoder_write_repeated_fixed32(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_uint32_t *repeated_p);
+
+void pbtools_encoder_write_repeated_fixed64(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_uint64_t *repeated_p);
+
+void pbtools_encoder_write_repeated_sfixed32(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_encoder_write_repeated_sfixed64(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_encoder_write_repeated_float(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_float_t *repeated_p);
+
+void pbtools_encoder_write_repeated_double(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_double_t *repeated_p);
+
+void pbtools_encoder_write_repeated_bool(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_repeated_bool_t *repeated_p);
+
 void pbtools_encoder_write_repeated_string(
     struct pbtools_encoder_t *self_p,
     int field_number,
     struct pbtools_repeated_string_t *repeated_p);
-
-void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
-                                 int field_number,
-                                 struct pbtools_bytes_t *value_p);
 
 void pbtools_encoder_write_repeated_bytes(
     struct pbtools_encoder_t *self_p,
@@ -298,19 +410,6 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
 
 int32_t pbtools_decoder_read_int32(struct pbtools_decoder_t *self_p,
                                    int wire_type);
-
-int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
-                                 int length,
-                                 struct pbtools_repeated_int32_t *repeated_p);
-
-void pbtools_decoder_read_repeated_int32(
-    struct pbtools_decoder_t *self_p,
-    int wire_type,
-    struct pbtools_repeated_int32_t *repeated_p);
-
-void pbtools_decoder_finalize_repeated_int32(
-    struct pbtools_decoder_t *self_p,
-    struct pbtools_repeated_int32_t *repeated_p);
 
 int64_t pbtools_decoder_read_int64(struct pbtools_decoder_t *self_p,
                                    int wire_type);
@@ -355,6 +454,179 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                  int wire_type,
                                  struct pbtools_bytes_t *string_p);
 
+void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
+                                int wire_type,
+                                struct pbtools_bytes_t *bytes_p);
+
+int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_decoder_read_repeated_int32(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_int32(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+int pbtools_alloc_repeated_int64(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_decoder_read_repeated_int64(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_int64(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+int pbtools_alloc_repeated_uint32(struct pbtools_message_base_t *self_p,
+                                  int length,
+                                  struct pbtools_repeated_uint32_t *repeated_p);
+
+void pbtools_decoder_read_repeated_uint32(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_uint32_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_uint32(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_uint32_t *repeated_p);
+
+int pbtools_alloc_repeated_uint64(struct pbtools_message_base_t *self_p,
+                                  int length,
+                                  struct pbtools_repeated_uint64_t *repeated_p);
+
+void pbtools_decoder_read_repeated_uint64(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_uint64_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_uint64(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_uint64_t *repeated_p);
+
+int pbtools_alloc_repeated_sint32(struct pbtools_message_base_t *self_p,
+                                  int length,
+                                  struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_decoder_read_repeated_sint32(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_sint32(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+int pbtools_alloc_repeated_sint64(struct pbtools_message_base_t *self_p,
+                                  int length,
+                                  struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_decoder_read_repeated_sint64(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_sint64(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+int pbtools_alloc_repeated_fixed32(struct pbtools_message_base_t *self_p,
+                                   int length,
+                                   struct pbtools_repeated_uint32_t *repeated_p);
+
+void pbtools_decoder_read_repeated_fixed32(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_uint32_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_fixed32(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_uint32_t *repeated_p);
+
+int pbtools_alloc_repeated_fixed64(struct pbtools_message_base_t *self_p,
+                                   int length,
+                                   struct pbtools_repeated_uint64_t *repeated_p);
+
+void pbtools_decoder_read_repeated_fixed64(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_uint64_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_fixed64(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_uint64_t *repeated_p);
+
+int pbtools_alloc_repeated_sfixed32(struct pbtools_message_base_t *self_p,
+                                    int length,
+                                    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_decoder_read_repeated_sfixed32(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_sfixed32(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_int32_t *repeated_p);
+
+int pbtools_alloc_repeated_sfixed64(struct pbtools_message_base_t *self_p,
+                                    int length,
+                                    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_decoder_read_repeated_sfixed64(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_sfixed64(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_int64_t *repeated_p);
+
+int pbtools_alloc_repeated_float(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_float_t *repeated_p);
+
+void pbtools_decoder_read_repeated_float(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_float_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_float(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_float_t *repeated_p);
+
+int pbtools_alloc_repeated_double(struct pbtools_message_base_t *self_p,
+                                 int length,
+                                 struct pbtools_repeated_double_t *repeated_p);
+
+void pbtools_decoder_read_repeated_double(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_double_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_double(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_double_t *repeated_p);
+
+int pbtools_alloc_repeated_bool(struct pbtools_message_base_t *self_p,
+                                int length,
+                                struct pbtools_repeated_bool_t *repeated_p);
+
+void pbtools_decoder_read_repeated_bool(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_repeated_bool_t *repeated_p);
+
+void pbtools_decoder_finalize_repeated_bool(
+    struct pbtools_decoder_t *self_p,
+    struct pbtools_repeated_bool_t *repeated_p);
+
 int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
                                   int length,
                                   struct pbtools_repeated_string_t *repeated_p);
@@ -367,10 +639,6 @@ void pbtools_decoder_read_repeated_string(
 void pbtools_decoder_finalize_repeated_string(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_string_t *repeated_p);
-
-void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
-                                int wire_type,
-                                struct pbtools_bytes_t *bytes_p);
 
 int pbtools_alloc_repeated_bytes(struct pbtools_message_base_t *self_p,
                                  int length,
