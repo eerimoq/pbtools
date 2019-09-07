@@ -260,6 +260,7 @@ class MessageField:
         self.field_number = int(tokens[4])
         self.repeated = bool(tokens[0])
         self.namespace = []
+        self.type_kind = None
 
     @property
     def full_type(self):
@@ -391,6 +392,7 @@ class Proto:
         self.enums = load_enums(tree, [self.package])
         self.messages_stack = []
         self.resolve_messages_fields_types()
+        self.resolve_messages_fields_type_kinds()
 
     def resolve_messages_fields_types(self):
         for message in self.messages:
@@ -420,6 +422,57 @@ class Proto:
 
         field.namespace = namespace
 
+    def resolve_messages_fields_type_kinds(self):
+        for message in self.messages:
+            self.resolve_message_fields_type_kinds(message)
+
+    def resolve_message_fields_type_kinds(self, message):
+        self.messages_stack.append(message)
+
+        for field in message.fields:
+            self.resolve_message_field_type_kind(field)
+
+        for inner_message in message.messages:
+            self.resolve_message_fields_type_kinds(inner_message)
+
+        self.messages_stack.pop()
+
+    def resolve_message_field_type_kind(self, field):
+        if field.type in SCALAR_VALUE_TYPES:
+            field.type_kind = 'scalar-value-type'
+        elif self.is_message_field_enum(field):
+            field.type_kind = 'enum'
+        else:
+            field.type_kind = 'message'
+
+    def is_message_field_enum(self, field):
+        type = self.lookup_type(field.namespace[1:] + [field.type],
+                                self.enums,
+                                self.messages)
+
+        return isinstance(type, Enum)
+            
+
+    def lookup_type(self, path, enums, messages):
+        name = path[0]
+        rest = path[1:]
+        
+        if rest:
+            for message in messages:
+                if message.name == name:
+                    return self.lookup_type(rest,
+                                            message.enums,
+                                            message.messages)
+        else:
+            for enum in enums:
+                if enum.name == name:
+                    return enum
+
+            for message in messages:
+                if message.name == name:
+                    return message
+        
+            
 
 def parse_string(text):
     return Proto(Parser().parse(text))

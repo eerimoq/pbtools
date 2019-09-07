@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package string.
+ * Message string.Message.
  */
 struct string_message_repeated_t {
     int length;

@@ -283,6 +283,8 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.name, 'fie')
         self.assertEqual(field.namespace, [])
         self.assertEqual(field.full_type, 'int32')
+        self.assertEqual(field.full_type_snake_case, 'int32')
+        self.assertEqual(field.type_kind, 'scalar-value-type')
 
         # message.Message.
         message = parsed.messages[2]
@@ -295,18 +297,24 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.name, 'foo')
         self.assertEqual(field.namespace, ['message', 'Message'])
         self.assertEqual(field.full_type, 'message.Message.Foo')
+        self.assertEqual(field.full_type_snake_case, 'message_message_foo')
+        self.assertEqual(field.type_kind, 'enum')
 
         field = message.fields[1]
         self.assertEqual(field.type, 'Bar')
         self.assertEqual(field.name, 'bar')
         self.assertEqual(field.namespace, ['message'])
         self.assertEqual(field.full_type, 'message.Bar')
+        self.assertEqual(field.full_type_snake_case, 'message_bar')
+        self.assertEqual(field.type_kind, 'message')
 
         field = message.fields[2]
         self.assertEqual(field.type, 'Fie')
         self.assertEqual(field.name, 'fie')
         self.assertEqual(field.namespace, ['message', 'Message'])
         self.assertEqual(field.full_type, 'message.Message.Fie')
+        self.assertEqual(field.full_type_snake_case, 'message_message_fie')
+        self.assertEqual(field.type_kind, 'message')
 
         # message.Message.Foo.
         enum = message.enums[0]
@@ -325,6 +333,8 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.name, 'foo')
         self.assertEqual(field.namespace, ['message', 'Message', 'Fie'])
         self.assertEqual(field.full_type, 'message.Message.Fie.Foo')
+        self.assertEqual(field.full_type_snake_case, 'message_message_fie_foo')
+        self.assertEqual(field.type_kind, 'message')
 
         # message.Message.Fie.Foo.
         fie_foo_message = fie_message.messages[0]
@@ -337,12 +347,16 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.name, 'value')
         self.assertEqual(field.namespace, [])
         self.assertEqual(field.full_type, 'bool')
+        self.assertEqual(field.full_type_snake_case, 'bool')
+        self.assertEqual(field.type_kind, 'scalar-value-type')
 
         field = fie_foo_message.fields[1]
         self.assertEqual(field.type, 'Bar')
         self.assertEqual(field.name, 'bar')
         self.assertEqual(field.namespace, ['message'])
         self.assertEqual(field.full_type, 'message.Bar')
+        self.assertEqual(field.full_type_snake_case, 'message_bar')
+        self.assertEqual(field.type_kind, 'message')
 
     def test_benchmark(self):
         parsed = pbtools.parse_file('tests/files/benchmark.proto')

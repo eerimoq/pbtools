@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package double.
+ * Message double.Message.
  */
 struct double_message_repeated_t {
     int length;

@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Foo in package message.
+ * Message message.Foo.
  */
 struct message_foo_repeated_t {
     int length;
@@ -48,7 +48,7 @@ struct message_foo_t {
 };
 
 /**
- * Message Bar in package message.
+ * Message message.Bar.
  */
 struct message_bar_repeated_t {
     int length;
@@ -63,12 +63,15 @@ struct message_bar_t {
 };
 
 /**
- * Message Message in package message.
+ * Enum message.Message.Foo.
  */
 enum message_message_foo_e {
     message_message_foo_a_e = 0
 };
 
+/**
+ * Message message.Message.Fie.Foo.
+ */
 struct message_message_fie_foo_repeated_t {
     int length;
     struct message_message_fie_foo_t **items_pp;
@@ -82,6 +85,9 @@ struct message_message_fie_foo_t {
     struct message_bar_t bar;
 };
 
+/**
+ * Message message.Message.Fie.
+ */
 struct message_message_fie_repeated_t {
     int length;
     struct message_message_fie_t **items_pp;
@@ -94,6 +100,9 @@ struct message_message_fie_t {
     struct message_message_fie_foo_t foo;
 };
 
+/**
+ * Message message.Message.
+ */
 struct message_message_repeated_t {
     int length;
     struct message_message_t **items_pp;

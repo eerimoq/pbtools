@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message1 in package tags.
+ * Message tags.Message1.
  */
 struct tags_message1_repeated_t {
     int length;
@@ -49,7 +49,7 @@ struct tags_message1_t {
 };
 
 /**
- * Message Message2 in package tags.
+ * Message tags.Message2.
  */
 struct tags_message2_repeated_t {
     int length;
@@ -64,7 +64,7 @@ struct tags_message2_t {
 };
 
 /**
- * Message Message3 in package tags.
+ * Message tags.Message3.
  */
 struct tags_message3_repeated_t {
     int length;
@@ -79,7 +79,7 @@ struct tags_message3_t {
 };
 
 /**
- * Message Message4 in package tags.
+ * Message tags.Message4.
  */
 struct tags_message4_repeated_t {
     int length;
@@ -94,7 +94,7 @@ struct tags_message4_t {
 };
 
 /**
- * Message Message5 in package tags.
+ * Message tags.Message5.
  */
 struct tags_message5_repeated_t {
     int length;
@@ -109,7 +109,7 @@ struct tags_message5_t {
 };
 
 /**
- * Message Message6 in package tags.
+ * Message tags.Message6.
  */
 struct tags_message6_repeated_t {
     int length;

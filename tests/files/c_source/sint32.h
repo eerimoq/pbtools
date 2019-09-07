@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package sint32.
+ * Message sint32.Message.
  */
 struct sint32_message_repeated_t {
     int length;

@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package int32.
+ * Message int32.Message.
  */
 struct int32_message_repeated_t {
     int length;
@@ -49,7 +49,7 @@ struct int32_message_t {
 };
 
 /**
- * Message Message2 in package int32.
+ * Message int32.Message2.
  */
 struct int32_message2_repeated_t {
     int length;

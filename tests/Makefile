@@ -51,7 +51,6 @@ all:
 	    files/c_source/oneof.c \
 	    files/c_source/repeated.c \
 	    files/c_source/scalar_value_types.c \
-	    files/c_source/message.c \
 	    main.c
 	./a.out
 

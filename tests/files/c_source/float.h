@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package float.
+ * Message float.Message.
  */
 struct float_message_repeated_t {
     int length;

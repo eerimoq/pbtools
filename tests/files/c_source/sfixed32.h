@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package sfixed32.
+ * Message sfixed32.Message.
  */
 struct sfixed32_message_repeated_t {
     int length;

@@ -81,7 +81,7 @@ SOURCE_FMT = '''\
 
 MESSAGE_STRUCT_FMT = '''\
 /**
- * Message {proto_name} in package {package}.
+ * Message {full_name}.
  */
 {repeated_struct}
 
@@ -193,8 +193,8 @@ ENCODE_INNER_REPEATED_MEMBER_FMT = '''\
     pbtools_encoder_write_repeated_{type}(encoder_p, {field_number}, &self_p->{field_name});
 '''
 
-ENCODE_INNER_MESSAGE_MEMBER_FMT = '''\
-    {name}_encode_inner(encoder_p, {field_number}, &self_p->{field_name});
+ENCODE_TAGGED_MESSAGE_MEMBER_FMT = '''\
+    {type}_encode_tagged(encoder_p, {field_number}, &self_p->{field_name});
 '''
 
 ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
@@ -401,7 +401,7 @@ REPEATED_MESSAGE_FINALIZER_FMT = '''\
 
 ENUM_FMT = '''\
 /**
- * Enum {proto_name} in package {package}.
+ * Enum {full_name}.
  */
 enum {name}_e {{
 {members}
@@ -428,7 +428,7 @@ class Generator:
     def package(self):
         return self.parsed.package
 
-    def generate_struct_member_fmt(self, type, name):
+    def generate_struct_member_fmt(self, type, name, type_kind):
         if type in ['int32', 'int64', 'uint32', 'uint64']:
             type = f'{type}_t'
         elif type in ['sint32', 'sint64']:
@@ -441,7 +441,9 @@ class Generator:
             pass
         elif type in ['bytes', 'string']:
             type = f'struct pbtools_bytes_t'
-        else:
+        elif type_kind == 'enum':
+            type = f'enum {type}_e'
+        elif type_kind == 'message':
             type = f'struct {type}_t'
 
         return f'    {type} {name};'
@@ -472,7 +474,8 @@ class Generator:
             else:
                 member = self.generate_struct_member_fmt(
                     field.full_type_snake_case,
-                    field.name)
+                    field.name,
+                    field.type_kind)
 
             members.append(member)
 
@@ -493,22 +496,42 @@ class Generator:
                                    field_number=field.field_number)
             for field in enum.fields])
 
-    def generate_types(self):
-        return '\n'.join([
-            ENUM_FMT.format(package=self.package,
-                            proto_name=enum.name,
+    def generate_enum_type(self, enum):
+        return [
+            ENUM_FMT.format(full_name=enum.full_name,
                             name=enum.full_name_snake_case,
                             members=self.generate_enum_members(enum))
-            for enum in self.parsed.enums
-        ] + [
+        ]
+
+    def generate_message_types(self, message):
+        types = []
+
+        for enum in message.enums:
+            types += self.generate_enum_type(enum)
+
+        for inner_message in message.messages:
+            types += self.generate_message_types(inner_message)
+
+        types += [
             MESSAGE_STRUCT_FMT.format(
-                package=self.package,
-                proto_name=message.name,
+                full_name=message.full_name,
                 name=message.full_name_snake_case,
                 repeated_struct=self.generate_repeated_struct(message),
                 members=self.generate_struct_members(message))
-            for message in self.messages
-        ])
+        ]
+
+        return types
+
+    def generate_types(self):
+        types = []
+
+        for enum in self.parsed.enums:
+            types += self.generate_enum_type(enum)
+
+        for message in self.messages:
+            types += self.generate_message_types(message)
+
+        return '\n'.join(types)
 
     def generate_declarations(self):
         declarations = []
@@ -541,7 +564,7 @@ class Generator:
                 if field.repeated:
                     fmt = ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT
                 else:
-                    fmt = ENCODE_INNER_MESSAGE_MEMBER_FMT
+                    fmt = ENCODE_TAGGED_MESSAGE_MEMBER_FMT
 
             member = fmt.format(name=message_name,
                                 type=field.full_type_snake_case,

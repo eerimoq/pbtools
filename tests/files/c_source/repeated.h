@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package repeated.
+ * Message repeated.Message.
  */
 struct repeated_message_repeated_t {
     int length;
@@ -52,7 +52,7 @@ struct repeated_message_t {
 };
 
 /**
- * Message MessageScalarValueTypes in package repeated.
+ * Message repeated.MessageScalarValueTypes.
  */
 struct repeated_message_scalar_value_types_repeated_t {
     int length;

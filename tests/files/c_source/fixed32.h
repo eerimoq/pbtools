@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package fixed32.
+ * Message fixed32.Message.
  */
 struct fixed32_message_repeated_t {
     int length;

@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package bool.
+ * Message bool.Message.
  */
 struct bool_message_repeated_t {
     int length;

@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Message in package scalar_value_types.
+ * Message scalar_value_types.Message.
  */
 struct scalar_value_types_message_repeated_t {
     int length;
