@@ -661,17 +661,6 @@ class Generator:
 
         return ''.join(members)
 
-    def generate_repeated_field_decode_body(self, message, field):
-        if field.type in SCALAR_VALUE_TYPES:
-            fmt = DECODE_INNER_REPEATED_MEMBER_FMT
-        else:
-            fmt = DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT
-
-        return fmt.format(name=message.full_name_snake_case,
-                          type=field.full_type_snake_case,
-                          field_number=field.field_number,
-                          field_name=field.name)
-
     def generate_message_decode_body(self, message):
         members = []
 
