@@ -25,3 +25,13 @@ message Message2 {
     Enum outer = 1;
     InnerEnum inner = 2;
 }
+
+message Limits {
+    enum Enum {
+        G = 0;
+        H = -2147483648;
+        I = 2147483647;
+    }
+
+    Enum value = 1;
+}

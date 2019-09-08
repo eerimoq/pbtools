@@ -1115,6 +1115,41 @@ TEST(enum_message2)
     ASSERT_EQ(message_p->inner, enum_message2_inner_enum_f_e);
 }
 
+TEST(enum_limits)
+{
+    int i;
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct enum_limits_t *message_p;
+    struct {
+        enum enum_limits_enum_e decoded;
+        int size;
+        const char *encoded_p;
+    } datas[] = {
+        { enum_limits_enum_g_e,  0, "" },
+        { enum_limits_enum_h_e, 11, "\x08\x80\x80\x80\x80\xf8\xff\xff\xff\xff\x01" },
+        { enum_limits_enum_i_e,  6, "\x08\xff\xff\xff\xff\x07" }
+    };
+
+    for (i = 0; i < membersof(datas); i++) {
+        printf("enum: %d\n", datas[i].decoded);
+
+        message_p = enum_limits_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        message_p->value = datas[i].decoded;
+        size = enum_limits_encode(message_p, &encoded[0], sizeof(encoded));
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
+
+        message_p = enum_limits_new(&workspace[0], sizeof(workspace));
+        ASSERT_NE(message_p, NULL);
+        size = enum_limits_decode(message_p, &encoded[0], size);
+        ASSERT_EQ(size, datas[i].size);
+        ASSERT_EQ(message_p->value, datas[i].decoded);
+    }
+}
+
 TEST(address_book)
 {
     uint8_t encoded[128];
@@ -2467,6 +2502,7 @@ int main(void)
         bytes,
         enum_message,
         enum_message2,
+        enum_limits,
         address_book,
         address_book_default,
         address_book_default_person,

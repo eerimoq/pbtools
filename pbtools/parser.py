@@ -58,7 +58,7 @@ class Parser(textparser.Parser):
             ('SKIP',          r'[ \r\n\t]+|//.*?\n'),
             ('LIDENT',        r'[a-zA-Z]\w*(\.[a-zA-Z]\w*)+'),
             ('IDENT',         r'[a-zA-Z]\w*'),
-            ('INT',           r'0[xX][a-fA-F0-9]+|[0-9]+'),
+            ('INT',           r'-?(0[xX][a-fA-F0-9]+|[0-9]+)'),
             ('PROTO3',        r'"proto3"'),
             ('STRING',        r'"(\\"|[^"])*?"'),
             ('DOT',      '.', r'\.'),
