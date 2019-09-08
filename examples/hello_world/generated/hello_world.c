@@ -36,12 +36,12 @@ static void hello_world_foo_init(
     struct hello_world_foo_t *next_p);
 
 static void hello_world_foo_encode_inner(
-    struct hello_world_foo_t *self_p,
-    struct pbtools_encoder_t *encoder_p);
+    struct pbtools_encoder_t *encoder_p,
+    struct hello_world_foo_t *self_p);
 
 static void hello_world_foo_decode_inner(
-    struct hello_world_foo_t *self_p,
-    struct pbtools_decoder_t *decoder_p);
+    struct pbtools_decoder_t *decoder_p,
+    struct hello_world_foo_t *self_p);
 
 static void hello_world_foo_init(
     struct hello_world_foo_t *self_p,
@@ -54,15 +54,15 @@ static void hello_world_foo_init(
 }
 
 static void hello_world_foo_encode_inner(
-    struct hello_world_foo_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+    struct pbtools_encoder_t *encoder_p,
+    struct hello_world_foo_t *self_p)
 {
     pbtools_encoder_write_int32(encoder_p, 1, self_p->bar);
 }
 
 static void hello_world_foo_decode_inner(
-    struct hello_world_foo_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct hello_world_foo_t *self_p)
 {
     int wire_type;
 
@@ -80,14 +80,16 @@ static void hello_world_foo_decode_inner(
     }
 }
 
-struct hello_world_foo_t *hello_world_foo_new(
+struct hello_world_foo_t *
+hello_world_foo_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct hello_world_foo_t),
-                                (pbtools_message_init_t)hello_world_foo_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct hello_world_foo_t),
+        (pbtools_message_init_t)hello_world_foo_init));
 }
 
 int hello_world_foo_encode(

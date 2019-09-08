@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message Foo in package hello_world.
+ * Message hello_world.Foo.
  */
 struct hello_world_foo_repeated_t {
     int length;
@@ -49,19 +49,20 @@ struct hello_world_foo_t {
 };
 
 /**
- * Create a new message Foo in given workspace.
+ * Create a new message hello_world.Foo in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct hello_world_foo_t *hello_world_foo_new(
+struct hello_world_foo_t *
+hello_world_foo_new(
     void *workspace_p,
     size_t size);
 
 /**
- * Encode message Foo defined in package hello_world.
+ * Encode message hello_world.Foo.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -75,7 +76,7 @@ int hello_world_foo_encode(
     size_t size);
 
 /**
- * Decode message Foo defined in package hello_world.
+ * Decode message hello_world.Foo.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

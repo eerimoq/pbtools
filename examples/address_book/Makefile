@@ -1,5 +1,13 @@
 all:
-	gcc -g -Wall -Igenerated generated/*.c main.c -o main
+	gcc \
+	    -O2 \
+	    -Wall \
+	    -I../../src \
+	    -Igenerated \
+	    generated/*.c \
+	    ../../src/pbtools.c \
+	    main.c \
+	    -o main
 	./main
 
 generate:

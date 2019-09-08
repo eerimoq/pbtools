@@ -30,6 +30,19 @@
 
 #include "benchmark.h"
 
+static void benchmarks_proto3_google_message1_sub_message_init(
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct benchmarks_proto3_google_message1_sub_message_t *next_p);
+
+static void benchmarks_proto3_google_message1_sub_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
+
+static void benchmarks_proto3_google_message1_sub_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
+
 static void benchmarks_proto3_google_message1_init(
     struct benchmarks_proto3_google_message1_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -46,20 +59,189 @@ static void benchmarks_proto3_google_message1_decode_inner(
 static void benchmarks_proto3_google_message1_sub_message_init(
     struct benchmarks_proto3_google_message1_sub_message_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *next_p);
+    struct benchmarks_proto3_google_message1_sub_message_t *next_p)
+{
+    self_p->base.heap_p = heap_p;
+    self_p->base.next_p = &next_p->base;
+    self_p->field1 = 0;
+    self_p->field2 = 0;
+    self_p->field3 = 0;
+    pbtools_string_init(&self_p->field15);
+    self_p->field12 = 0;
+    self_p->field13 = 0;
+    self_p->field14 = 0;
+    self_p->field16 = 0;
+    self_p->field19 = 0;
+    self_p->field20 = 0;
+    self_p->field28 = 0;
+    self_p->field21 = 0;
+    self_p->field22 = 0;
+    self_p->field23 = 0;
+    self_p->field206 = 0;
+    self_p->field203 = 0;
+    self_p->field204 = 0;
+    pbtools_string_init(&self_p->field205);
+    self_p->field207 = 0;
+    self_p->field300 = 0;
+}
 
 static void benchmarks_proto3_google_message1_sub_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
-
-static void benchmarks_proto3_google_message1_sub_message_encode_inner_tagged(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p)
+{
+    pbtools_encoder_write_uint64(encoder_p, 300, self_p->field300);
+    pbtools_encoder_write_uint64(encoder_p, 207, self_p->field207);
+    pbtools_encoder_write_string(encoder_p, 205, &self_p->field205);
+    pbtools_encoder_write_int32(encoder_p, 204, self_p->field204);
+    pbtools_encoder_write_fixed32(encoder_p, 203, self_p->field203);
+    pbtools_encoder_write_bool(encoder_p, 206, self_p->field206);
+    pbtools_encoder_write_bool(encoder_p, 23, self_p->field23);
+    pbtools_encoder_write_int32(encoder_p, 22, self_p->field22);
+    pbtools_encoder_write_fixed64(encoder_p, 21, self_p->field21);
+    pbtools_encoder_write_bool(encoder_p, 28, self_p->field28);
+    pbtools_encoder_write_bool(encoder_p, 20, self_p->field20);
+    pbtools_encoder_write_int32(encoder_p, 19, self_p->field19);
+    pbtools_encoder_write_int32(encoder_p, 16, self_p->field16);
+    pbtools_encoder_write_int64(encoder_p, 14, self_p->field14);
+    pbtools_encoder_write_int64(encoder_p, 13, self_p->field13);
+    pbtools_encoder_write_bool(encoder_p, 12, self_p->field12);
+    pbtools_encoder_write_string(encoder_p, 15, &self_p->field15);
+    pbtools_encoder_write_int32(encoder_p, 3, self_p->field3);
+    pbtools_encoder_write_int32(encoder_p, 2, self_p->field2);
+    pbtools_encoder_write_int32(encoder_p, 1, self_p->field1);
+}
 
 static void benchmarks_proto3_google_message1_sub_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p)
+{
+    int wire_type;
+
+    while (pbtools_decoder_available(decoder_p)) {
+        switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            self_p->field1 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 2:
+            self_p->field2 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 3:
+            self_p->field3 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 15:
+            pbtools_decoder_read_string(decoder_p, wire_type, &self_p->field15);
+            break;
+
+        case 12:
+            self_p->field12 = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 13:
+            self_p->field13 = pbtools_decoder_read_int64(decoder_p, wire_type);
+            break;
+
+        case 14:
+            self_p->field14 = pbtools_decoder_read_int64(decoder_p, wire_type);
+            break;
+
+        case 16:
+            self_p->field16 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 19:
+            self_p->field19 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 20:
+            self_p->field20 = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 28:
+            self_p->field28 = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 21:
+            self_p->field21 = pbtools_decoder_read_fixed64(decoder_p, wire_type);
+            break;
+
+        case 22:
+            self_p->field22 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 23:
+            self_p->field23 = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 206:
+            self_p->field206 = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 203:
+            self_p->field203 = pbtools_decoder_read_fixed32(decoder_p, wire_type);
+            break;
+
+        case 204:
+            self_p->field204 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 205:
+            pbtools_decoder_read_string(decoder_p, wire_type, &self_p->field205);
+            break;
+
+        case 207:
+            self_p->field207 = pbtools_decoder_read_uint64(decoder_p, wire_type);
+            break;
+
+        case 300:
+            self_p->field300 = pbtools_decoder_read_uint64(decoder_p, wire_type);
+            break;
+
+        default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
+            break;
+        }
+    }
+}
+
+struct benchmarks_proto3_google_message1_sub_message_t *
+benchmarks_proto3_google_message1_sub_message_new(
+    void *workspace_p,
+    size_t size)
+{
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct benchmarks_proto3_google_message1_sub_message_t),
+        (pbtools_message_init_t)benchmarks_proto3_google_message1_sub_message_init));
+}
+
+int benchmarks_proto3_google_message1_sub_message_encode(
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size)
+{
+    return (pbtools_message_encode(
+        &self_p->base,
+        encoded_p,
+        size,
+        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner));
+}
+
+int benchmarks_proto3_google_message1_sub_message_decode(
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size)
+{
+    return (pbtools_message_decode(
+        &self_p->base,
+        encoded_p,
+        size,
+        (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner));
+}
 
 static void benchmarks_proto3_google_message1_init(
     struct benchmarks_proto3_google_message1_t *self_p,
@@ -121,10 +303,11 @@ static void benchmarks_proto3_google_message1_encode_inner(
     pbtools_encoder_write_int32(encoder_p, 68, self_p->field68);
     pbtools_encoder_write_int32(encoder_p, 67, self_p->field67);
     pbtools_encoder_write_bool(encoder_p, 78, self_p->field78);
-    benchmarks_proto3_google_message1_sub_message_encode_inner_tagged(
+    pbtools_encoder_sub_message_encode(
         encoder_p,
         15,
-        &self_p->field15);
+        &self_p->field15.base,
+        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 25, self_p->field25);
     pbtools_encoder_write_bool(encoder_p, 24, self_p->field24);
     pbtools_encoder_write_int32(encoder_p, 23, self_p->field23);
@@ -309,6 +492,14 @@ static void benchmarks_proto3_google_message1_decode_inner(
             self_p->field25 = pbtools_decoder_read_int32(decoder_p, wire_type);
             break;
 
+        case 15:
+            pbtools_decoder_sub_message_decode(
+                decoder_p,
+                wire_type,
+                &self_p->field15.base,
+                (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner);
+            break;
+
         case 78:
             self_p->field78 = pbtools_decoder_read_bool(decoder_p, wire_type);
             break;
@@ -354,15 +545,16 @@ int benchmarks_proto3_google_message1_field5_alloc(
         &self_p->field5));
 }
 
-struct benchmarks_proto3_google_message1_t *benchmarks_proto3_google_message1_new(
+struct benchmarks_proto3_google_message1_t *
+benchmarks_proto3_google_message1_new(
     void *workspace_p,
     size_t size)
 {
     return (pbtools_message_new(
-                workspace_p,
-                size,
-                sizeof(struct benchmarks_proto3_google_message1_t),
-                (pbtools_message_init_t)benchmarks_proto3_google_message1_init));
+        workspace_p,
+        size,
+        sizeof(struct benchmarks_proto3_google_message1_t),
+        (pbtools_message_init_t)benchmarks_proto3_google_message1_init));
 }
 
 int benchmarks_proto3_google_message1_encode(
@@ -387,204 +579,4 @@ int benchmarks_proto3_google_message1_decode(
         encoded_p,
         size,
         (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_decode_inner));
-}
-
-static void benchmarks_proto3_google_message1_sub_message_init(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *next_p)
-{
-    self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
-    self_p->field1 = 0;
-    self_p->field2 = 0;
-    self_p->field3 = 0;
-    pbtools_string_init(&self_p->field15);
-    self_p->field12 = 0;
-    self_p->field13 = 0;
-    self_p->field14 = 0;
-    self_p->field16 = 0;
-    self_p->field19 = 0;
-    self_p->field20 = 0;
-    self_p->field28 = 0;
-    self_p->field21 = 0;
-    self_p->field22 = 0;
-    self_p->field23 = 0;
-    self_p->field206 = 0;
-    self_p->field203 = 0;
-    self_p->field204 = 0;
-    pbtools_string_init(&self_p->field205);
-    self_p->field207 = 0;
-    self_p->field300 = 0;
-}
-
-static void benchmarks_proto3_google_message1_sub_message_encode_inner_tagged(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p)
-{
-    int pos;
-    
-    pos = encoder_p->pos;
-    benchmarks_proto3_google_message1_sub_message_encode_inner(encoder_p, self_p);
-    pbtools_encoder_write_tagged_varint(encoder_p,
-                                        field_number,
-                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - encoder_p->pos);
-}
-
-static void benchmarks_proto3_google_message1_sub_message_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p)
-{
-    pbtools_encoder_write_uint64(encoder_p, 300, self_p->field300);
-    pbtools_encoder_write_uint64(encoder_p, 207, self_p->field207);
-    pbtools_encoder_write_string(encoder_p, 205, &self_p->field205);
-    pbtools_encoder_write_int32(encoder_p, 204, self_p->field204);
-    pbtools_encoder_write_fixed32(encoder_p, 203, self_p->field203);
-    pbtools_encoder_write_bool(encoder_p, 206, self_p->field206);
-    pbtools_encoder_write_bool(encoder_p, 23, self_p->field23);
-    pbtools_encoder_write_int32(encoder_p, 22, self_p->field22);
-    pbtools_encoder_write_fixed64(encoder_p, 21, self_p->field21);
-    pbtools_encoder_write_bool(encoder_p, 28, self_p->field28);
-    pbtools_encoder_write_bool(encoder_p, 20, self_p->field20);
-    pbtools_encoder_write_int32(encoder_p, 19, self_p->field19);
-    pbtools_encoder_write_int32(encoder_p, 16, self_p->field16);
-    pbtools_encoder_write_int64(encoder_p, 14, self_p->field14);
-    pbtools_encoder_write_int64(encoder_p, 13, self_p->field13);
-    pbtools_encoder_write_bool(encoder_p, 12, self_p->field12);
-    pbtools_encoder_write_string(encoder_p, 15, &self_p->field15);
-    pbtools_encoder_write_int32(encoder_p, 3, self_p->field3);
-    pbtools_encoder_write_int32(encoder_p, 2, self_p->field2);
-    pbtools_encoder_write_int32(encoder_p, 1, self_p->field1);
-}
-
-static void benchmarks_proto3_google_message1_sub_message_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p)
-{
-    int wire_type;
-
-    while (pbtools_decoder_available(decoder_p)) {
-        switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
-
-        case 1:
-            self_p->field1 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 2:
-            self_p->field2 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 3:
-            self_p->field3 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 15:
-            pbtools_decoder_read_string(decoder_p, wire_type, &self_p->field15);
-            break;
-
-        case 12:
-            self_p->field12 = pbtools_decoder_read_bool(decoder_p, wire_type);
-            break;
-
-        case 13:
-            self_p->field13 = pbtools_decoder_read_int64(decoder_p, wire_type);
-            break;
-
-        case 14:
-            self_p->field14 = pbtools_decoder_read_int64(decoder_p, wire_type);
-            break;
-
-        case 16:
-            self_p->field16 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 19:
-            self_p->field19 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 20:
-            self_p->field20 = pbtools_decoder_read_bool(decoder_p, wire_type);
-            break;
-
-        case 28:
-            self_p->field28 = pbtools_decoder_read_bool(decoder_p, wire_type);
-            break;
-
-        case 21:
-            self_p->field21 = pbtools_decoder_read_fixed64(decoder_p, wire_type);
-            break;
-
-        case 22:
-            self_p->field22 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 23:
-            self_p->field23 = pbtools_decoder_read_bool(decoder_p, wire_type);
-            break;
-
-        case 206:
-            self_p->field206 = pbtools_decoder_read_bool(decoder_p, wire_type);
-            break;
-
-        case 203:
-            self_p->field203 = pbtools_decoder_read_fixed32(decoder_p, wire_type);
-            break;
-
-        case 204:
-            self_p->field204 = pbtools_decoder_read_int32(decoder_p, wire_type);
-            break;
-
-        case 205:
-            pbtools_decoder_read_string(decoder_p, wire_type, &self_p->field205);
-            break;
-
-        case 207:
-            self_p->field207 = pbtools_decoder_read_uint64(decoder_p, wire_type);
-            break;
-
-        case 300:
-            self_p->field300 = pbtools_decoder_read_uint64(decoder_p, wire_type);
-            break;
-
-        default:
-            pbtools_decoder_skip_field(decoder_p, wire_type);
-            break;
-        }
-    }
-}
-
-struct benchmarks_proto3_google_message1_sub_message_t *benchmarks_proto3_google_message1_sub_message_new(
-    void *workspace_p,
-    size_t size)
-{
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct benchmarks_proto3_google_message1_sub_message_t),
-                                (pbtools_message_init_t)benchmarks_proto3_google_message1_sub_message_init));
-}
-
-int benchmarks_proto3_google_message1_sub_message_encode(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size)
-{
-    return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner));
-}
-
-int benchmarks_proto3_google_message1_sub_message_decode(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size)
-{
-    return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner));
 }

@@ -47,7 +47,7 @@ Next we generate C source code from the proto-file.
 .. code-block:: text
 
    $ pbtools generate_c_source examples/hello_world/hello_world.proto
-   Successfully created pbtools.[hc] and hello_world.[hc].
+   Successfully created hello_world.[hc].
 
 See `hello_world.h`_ and `hello_world.c`_ for the contents of the
 generated files.
@@ -57,7 +57,7 @@ We'll use the generated types and functions below.
 .. code-block:: c
 
    struct hello_world_foo_t {
-      struct pbtools_heap_t *heap_p;
+      struct pbtools_message_base_t base;
       int32_t bar;
    };
 
@@ -138,7 +138,7 @@ proto-file.
 .. code-block:: text
 
    $ pbtools generate_c_source examples/address_book/address_book.proto
-   Successfully created pbtools.[hc] and address_book.[hc].
+   Successfully created address_book.[hc].
 
 See `address_book.h`_ and `address_book.c`_ for the contents of the
 generated files.

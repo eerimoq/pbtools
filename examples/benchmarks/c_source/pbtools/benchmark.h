@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Message GoogleMessage1SubMessage in package benchmarks.proto3.
+ * Message benchmarks.proto3.GoogleMessage1SubMessage.
  */
 struct benchmarks_proto3_google_message1_sub_message_repeated_t {
     int length;
@@ -68,7 +68,7 @@ struct benchmarks_proto3_google_message1_sub_message_t {
 };
 
 /**
- * Message GoogleMessage1 in package benchmarks.proto3.
+ * Message benchmarks.proto3.GoogleMessage1.
  */
 struct benchmarks_proto3_google_message1_repeated_t {
     int length;
@@ -122,53 +122,8 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field131;
 };
 
-int benchmarks_proto3_google_message1_field5_alloc(
-    struct benchmarks_proto3_google_message1_t *self_p,
-    int length);
-
 /**
- * Create a new message GoogleMessage1 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
-struct benchmarks_proto3_google_message1_t *
-benchmarks_proto3_google_message1_new(
-    void *workspace_p,
-    size_t size);
-
-/**
- * Encode message GoogleMessage1 defined in package benchmarks.proto3.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
-int benchmarks_proto3_google_message1_encode(
-    struct benchmarks_proto3_google_message1_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-/**
- * Decode message GoogleMessage1 defined in package benchmarks.proto3.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
-int benchmarks_proto3_google_message1_decode(
-    struct benchmarks_proto3_google_message1_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
-/**
- * Create a new message GoogleMessage1SubMessage in given workspace.
+ * Create a new message benchmarks.proto3.GoogleMessage1SubMessage in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -181,7 +136,7 @@ benchmarks_proto3_google_message1_sub_message_new(
     size_t size);
 
 /**
- * Encode message GoogleMessage1SubMessage defined in package benchmarks.proto3.
+ * Encode message benchmarks.proto3.GoogleMessage1SubMessage.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -195,7 +150,7 @@ int benchmarks_proto3_google_message1_sub_message_encode(
     size_t size);
 
 /**
- * Decode message GoogleMessage1SubMessage defined in package benchmarks.proto3.
+ * Decode message benchmarks.proto3.GoogleMessage1SubMessage.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -205,6 +160,51 @@ int benchmarks_proto3_google_message1_sub_message_encode(
  */
 int benchmarks_proto3_google_message1_sub_message_decode(
     struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int benchmarks_proto3_google_message1_field5_alloc(
+    struct benchmarks_proto3_google_message1_t *self_p,
+    int length);
+
+/**
+ * Create a new message benchmarks.proto3.GoogleMessage1 in given workspace.
+ *
+ * @param[in] workspace_p Message workspace.
+ * @param[in] size Workspace size.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct benchmarks_proto3_google_message1_t *
+benchmarks_proto3_google_message1_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message benchmarks.proto3.GoogleMessage1.
+ *
+ * @param[in] self_p Message to encode.
+ * @param[out] encoded_p Buffer to encode the message into.
+ * @param[in] size Encoded buffer size.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int benchmarks_proto3_google_message1_encode(
+    struct benchmarks_proto3_google_message1_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message benchmarks.proto3.GoogleMessage1.
+ *
+ * @param[in,out] self_p Initialized message to decode into.
+ * @param[in] encoded_p Buffer to decode.
+ * @param[in] size Size of the encoded message.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int benchmarks_proto3_google_message1_decode(
+    struct benchmarks_proto3_google_message1_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

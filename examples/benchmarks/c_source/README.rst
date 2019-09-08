@@ -23,7 +23,7 @@ nanopb:
 Execution time
 --------------
 
-Building and encoding the message 20,000,000 times for each tool and
+Building and encoding the message 3,000,000 times for each tool and
 optimization combination.
 
 +---------+--------------+--------------------+

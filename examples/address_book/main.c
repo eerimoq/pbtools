@@ -10,9 +10,9 @@
 
 int main(int argc, const char *argv[])
 {
-    uint8_t encoded[75];
+    uint8_t encoded[128];
     int size;
-    uint8_t workspace[512];
+    uint8_t workspace[1024];
     struct address_book_address_book_t *address_book_p;
     struct address_book_person_t *person_p;
     struct address_book_person_phone_number_t *phone_number_p;
@@ -23,25 +23,22 @@ int main(int argc, const char *argv[])
 
     /* Add one person to the address book. */
     assert(address_book_address_book_people_alloc(address_book_p, 1) == 0);
-    person_p = &address_book_p->people.items_p[0];
-    assert(person_p != NULL);
-    person_p->name_p = "Kalle Kula";
+    person_p = address_book_p->people.items_pp[0];
+    pbtools_set_string(&person_p->name, "Kalle Kula");
     person_p->id = 56;
-    person_p->email_p = "kalle.kula@foobar.com";
+    pbtools_set_string(&person_p->email, "kalle.kula@foobar.com");
 
     /* Add phone numbers. */
     assert(address_book_person_phones_alloc(person_p, 2) == 0);
 
     /* Home. */
-    phone_number_p = &person_p->phones.items_p[0];
-    assert(phone_number_p != NULL);
-    phone_number_p->number_p = "+46701232345";
+    phone_number_p = person_p->phones.items_pp[0];
+    pbtools_set_string(&phone_number_p->number, "+46701232345");
     phone_number_p->type = address_book_person_phone_type_home_e;
 
     /* Work. */
-    phone_number_p = &person_p->phones.items_p[1];
-    assert(phone_number_p != NULL);
-    phone_number_p->number_p = "+46999999999";
+    phone_number_p = person_p->phones.items_pp[1];
+    pbtools_set_string(&phone_number_p->number, "+46999999999");
     phone_number_p->type = address_book_person_phone_type_work_e;
 
     /* Encode the message. */
@@ -65,27 +62,31 @@ int main(int argc, const char *argv[])
                                                    sizeof(workspace));
     assert(address_book_p != NULL);
     size = address_book_address_book_decode(address_book_p, &encoded[0], size);
-    assert(size == 75);
+    assert(size >= 0);
     assert(address_book_p->people.length == 1);
 
     /* Check the decoded person. */
-    person_p = &address_book_p->people.items_p[0];
+    person_p = address_book_p->people.items_pp[0];
     assert(person_p != NULL);
-    assert(person_p->name_p != NULL);
-    assert(strcmp(person_p->name_p, "Kalle Kula") == 0);
+    assert(pbtools_get_string(&person_p->name) != NULL);
+    assert(strcmp(pbtools_get_string(&person_p->name),
+                  "Kalle Kula") == 0);
     assert(person_p->id == 56);
-    assert(person_p->email_p != NULL);
-    assert(strcmp(person_p->email_p, "kalle.kula@foobar.com") == 0);
+    assert(pbtools_get_string(&person_p->email) != NULL);
+    assert(strcmp(pbtools_get_string(&person_p->email),
+                  "kalle.kula@foobar.com") == 0);
     assert(person_p->phones.length == 2);
 
     /* Check home phone number. */
-    phone_number_p = &person_p->phones.items_p[0];
-    assert(strcmp(phone_number_p->number_p, "+46701232345") == 0);
+    phone_number_p = person_p->phones.items_pp[0];
+    assert(strcmp(pbtools_get_string(&phone_number_p->number),
+                  "+46701232345") == 0);
     assert(phone_number_p->type == address_book_person_phone_type_home_e);
 
     /* Check work phone number. */
-    phone_number_p = &person_p->phones.items_p[1];
-    assert(strcmp(phone_number_p->number_p, "+46999999999") == 0);
+    phone_number_p = person_p->phones.items_pp[1];
+    assert(strcmp(pbtools_get_string(&phone_number_p->number),
+                  "+46999999999") == 0);
     assert(phone_number_p->type == address_book_person_phone_type_work_e);
 
     return (0);

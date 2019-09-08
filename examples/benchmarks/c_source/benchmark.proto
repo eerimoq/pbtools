@@ -11,6 +11,29 @@ option optimize_for = SPEED;
 
 option cc_enable_arenas = true;
 
+message GoogleMessage1SubMessage {
+  int32 field1 = 1;
+  int32 field2 = 2;
+  int32 field3 = 3;
+  string field15 = 15;
+  bool field12 = 12;
+  int64 field13 = 13;
+  int64 field14 = 14;
+  int32 field16 = 16;
+  int32 field19 = 19;
+  bool field20  = 20;
+  bool field28 = 28;
+  fixed64 field21 = 21;
+  int32 field22 = 22;
+  bool field23 = 23;
+  bool field206 = 206;
+  fixed32 field203 = 203;
+  int32 field204 = 204;
+  string field205 = 205;
+  uint64 field207 = 207;
+  uint64 field300 = 300;
+}
+
 message GoogleMessage1 {
   string field1 = 1;
   string field9 = 9;
@@ -53,27 +76,4 @@ message GoogleMessage1 {
   int32 field128 = 128;
   string field129 = 129;
   int32 field131 = 131;
-}
-
-message GoogleMessage1SubMessage {
-  int32 field1 = 1;
-  int32 field2 = 2;
-  int32 field3 = 3;
-  string field15 = 15;
-  bool field12 = 12;
-  int64 field13 = 13;
-  int64 field14 = 14;
-  int32 field16 = 16;
-  int32 field19 = 19;
-  bool field20  = 20;
-  bool field28 = 28;
-  fixed64 field21 = 21;
-  int32 field22 = 22;
-  bool field23 = 23;
-  bool field206 = 206;
-  fixed32 field203 = 203;
-  int32 field204 = 204;
-  string field205 = 205;
-  uint64 field207 = 207;
-  uint64 field300 = 300;
 }
