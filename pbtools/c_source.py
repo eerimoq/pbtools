@@ -332,7 +332,7 @@ int {name}_{field_name}_alloc(
 {{
     int res;
     int i;
-    struct {name}_t *items_p;
+    struct {type}_t *items_p;
 
     res = -1;
     self_p->{field_name}.items_pp = pbtools_heap_alloc(
@@ -344,7 +344,7 @@ int {name}_{field_name}_alloc(
 
         if (items_p != NULL) {{
             for (i = 0; i < length; i++) {{
-                {name}_init(
+                {type}_init(
                     &items_p[i],
                     self_p->base.heap_p,
                     &items_p[i + 1]);
@@ -362,35 +362,35 @@ int {name}_{field_name}_alloc(
     return (res);
 }}
 
-static void {name}_encode_repeated_inner(
+static void {type}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct {name}_repeated_t *repeated_p)
+    struct {type}_repeated_t *repeated_p)
 {{
     pbtools_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
-        (pbtools_message_encode_inner_t){name}_encode_inner);
+        (pbtools_message_encode_inner_t){type}_encode_inner);
 }}
 
-static void {name}_decode_repeated_inner(
+static void {type}_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct {name}_repeated_t *repeated_p)
+    struct {type}_repeated_t *repeated_p)
 {{
     pbtools_decode_repeated_inner(
         decoder_p,
         wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
-        sizeof(struct {name}_t),
-        (pbtools_message_init_t){name}_init,
-        (pbtools_message_decode_inner_t){name}_decode_inner);
+        sizeof(struct {type}_t),
+        (pbtools_message_init_t){type}_init,
+        (pbtools_message_decode_inner_t){type}_decode_inner);
 }}
 
-static void {name}_finalize_repeated_inner(
+static void {type}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct {name}_repeated_t *repeated_p)
+    struct {type}_repeated_t *repeated_p)
 {{
     pbtools_finalize_repeated_inner(
         decoder_p,
@@ -399,19 +399,19 @@ static void {name}_finalize_repeated_inner(
 '''
 
 REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT = '''\
-static void {name}_encode_repeated_inner(
+static void {type}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct {name}_repeated_t *repeated_p);
+    struct {type}_repeated_t *repeated_p);
 
-static void {name}_decode_repeated_inner(
+static void {type}_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct {name}_repeated_t *repeated_p);
+    struct {type}_repeated_t *repeated_p);
 
-static void {name}_finalize_repeated_inner(
+static void {type}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct {name}_repeated_t *repeated_p);
+    struct {type}_repeated_t *repeated_p);
 '''
 
 REPEATED_FINALIZER_FMT = '''\
@@ -421,7 +421,7 @@ REPEATED_FINALIZER_FMT = '''\
 '''
 
 REPEATED_MESSAGE_FINALIZER_FMT = '''\
-    {name}_finalize_repeated_inner(
+    {type}_finalize_repeated_inner(
         decoder_p,
         &self_p->{field_name});\
 '''
@@ -722,7 +722,7 @@ class Generator:
 
             members.append(fmt.format(name=message.full_name_snake_case,
                                       field_name=field.name,
-                                      type=field.type))
+                                      type=field.full_type_snake_case))
 
         if members:
             members.append('')
@@ -740,7 +740,7 @@ class Generator:
 
             finalizers.append(fmt.format(name=message.full_name_snake_case,
                                          field_name=field.name,
-                                         type=field.type))
+                                         type=field.full_type_snake_case))
 
         if finalizers:
             finalizers = [''] + finalizers + ['']
@@ -774,6 +774,7 @@ class Generator:
 
             declarations.append(
                 REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
+                    type=field.full_type_snake_case,
                     name=message_name))
 
         for inner_message in message.messages:

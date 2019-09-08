@@ -1,6 +1,4 @@
-import sys
 import os
-import re
 import unittest
 from unittest.mock import patch
 
@@ -18,7 +16,7 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source(self):
         specs = [
-            # 'address_book',
+            'address_book',
             'benchmark',
             'bool',
             'bytes',
@@ -73,7 +71,6 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source_headers(self):
         specs = [
-            'address_book',
             'oneof'
         ]
 
