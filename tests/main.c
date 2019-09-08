@@ -1046,7 +1046,7 @@ TEST(bytes)
     }
 }
 
-TEST(enum_)
+TEST(enum_message)
 {
     int i;
     uint8_t encoded[128];
@@ -1084,6 +1084,35 @@ TEST(enum_)
         ASSERT_EQ(size, datas[i].size);
         ASSERT_EQ(message_p->value, datas[i].decoded);
     }
+}
+
+TEST(enum_message2)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct enum_message2_t *message_p;
+
+    /* Default. */
+    message_p = enum_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = enum_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 0);
+
+    message_p = enum_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->outer = enum_enum_d_e;
+    message_p->inner = enum_message2_inner_enum_f_e;
+    size = enum_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 4);
+    ASSERT_MEMORY(&encoded[0], "\x08\x01\x10\x01", size);
+
+    message_p = enum_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = enum_message2_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->outer, enum_enum_d_e);
+    ASSERT_EQ(message_p->inner, enum_message2_inner_enum_f_e);
 }
 
 TEST(address_book)
@@ -2436,7 +2465,8 @@ int main(void)
         string_decode_out_of_data,
         string_embedded_zero_termination,
         bytes,
-        enum_,
+        enum_message,
+        enum_message2,
         address_book,
         address_book_default,
         address_book_default_person,
