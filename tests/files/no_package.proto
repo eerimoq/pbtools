@@ -1,5 +1,16 @@
 syntax = "proto3";
 
-message Message {
-    int32 value = 1;
+message M0 {
+    enum E1 {
+        B = 0;
+        C = 1;
+    }
+
+    message M1 {
+        E1 v1 = 1;
+    }
+
+    M1 v1 = 1;
+    repeated M1 v2 = 2;
+    E1 v3 = 3;
 }

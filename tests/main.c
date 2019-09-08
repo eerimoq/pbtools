@@ -29,6 +29,7 @@
 #include "files/c_source/scalar_value_types.h"
 #include "files/c_source/message.h"
 #include "files/c_source/benchmark.h"
+#include "files/c_source/no_package.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -2471,6 +2472,34 @@ TEST(benchmark)
     ASSERT_EQ(message_p->field100, 31);
 }
 
+TEST(no_package)
+{
+    int size;
+    struct m0_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
+
+    message_p = m0_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v1.v1 = m0_e1_c_e;
+    ASSERT_EQ(m0_v2_alloc(message_p, 1), 0);
+    message_p->v2.items_pp[0]->v1 = m0_e1_b_e;
+    message_p->v3 = m0_e1_c_e;
+
+    size = m0_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 8);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x02\x08\x01\x12\x00\x18\x01", size);
+
+    message_p = m0_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = m0_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 8);
+    ASSERT_EQ(message_p->v1.v1, m0_e1_c_e);
+    ASSERT_EQ(message_p->v2.length, 1);
+    ASSERT_EQ(message_p->v2.items_pp[0]->v1, m0_e1_b_e);
+    ASSERT_EQ(message_p->v3, m0_e1_c_e);
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -2546,6 +2575,7 @@ int main(void)
         skip_fixed_32,
         message,
         message_does_not_fit_in_workspace,
-        benchmark
+        benchmark,
+        no_package
     );
 }

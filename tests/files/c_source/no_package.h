@@ -34,35 +34,64 @@
 #include "pbtools.h"
 
 /**
- * Message Message.
+ * Enum M0.E1.
  */
-struct message_repeated_t {
-    int length;
-    struct message_t **items_pp;
-    struct message_t *head_p;
-    struct message_t *tail_p;
-};
-
-struct message_t {
-    struct pbtools_message_base_t base;
-    int32_t value;
+enum m0_e1_e {
+    m0_e1_b_e = 0,
+    m0_e1_c_e = 1
 };
 
 /**
- * Create a new message Message in given workspace.
+ * Message M0.M1.
+ */
+struct m0_m1_repeated_t {
+    int length;
+    struct m0_m1_t **items_pp;
+    struct m0_m1_t *head_p;
+    struct m0_m1_t *tail_p;
+};
+
+struct m0_m1_t {
+    struct pbtools_message_base_t base;
+    enum m0_e1_e v1;
+};
+
+/**
+ * Message M0.
+ */
+struct m0_repeated_t {
+    int length;
+    struct m0_t **items_pp;
+    struct m0_t *head_p;
+    struct m0_t *tail_p;
+};
+
+struct m0_t {
+    struct pbtools_message_base_t base;
+    struct m0_m1_t v1;
+    struct m0_m1_repeated_t v2;
+    enum m0_e1_e v3;
+};
+
+int m0_v2_alloc(
+    struct m0_t *self_p,
+    int length);
+
+/**
+ * Create a new message M0 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct message_t *
-message_new(
+struct m0_t *
+m0_new(
     void *workspace_p,
     size_t size);
 
 /**
- * Encode message Message.
+ * Encode message M0.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -70,13 +99,13 @@ message_new(
  *
  * @return Encoded data length or negative error code.
  */
-int message_encode(
-    struct message_t *self_p,
+int m0_encode(
+    struct m0_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
 /**
- * Decode message Message.
+ * Decode message M0.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -84,8 +113,8 @@ int message_encode(
  *
  * @return Number of bytes decoded or negative error code.
  */
-int message_decode(
-    struct message_t *self_p,
+int m0_decode(
+    struct m0_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

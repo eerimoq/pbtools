@@ -480,7 +480,8 @@ class Proto:
             field.type_kind = 'message'
 
     def is_field_enum(self, field):
-        type = self.lookup_type(field.namespace[1:] + [field.type],
+        offset = len(self.namespace_base())
+        type = self.lookup_type(field.namespace[offset:] + [field.type],
                                 self.enums,
                                 self.messages)
 
