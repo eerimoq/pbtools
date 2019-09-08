@@ -100,8 +100,7 @@ struct oneof_message_t *oneof_message_new(
 
     if (self_p != NULL) {
         self_p->base.heap_p = heap_p;
-        self_p->value.choice = oneof_message_value_choice_v1_e;
-        self_p->value.value.v1 = 0;
+        self_p->value.choice = oneof_message_value_choice_none_e;
     }
 
     return (self_p);
