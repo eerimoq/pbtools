@@ -93,7 +93,7 @@ struct {name}_t {{
 
 MESSAGE_DECLARATION_FMT = '''\
 /**
- * Create a new message {proto_name} in given workspace.
+ * Create a new message {full_name} in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -106,7 +106,7 @@ struct {name}_t *
     size_t size);
 
 /**
- * Encode message {proto_name} defined in package {package}.
+ * Encode message {full_name}.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -120,7 +120,7 @@ int {name}_encode(
     size_t size);
 
 /**
- * Decode message {proto_name} defined in package {package}.
+ * Decode message {full_name}.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -628,6 +628,7 @@ class Generator:
             ] + [
                 MESSAGE_DECLARATION_FMT.format(package=self.package,
                                                proto_name=message.name,
+                                               full_name=message.full_name,
                                                name=message_name)
             ]
 

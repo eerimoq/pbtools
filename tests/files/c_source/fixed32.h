@@ -49,7 +49,7 @@ struct fixed32_message_t {
 };
 
 /**
- * Create a new message Message in given workspace.
+ * Create a new message fixed32.Message in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -62,7 +62,7 @@ fixed32_message_new(
     size_t size);
 
 /**
- * Encode message Message defined in package fixed32.
+ * Encode message fixed32.Message.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -76,7 +76,7 @@ int fixed32_message_encode(
     size_t size);
 
 /**
- * Decode message Message defined in package fixed32.
+ * Decode message fixed32.Message.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

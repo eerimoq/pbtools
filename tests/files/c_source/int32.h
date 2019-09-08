@@ -64,7 +64,7 @@ struct int32_message2_t {
 };
 
 /**
- * Create a new message Message in given workspace.
+ * Create a new message int32.Message in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -77,7 +77,7 @@ int32_message_new(
     size_t size);
 
 /**
- * Encode message Message defined in package int32.
+ * Encode message int32.Message.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -91,7 +91,7 @@ int int32_message_encode(
     size_t size);
 
 /**
- * Decode message Message defined in package int32.
+ * Decode message int32.Message.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -105,7 +105,7 @@ int int32_message_decode(
     size_t size);
 
 /**
- * Create a new message Message2 in given workspace.
+ * Create a new message int32.Message2 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -118,7 +118,7 @@ int32_message2_new(
     size_t size);
 
 /**
- * Encode message Message2 defined in package int32.
+ * Encode message int32.Message2.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -132,7 +132,7 @@ int int32_message2_encode(
     size_t size);
 
 /**
- * Decode message Message2 defined in package int32.
+ * Decode message int32.Message2.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

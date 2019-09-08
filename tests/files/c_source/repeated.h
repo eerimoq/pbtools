@@ -97,7 +97,7 @@ int repeated_message_bytes_alloc(
     int length);
 
 /**
- * Create a new message Message in given workspace.
+ * Create a new message repeated.Message in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -110,7 +110,7 @@ repeated_message_new(
     size_t size);
 
 /**
- * Encode message Message defined in package repeated.
+ * Encode message repeated.Message.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -124,7 +124,7 @@ int repeated_message_encode(
     size_t size);
 
 /**
- * Decode message Message defined in package repeated.
+ * Decode message repeated.Message.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -198,7 +198,7 @@ int repeated_message_scalar_value_types_bytess_alloc(
     int length);
 
 /**
- * Create a new message MessageScalarValueTypes in given workspace.
+ * Create a new message repeated.MessageScalarValueTypes in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -211,7 +211,7 @@ repeated_message_scalar_value_types_new(
     size_t size);
 
 /**
- * Encode message MessageScalarValueTypes defined in package repeated.
+ * Encode message repeated.MessageScalarValueTypes.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -225,7 +225,7 @@ int repeated_message_scalar_value_types_encode(
     size_t size);
 
 /**
- * Decode message MessageScalarValueTypes defined in package repeated.
+ * Decode message repeated.MessageScalarValueTypes.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

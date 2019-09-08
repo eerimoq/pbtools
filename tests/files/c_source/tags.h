@@ -124,7 +124,7 @@ struct tags_message6_t {
 };
 
 /**
- * Create a new message Message1 in given workspace.
+ * Create a new message tags.Message1 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -137,7 +137,7 @@ tags_message1_new(
     size_t size);
 
 /**
- * Encode message Message1 defined in package tags.
+ * Encode message tags.Message1.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -151,7 +151,7 @@ int tags_message1_encode(
     size_t size);
 
 /**
- * Decode message Message1 defined in package tags.
+ * Decode message tags.Message1.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -165,7 +165,7 @@ int tags_message1_decode(
     size_t size);
 
 /**
- * Create a new message Message2 in given workspace.
+ * Create a new message tags.Message2 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -178,7 +178,7 @@ tags_message2_new(
     size_t size);
 
 /**
- * Encode message Message2 defined in package tags.
+ * Encode message tags.Message2.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -192,7 +192,7 @@ int tags_message2_encode(
     size_t size);
 
 /**
- * Decode message Message2 defined in package tags.
+ * Decode message tags.Message2.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -206,7 +206,7 @@ int tags_message2_decode(
     size_t size);
 
 /**
- * Create a new message Message3 in given workspace.
+ * Create a new message tags.Message3 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -219,7 +219,7 @@ tags_message3_new(
     size_t size);
 
 /**
- * Encode message Message3 defined in package tags.
+ * Encode message tags.Message3.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -233,7 +233,7 @@ int tags_message3_encode(
     size_t size);
 
 /**
- * Decode message Message3 defined in package tags.
+ * Decode message tags.Message3.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -247,7 +247,7 @@ int tags_message3_decode(
     size_t size);
 
 /**
- * Create a new message Message4 in given workspace.
+ * Create a new message tags.Message4 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -260,7 +260,7 @@ tags_message4_new(
     size_t size);
 
 /**
- * Encode message Message4 defined in package tags.
+ * Encode message tags.Message4.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -274,7 +274,7 @@ int tags_message4_encode(
     size_t size);
 
 /**
- * Decode message Message4 defined in package tags.
+ * Decode message tags.Message4.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -288,7 +288,7 @@ int tags_message4_decode(
     size_t size);
 
 /**
- * Create a new message Message5 in given workspace.
+ * Create a new message tags.Message5 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -301,7 +301,7 @@ tags_message5_new(
     size_t size);
 
 /**
- * Encode message Message5 defined in package tags.
+ * Encode message tags.Message5.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -315,7 +315,7 @@ int tags_message5_encode(
     size_t size);
 
 /**
- * Decode message Message5 defined in package tags.
+ * Decode message tags.Message5.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -329,7 +329,7 @@ int tags_message5_decode(
     size_t size);
 
 /**
- * Create a new message Message6 in given workspace.
+ * Create a new message tags.Message6 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -342,7 +342,7 @@ tags_message6_new(
     size_t size);
 
 /**
- * Encode message Message6 defined in package tags.
+ * Encode message tags.Message6.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -356,7 +356,7 @@ int tags_message6_encode(
     size_t size);
 
 /**
- * Decode message Message6 defined in package tags.
+ * Decode message tags.Message6.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

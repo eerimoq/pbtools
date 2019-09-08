@@ -63,7 +63,7 @@ struct scalar_value_types_message_t {
 };
 
 /**
- * Create a new message Message in given workspace.
+ * Create a new message scalar_value_types.Message in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -76,7 +76,7 @@ scalar_value_types_message_new(
     size_t size);
 
 /**
- * Encode message Message defined in package scalar_value_types.
+ * Encode message scalar_value_types.Message.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -90,7 +90,7 @@ int scalar_value_types_message_encode(
     size_t size);
 
 /**
- * Decode message Message defined in package scalar_value_types.
+ * Decode message scalar_value_types.Message.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

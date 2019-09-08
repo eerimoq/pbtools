@@ -123,7 +123,7 @@ struct benchmarks_proto3_google_message1_t {
 };
 
 /**
- * Create a new message GoogleMessage1SubMessage in given workspace.
+ * Create a new message benchmarks.proto3.GoogleMessage1SubMessage in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -136,7 +136,7 @@ benchmarks_proto3_google_message1_sub_message_new(
     size_t size);
 
 /**
- * Encode message GoogleMessage1SubMessage defined in package benchmarks.proto3.
+ * Encode message benchmarks.proto3.GoogleMessage1SubMessage.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -150,7 +150,7 @@ int benchmarks_proto3_google_message1_sub_message_encode(
     size_t size);
 
 /**
- * Decode message GoogleMessage1SubMessage defined in package benchmarks.proto3.
+ * Decode message benchmarks.proto3.GoogleMessage1SubMessage.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -168,7 +168,7 @@ int benchmarks_proto3_google_message1_field5_alloc(
     int length);
 
 /**
- * Create a new message GoogleMessage1 in given workspace.
+ * Create a new message benchmarks.proto3.GoogleMessage1 in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -181,7 +181,7 @@ benchmarks_proto3_google_message1_new(
     size_t size);
 
 /**
- * Encode message GoogleMessage1 defined in package benchmarks.proto3.
+ * Encode message benchmarks.proto3.GoogleMessage1.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -195,7 +195,7 @@ int benchmarks_proto3_google_message1_encode(
     size_t size);
 
 /**
- * Decode message GoogleMessage1 defined in package benchmarks.proto3.
+ * Decode message benchmarks.proto3.GoogleMessage1.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.

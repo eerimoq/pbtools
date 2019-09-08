@@ -119,7 +119,7 @@ struct message_message_t {
 };
 
 /**
- * Create a new message Foo in given workspace.
+ * Create a new message message.Foo in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -132,7 +132,7 @@ message_foo_new(
     size_t size);
 
 /**
- * Encode message Foo defined in package message.
+ * Encode message message.Foo.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -146,7 +146,7 @@ int message_foo_encode(
     size_t size);
 
 /**
- * Decode message Foo defined in package message.
+ * Decode message message.Foo.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -160,7 +160,7 @@ int message_foo_decode(
     size_t size);
 
 /**
- * Create a new message Bar in given workspace.
+ * Create a new message message.Bar in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -173,7 +173,7 @@ message_bar_new(
     size_t size);
 
 /**
- * Encode message Bar defined in package message.
+ * Encode message message.Bar.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -187,7 +187,7 @@ int message_bar_encode(
     size_t size);
 
 /**
- * Decode message Bar defined in package message.
+ * Decode message message.Bar.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
@@ -201,7 +201,7 @@ int message_bar_decode(
     size_t size);
 
 /**
- * Create a new message Message in given workspace.
+ * Create a new message message.Message in given workspace.
  *
  * @param[in] workspace_p Message workspace.
  * @param[in] size Workspace size.
@@ -214,7 +214,7 @@ message_message_new(
     size_t size);
 
 /**
- * Encode message Message defined in package message.
+ * Encode message message.Message.
  *
  * @param[in] self_p Message to encode.
  * @param[out] encoded_p Buffer to encode the message into.
@@ -228,7 +228,7 @@ int message_message_encode(
     size_t size);
 
 /**
- * Decode message Message defined in package message.
+ * Decode message message.Message.
  *
  * @param[in,out] self_p Initialized message to decode into.
  * @param[in] encoded_p Buffer to decode.
