@@ -284,6 +284,7 @@ static void benchmarks_proto3_google_message1_init(
     self_p->field23 = 0;
     self_p->field24 = 0;
     self_p->field25 = 0;
+    benchmarks_proto3_google_message1_sub_message_init(&self_p->field15, heap_p, NULL);
     self_p->field78 = 0;
     self_p->field67 = 0;
     self_p->field68 = 0;

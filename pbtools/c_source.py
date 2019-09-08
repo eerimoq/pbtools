@@ -680,10 +680,13 @@ class Generator:
                 member = f'    self_p->{name}.length = 0;'
             elif field.type in ['bytes', 'string']:
                 member = f'    pbtools_{field.type}_init(&self_p->{name});'
-            elif field.type in SCALAR_VALUE_TYPES:
+            elif field.type_kind == 'scalar-value-type':
                 member = f'    self_p->{name} = 0;'
+            elif field.type_kind == 'message':
+                member = (f'    {field.full_type_snake_case}_init(&self_p->{name}, '
+                          f'heap_p, NULL);')
             else:
-                continue
+                member = f'    self_p->{name} = 0;'
 
             members.append(member)
 
