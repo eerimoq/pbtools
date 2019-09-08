@@ -12,6 +12,7 @@ message Bar {
 message Message {
     enum Foo {
         A = 0;
+        B = 1;
     }
     message Fie {
         message Foo {

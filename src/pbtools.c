@@ -2246,3 +2246,40 @@ void pbtools_finalize_repeated_inner(
         item_p = item_p->next_p;
     }
 }
+
+void pbtools_encoder_sub_message_encode(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_message_base_t *message_p,
+    pbtools_message_encode_inner_t encode_inner)
+{
+    int pos;
+
+    pos = self_p->pos;
+    encode_inner(self_p, message_p);
+    pbtools_encoder_write_tagged_varint(self_p,
+                                        field_number,
+                                        PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
+                                        pos - self_p->pos);
+}
+
+void pbtools_decoder_sub_message_decode(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_message_base_t *message_p,
+    pbtools_message_decode_inner_t decode_inner)
+{
+    size_t size;
+    struct pbtools_decoder_t decoder;
+
+    if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
+        pbtools_decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
+
+        return;
+    }
+
+    size = pbtools_decoder_read_varint(self_p);
+    pbtools_decoder_init_slice(&decoder, self_p, size);
+    decode_inner(&decoder, message_p);
+    pbtools_decoder_seek(self_p, pbtools_decoder_get_result(&decoder));
+}

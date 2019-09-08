@@ -716,6 +716,18 @@ void pbtools_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct pbtools_repeated_message_t *repeated_p);
 
+void pbtools_encoder_sub_message_encode(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_message_base_t *message_p,
+    pbtools_message_encode_inner_t encode_inner);
+
+void pbtools_decoder_sub_message_decode(
+    struct pbtools_decoder_t *self_p,
+    int wire_type,
+    struct pbtools_message_base_t *message_p,
+    pbtools_message_decode_inner_t decode_inner);
+
 #if 0
 #    include <stdio.h>
 #    define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)

@@ -37,7 +37,10 @@ class CommandLineTest(unittest.TestCase):
             'scalar_value_types',
             'repeated',
             'benchmark',
-            # 'message'
+            'message',
+            'enum',
+            # 'address_book',
+            # 'oneof'
         ]
 
         for spec in specs:
@@ -68,8 +71,6 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source_headers(self):
         specs = [
-            'message',
-            'enum',
             'address_book',
             'oneof'
         ]

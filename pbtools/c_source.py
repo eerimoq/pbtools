@@ -194,12 +194,20 @@ ENCODE_INNER_REPEATED_MEMBER_FMT = '''\
     pbtools_encoder_write_repeated_{type}(encoder_p, {field_number}, &self_p->{field_name});
 '''
 
-ENCODE_TAGGED_MESSAGE_MEMBER_FMT = '''\
-    {type}_encode_tagged(encoder_p, {field_number}, &self_p->{field_name});
+ENCODE_SUB_MESSAGE_MEMBER_FMT = '''\
+    pbtools_encoder_sub_message_encode(
+        encoder_p,
+        {field_number},
+        &self_p->{field_name}.base,
+        (pbtools_message_encode_inner_t){type}_encode_inner);
+'''
+
+ENCODE_ENUM_FMT = '''\
+    pbtools_encoder_write_enum(encoder_p, {field_number}, self_p->{field_name});
 '''
 
 ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
-    {name}_encode_repeated_inner(
+    {type}_encode_repeated_inner(
         encoder_p,
         {field_number},
         &self_p->{field_name});
@@ -228,10 +236,26 @@ DECODE_INNER_REPEATED_MEMBER_FMT = '''\
 
 DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
         case {field_number}:
-            {name}_decode_repeated_inner(
+            {full_type}_decode_repeated_inner(
                 decoder_p,
                 wire_type,
                 &self_p->{field_name});
+            break;
+'''
+
+DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
+        case {field_number}:
+            pbtools_decoder_sub_message_decode(
+                decoder_p,
+                wire_type,
+                &self_p->{field_name}.base,
+                (pbtools_message_decode_inner_t){full_type}_decode_inner);
+            break;
+'''
+
+DECODE_ENUM_FMT = '''\
+        case {field_number}:
+            self_p->{field_name} = pbtools_decoder_read_enum(decoder_p, wire_type);
             break;
 '''
 
@@ -622,8 +646,10 @@ class Generator:
             else:
                 if field.repeated:
                     fmt = ENCODE_INNER_REPEATED_MESSAGE_MEMBER_FMT
+                elif field.type_kind == 'message':
+                    fmt = ENCODE_SUB_MESSAGE_MEMBER_FMT
                 else:
-                    fmt = ENCODE_TAGGED_MESSAGE_MEMBER_FMT
+                    fmt = ENCODE_ENUM_FMT
 
             member = fmt.format(name=message_name,
                                 type=field.full_type_snake_case,
@@ -659,11 +685,14 @@ class Generator:
                 fmt = DECODE_INNER_MEMBER_BYTES_AND_STRING_FMT
             elif field.type in SCALAR_VALUE_TYPES:
                 fmt = DECODE_INNER_MEMBER_FMT
+            elif field.type_kind == 'message':
+                fmt = DECODE_SUB_MESSAGE_MEMBER_FMT
             else:
-                continue
+                fmt = DECODE_ENUM_FMT
 
             members.append(
-                fmt.format(type=field.type,
+                fmt.format(full_type=field.full_type_snake_case,
+                           type=field.type,
                            name=message.full_name_snake_case,
                            field_name=field.name_snake_case,
                            field_number=field.field_number))
@@ -729,37 +758,55 @@ class Generator:
         return '\n'.join(finalizers)
 
     def generate_definitions(self):
+        declarations = []
         definitions = []
 
         for message in self.messages:
-            message_name = message.full_name_snake_case
+            self.generate_message_definitions(message,
+                                              declarations,
+                                              definitions,
+                                              public=True)
+
+        return '\n'.join(declarations + definitions)
+
+    def generate_message_definitions(self,
+                                     message,
+                                     declarations,
+                                     definitions,
+                                     public):
+        message_name = message.full_name_snake_case
+        declarations.append(
+            MESSAGE_STATIC_DECLARATIONS_FMT.format(name=message_name))
+
+        for field in message.repeated_fields:
+            if field.type in SCALAR_VALUE_TYPES:
+                continue
+
+            declarations.append(
+                REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
+                    name=message_name))
+
+        for inner_message in message.messages:
+            self.generate_message_definitions(inner_message,
+                                              declarations,
+                                              definitions,
+                                              public=False)
+
+        definitions.append(
+            MESSAGE_STATIC_DEFINITIONS_FMT.format(
+                name=message.full_name_snake_case,
+                encode_body=self.generate_message_encode_body(message),
+                decode_body=self.generate_message_decode_body(message),
+                members_init=self.generate_message_members_init(message),
+                finalizers=self.generate_repeated_finalizers(message)))
+
+        if public:
             definitions.append(
-                MESSAGE_STATIC_DECLARATIONS_FMT.format(name=message_name))
-
-            for field in message.repeated_fields:
-                if field.type in SCALAR_VALUE_TYPES:
-                    continue
-
-                definitions.append(
-                    REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                        name=message_name))
-
-        for message in self.messages:
-            definitions += [
-                MESSAGE_STATIC_DEFINITIONS_FMT.format(
-                    name=message.full_name_snake_case,
-                    encode_body=self.generate_message_encode_body(message),
-                    decode_body=self.generate_message_decode_body(message),
-                    members_init=self.generate_message_members_init(message),
-                    finalizers=self.generate_repeated_finalizers(message)),
                 MESSAGE_DEFINITION_FMT.format(
                     package=self.package,
                     proto_name=message.name,
                     name=message.full_name_snake_case,
-                    repeated=self.generate_repeated_definitions(message))
-            ]
-
-        return '\n'.join(definitions)
+                    repeated=self.generate_repeated_definitions(message)))
 
     def generate(self):
         namespace_upper = self.namespace.upper()

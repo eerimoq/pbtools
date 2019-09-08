@@ -66,7 +66,8 @@ struct message_bar_t {
  * Enum message.Message.Foo.
  */
 enum message_message_foo_e {
-    message_message_foo_a_e = 0
+    message_message_foo_a_e = 0,
+    message_message_foo_b_e = 1
 };
 
 /**

@@ -303,7 +303,11 @@ static void benchmarks_proto3_google_message1_encode_inner(
     pbtools_encoder_write_int32(encoder_p, 68, self_p->field68);
     pbtools_encoder_write_int32(encoder_p, 67, self_p->field67);
     pbtools_encoder_write_bool(encoder_p, 78, self_p->field78);
-    benchmarks_proto3_google_message1_sub_message_encode_tagged(encoder_p, 15, &self_p->field15);
+    pbtools_encoder_sub_message_encode(
+        encoder_p,
+        15,
+        &self_p->field15.base,
+        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 25, self_p->field25);
     pbtools_encoder_write_bool(encoder_p, 24, self_p->field24);
     pbtools_encoder_write_int32(encoder_p, 23, self_p->field23);
@@ -486,6 +490,14 @@ static void benchmarks_proto3_google_message1_decode_inner(
 
         case 25:
             self_p->field25 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 15:
+            pbtools_decoder_sub_message_decode(
+                decoder_p,
+                wire_type,
+                &self_p->field15.base,
+                (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner);
             break;
 
         case 78:

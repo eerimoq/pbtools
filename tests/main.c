@@ -28,6 +28,7 @@
 #include "files/c_source/repeated.h"
 #include "files/c_source/scalar_value_types.h"
 #include "files/c_source/message.h"
+#include "files/c_source/benchmark.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -2287,6 +2288,34 @@ TEST(skip_fixed_32)
     ASSERT_EQ(message_p->value, 1);
 }
 
+TEST(message)
+{
+    int size;
+    struct message_message_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
+
+    message_p = message_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->foo = message_message_foo_b_e;
+    message_p->fie.foo.value = true;
+    message_p->fie.foo.bar.fie = 8;
+
+    size = message_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 13);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x08\x01\x22\x09\x0a\x07\x28\x01\x0a\x03\xe8\x14\x08",
+                  13);
+
+    message_p = message_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = message_message_decode(message_p, &encoded[0], 13);
+    ASSERT_EQ(size, 13);
+    ASSERT_EQ(message_p->foo, message_message_foo_b_e);
+    ASSERT_EQ(message_p->fie.foo.value, true);
+    ASSERT_EQ(message_p->fie.foo.bar.fie, 8);
+}
+
 TEST(message_does_not_fit_in_workspace)
 {
     uint8_t workspace[1];
@@ -2296,20 +2325,86 @@ TEST(message_does_not_fit_in_workspace)
     ASSERT_EQ(message_p, NULL);
 }
 
-TEST(message)
+TEST(benchmark)
 {
-#if 0
     int size;
-    uint8_t workspace[512];
-    struct message_message_t *message_p;
+    struct benchmarks_proto3_google_message1_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
 
-    message_p = message_message_new(&workspace[0], sizeof(workspace));
-    message_p->bar.fie = 1;
+    message_p = benchmarks_proto3_google_message1_new(&workspace[0],
+                                                      sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->field2 = 8;
+    message_p->field3 = 2066379;
+    pbtools_set_string(&message_p->field4, "3K+6)#");
+    pbtools_set_string(
+        &message_p->field9,
+        "10)2uiSuoXL1^)v}icF@>P(j<t#~tz\\lg??S&(<hr7EVs\'l{\'5`Gohc_(="
+        "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z");
+    message_p->field12 = true;
+    message_p->field14 = true;
+    message_p->field15.field1 = 25;
+    message_p->field15.field2 = 36;
+    pbtools_set_string(
+        &message_p->field15.field15,
+        "\"?6PY4]L2c<}~2;\\TVF_w^[@YfbIc*v/N+Z-oYuaWZr4C;5ib|*s@RC"
+        "BbuvrQ3g(k,N");
+    message_p->field15.field21 = 2813090458170031956;
+    message_p->field15.field22 = 38;
+    message_p->field15.field23 = true;
+    pbtools_set_string(&message_p->field18, "{=Qwfe~#n{");
+    message_p->field67 = 1591432;
+    message_p->field100 = 31;
 
-    size = message_message_encode(message_p);
-    ASSERT_EQ(size, 6);
-    ASSERT_MEMORY(&encoded[0], "\x82\x34\x03\xe8\x14\x01", size);
-#endif
+    size = benchmarks_proto3_google_message1_encode(message_p,
+                                                    &encoded[0],
+                                                    sizeof(encoded));
+    ASSERT_EQ(size, 221);
+    ASSERT_MEMORY(
+        &encoded[0],
+        "\x4a\x59\x31\x30\x29\x32\x75\x69\x53\x75\x6f\x58\x4c\x31\x5e\x29"
+        "\x76\x7d\x69\x63\x46\x40\x3e\x50\x28\x6a\x3c\x74\x23\x7e\x74\x7a"
+        "\x5c\x6c\x67\x3f\x3f\x53\x26\x28\x3c\x68\x72\x37\x45\x56\x73\x27"
+        "\x6c\x7b\x27\x35\x60\x47\x6f\x68\x63\x5f\x28\x3d\x74\x20\x65\x53"
+        "\x20\x73\x7b\x5f\x49\x3f\x69\x43\x77\x61\x47\x5d\x4c\x27\x2a\x50"
+        "\x75\x35\x28\x26\x77\x5f\x3a\x34\x7b\x7e\x5a\x92\x01\x0a\x7b\x3d"
+        "\x51\x77\x66\x65\x7e\x23\x6e\x7b\x10\x08\x18\xcb\x8f\x7e\x22\x06"
+        "\x33\x4b\x2b\x36\x29\x23\x60\x01\x70\x01\xa0\x06\x1f\x7a\x59\x08"
+        "\x19\x10\x24\x7a\x43\x22\x3f\x36\x50\x59\x34\x5d\x4c\x32\x63\x3c"
+        "\x7d\x7e\x32\x3b\x5c\x54\x56\x46\x5f\x77\x5e\x5b\x40\x59\x66\x62"
+        "\x49\x63\x2a\x76\x2f\x4e\x2b\x5a\x2d\x6f\x59\x75\x61\x57\x5a\x72"
+        "\x34\x43\x3b\x35\x69\x62\x7c\x2a\x73\x40\x52\x43\x42\x62\x75\x76"
+        "\x72\x51\x33\x67\x28\x6b\x2c\x4e\xa9\x01\x54\xff\x43\x08\xde\x1a"
+        "\x0a\x27\xb0\x01\x26\xb8\x01\x01\x98\x04\x88\x91\x61",
+        221);
+
+    message_p = benchmarks_proto3_google_message1_new(&workspace[0],
+                                                      sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = benchmarks_proto3_google_message1_decode(message_p,
+                                                    &encoded[0],
+                                                    221);
+    ASSERT_EQ(size, 221);
+    ASSERT_EQ(message_p->field2, 8);
+    ASSERT_EQ(message_p->field3, 2066379);
+    ASSERT_EQ(pbtools_get_string(&message_p->field4), "3K+6)#");
+    ASSERT_EQ(pbtools_get_string(&message_p->field9),
+              "10)2uiSuoXL1^)v}icF@>P(j<t#~tz\\lg??S&(<hr7EVs\'l{\'5`Gohc_(="
+              "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z");
+    ASSERT_EQ(message_p->field12, true);
+    ASSERT_EQ(message_p->field14, true);
+    ASSERT_EQ(message_p->field15.field1, 25);
+    ASSERT_EQ(message_p->field15.field2, 36);
+    ASSERT_EQ(pbtools_get_string(&message_p->field15.field15),
+              "\"?6PY4]L2c<}~2;\\TVF_w^[@YfbIc*v/N+Z-oYuaWZr4C;5ib|*s@RC"
+              "BbuvrQ3g(k,N");
+    ASSERT_EQ(message_p->field15.field21, 2813090458170031956);
+    ASSERT_EQ(message_p->field15.field22, 38);
+    ASSERT_EQ(message_p->field15.field23, true);
+    ASSERT_EQ(pbtools_get_string(&message_p->field18), "{=Qwfe~#n{");
+    ASSERT_EQ(message_p->field67, 1591432);
+    ASSERT_EQ(message_p->field100, 31);
 }
 
 int main(void)
@@ -2383,7 +2478,8 @@ int main(void)
         skip_error_too_long_length_delimited,
         skip_error_bad_wire_type,
         skip_fixed_32,
+        message,
         message_does_not_fit_in_workspace,
-        message
+        benchmark
     );
 }
