@@ -254,14 +254,16 @@ int repeated_message_bytes_alloc(
         &self_p->bytes));
 }
 
-struct repeated_message_t *repeated_message_new(
+struct repeated_message_t *
+repeated_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct repeated_message_t),
-                                (pbtools_message_init_t)repeated_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct repeated_message_t),
+        (pbtools_message_init_t)repeated_message_init));
 }
 
 int repeated_message_encode(
@@ -650,14 +652,16 @@ int repeated_message_scalar_value_types_bytess_alloc(
         &self_p->bytess));
 }
 
-struct repeated_message_scalar_value_types_t *repeated_message_scalar_value_types_new(
+struct repeated_message_scalar_value_types_t *
+repeated_message_scalar_value_types_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct repeated_message_scalar_value_types_t),
-                                (pbtools_message_init_t)repeated_message_scalar_value_types_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct repeated_message_scalar_value_types_t),
+        (pbtools_message_init_t)repeated_message_scalar_value_types_init));
 }
 
 int repeated_message_scalar_value_types_encode(

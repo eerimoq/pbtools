@@ -56,7 +56,8 @@ struct string_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct string_message_t *string_message_new(
+struct string_message_t *
+string_message_new(
     void *workspace_p,
     size_t size);
 

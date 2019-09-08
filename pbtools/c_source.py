@@ -100,7 +100,8 @@ MESSAGE_DECLARATION_FMT = '''\
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct {name}_t *{name}_new(
+struct {name}_t *
+{name}_new(
     void *workspace_p,
     size_t size);
 
@@ -236,14 +237,16 @@ DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
 
 MESSAGE_DEFINITION_FMT = '''\
 {repeated}\
-struct {name}_t *{name}_new(
+struct {name}_t *
+{name}_new(
     void *workspace_p,
     size_t size)
 {{
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct {name}_t),
-                                (pbtools_message_init_t){name}_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct {name}_t),
+        (pbtools_message_init_t){name}_init));
 }}
 
 int {name}_encode(

@@ -70,7 +70,8 @@ struct scalar_value_types_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct scalar_value_types_message_t *scalar_value_types_message_new(
+struct scalar_value_types_message_t *
+scalar_value_types_message_new(
     void *workspace_p,
     size_t size);
 

@@ -102,14 +102,16 @@ static void message_foo_decode_inner(
     }
 }
 
-struct message_foo_t *message_foo_new(
+struct message_foo_t *
+message_foo_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct message_foo_t),
-                                (pbtools_message_init_t)message_foo_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct message_foo_t),
+        (pbtools_message_init_t)message_foo_init));
 }
 
 int message_foo_encode(
@@ -173,14 +175,16 @@ static void message_bar_decode_inner(
     }
 }
 
-struct message_bar_t *message_bar_new(
+struct message_bar_t *
+message_bar_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct message_bar_t),
-                                (pbtools_message_init_t)message_bar_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct message_bar_t),
+        (pbtools_message_init_t)message_bar_init));
 }
 
 int message_bar_encode(
@@ -235,26 +239,6 @@ static void message_message_decode_inner(
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
-        case 1:
-            message_message_foo_decode_tagged(
-                encoder_p,
-                wire_type,
-                &self_p->foo);
-            break;
-
-        case 832:
-            message_bar_decode_tagged(
-                encoder_p,
-                wire_type,
-                &self_p->bar);
-            break;
-
-        case 4:
-            message_message_fie_decode_tagged(
-                encoder_p,
-                wire_type,
-                &self_p->fie);
-            break;
 
         default:
             pbtools_decoder_skip_field(decoder_p, wire_type);
@@ -263,14 +247,16 @@ static void message_message_decode_inner(
     }
 }
 
-struct message_message_t *message_message_new(
+struct message_message_t *
+message_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct message_message_t),
-                                (pbtools_message_init_t)message_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct message_message_t),
+        (pbtools_message_init_t)message_message_init));
 }
 
 int message_message_encode(

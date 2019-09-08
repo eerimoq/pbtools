@@ -131,7 +131,8 @@ struct tags_message6_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct tags_message1_t *tags_message1_new(
+struct tags_message1_t *
+tags_message1_new(
     void *workspace_p,
     size_t size);
 
@@ -171,7 +172,8 @@ int tags_message1_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct tags_message2_t *tags_message2_new(
+struct tags_message2_t *
+tags_message2_new(
     void *workspace_p,
     size_t size);
 
@@ -211,7 +213,8 @@ int tags_message2_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct tags_message3_t *tags_message3_new(
+struct tags_message3_t *
+tags_message3_new(
     void *workspace_p,
     size_t size);
 
@@ -251,7 +254,8 @@ int tags_message3_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct tags_message4_t *tags_message4_new(
+struct tags_message4_t *
+tags_message4_new(
     void *workspace_p,
     size_t size);
 
@@ -291,7 +295,8 @@ int tags_message4_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct tags_message5_t *tags_message5_new(
+struct tags_message5_t *
+tags_message5_new(
     void *workspace_p,
     size_t size);
 
@@ -331,7 +336,8 @@ int tags_message5_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct tags_message6_t *tags_message6_new(
+struct tags_message6_t *
+tags_message6_new(
     void *workspace_p,
     size_t size);
 

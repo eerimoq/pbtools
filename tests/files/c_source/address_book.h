@@ -103,7 +103,8 @@ int address_book_person_phones_alloc(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct address_book_person_t *address_book_person_new(
+struct address_book_person_t *
+address_book_person_new(
     void *workspace_p,
     size_t size);
 
@@ -147,7 +148,8 @@ int address_book_address_book_people_alloc(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct address_book_address_book_t *address_book_address_book_new(
+struct address_book_address_book_t *
+address_book_address_book_new(
     void *workspace_p,
     size_t size);
 

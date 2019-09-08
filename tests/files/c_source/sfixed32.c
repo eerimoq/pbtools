@@ -80,14 +80,16 @@ static void sfixed32_message_decode_inner(
     }
 }
 
-struct sfixed32_message_t *sfixed32_message_new(
+struct sfixed32_message_t *
+sfixed32_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct sfixed32_message_t),
-                                (pbtools_message_init_t)sfixed32_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct sfixed32_message_t),
+        (pbtools_message_init_t)sfixed32_message_init));
 }
 
 int sfixed32_message_encode(

@@ -56,7 +56,8 @@ struct float_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct float_message_t *float_message_new(
+struct float_message_t *
+float_message_new(
     void *workspace_p,
     size_t size);
 

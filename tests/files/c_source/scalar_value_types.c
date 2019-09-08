@@ -164,14 +164,16 @@ static void scalar_value_types_message_decode_inner(
     }
 }
 
-struct scalar_value_types_message_t *scalar_value_types_message_new(
+struct scalar_value_types_message_t *
+scalar_value_types_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct scalar_value_types_message_t),
-                                (pbtools_message_init_t)scalar_value_types_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct scalar_value_types_message_t),
+        (pbtools_message_init_t)scalar_value_types_message_init));
 }
 
 int scalar_value_types_message_encode(

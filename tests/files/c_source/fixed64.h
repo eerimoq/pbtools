@@ -56,7 +56,8 @@ struct fixed64_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct fixed64_message_t *fixed64_message_new(
+struct fixed64_message_t *
+fixed64_message_new(
     void *workspace_p,
     size_t size);
 

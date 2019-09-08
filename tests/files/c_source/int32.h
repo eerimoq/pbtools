@@ -71,7 +71,8 @@ struct int32_message2_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct int32_message_t *int32_message_new(
+struct int32_message_t *
+int32_message_new(
     void *workspace_p,
     size_t size);
 
@@ -111,7 +112,8 @@ int int32_message_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct int32_message2_t *int32_message2_new(
+struct int32_message2_t *
+int32_message2_new(
     void *workspace_p,
     size_t size);
 

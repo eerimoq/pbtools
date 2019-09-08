@@ -125,7 +125,8 @@ struct message_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct message_foo_t *message_foo_new(
+struct message_foo_t *
+message_foo_new(
     void *workspace_p,
     size_t size);
 
@@ -165,7 +166,8 @@ int message_foo_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct message_bar_t *message_bar_new(
+struct message_bar_t *
+message_bar_new(
     void *workspace_p,
     size_t size);
 
@@ -205,7 +207,8 @@ int message_bar_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct message_message_t *message_message_new(
+struct message_message_t *
+message_message_new(
     void *workspace_p,
     size_t size);
 

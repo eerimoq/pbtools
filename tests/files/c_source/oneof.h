@@ -147,7 +147,8 @@ struct oneof_message2_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct oneof_message_t *oneof_message_new(
+struct oneof_message_t *
+oneof_message_new(
     void *workspace_p,
     size_t size);
 
@@ -187,7 +188,8 @@ int oneof_message_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct oneof_message2_t *oneof_message2_new(
+struct oneof_message2_t *
+oneof_message2_new(
     void *workspace_p,
     size_t size);
 

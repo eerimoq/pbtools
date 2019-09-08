@@ -104,7 +104,8 @@ int repeated_message_bytes_alloc(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct repeated_message_t *repeated_message_new(
+struct repeated_message_t *
+repeated_message_new(
     void *workspace_p,
     size_t size);
 
@@ -204,7 +205,8 @@ int repeated_message_scalar_value_types_bytess_alloc(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct repeated_message_scalar_value_types_t *repeated_message_scalar_value_types_new(
+struct repeated_message_scalar_value_types_t *
+repeated_message_scalar_value_types_new(
     void *workspace_p,
     size_t size);
 

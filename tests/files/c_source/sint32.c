@@ -80,14 +80,16 @@ static void sint32_message_decode_inner(
     }
 }
 
-struct sint32_message_t *sint32_message_new(
+struct sint32_message_t *
+sint32_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct sint32_message_t),
-                                (pbtools_message_init_t)sint32_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct sint32_message_t),
+        (pbtools_message_init_t)sint32_message_init));
 }
 
 int sint32_message_encode(

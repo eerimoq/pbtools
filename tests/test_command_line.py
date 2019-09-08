@@ -36,6 +36,7 @@ class CommandLineTest(unittest.TestCase):
             'bytes',
             'scalar_value_types',
             'repeated',
+            'benchmark',
             # 'message'
         ]
 
@@ -70,7 +71,7 @@ class CommandLineTest(unittest.TestCase):
             'message',
             'enum',
             'address_book',
-            'oneof',
+            'oneof'
         ]
 
         for spec in specs:

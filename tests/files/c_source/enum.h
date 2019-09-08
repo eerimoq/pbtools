@@ -96,7 +96,8 @@ struct enum_message2_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct enum_message_t *enum_message_new(
+struct enum_message_t *
+enum_message_new(
     void *workspace_p,
     size_t size);
 
@@ -136,7 +137,8 @@ int enum_message_decode(
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct enum_message2_t *enum_message2_new(
+struct enum_message2_t *
+enum_message2_new(
     void *workspace_p,
     size_t size);
 

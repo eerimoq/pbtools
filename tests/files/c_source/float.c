@@ -80,14 +80,16 @@ static void float_message_decode_inner(
     }
 }
 
-struct float_message_t *float_message_new(
+struct float_message_t *
+float_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct float_message_t),
-                                (pbtools_message_init_t)float_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct float_message_t),
+        (pbtools_message_init_t)float_message_init));
 }
 
 int float_message_encode(

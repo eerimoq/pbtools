@@ -56,7 +56,8 @@ struct sint32_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct sint32_message_t *sint32_message_new(
+struct sint32_message_t *
+sint32_message_new(
     void *workspace_p,
     size_t size);
 

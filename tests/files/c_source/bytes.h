@@ -56,7 +56,8 @@ struct bytes_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct bytes_message_t *bytes_message_new(
+struct bytes_message_t *
+bytes_message_new(
     void *workspace_p,
     size_t size);
 

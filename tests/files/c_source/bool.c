@@ -80,14 +80,16 @@ static void bool_message_decode_inner(
     }
 }
 
-struct bool_message_t *bool_message_new(
+struct bool_message_t *
+bool_message_new(
     void *workspace_p,
     size_t size)
 {
-    return (pbtools_message_new(workspace_p,
-                                size,
-                                sizeof(struct bool_message_t),
-                                (pbtools_message_init_t)bool_message_init));
+    return (pbtools_message_new(
+        workspace_p,
+        size,
+        sizeof(struct bool_message_t),
+        (pbtools_message_init_t)bool_message_init));
 }
 
 int bool_message_encode(

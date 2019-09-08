@@ -56,7 +56,8 @@ struct int64_message_t {
  *
  * @return Initialized address book, or NULL on failure.
  */
-struct int64_message_t *int64_message_new(
+struct int64_message_t *
+int64_message_new(
     void *workspace_p,
     size_t size);
 
