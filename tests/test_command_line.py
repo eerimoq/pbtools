@@ -28,6 +28,7 @@ class CommandLineTest(unittest.TestCase):
             'int32',
             'int64',
             'message',
+            'no_package',
             # 'oneof',
             'options',
             'repeated',

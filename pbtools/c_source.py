@@ -454,8 +454,11 @@ struct {full_name_snake_case}_oneof_t {{
 
 class Generator:
 
-    def __init__(self, parsed, header_name):
-        self.namespace = camel_to_snake_case(parsed.package)
+    def __init__(self, namespace, parsed, header_name):
+        if parsed.package is not None:
+            namespace = camel_to_snake_case(parsed.package)
+
+        self.namespace = namespace
         self.parsed = parsed
         self.header_name = header_name
 
@@ -801,12 +804,10 @@ class Generator:
 
     def generate(self):
         namespace_upper = self.namespace.upper()
-        header = HEADER_FMT.format(namespace_upper=namespace_upper,
-                                   include_guard='{}_H'.format(namespace_upper),
+        header = HEADER_FMT.format(include_guard='{}_H'.format(namespace_upper),
                                    types=self.generate_types(),
                                    declarations=self.generate_declarations())
-        source = SOURCE_FMT.format(namespace_upper=namespace_upper,
-                                   header=self.header_name,
+        source = SOURCE_FMT.format(header=self.header_name,
                                    definitions=self.generate_definitions())
 
         return header, source
@@ -817,4 +818,4 @@ def generate(namespace, parsed, header_name):
 
     """
 
-    return Generator(parsed, header_name).generate()
+    return Generator(namespace, parsed, header_name).generate()

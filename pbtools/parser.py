@@ -188,6 +188,28 @@ def load_message_type(tokens):
     return tokens[1]
 
 
+class Field:
+
+    def __init__(self, type, name, field_number):
+        self.type = type
+        self.name = name
+        self.field_number = field_number
+        self.namespace = []
+        self.type_kind = None
+
+    @property
+    def full_type(self):
+        return '.'.join(self.namespace + [self.type])
+
+    @property
+    def full_type_snake_case(self):
+        return camel_to_snake_case(self.full_type)
+
+    @property
+    def name_snake_case(self):
+        return camel_to_snake_case(self.name)
+
+
 class Option:
 
     def __init__(self, tokens):
@@ -233,26 +255,12 @@ class Enum:
         return camel_to_snake_case(self.full_name)
 
 
-class OneofField:
+class OneofField(Field):
 
     def __init__(self, tokens):
-        self.type = load_message_type(tokens[0])
-        self.name = tokens[1]
-        self.field_number = int(tokens[3])
-        self.namespace = []
-        self.type_kind = None
-
-    @property
-    def full_type(self):
-        return '.'.join(self.namespace + [self.type])
-
-    @property
-    def full_type_snake_case(self):
-        return camel_to_snake_case(self.full_type)
-
-    @property
-    def name_snake_case(self):
-        return camel_to_snake_case(self.name)
+        super().__init__(load_message_type(tokens[0]),
+                         tokens[1],
+                         int(tokens[3]))
 
 
 class Oneof:
@@ -274,27 +282,13 @@ class Oneof:
         return camel_to_snake_case(self.full_name)
 
 
-class MessageField:
+class MessageField(Field):
 
     def __init__(self, tokens):
-        self.type = load_message_type(tokens[1])
-        self.name = tokens[2]
-        self.field_number = int(tokens[4])
+        super().__init__(load_message_type(tokens[1]),
+                         tokens[2],
+                         int(tokens[4]))
         self.repeated = bool(tokens[0])
-        self.namespace = []
-        self.type_kind = None
-
-    @property
-    def full_type(self):
-        return '.'.join(self.namespace + [self.type])
-
-    @property
-    def full_type_snake_case(self):
-        return camel_to_snake_case(self.full_type)
-
-    @property
-    def name_snake_case(self):
-        return camel_to_snake_case(self.name)
 
 
 class Message:
@@ -373,7 +367,7 @@ def load_package(tokens):
     try:
         return tokens[1]['package'][0][1]
     except KeyError:
-        raise RuntimeError('Package missing.')
+        return None
 
 
 def load_options(tokens):
@@ -408,13 +402,20 @@ class Proto:
 
     def __init__(self, tree):
         self.package = load_package(tree)
+        namespace = self.namespace_base()
         self.options = load_options(tree)
-        self.messages = load_messages(tree, [self.package])
+        self.messages = load_messages(tree, namespace)
         self.services = load_services(tree)
-        self.enums = load_enums(tree, [self.package])
+        self.enums = load_enums(tree, namespace)
         self.messages_stack = []
         self.resolve_messages_fields_types()
         self.resolve_messages_fields_type_kinds()
+
+    def namespace_base(self):
+        if self.package is None:
+            return []
+        else:
+            return [self.package]
 
     def resolve_messages_fields_types(self):
         for message in self.messages:
@@ -427,7 +428,7 @@ class Proto:
             if field.type in SCALAR_VALUE_TYPES:
                 continue
 
-            self.resolve_message_field_type(field)
+            self.resolve_field_type(field)
 
         for inner_message in message.messages:
             self.resolve_message_fields_types(inner_message)
@@ -437,27 +438,17 @@ class Proto:
                 if field.type in SCALAR_VALUE_TYPES:
                     continue
 
-                self.resolve_oneof_field_type(field, oneof.name)
+                self.resolve_field_type(field)
 
         self.messages_stack.pop()
 
-    def resolve_message_field_type(self, field):
+    def resolve_field_type(self, field):
         for message in reversed(self.messages_stack):
             if field.type in message.type_names:
                 namespace = message.namespace + [message.name]
                 break
         else:
-            namespace = [self.package]
-
-        field.namespace = namespace
-
-    def resolve_oneof_field_type(self, field, oneof_name):
-        for message in reversed(self.messages_stack):
-            if field.type in message.type_names:
-                namespace = message.namespace + [message.name]
-                break
-        else:
-            namespace = [self.package]
+            namespace = self.namespace_base()
 
         field.namespace = namespace
 
@@ -469,41 +460,26 @@ class Proto:
         self.messages_stack.append(message)
 
         for field in message.fields:
-            self.resolve_message_field_type_kind(field)
+            self.resolve_field_type_kind(field)
 
         for inner_message in message.messages:
             self.resolve_message_fields_type_kinds(inner_message)
 
         for oneof in message.oneofs:
             for field in oneof.fields:
-                self.resolve_oneof_field_type_kind(field)
+                self.resolve_field_type_kind(field)
 
         self.messages_stack.pop()
 
-    def resolve_message_field_type_kind(self, field):
+    def resolve_field_type_kind(self, field):
         if field.type in SCALAR_VALUE_TYPES:
             field.type_kind = 'scalar-value-type'
-        elif self.is_message_field_enum(field):
+        elif self.is_field_enum(field):
             field.type_kind = 'enum'
         else:
             field.type_kind = 'message'
 
-    def resolve_oneof_field_type_kind(self, field):
-        if field.type in SCALAR_VALUE_TYPES:
-            field.type_kind = 'scalar-value-type'
-        elif self.is_oneof_field_enum(field):
-            field.type_kind = 'enum'
-        else:
-            field.type_kind = 'message'
-
-    def is_message_field_enum(self, field):
-        type = self.lookup_type(field.namespace[1:] + [field.type],
-                                self.enums,
-                                self.messages)
-
-        return isinstance(type, Enum)
-
-    def is_oneof_field_enum(self, field):
+    def is_field_enum(self, field):
         type = self.lookup_type(field.namespace[1:] + [field.type],
                                 self.enums,
                                 self.messages)
@@ -528,7 +504,6 @@ class Proto:
             for message in messages:
                 if message.name == name:
                     return message
-
 
 
 def parse_string(text):

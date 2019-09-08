@@ -454,6 +454,12 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(option.name, 'cc_enable_arenas')
         self.assertEqual(option.value, True)
 
+    def test_no_package(self):
+        parsed = pbtools.parse_file('tests/files/no_package.proto')
+
+        self.assertEqual(parsed.package, None)
+        self.assertEqual(len(parsed.messages), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
