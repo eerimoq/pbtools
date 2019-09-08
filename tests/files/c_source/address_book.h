@@ -34,12 +34,22 @@
 #include "pbtools.h"
 
 /**
- * Message Person in package address_book.
+ * Enum address_book.Person.PhoneType.
  */
 enum address_book_person_phone_type_e {
     address_book_person_phone_type_mobile_e = 0,
     address_book_person_phone_type_home_e = 1,
     address_book_person_phone_type_work_e = 2
+};
+
+/**
+ * Message address_book.Person.PhoneNumber.
+ */
+struct address_book_person_phone_number_repeated_t {
+    int length;
+    struct address_book_person_phone_number_t **items_pp;
+    struct address_book_person_phone_number_t *head_p;
+    struct address_book_person_phone_number_t *tail_p;
 };
 
 struct address_book_person_phone_number_t {
@@ -48,13 +58,9 @@ struct address_book_person_phone_number_t {
     enum address_book_person_phone_type_e type;
 };
 
-struct address_book_person_phone_number_repeated_t {
-    int length;
-    struct address_book_person_phone_number_t **items_pp;
-    struct address_book_person_phone_number_t *head_p;
-    struct address_book_person_phone_number_t *tail_p;
-};
-
+/**
+ * Message address_book.Person.
+ */
 struct address_book_person_repeated_t {
     int length;
     struct address_book_person_t **items_pp;
@@ -71,7 +77,7 @@ struct address_book_person_t {
 };
 
 /**
- * Message AddressBook in package address_book.
+ * Message address_book.AddressBook.
  */
 struct address_book_address_book_repeated_t {
     int length;

@@ -412,6 +412,18 @@ ENUM_MEMBER_FMT = '''\
     {name}_{field_name}_e = {field_number}\
 '''
 
+ONEOF_FMT = '''\
+/**
+ * Oneof {full_name}.
+ */
+struct {full_name_snake_case}_oneof_t {{
+    enum {full_name_snake_case}_choice_e choice;
+    union {{
+{members}
+    }} value;
+}};
+'''
+
 
 class Generator:
 
@@ -479,6 +491,11 @@ class Generator:
 
             members.append(member)
 
+        for oneof in message.oneofs:
+            type = f'{message.full_name_snake_case}_{oneof.name}_oneof_t'
+            members.append(
+                f'    struct {type} {oneof.name};')
+
         members = '\n'.join(members)
 
         if members:
@@ -503,6 +520,42 @@ class Generator:
                             members=self.generate_enum_members(enum))
         ]
 
+    def generate_oneof_members(self, oneof):
+        members = []
+
+        for field in oneof.fields:
+            member = self.generate_struct_member_fmt(
+                field.full_type_snake_case,
+                field.name,
+                field.type_kind)
+            members.append(f'    {member}')
+
+        return '\n'.join(members)
+
+    def generate_oneof_choices(self, oneof):
+        members = [
+            f'    {oneof.full_name_snake_case}_choice_none_e = 0'
+        ]
+
+        for i, field in enumerate(oneof.fields, 1):
+            members.append(
+                f'    {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e = {i}')
+
+        return ENUM_FMT.format(full_name=oneof.full_name,
+                               name=f'{oneof.full_name_snake_case}_choice',
+                               members=',\n'.join(members))
+
+    def generate_oneof_type(self, oneof):
+        types = [self.generate_oneof_choices(oneof)]
+        types += [
+            ONEOF_FMT.format(full_name=oneof.full_name,
+                             full_name_snake_case=oneof.full_name_snake_case,
+                             name=oneof.name,
+                             members=self.generate_oneof_members(oneof))
+        ]
+
+        return ['\n'.join(types)]
+
     def generate_message_types(self, message):
         types = []
 
@@ -511,6 +564,9 @@ class Generator:
 
         for inner_message in message.messages:
             types += self.generate_message_types(inner_message)
+
+        for oneof in message.oneofs:
+            types += self.generate_oneof_type(oneof)
 
         types += [
             MESSAGE_STRUCT_FMT.format(

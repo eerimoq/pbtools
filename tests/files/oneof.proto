@@ -8,3 +8,18 @@ message Message {
         string v2 = 2;
     };
 }
+
+message Message2 {
+    message Foo {
+        int32 bar = 55;
+    }
+
+    oneof oneof1 {
+        Foo v1 = 3;
+    };
+    oneof oneof2 {
+        bool v1 = 1;
+        Foo v2 = 2;
+        Message v3 = 3;
+    };
+}

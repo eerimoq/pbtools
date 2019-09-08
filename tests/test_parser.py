@@ -82,6 +82,8 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(len(message.enums), 1)
         self.assertEqual(len(message.messages), 1)
         self.assertEqual(message.namespace, ['address_book'])
+        self.assertEqual(message.full_name, 'address_book.Person')
+        self.assertEqual(message.full_name_snake_case, 'address_book_person')
 
         field = message.fields[0]
         self.assertEqual(field.type, 'string')
@@ -89,6 +91,8 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.field_number, 1)
         self.assertFalse(field.repeated)
         self.assertEqual(field.namespace, [])
+        self.assertEqual(field.full_type, 'string')
+        self.assertEqual(field.full_type_snake_case, 'string')
 
         field = message.fields[1]
         self.assertEqual(field.type, 'int32')
@@ -110,6 +114,8 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.field_number, 4)
         self.assertTrue(field.repeated)
         self.assertEqual(field.namespace, ['address_book', 'Person'])
+        self.assertEqual(field.full_type, 'address_book.Person.PhoneNumber')
+        self.assertEqual(field.full_type_snake_case, 'address_book_person_phone_number')
 
         # Person.PhoneType
         enum = message.enums[0]
@@ -192,22 +198,74 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/oneof.proto')
 
         self.assertEqual(parsed.package, 'oneof')
-        self.assertEqual(len(parsed.messages), 1)
+        self.assertEqual(len(parsed.messages), 2)
 
         message = parsed.messages[0]
+        self.assertEqual(len(message.oneofs), 1)
         oneof = message.oneofs[0]
         self.assertEqual(oneof.name, 'value')
         self.assertEqual(len(oneof.fields), 2)
+        self.assertEqual(oneof.namespace, ['oneof', 'Message'])
+        self.assertEqual(oneof.full_name, 'oneof.Message.value')
+        self.assertEqual(oneof.full_name_snake_case, 'oneof_message_value')
 
         field = oneof.fields[0]
         self.assertEqual(field.type, 'int32')
         self.assertEqual(field.name, 'v1')
         self.assertEqual(field.field_number, 1)
+        self.assertEqual(field.namespace, [])
+        self.assertEqual(field.full_type, 'int32')
+        self.assertEqual(field.full_type_snake_case, 'int32')
 
         field = oneof.fields[1]
         self.assertEqual(field.type, 'string')
         self.assertEqual(field.name, 'v2')
         self.assertEqual(field.field_number, 2)
+        self.assertEqual(field.namespace, [])
+        self.assertEqual(field.full_type, 'string')
+        self.assertEqual(field.full_type_snake_case, 'string')
+
+        message = parsed.messages[1]
+        self.assertEqual(len(message.oneofs), 2)
+        oneof = message.oneofs[0]
+        self.assertEqual(oneof.name, 'oneof1')
+        self.assertEqual(len(oneof.fields), 1)
+        self.assertEqual(oneof.namespace, ['oneof', 'Message2'])
+        self.assertEqual(oneof.full_name, 'oneof.Message2.oneof1')
+        self.assertEqual(oneof.full_name_snake_case, 'oneof_message2_oneof1')
+
+        field = oneof.fields[0]
+        self.assertEqual(field.type, 'Foo')
+        self.assertEqual(field.name, 'v1')
+        self.assertEqual(field.field_number, 3)
+        self.assertEqual(field.namespace, ['oneof', 'Message2'])
+        self.assertEqual(field.full_type, 'oneof.Message2.Foo')
+        self.assertEqual(field.full_type_snake_case, 'oneof_message2_foo')
+
+        oneof = message.oneofs[1]
+        field = oneof.fields[0]
+        self.assertEqual(field.type, 'bool')
+        self.assertEqual(field.name, 'v1')
+        self.assertEqual(field.field_number, 1)
+        self.assertEqual(field.namespace, [])
+        self.assertEqual(field.full_type, 'bool')
+        self.assertEqual(field.full_type_snake_case, 'bool')
+
+        field = oneof.fields[1]
+        self.assertEqual(field.type, 'Foo')
+        self.assertEqual(field.name, 'v2')
+        self.assertEqual(field.field_number, 2)
+        self.assertEqual(field.namespace, ['oneof', 'Message2'])
+        self.assertEqual(field.full_type, 'oneof.Message2.Foo')
+        self.assertEqual(field.full_type_snake_case, 'oneof_message2_foo')
+
+        field = oneof.fields[2]
+        self.assertEqual(field.type, 'Message')
+        self.assertEqual(field.name, 'v3')
+        self.assertEqual(field.field_number, 3)
+        self.assertEqual(field.namespace, ['oneof'])
+        self.assertEqual(field.full_type, 'oneof.Message')
+        self.assertEqual(field.full_type_snake_case, 'oneof_message')
 
     def test_enum(self):
         parsed = pbtools.parse_file('tests/files/enum.proto')

@@ -239,17 +239,39 @@ class OneofField:
         self.type = load_message_type(tokens[0])
         self.name = tokens[1]
         self.field_number = int(tokens[3])
+        self.namespace = []
+        self.type_kind = None
+
+    @property
+    def full_type(self):
+        return '.'.join(self.namespace + [self.type])
+
+    @property
+    def full_type_snake_case(self):
+        return camel_to_snake_case(self.full_type)
+
+    @property
+    def name_snake_case(self):
+        return camel_to_snake_case(self.name)
 
 
 class Oneof:
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, namespace):
         self.name = tokens[1]
         self.fields = []
-        self.namespace = []
+        self.namespace = namespace
 
         for item in tokens[3]:
             self.fields.append(OneofField(item))
+
+    @property
+    def full_name(self):
+        return '.'.join(self.namespace + [self.name])
+
+    @property
+    def full_name_snake_case(self):
+        return camel_to_snake_case(self.full_name)
 
 
 class MessageField:
@@ -296,7 +318,7 @@ class Message:
             elif kind == 'message':
                 self.messages.append(Message(item, inner_namespace))
             elif kind == 'oneof':
-                self.oneofs.append(Oneof(item))
+                self.oneofs.append(Oneof(item, inner_namespace))
             elif kind == ';':
                 pass
             else:
@@ -410,9 +432,26 @@ class Proto:
         for inner_message in message.messages:
             self.resolve_message_fields_types(inner_message)
 
+        for oneof in message.oneofs:
+            for field in oneof.fields:
+                if field.type in SCALAR_VALUE_TYPES:
+                    continue
+
+                self.resolve_oneof_field_type(field, oneof.name)
+
         self.messages_stack.pop()
 
     def resolve_message_field_type(self, field):
+        for message in reversed(self.messages_stack):
+            if field.type in message.type_names:
+                namespace = message.namespace + [message.name]
+                break
+        else:
+            namespace = [self.package]
+
+        field.namespace = namespace
+
+    def resolve_oneof_field_type(self, field, oneof_name):
         for message in reversed(self.messages_stack):
             if field.type in message.type_names:
                 namespace = message.namespace + [message.name]
@@ -435,6 +474,10 @@ class Proto:
         for inner_message in message.messages:
             self.resolve_message_fields_type_kinds(inner_message)
 
+        for oneof in message.oneofs:
+            for field in oneof.fields:
+                self.resolve_oneof_field_type_kind(field)
+
         self.messages_stack.pop()
 
     def resolve_message_field_type_kind(self, field):
@@ -445,18 +488,32 @@ class Proto:
         else:
             field.type_kind = 'message'
 
+    def resolve_oneof_field_type_kind(self, field):
+        if field.type in SCALAR_VALUE_TYPES:
+            field.type_kind = 'scalar-value-type'
+        elif self.is_oneof_field_enum(field):
+            field.type_kind = 'enum'
+        else:
+            field.type_kind = 'message'
+
     def is_message_field_enum(self, field):
         type = self.lookup_type(field.namespace[1:] + [field.type],
                                 self.enums,
                                 self.messages)
 
         return isinstance(type, Enum)
-            
+
+    def is_oneof_field_enum(self, field):
+        type = self.lookup_type(field.namespace[1:] + [field.type],
+                                self.enums,
+                                self.messages)
+
+        return isinstance(type, Enum)
 
     def lookup_type(self, path, enums, messages):
         name = path[0]
         rest = path[1:]
-        
+
         if rest:
             for message in messages:
                 if message.name == name:
@@ -471,8 +528,8 @@ class Proto:
             for message in messages:
                 if message.name == name:
                     return message
-        
-            
+
+
 
 def parse_string(text):
     return Proto(Parser().parse(text))

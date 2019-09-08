@@ -1542,10 +1542,10 @@ TEST(oneof_v1)
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
 
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_v1_e);
+    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v1_e);
     ASSERT_EQ(message_p->value.value.v1, 0);
 
-    message_p->value.choice = oneof_message_value_v1_e;
+    message_p->value.choice = oneof_message_value_choice_v1_e;
     message_p->value.value.v1 = 65;
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1555,7 +1555,7 @@ TEST(oneof_v1)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_v1_e);
+    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v1_e);
     ASSERT_EQ(message_p->value.value.v1, 65);
 }
 
@@ -1568,7 +1568,7 @@ TEST(oneof_v2)
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    message_p->value.choice = oneof_message_value_v2_e;
+    message_p->value.choice = oneof_message_value_choice_v2_e;
     pbtools_set_string(&message_p->value.value.v2, "Hello!");
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 8);
@@ -1578,7 +1578,7 @@ TEST(oneof_v2)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 8);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_v2_e);
+    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v2_e);
     ASSERT_EQ(pbtools_get_string(&message_p->value.value.v2), "Hello!");
 }
 

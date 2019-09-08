@@ -34,7 +34,7 @@
 #include "pbtools.h"
 
 /**
- * Enum Enum in package enum.
+ * Enum enum.Enum.
  */
 enum enum_enum_e {
     enum_enum_c_e = 0,
@@ -42,13 +42,16 @@ enum enum_enum_e {
 };
 
 /**
- * Message Message in package enum.
+ * Enum enum.Message.Enum.
  */
 enum enum_message_enum_e {
     enum_message_enum_a_e = 0,
     enum_message_enum_b_e = 1
 };
 
+/**
+ * Message enum.Message.
+ */
 struct enum_message_repeated_t {
     int length;
     struct enum_message_t **items_pp;
@@ -62,13 +65,16 @@ struct enum_message_t {
 };
 
 /**
- * Message Message2 in package enum.
+ * Enum enum.Message2.InnerEnum.
  */
 enum enum_message2_inner_enum_e {
     enum_message2_inner_enum_e_e = 0,
     enum_message2_inner_enum_f_e = 1
 };
 
+/**
+ * Message enum.Message2.
+ */
 struct enum_message2_repeated_t {
     int length;
     struct enum_message2_t **items_pp;

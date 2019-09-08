@@ -36,13 +36,13 @@ static void oneof_message_encode_inner(
 {
     switch (self_p->value.choice) {
 
-    case oneof_message_value_v1_e:
+    case oneof_message_value_choice_v1_e:
         pbtools_encoder_write_int32(encoder_p,
                                     1,
                                     self_p->value.value.v1);
         break;
 
-    case oneof_message_value_v2_e:
+    case oneof_message_value_choice_v2_e:
         pbtools_encoder_write_string(encoder_p,
                                      2,
                                      &self_p->value.value.v2);
@@ -63,14 +63,14 @@ static void oneof_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            self_p->value.choice = oneof_message_value_v1_e;
+            self_p->value.choice = oneof_message_value_choice_v1_e;
             self_p->value.value.v1 = pbtools_decoder_read_int32(
                 decoder_p,
                 wire_type);
             break;
 
         case 2:
-            self_p->value.choice = oneof_message_value_v2_e;
+            self_p->value.choice = oneof_message_value_choice_v2_e;
             pbtools_decoder_read_string(decoder_p,
                                         wire_type,
                                         &self_p->value.value.v2);
@@ -99,8 +99,8 @@ struct oneof_message_t *oneof_message_new(
     self_p = pbtools_heap_alloc(heap_p, sizeof(*self_p));
 
     if (self_p != NULL) {
-        self_p->heap_p = heap_p;
-        self_p->value.choice = oneof_message_value_v1_e;
+        self_p->base.heap_p = heap_p;
+        self_p->value.choice = oneof_message_value_choice_v1_e;
         self_p->value.value.v1 = 0;
     }
 
@@ -127,7 +127,7 @@ int oneof_message_decode(
 {
     struct pbtools_decoder_t decoder;
 
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->heap_p);
+    pbtools_decoder_init(&decoder, encoded_p, size, self_p->base.heap_p);
     oneof_message_decode_inner(self_p, &decoder);
 
     return (pbtools_decoder_get_result(&decoder));
