@@ -28,12 +28,14 @@ def _do_generate_c_source(args):
         with open(filename_c, 'w') as fout:
             fout.write(source)
 
+        print(f'Successfully generated {filename_h} and {filename_c}.')
+
     for filename in ['pbtools.h', 'pbtools.c']:
         shutil.copy(
             os.path.join(SCRIPT_DIR, f'../c_source/{filename}'),
             '.')
 
-    print(f'Successfully created pbtools.[hc] and {name}.[hc].')
+    print(f'Successfully created pbtools.h and pbtools.c.')
 
 
 def add_subparser(subparsers):
