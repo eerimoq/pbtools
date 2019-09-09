@@ -86,10 +86,10 @@ bool_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct bool_message_t),
-        (pbtools_message_init_t)bool_message_init));
+                workspace_p,
+                size,
+                sizeof(struct bool_message_t),
+                (pbtools_message_init_t)bool_message_init));
 }
 
 int bool_message_encode(
@@ -98,10 +98,10 @@ int bool_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)bool_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)bool_message_encode_inner));
 }
 
 int bool_message_decode(
@@ -110,8 +110,8 @@ int bool_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)bool_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)bool_message_decode_inner));
 }

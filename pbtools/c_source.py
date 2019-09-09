@@ -236,7 +236,7 @@ DECODE_INNER_REPEATED_MEMBER_FMT = '''\
 
 DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT = '''\
         case {field_number}:
-            {full_type}_decode_repeated_inner(
+            {type}_decode_repeated_inner(
                 decoder_p,
                 wire_type,
                 &self_p->{field_name});
@@ -249,7 +249,7 @@ DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
                 decoder_p,
                 wire_type,
                 &self_p->{field_name}.base,
-                (pbtools_message_decode_inner_t){full_type}_decode_inner);
+                (pbtools_message_decode_inner_t){type}_decode_inner);
             break;
 '''
 
@@ -267,10 +267,10 @@ struct {name}_t *
     size_t size)
 {{
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct {name}_t),
-        (pbtools_message_init_t){name}_init));
+                workspace_p,
+                size,
+                sizeof(struct {name}_t),
+                (pbtools_message_init_t){name}_init));
 }}
 
 int {name}_encode(
@@ -279,10 +279,10 @@ int {name}_encode(
     size_t size)
 {{
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t){name}_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t){name}_encode_inner));
 }}
 
 int {name}_decode(
@@ -291,10 +291,10 @@ int {name}_decode(
     size_t size)
 {{
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t){name}_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t){name}_decode_inner));
 }}
 '''
 
@@ -319,9 +319,9 @@ int {name}_{field_name}_alloc(
     int length)
 {{
     return (pbtools_alloc_repeated_{type}(
-        &self_p->base,
-        length,
-        &self_p->{field_name}));
+                &self_p->base,
+                length,
+                &self_p->{field_name}));
 }}
 '''
 
@@ -330,36 +330,12 @@ int {name}_{field_name}_alloc(
     struct {name}_t *self_p,
     int length)
 {{
-    int res;
-    int i;
-    struct {type}_t *items_p;
-
-    res = -1;
-    self_p->{field_name}.items_pp = pbtools_heap_alloc(
-        self_p->base.heap_p,
-        sizeof(items_p) * length);
-
-    if (self_p->{field_name}.items_pp != NULL) {{
-        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
-
-        if (items_p != NULL) {{
-            for (i = 0; i < length; i++) {{
-                {type}_init(
-                    &items_p[i],
-                    self_p->base.heap_p,
-                    &items_p[i + 1]);
-                self_p->{field_name}.items_pp[i] = &items_p[i];
-            }}
-
-            items_p[length - 1].base.next_p = NULL;
-            self_p->{field_name}.length = length;
-            self_p->{field_name}.head_p = &items_p[0];
-            self_p->{field_name}.tail_p = &items_p[length - 1];
-            res = 0;
-        }}
-    }}
-
-    return (res);
+    return (pbtools_alloc_repeated(
+                (struct pbtools_repeated_message_t *)&self_p->{field_name},
+                length,
+                self_p->base.heap_p,
+                sizeof(struct {type}_t),
+                (pbtools_message_init_t){type}_init));
 }}
 
 static void {type}_encode_repeated_inner(
@@ -443,8 +419,8 @@ ONEOF_FMT = '''\
 /**
  * Oneof {full_name}.
  */
-struct {full_name_snake_case}_oneof_t {{
-    enum {full_name_snake_case}_choice_e choice;
+struct {name}_oneof_t {{
+    enum {name}_choice_e choice;
     union {{
 {members}
     }} value;
@@ -579,8 +555,7 @@ class Generator:
         types = [self.generate_oneof_choices(oneof)]
         types += [
             ONEOF_FMT.format(full_name=oneof.full_name,
-                             full_name_snake_case=oneof.full_name_snake_case,
-                             name=oneof.name,
+                             name=oneof.full_name_snake_case,
                              members=self.generate_oneof_members(oneof))
         ]
 
@@ -623,17 +598,14 @@ class Generator:
         declarations = []
 
         for message in self.messages:
-            message_name = message.full_name_snake_case
             declarations += [
-                REPEATED_DECLARATION_FMT.format(name=message_name,
+                REPEATED_DECLARATION_FMT.format(name=message.full_name_snake_case,
                                                 field_name=field.name_snake_case)
                 for field in message.repeated_fields
-            ] + [
-                MESSAGE_DECLARATION_FMT.format(package=self.package,
-                                               proto_name=message.name,
-                                               full_name=message.full_name,
-                                               name=message_name)
             ]
+            declarations.append(
+                MESSAGE_DECLARATION_FMT.format(name=message.full_name_snake_case,
+                                               full_name=message.full_name))
 
         return '\n'.join(declarations)
 
@@ -642,7 +614,7 @@ class Generator:
         message_name = message.full_name_snake_case
 
         for field in reversed(message.fields):
-            if field.type in SCALAR_VALUE_TYPES:
+            if field.type_kind == 'scalar-value-type':
                 if field.repeated:
                     fmt = ENCODE_INNER_REPEATED_MEMBER_FMT
                 else:
@@ -655,8 +627,7 @@ class Generator:
                 else:
                     fmt = ENCODE_ENUM_FMT
 
-            member = fmt.format(name=message_name,
-                                type=field.full_type_snake_case,
+            member = fmt.format(type=field.full_type_snake_case,
                                 field_number=field.field_number,
                                 field_name=field.name,
                                 ref='&' if field.type in ['bytes', 'string'] else '')
@@ -670,13 +641,13 @@ class Generator:
 
         for field in message.fields:
             if field.repeated:
-                if field.type in SCALAR_VALUE_TYPES:
+                if field.type_kind == 'scalar-value-type':
                     fmt = DECODE_INNER_REPEATED_MEMBER_FMT
                 else:
                     fmt = DECODE_INNER_REPEATED_MESSAGE_MEMBER_FMT
             elif field.type in ['bytes', 'string']:
                 fmt = DECODE_INNER_MEMBER_BYTES_AND_STRING_FMT
-            elif field.type in SCALAR_VALUE_TYPES:
+            elif field.type_kind == 'scalar-value-type':
                 fmt = DECODE_INNER_MEMBER_FMT
             elif field.type_kind == 'message':
                 fmt = DECODE_SUB_MESSAGE_MEMBER_FMT
@@ -684,9 +655,7 @@ class Generator:
                 fmt = DECODE_ENUM_FMT
 
             members.append(
-                fmt.format(full_type=field.full_type_snake_case,
-                           type=field.type,
-                           name=message.full_name_snake_case,
+                fmt.format(type=field.full_type_snake_case,
                            field_name=field.name_snake_case,
                            field_number=field.field_number))
 
@@ -718,7 +687,7 @@ class Generator:
         members = []
 
         for field in message.repeated_fields:
-            if field.type in SCALAR_VALUE_TYPES:
+            if field.type_kind == 'scalar-value-type':
                 fmt = REPEATED_DEFINITION_FMT
             else:
                 fmt = REPEATED_MESSAGE_DEFINITION_FMT
@@ -736,13 +705,12 @@ class Generator:
         finalizers = []
 
         for field in message.repeated_fields:
-            if field.type in SCALAR_VALUE_TYPES:
+            if field.type_kind == 'scalar-value-type':
                 fmt = REPEATED_FINALIZER_FMT
             else:
                 fmt = REPEATED_MESSAGE_FINALIZER_FMT
 
-            finalizers.append(fmt.format(name=message.full_name_snake_case,
-                                         field_name=field.name,
+            finalizers.append(fmt.format(field_name=field.name,
                                          type=field.full_type_snake_case))
 
         if finalizers:
@@ -767,18 +735,17 @@ class Generator:
                                      declarations,
                                      definitions,
                                      public):
-        message_name = message.full_name_snake_case
         declarations.append(
-            MESSAGE_STATIC_DECLARATIONS_FMT.format(name=message_name))
+            MESSAGE_STATIC_DECLARATIONS_FMT.format(
+                name=message.full_name_snake_case))
 
         for field in message.repeated_fields:
-            if field.type in SCALAR_VALUE_TYPES:
+            if field.type_kind == 'scalar-value-type':
                 continue
 
             declarations.append(
                 REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                    type=field.full_type_snake_case,
-                    name=message_name))
+                    type=field.full_type_snake_case))
 
         for inner_message in message.messages:
             self.generate_message_definitions(inner_message,
@@ -797,8 +764,6 @@ class Generator:
         if public:
             definitions.append(
                 MESSAGE_DEFINITION_FMT.format(
-                    package=self.package,
-                    proto_name=message.name,
                     name=message.full_name_snake_case,
                     repeated=self.generate_repeated_definitions(message)))
 

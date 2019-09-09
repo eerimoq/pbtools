@@ -213,10 +213,10 @@ benchmarks_proto3_google_message1_sub_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct benchmarks_proto3_google_message1_sub_message_t),
-        (pbtools_message_init_t)benchmarks_proto3_google_message1_sub_message_init));
+                workspace_p,
+                size,
+                sizeof(struct benchmarks_proto3_google_message1_sub_message_t),
+                (pbtools_message_init_t)benchmarks_proto3_google_message1_sub_message_init));
 }
 
 int benchmarks_proto3_google_message1_sub_message_encode(
@@ -225,10 +225,10 @@ int benchmarks_proto3_google_message1_sub_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner));
 }
 
 int benchmarks_proto3_google_message1_sub_message_decode(
@@ -237,10 +237,10 @@ int benchmarks_proto3_google_message1_sub_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner));
 }
 
 static void benchmarks_proto3_google_message1_init(
@@ -540,9 +540,9 @@ int benchmarks_proto3_google_message1_field5_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_fixed64(
-        &self_p->base,
-        length,
-        &self_p->field5));
+                &self_p->base,
+                length,
+                &self_p->field5));
 }
 
 struct benchmarks_proto3_google_message1_t *
@@ -551,10 +551,10 @@ benchmarks_proto3_google_message1_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct benchmarks_proto3_google_message1_t),
-        (pbtools_message_init_t)benchmarks_proto3_google_message1_init));
+                workspace_p,
+                size,
+                sizeof(struct benchmarks_proto3_google_message1_t),
+                (pbtools_message_init_t)benchmarks_proto3_google_message1_init));
 }
 
 int benchmarks_proto3_google_message1_encode(
@@ -563,10 +563,10 @@ int benchmarks_proto3_google_message1_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_encode_inner));
 }
 
 int benchmarks_proto3_google_message1_decode(
@@ -575,8 +575,8 @@ int benchmarks_proto3_google_message1_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_decode_inner));
 }

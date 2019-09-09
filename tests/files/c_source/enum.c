@@ -112,10 +112,10 @@ enum_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct enum_message_t),
-        (pbtools_message_init_t)enum_message_init));
+                workspace_p,
+                size,
+                sizeof(struct enum_message_t),
+                (pbtools_message_init_t)enum_message_init));
 }
 
 int enum_message_encode(
@@ -124,10 +124,10 @@ int enum_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)enum_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)enum_message_encode_inner));
 }
 
 int enum_message_decode(
@@ -136,10 +136,10 @@ int enum_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)enum_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)enum_message_decode_inner));
 }
 
 static void enum_message2_init(
@@ -191,10 +191,10 @@ enum_message2_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct enum_message2_t),
-        (pbtools_message_init_t)enum_message2_init));
+                workspace_p,
+                size,
+                sizeof(struct enum_message2_t),
+                (pbtools_message_init_t)enum_message2_init));
 }
 
 int enum_message2_encode(
@@ -203,10 +203,10 @@ int enum_message2_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)enum_message2_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)enum_message2_encode_inner));
 }
 
 int enum_message2_decode(
@@ -215,10 +215,10 @@ int enum_message2_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)enum_message2_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)enum_message2_decode_inner));
 }
 
 static void enum_limits_init(
@@ -264,10 +264,10 @@ enum_limits_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct enum_limits_t),
-        (pbtools_message_init_t)enum_limits_init));
+                workspace_p,
+                size,
+                sizeof(struct enum_limits_t),
+                (pbtools_message_init_t)enum_limits_init));
 }
 
 int enum_limits_encode(
@@ -276,10 +276,10 @@ int enum_limits_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)enum_limits_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)enum_limits_encode_inner));
 }
 
 int enum_limits_decode(
@@ -288,8 +288,8 @@ int enum_limits_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)enum_limits_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)enum_limits_decode_inner));
 }

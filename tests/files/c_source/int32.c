@@ -99,10 +99,10 @@ int32_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct int32_message_t),
-        (pbtools_message_init_t)int32_message_init));
+                workspace_p,
+                size,
+                sizeof(struct int32_message_t),
+                (pbtools_message_init_t)int32_message_init));
 }
 
 int int32_message_encode(
@@ -111,10 +111,10 @@ int int32_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)int32_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)int32_message_encode_inner));
 }
 
 int int32_message_decode(
@@ -123,10 +123,10 @@ int int32_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)int32_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)int32_message_decode_inner));
 }
 
 static void int32_message2_init(
@@ -172,10 +172,10 @@ int32_message2_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct int32_message2_t),
-        (pbtools_message_init_t)int32_message2_init));
+                workspace_p,
+                size,
+                sizeof(struct int32_message2_t),
+                (pbtools_message_init_t)int32_message2_init));
 }
 
 int int32_message2_encode(
@@ -184,10 +184,10 @@ int int32_message2_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)int32_message2_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)int32_message2_encode_inner));
 }
 
 int int32_message2_decode(
@@ -196,8 +196,8 @@ int int32_message2_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)int32_message2_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)int32_message2_decode_inner));
 }

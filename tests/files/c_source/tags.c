@@ -151,10 +151,10 @@ tags_message1_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct tags_message1_t),
-        (pbtools_message_init_t)tags_message1_init));
+                workspace_p,
+                size,
+                sizeof(struct tags_message1_t),
+                (pbtools_message_init_t)tags_message1_init));
 }
 
 int tags_message1_encode(
@@ -163,10 +163,10 @@ int tags_message1_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)tags_message1_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)tags_message1_encode_inner));
 }
 
 int tags_message1_decode(
@@ -175,10 +175,10 @@ int tags_message1_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)tags_message1_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)tags_message1_decode_inner));
 }
 
 static void tags_message2_init(
@@ -224,10 +224,10 @@ tags_message2_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct tags_message2_t),
-        (pbtools_message_init_t)tags_message2_init));
+                workspace_p,
+                size,
+                sizeof(struct tags_message2_t),
+                (pbtools_message_init_t)tags_message2_init));
 }
 
 int tags_message2_encode(
@@ -236,10 +236,10 @@ int tags_message2_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)tags_message2_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)tags_message2_encode_inner));
 }
 
 int tags_message2_decode(
@@ -248,10 +248,10 @@ int tags_message2_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)tags_message2_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)tags_message2_decode_inner));
 }
 
 static void tags_message3_init(
@@ -297,10 +297,10 @@ tags_message3_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct tags_message3_t),
-        (pbtools_message_init_t)tags_message3_init));
+                workspace_p,
+                size,
+                sizeof(struct tags_message3_t),
+                (pbtools_message_init_t)tags_message3_init));
 }
 
 int tags_message3_encode(
@@ -309,10 +309,10 @@ int tags_message3_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)tags_message3_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)tags_message3_encode_inner));
 }
 
 int tags_message3_decode(
@@ -321,10 +321,10 @@ int tags_message3_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)tags_message3_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)tags_message3_decode_inner));
 }
 
 static void tags_message4_init(
@@ -370,10 +370,10 @@ tags_message4_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct tags_message4_t),
-        (pbtools_message_init_t)tags_message4_init));
+                workspace_p,
+                size,
+                sizeof(struct tags_message4_t),
+                (pbtools_message_init_t)tags_message4_init));
 }
 
 int tags_message4_encode(
@@ -382,10 +382,10 @@ int tags_message4_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)tags_message4_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)tags_message4_encode_inner));
 }
 
 int tags_message4_decode(
@@ -394,10 +394,10 @@ int tags_message4_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)tags_message4_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)tags_message4_decode_inner));
 }
 
 static void tags_message5_init(
@@ -443,10 +443,10 @@ tags_message5_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct tags_message5_t),
-        (pbtools_message_init_t)tags_message5_init));
+                workspace_p,
+                size,
+                sizeof(struct tags_message5_t),
+                (pbtools_message_init_t)tags_message5_init));
 }
 
 int tags_message5_encode(
@@ -455,10 +455,10 @@ int tags_message5_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)tags_message5_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)tags_message5_encode_inner));
 }
 
 int tags_message5_decode(
@@ -467,10 +467,10 @@ int tags_message5_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)tags_message5_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)tags_message5_decode_inner));
 }
 
 static void tags_message6_init(
@@ -516,10 +516,10 @@ tags_message6_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct tags_message6_t),
-        (pbtools_message_init_t)tags_message6_init));
+                workspace_p,
+                size,
+                sizeof(struct tags_message6_t),
+                (pbtools_message_init_t)tags_message6_init));
 }
 
 int tags_message6_encode(
@@ -528,10 +528,10 @@ int tags_message6_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)tags_message6_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)tags_message6_encode_inner));
 }
 
 int tags_message6_decode(
@@ -540,8 +540,8 @@ int tags_message6_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)tags_message6_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)tags_message6_decode_inner));
 }

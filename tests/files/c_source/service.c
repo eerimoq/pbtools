@@ -99,10 +99,10 @@ service_request_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct service_request_t),
-        (pbtools_message_init_t)service_request_init));
+                workspace_p,
+                size,
+                sizeof(struct service_request_t),
+                (pbtools_message_init_t)service_request_init));
 }
 
 int service_request_encode(
@@ -111,10 +111,10 @@ int service_request_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)service_request_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)service_request_encode_inner));
 }
 
 int service_request_decode(
@@ -123,10 +123,10 @@ int service_request_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)service_request_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)service_request_decode_inner));
 }
 
 static void service_response_init(
@@ -172,10 +172,10 @@ service_response_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct service_response_t),
-        (pbtools_message_init_t)service_response_init));
+                workspace_p,
+                size,
+                sizeof(struct service_response_t),
+                (pbtools_message_init_t)service_response_init));
 }
 
 int service_response_encode(
@@ -184,10 +184,10 @@ int service_response_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)service_response_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)service_response_encode_inner));
 }
 
 int service_response_decode(
@@ -196,8 +196,8 @@ int service_response_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)service_response_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)service_response_decode_inner));
 }

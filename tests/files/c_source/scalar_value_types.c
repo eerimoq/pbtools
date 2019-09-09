@@ -170,10 +170,10 @@ scalar_value_types_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct scalar_value_types_message_t),
-        (pbtools_message_init_t)scalar_value_types_message_init));
+                workspace_p,
+                size,
+                sizeof(struct scalar_value_types_message_t),
+                (pbtools_message_init_t)scalar_value_types_message_init));
 }
 
 int scalar_value_types_message_encode(
@@ -182,10 +182,10 @@ int scalar_value_types_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)scalar_value_types_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)scalar_value_types_message_encode_inner));
 }
 
 int scalar_value_types_message_decode(
@@ -194,8 +194,8 @@ int scalar_value_types_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)scalar_value_types_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)scalar_value_types_message_decode_inner));
 }

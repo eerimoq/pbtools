@@ -698,6 +698,13 @@ int pbtools_message_decode(struct pbtools_message_base_t *self_p,
                            size_t size,
                            pbtools_message_decode_inner_t message_decode_inner);
 
+int pbtools_alloc_repeated(
+    struct pbtools_repeated_message_t *repeated_p,
+    int length,
+    struct pbtools_heap_t *heap_p,
+    size_t item_size,
+    pbtools_message_init_t message_init);
+
 void pbtools_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,

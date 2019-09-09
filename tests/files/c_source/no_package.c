@@ -178,36 +178,12 @@ int m0_v2_alloc(
     struct m0_t *self_p,
     int length)
 {
-    int res;
-    int i;
-    struct m0_m1_t *items_p;
-
-    res = -1;
-    self_p->v2.items_pp = pbtools_heap_alloc(
-        self_p->base.heap_p,
-        sizeof(items_p) * length);
-
-    if (self_p->v2.items_pp != NULL) {
-        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
-
-        if (items_p != NULL) {
-            for (i = 0; i < length; i++) {
-                m0_m1_init(
-                    &items_p[i],
-                    self_p->base.heap_p,
-                    &items_p[i + 1]);
-                self_p->v2.items_pp[i] = &items_p[i];
-            }
-
-            items_p[length - 1].base.next_p = NULL;
-            self_p->v2.length = length;
-            self_p->v2.head_p = &items_p[0];
-            self_p->v2.tail_p = &items_p[length - 1];
-            res = 0;
-        }
-    }
-
-    return (res);
+    return (pbtools_alloc_repeated(
+                (struct pbtools_repeated_message_t *)&self_p->v2,
+                length,
+                self_p->base.heap_p,
+                sizeof(struct m0_m1_t),
+                (pbtools_message_init_t)m0_m1_init));
 }
 
 static void m0_m1_encode_repeated_inner(
@@ -251,10 +227,10 @@ m0_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct m0_t),
-        (pbtools_message_init_t)m0_init));
+                workspace_p,
+                size,
+                sizeof(struct m0_t),
+                (pbtools_message_init_t)m0_init));
 }
 
 int m0_encode(
@@ -263,10 +239,10 @@ int m0_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)m0_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)m0_encode_inner));
 }
 
 int m0_decode(
@@ -275,8 +251,8 @@ int m0_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)m0_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)m0_decode_inner));
 }

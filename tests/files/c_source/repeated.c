@@ -158,45 +158,21 @@ int repeated_message_int32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_int32(
-        &self_p->base,
-        length,
-        &self_p->int32s));
+                &self_p->base,
+                length,
+                &self_p->int32s));
 }
 
 int repeated_message_messages_alloc(
     struct repeated_message_t *self_p,
     int length)
 {
-    int res;
-    int i;
-    struct repeated_message_t *items_p;
-
-    res = -1;
-    self_p->messages.items_pp = pbtools_heap_alloc(
-        self_p->base.heap_p,
-        sizeof(items_p) * length);
-
-    if (self_p->messages.items_pp != NULL) {
-        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
-
-        if (items_p != NULL) {
-            for (i = 0; i < length; i++) {
-                repeated_message_init(
-                    &items_p[i],
-                    self_p->base.heap_p,
-                    &items_p[i + 1]);
-                self_p->messages.items_pp[i] = &items_p[i];
-            }
-
-            items_p[length - 1].base.next_p = NULL;
-            self_p->messages.length = length;
-            self_p->messages.head_p = &items_p[0];
-            self_p->messages.tail_p = &items_p[length - 1];
-            res = 0;
-        }
-    }
-
-    return (res);
+    return (pbtools_alloc_repeated(
+                (struct pbtools_repeated_message_t *)&self_p->messages,
+                length,
+                self_p->base.heap_p,
+                sizeof(struct repeated_message_t),
+                (pbtools_message_init_t)repeated_message_init));
 }
 
 static void repeated_message_encode_repeated_inner(
@@ -239,9 +215,9 @@ int repeated_message_strings_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_string(
-        &self_p->base,
-        length,
-        &self_p->strings));
+                &self_p->base,
+                length,
+                &self_p->strings));
 }
 
 int repeated_message_bytes_alloc(
@@ -249,9 +225,9 @@ int repeated_message_bytes_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_bytes(
-        &self_p->base,
-        length,
-        &self_p->bytes));
+                &self_p->base,
+                length,
+                &self_p->bytes));
 }
 
 struct repeated_message_t *
@@ -260,10 +236,10 @@ repeated_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct repeated_message_t),
-        (pbtools_message_init_t)repeated_message_init));
+                workspace_p,
+                size,
+                sizeof(struct repeated_message_t),
+                (pbtools_message_init_t)repeated_message_init));
 }
 
 int repeated_message_encode(
@@ -272,10 +248,10 @@ int repeated_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)repeated_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)repeated_message_encode_inner));
 }
 
 int repeated_message_decode(
@@ -284,10 +260,10 @@ int repeated_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)repeated_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)repeated_message_decode_inner));
 }
 
 static void repeated_message_scalar_value_types_init(
@@ -507,9 +483,9 @@ int repeated_message_scalar_value_types_int32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_int32(
-        &self_p->base,
-        length,
-        &self_p->int32s));
+                &self_p->base,
+                length,
+                &self_p->int32s));
 }
 
 int repeated_message_scalar_value_types_int64s_alloc(
@@ -517,9 +493,9 @@ int repeated_message_scalar_value_types_int64s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_int64(
-        &self_p->base,
-        length,
-        &self_p->int64s));
+                &self_p->base,
+                length,
+                &self_p->int64s));
 }
 
 int repeated_message_scalar_value_types_sint32s_alloc(
@@ -527,9 +503,9 @@ int repeated_message_scalar_value_types_sint32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_sint32(
-        &self_p->base,
-        length,
-        &self_p->sint32s));
+                &self_p->base,
+                length,
+                &self_p->sint32s));
 }
 
 int repeated_message_scalar_value_types_sint64s_alloc(
@@ -537,9 +513,9 @@ int repeated_message_scalar_value_types_sint64s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_sint64(
-        &self_p->base,
-        length,
-        &self_p->sint64s));
+                &self_p->base,
+                length,
+                &self_p->sint64s));
 }
 
 int repeated_message_scalar_value_types_uint32s_alloc(
@@ -547,9 +523,9 @@ int repeated_message_scalar_value_types_uint32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_uint32(
-        &self_p->base,
-        length,
-        &self_p->uint32s));
+                &self_p->base,
+                length,
+                &self_p->uint32s));
 }
 
 int repeated_message_scalar_value_types_uint64s_alloc(
@@ -557,9 +533,9 @@ int repeated_message_scalar_value_types_uint64s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_uint64(
-        &self_p->base,
-        length,
-        &self_p->uint64s));
+                &self_p->base,
+                length,
+                &self_p->uint64s));
 }
 
 int repeated_message_scalar_value_types_fixed32s_alloc(
@@ -567,9 +543,9 @@ int repeated_message_scalar_value_types_fixed32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_fixed32(
-        &self_p->base,
-        length,
-        &self_p->fixed32s));
+                &self_p->base,
+                length,
+                &self_p->fixed32s));
 }
 
 int repeated_message_scalar_value_types_fixed64s_alloc(
@@ -577,9 +553,9 @@ int repeated_message_scalar_value_types_fixed64s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_fixed64(
-        &self_p->base,
-        length,
-        &self_p->fixed64s));
+                &self_p->base,
+                length,
+                &self_p->fixed64s));
 }
 
 int repeated_message_scalar_value_types_sfixed32s_alloc(
@@ -587,9 +563,9 @@ int repeated_message_scalar_value_types_sfixed32s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_sfixed32(
-        &self_p->base,
-        length,
-        &self_p->sfixed32s));
+                &self_p->base,
+                length,
+                &self_p->sfixed32s));
 }
 
 int repeated_message_scalar_value_types_sfixed64s_alloc(
@@ -597,9 +573,9 @@ int repeated_message_scalar_value_types_sfixed64s_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_sfixed64(
-        &self_p->base,
-        length,
-        &self_p->sfixed64s));
+                &self_p->base,
+                length,
+                &self_p->sfixed64s));
 }
 
 int repeated_message_scalar_value_types_floats_alloc(
@@ -607,9 +583,9 @@ int repeated_message_scalar_value_types_floats_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_float(
-        &self_p->base,
-        length,
-        &self_p->floats));
+                &self_p->base,
+                length,
+                &self_p->floats));
 }
 
 int repeated_message_scalar_value_types_doubles_alloc(
@@ -617,9 +593,9 @@ int repeated_message_scalar_value_types_doubles_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_double(
-        &self_p->base,
-        length,
-        &self_p->doubles));
+                &self_p->base,
+                length,
+                &self_p->doubles));
 }
 
 int repeated_message_scalar_value_types_bools_alloc(
@@ -627,9 +603,9 @@ int repeated_message_scalar_value_types_bools_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_bool(
-        &self_p->base,
-        length,
-        &self_p->bools));
+                &self_p->base,
+                length,
+                &self_p->bools));
 }
 
 int repeated_message_scalar_value_types_strings_alloc(
@@ -637,9 +613,9 @@ int repeated_message_scalar_value_types_strings_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_string(
-        &self_p->base,
-        length,
-        &self_p->strings));
+                &self_p->base,
+                length,
+                &self_p->strings));
 }
 
 int repeated_message_scalar_value_types_bytess_alloc(
@@ -647,9 +623,9 @@ int repeated_message_scalar_value_types_bytess_alloc(
     int length)
 {
     return (pbtools_alloc_repeated_bytes(
-        &self_p->base,
-        length,
-        &self_p->bytess));
+                &self_p->base,
+                length,
+                &self_p->bytess));
 }
 
 struct repeated_message_scalar_value_types_t *
@@ -658,10 +634,10 @@ repeated_message_scalar_value_types_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct repeated_message_scalar_value_types_t),
-        (pbtools_message_init_t)repeated_message_scalar_value_types_init));
+                workspace_p,
+                size,
+                sizeof(struct repeated_message_scalar_value_types_t),
+                (pbtools_message_init_t)repeated_message_scalar_value_types_init));
 }
 
 int repeated_message_scalar_value_types_encode(
@@ -670,10 +646,10 @@ int repeated_message_scalar_value_types_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)repeated_message_scalar_value_types_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)repeated_message_scalar_value_types_encode_inner));
 }
 
 int repeated_message_scalar_value_types_decode(
@@ -682,8 +658,8 @@ int repeated_message_scalar_value_types_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)repeated_message_scalar_value_types_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)repeated_message_scalar_value_types_decode_inner));
 }

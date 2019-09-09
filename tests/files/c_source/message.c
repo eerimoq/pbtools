@@ -134,10 +134,10 @@ message_foo_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct message_foo_t),
-        (pbtools_message_init_t)message_foo_init));
+                workspace_p,
+                size,
+                sizeof(struct message_foo_t),
+                (pbtools_message_init_t)message_foo_init));
 }
 
 int message_foo_encode(
@@ -146,10 +146,10 @@ int message_foo_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)message_foo_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)message_foo_encode_inner));
 }
 
 int message_foo_decode(
@@ -158,10 +158,10 @@ int message_foo_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)message_foo_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)message_foo_decode_inner));
 }
 
 static void message_bar_init(
@@ -207,10 +207,10 @@ message_bar_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct message_bar_t),
-        (pbtools_message_init_t)message_bar_init));
+                workspace_p,
+                size,
+                sizeof(struct message_bar_t),
+                (pbtools_message_init_t)message_bar_init));
 }
 
 int message_bar_encode(
@@ -219,10 +219,10 @@ int message_bar_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)message_bar_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)message_bar_encode_inner));
 }
 
 int message_bar_decode(
@@ -231,10 +231,10 @@ int message_bar_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)message_bar_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)message_bar_decode_inner));
 }
 
 static void message_message_fie_foo_init(
@@ -404,10 +404,10 @@ message_message_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct message_message_t),
-        (pbtools_message_init_t)message_message_init));
+                workspace_p,
+                size,
+                sizeof(struct message_message_t),
+                (pbtools_message_init_t)message_message_init));
 }
 
 int message_message_encode(
@@ -416,10 +416,10 @@ int message_message_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)message_message_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)message_message_encode_inner));
 }
 
 int message_message_decode(
@@ -428,8 +428,8 @@ int message_message_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)message_message_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)message_message_decode_inner));
 }

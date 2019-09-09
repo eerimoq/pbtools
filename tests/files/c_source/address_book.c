@@ -209,36 +209,12 @@ int address_book_person_phones_alloc(
     struct address_book_person_t *self_p,
     int length)
 {
-    int res;
-    int i;
-    struct address_book_person_phone_number_t *items_p;
-
-    res = -1;
-    self_p->phones.items_pp = pbtools_heap_alloc(
-        self_p->base.heap_p,
-        sizeof(items_p) * length);
-
-    if (self_p->phones.items_pp != NULL) {
-        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
-
-        if (items_p != NULL) {
-            for (i = 0; i < length; i++) {
-                address_book_person_phone_number_init(
-                    &items_p[i],
-                    self_p->base.heap_p,
-                    &items_p[i + 1]);
-                self_p->phones.items_pp[i] = &items_p[i];
-            }
-
-            items_p[length - 1].base.next_p = NULL;
-            self_p->phones.length = length;
-            self_p->phones.head_p = &items_p[0];
-            self_p->phones.tail_p = &items_p[length - 1];
-            res = 0;
-        }
-    }
-
-    return (res);
+    return (pbtools_alloc_repeated(
+                (struct pbtools_repeated_message_t *)&self_p->phones,
+                length,
+                self_p->base.heap_p,
+                sizeof(struct address_book_person_phone_number_t),
+                (pbtools_message_init_t)address_book_person_phone_number_init));
 }
 
 static void address_book_person_phone_number_encode_repeated_inner(
@@ -282,10 +258,10 @@ address_book_person_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct address_book_person_t),
-        (pbtools_message_init_t)address_book_person_init));
+                workspace_p,
+                size,
+                sizeof(struct address_book_person_t),
+                (pbtools_message_init_t)address_book_person_init));
 }
 
 int address_book_person_encode(
@@ -294,10 +270,10 @@ int address_book_person_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)address_book_person_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)address_book_person_encode_inner));
 }
 
 int address_book_person_decode(
@@ -306,10 +282,10 @@ int address_book_person_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)address_book_person_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)address_book_person_decode_inner));
 }
 
 static void address_book_address_book_init(
@@ -363,36 +339,12 @@ int address_book_address_book_people_alloc(
     struct address_book_address_book_t *self_p,
     int length)
 {
-    int res;
-    int i;
-    struct address_book_person_t *items_p;
-
-    res = -1;
-    self_p->people.items_pp = pbtools_heap_alloc(
-        self_p->base.heap_p,
-        sizeof(items_p) * length);
-
-    if (self_p->people.items_pp != NULL) {
-        items_p = pbtools_heap_alloc(self_p->base.heap_p, sizeof(*items_p) * length);
-
-        if (items_p != NULL) {
-            for (i = 0; i < length; i++) {
-                address_book_person_init(
-                    &items_p[i],
-                    self_p->base.heap_p,
-                    &items_p[i + 1]);
-                self_p->people.items_pp[i] = &items_p[i];
-            }
-
-            items_p[length - 1].base.next_p = NULL;
-            self_p->people.length = length;
-            self_p->people.head_p = &items_p[0];
-            self_p->people.tail_p = &items_p[length - 1];
-            res = 0;
-        }
-    }
-
-    return (res);
+    return (pbtools_alloc_repeated(
+                (struct pbtools_repeated_message_t *)&self_p->people,
+                length,
+                self_p->base.heap_p,
+                sizeof(struct address_book_person_t),
+                (pbtools_message_init_t)address_book_person_init));
 }
 
 static void address_book_person_encode_repeated_inner(
@@ -436,10 +388,10 @@ address_book_address_book_new(
     size_t size)
 {
     return (pbtools_message_new(
-        workspace_p,
-        size,
-        sizeof(struct address_book_address_book_t),
-        (pbtools_message_init_t)address_book_address_book_init));
+                workspace_p,
+                size,
+                sizeof(struct address_book_address_book_t),
+                (pbtools_message_init_t)address_book_address_book_init));
 }
 
 int address_book_address_book_encode(
@@ -448,10 +400,10 @@ int address_book_address_book_encode(
     size_t size)
 {
     return (pbtools_message_encode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_encode_inner_t)address_book_address_book_encode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)address_book_address_book_encode_inner));
 }
 
 int address_book_address_book_decode(
@@ -460,8 +412,8 @@ int address_book_address_book_decode(
     size_t size)
 {
     return (pbtools_message_decode(
-        &self_p->base,
-        encoded_p,
-        size,
-        (pbtools_message_decode_inner_t)address_book_address_book_decode_inner));
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)address_book_address_book_decode_inner));
 }

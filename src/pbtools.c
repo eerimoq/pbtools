@@ -2161,6 +2161,44 @@ int pbtools_message_decode(
     return (pbtools_decoder_get_result(&decoder));
 }
 
+int pbtools_alloc_repeated(
+    struct pbtools_repeated_message_t *repeated_p,
+    int length,
+    struct pbtools_heap_t *heap_p,
+    size_t item_size,
+    pbtools_message_init_t message_init)
+{
+    int i;
+    struct pbtools_message_base_t *item_p;
+    struct pbtools_message_base_t *next_item_p;
+
+    repeated_p->items_pp = pbtools_heap_alloc(
+        heap_p,
+        sizeof(item_p) * length);
+
+    if (repeated_p->items_pp != NULL) {
+        next_item_p = NULL;
+
+        for (i = length - 1; i >= 0; i--) {
+            item_p = pbtools_heap_alloc(heap_p, item_size);
+
+            if (item_p == NULL) {
+                return (-1);
+            }
+
+            message_init(item_p, heap_p, next_item_p);
+            repeated_p->items_pp[i] = item_p;
+            next_item_p = item_p;
+        }
+
+        repeated_p->length = length;
+        repeated_p->head_p = repeated_p->items_pp[0];
+        repeated_p->tail_p = repeated_p->items_pp[length - 1];
+    }
+
+    return (0);
+}
+
 void pbtools_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
