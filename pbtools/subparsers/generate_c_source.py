@@ -39,7 +39,7 @@ def _do_generate_c_source(args):
 def add_subparser(subparsers):
     generate_c_source_parser = subparsers.add_parser(
         'generate_c_source',
-        description='Generate C source code from given protobuf file.')
+        description='Generate C source code from given protobuf file(s).')
     generate_c_source_parser.add_argument(
         'infiles',
         nargs='+',
