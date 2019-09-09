@@ -12,7 +12,6 @@ script:
   - make test-c
   - make -C examples/hello_world
   - make -C examples/address_book
-  - make -C examples/benchmarks/c_source ENCODE_ITERATIONS=1
 
 after_success:
   - coveralls
