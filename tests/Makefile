@@ -2,13 +2,13 @@ FUZZER_CC ?= clang
 FUZZER_EXE = main_fuzzer
 FUZZER_C_SOURCES = \
 	main_fuzzer.c \
-	../src/pbtools.c \
+	../pbtools/c_source/pbtools.c \
 	files/c_source/address_book.c \
 	files/c_source/scalar_value_types.c
 FUZZER_CFLAGS = \
 	-fprofile-instr-generate \
 	-fcoverage-mapping \
-	-I../src \
+	-I../pbtools/c_source \
 	-g \
 	-fsanitize=address,fuzzer \
 	-fsanitize=signed-integer-overflow \
@@ -27,9 +27,9 @@ all:
 	    -O2 \
 	    -std=gnu11  \
 	    $(CFLAGS) \
-	    -I../src \
+	    -I../pbtools/c_source \
 	    narwhal.c \
-	    ../src/pbtools.c \
+	    ../pbtools/c_source/pbtools.c \
 	    files/c_source/int32.c \
 	    files/c_source/int64.c \
 	    files/c_source/sint32.c \

@@ -2,10 +2,10 @@ all:
 	gcc \
 	    -O2 \
 	    -Wall \
-	    -I../../src \
+	    -I../../pbtools/c_source \
 	    -Igenerated \
 	    generated/*.c \
-	    ../../src/pbtools.c \
+	    ../../pbtools/c_source/pbtools.c \
 	    main.c \
 	    -o main
 	./main

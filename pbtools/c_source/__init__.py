@@ -1,5 +1,5 @@
-from .parser import SCALAR_VALUE_TYPES
-from .parser import camel_to_snake_case
+from ..parser import SCALAR_VALUE_TYPES
+from ..parser import camel_to_snake_case
 
 
 HEADER_FMT = '''\

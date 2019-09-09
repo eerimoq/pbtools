@@ -29,6 +29,7 @@ setup(name='pbtools',
           'textparser>=0.21.1'
       ],
       test_suite="tests",
+      include_package_data=True,
       entry_points = {
           'console_scripts': ['pbtools=pbtools.__init__:_main']
       })

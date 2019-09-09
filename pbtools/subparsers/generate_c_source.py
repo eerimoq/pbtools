@@ -1,8 +1,12 @@
 import os
+import shutil
 
 from ..parser import parse_file
 from ..c_source import camel_to_snake_case
 from ..c_source import generate
+
+
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def _do_generate_c_source(args):
@@ -23,7 +27,12 @@ def _do_generate_c_source(args):
     with open(filename_c, 'w') as fout:
         fout.write(source)
 
-    print('Successfully generated {} and {}.'.format(filename_h, filename_c))
+    for filename in ['pbtools.h', 'pbtools.c']:
+        shutil.copy(
+            os.path.join(SCRIPT_DIR, f'../c_source/{filename}'),
+            '.')
+
+    print(f'Successfully created pbtools.[hc] and {name}.[hc].')
 
 
 def add_subparser(subparsers):
