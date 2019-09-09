@@ -30,46 +30,46 @@
 
 #include "enum.h"
 
-static void enum_message_init(
+void enum_message_init(
     struct enum_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct enum_message_t *next_p);
 
-static void enum_message_encode_inner(
+void enum_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct enum_message_t *self_p);
 
-static void enum_message_decode_inner(
+void enum_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_message_t *self_p);
 
-static void enum_message2_init(
+void enum_message2_init(
     struct enum_message2_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct enum_message2_t *next_p);
 
-static void enum_message2_encode_inner(
+void enum_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct enum_message2_t *self_p);
 
-static void enum_message2_decode_inner(
+void enum_message2_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_message2_t *self_p);
 
-static void enum_limits_init(
+void enum_limits_init(
     struct enum_limits_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct enum_limits_t *next_p);
 
-static void enum_limits_encode_inner(
+void enum_limits_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct enum_limits_t *self_p);
 
-static void enum_limits_decode_inner(
+void enum_limits_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_limits_t *self_p);
 
-static void enum_message_init(
+void enum_message_init(
     struct enum_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct enum_message_t *next_p)
@@ -79,14 +79,14 @@ static void enum_message_init(
     self_p->value = 0;
 }
 
-static void enum_message_encode_inner(
+void enum_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct enum_message_t *self_p)
 {
     pbtools_encoder_write_enum(encoder_p, 1, self_p->value);
 }
 
-static void enum_message_decode_inner(
+void enum_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_message_t *self_p)
 {
@@ -142,7 +142,7 @@ int enum_message_decode(
                 (pbtools_message_decode_inner_t)enum_message_decode_inner));
 }
 
-static void enum_message2_init(
+void enum_message2_init(
     struct enum_message2_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct enum_message2_t *next_p)
@@ -153,7 +153,7 @@ static void enum_message2_init(
     self_p->inner = 0;
 }
 
-static void enum_message2_encode_inner(
+void enum_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct enum_message2_t *self_p)
 {
@@ -161,7 +161,7 @@ static void enum_message2_encode_inner(
     pbtools_encoder_write_enum(encoder_p, 1, self_p->outer);
 }
 
-static void enum_message2_decode_inner(
+void enum_message2_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_message2_t *self_p)
 {
@@ -221,7 +221,7 @@ int enum_message2_decode(
                 (pbtools_message_decode_inner_t)enum_message2_decode_inner));
 }
 
-static void enum_limits_init(
+void enum_limits_init(
     struct enum_limits_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct enum_limits_t *next_p)
@@ -231,14 +231,14 @@ static void enum_limits_init(
     self_p->value = 0;
 }
 
-static void enum_limits_encode_inner(
+void enum_limits_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct enum_limits_t *self_p)
 {
     pbtools_encoder_write_enum(encoder_p, 1, self_p->value);
 }
 
-static void enum_limits_decode_inner(
+void enum_limits_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_limits_t *self_p)
 {

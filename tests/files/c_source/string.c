@@ -30,20 +30,20 @@
 
 #include "string.h"
 
-static void string_message_init(
+void string_message_init(
     struct string_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct string_message_t *next_p);
 
-static void string_message_encode_inner(
+void string_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct string_message_t *self_p);
 
-static void string_message_decode_inner(
+void string_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct string_message_t *self_p);
 
-static void string_message_init(
+void string_message_init(
     struct string_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct string_message_t *next_p)
@@ -53,14 +53,14 @@ static void string_message_init(
     pbtools_string_init(&self_p->value);
 }
 
-static void string_message_encode_inner(
+void string_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct string_message_t *self_p)
 {
     pbtools_encoder_write_string(encoder_p, 1, &self_p->value);
 }
 
-static void string_message_decode_inner(
+void string_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct string_message_t *self_p)
 {

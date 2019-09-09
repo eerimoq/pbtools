@@ -119,6 +119,43 @@ struct message_message_t {
 };
 
 /**
+ * Enum message.UnusedInnerTypes.UnusedEnum.
+ */
+enum message_unused_inner_types_unused_enum_e {
+    message_unused_inner_types_unused_enum_a_e = 1
+};
+
+/**
+ * Message message.UnusedInnerTypes.UnusedMessage.
+ */
+struct message_unused_inner_types_unused_message_repeated_t {
+    int length;
+    struct message_unused_inner_types_unused_message_t **items_pp;
+    struct message_unused_inner_types_unused_message_t *head_p;
+    struct message_unused_inner_types_unused_message_t *tail_p;
+};
+
+struct message_unused_inner_types_unused_message_t {
+    struct pbtools_message_base_t base;
+    bool v1;
+};
+
+/**
+ * Message message.UnusedInnerTypes.
+ */
+struct message_unused_inner_types_repeated_t {
+    int length;
+    struct message_unused_inner_types_t **items_pp;
+    struct message_unused_inner_types_t *head_p;
+    struct message_unused_inner_types_t *tail_p;
+};
+
+struct message_unused_inner_types_t {
+    struct pbtools_message_base_t base;
+    bool v2;
+};
+
+/**
  * Create a new message message.Foo in given workspace.
  *
  * @param[in] workspace_p Message workspace.
@@ -238,6 +275,47 @@ int message_message_encode(
  */
 int message_message_decode(
     struct message_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Create a new message message.UnusedInnerTypes in given workspace.
+ *
+ * @param[in] workspace_p Message workspace.
+ * @param[in] size Workspace size.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct message_unused_inner_types_t *
+message_unused_inner_types_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message message.UnusedInnerTypes.
+ *
+ * @param[in] self_p Message to encode.
+ * @param[out] encoded_p Buffer to encode the message into.
+ * @param[in] size Encoded buffer size.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int message_unused_inner_types_encode(
+    struct message_unused_inner_types_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message message.UnusedInnerTypes.
+ *
+ * @param[in,out] self_p Initialized message to decode into.
+ * @param[in] encoded_p Buffer to decode.
+ * @param[in] size Size of the encoded message.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int message_unused_inner_types_decode(
+    struct message_unused_inner_types_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

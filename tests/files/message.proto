@@ -25,3 +25,13 @@ message Message {
     Bar bar = 832;
     Fie fie = 4;
 };
+
+message UnusedInnerTypes {
+    enum UnusedEnum {
+        A = 1;
+    }
+    message UnusedMessage {
+        bool v1 = 1;
+    }
+    bool v2 = 1;
+};

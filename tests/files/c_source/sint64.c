@@ -30,20 +30,20 @@
 
 #include "sint64.h"
 
-static void sint64_message_init(
+void sint64_message_init(
     struct sint64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct sint64_message_t *next_p);
 
-static void sint64_message_encode_inner(
+void sint64_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct sint64_message_t *self_p);
 
-static void sint64_message_decode_inner(
+void sint64_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct sint64_message_t *self_p);
 
-static void sint64_message_init(
+void sint64_message_init(
     struct sint64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct sint64_message_t *next_p)
@@ -53,14 +53,14 @@ static void sint64_message_init(
     self_p->value = 0;
 }
 
-static void sint64_message_encode_inner(
+void sint64_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct sint64_message_t *self_p)
 {
     pbtools_encoder_write_sint64(encoder_p, 1, self_p->value);
 }
 
-static void sint64_message_decode_inner(
+void sint64_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct sint64_message_t *self_p)
 {

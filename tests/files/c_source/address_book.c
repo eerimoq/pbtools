@@ -30,74 +30,74 @@
 
 #include "address_book.h"
 
-static void address_book_person_init(
+void address_book_person_init(
     struct address_book_person_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct address_book_person_t *next_p);
 
-static void address_book_person_encode_inner(
+void address_book_person_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct address_book_person_t *self_p);
 
-static void address_book_person_decode_inner(
+void address_book_person_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_t *self_p);
 
-static void address_book_person_phone_number_encode_repeated_inner(
+void address_book_person_phone_number_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct address_book_person_phone_number_repeated_t *repeated_p);
 
-static void address_book_person_phone_number_decode_repeated_inner(
+void address_book_person_phone_number_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct address_book_person_phone_number_repeated_t *repeated_p);
 
-static void address_book_person_phone_number_finalize_repeated_inner(
+void address_book_person_phone_number_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_phone_number_repeated_t *repeated_p);
 
-static void address_book_person_phone_number_init(
+void address_book_person_phone_number_init(
     struct address_book_person_phone_number_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct address_book_person_phone_number_t *next_p);
 
-static void address_book_person_phone_number_encode_inner(
+void address_book_person_phone_number_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct address_book_person_phone_number_t *self_p);
 
-static void address_book_person_phone_number_decode_inner(
+void address_book_person_phone_number_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_phone_number_t *self_p);
 
-static void address_book_address_book_init(
+void address_book_address_book_init(
     struct address_book_address_book_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct address_book_address_book_t *next_p);
 
-static void address_book_address_book_encode_inner(
+void address_book_address_book_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct address_book_address_book_t *self_p);
 
-static void address_book_address_book_decode_inner(
+void address_book_address_book_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_address_book_t *self_p);
 
-static void address_book_person_encode_repeated_inner(
+void address_book_person_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct address_book_person_repeated_t *repeated_p);
 
-static void address_book_person_decode_repeated_inner(
+void address_book_person_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct address_book_person_repeated_t *repeated_p);
 
-static void address_book_person_finalize_repeated_inner(
+void address_book_person_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_repeated_t *repeated_p);
 
-static void address_book_person_phone_number_init(
+void address_book_person_phone_number_init(
     struct address_book_person_phone_number_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct address_book_person_phone_number_t *next_p)
@@ -108,7 +108,7 @@ static void address_book_person_phone_number_init(
     self_p->type = 0;
 }
 
-static void address_book_person_phone_number_encode_inner(
+void address_book_person_phone_number_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct address_book_person_phone_number_t *self_p)
 {
@@ -116,7 +116,7 @@ static void address_book_person_phone_number_encode_inner(
     pbtools_encoder_write_string(encoder_p, 1, &self_p->number);
 }
 
-static void address_book_person_phone_number_decode_inner(
+void address_book_person_phone_number_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_phone_number_t *self_p)
 {
@@ -140,7 +140,7 @@ static void address_book_person_phone_number_decode_inner(
     }
 }
 
-static void address_book_person_init(
+void address_book_person_init(
     struct address_book_person_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct address_book_person_t *next_p)
@@ -153,7 +153,7 @@ static void address_book_person_init(
     self_p->phones.length = 0;
 }
 
-static void address_book_person_encode_inner(
+void address_book_person_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct address_book_person_t *self_p)
 {
@@ -166,7 +166,7 @@ static void address_book_person_encode_inner(
     pbtools_encoder_write_string(encoder_p, 1, &self_p->name);
 }
 
-static void address_book_person_decode_inner(
+void address_book_person_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_t *self_p)
 {
@@ -217,7 +217,7 @@ int address_book_person_phones_alloc(
                 (pbtools_message_init_t)address_book_person_phone_number_init));
 }
 
-static void address_book_person_phone_number_encode_repeated_inner(
+void address_book_person_phone_number_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct address_book_person_phone_number_repeated_t *repeated_p)
@@ -229,7 +229,7 @@ static void address_book_person_phone_number_encode_repeated_inner(
         (pbtools_message_encode_inner_t)address_book_person_phone_number_encode_inner);
 }
 
-static void address_book_person_phone_number_decode_repeated_inner(
+void address_book_person_phone_number_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct address_book_person_phone_number_repeated_t *repeated_p)
@@ -243,7 +243,7 @@ static void address_book_person_phone_number_decode_repeated_inner(
         (pbtools_message_decode_inner_t)address_book_person_phone_number_decode_inner);
 }
 
-static void address_book_person_phone_number_finalize_repeated_inner(
+void address_book_person_phone_number_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_phone_number_repeated_t *repeated_p)
 {
@@ -288,7 +288,7 @@ int address_book_person_decode(
                 (pbtools_message_decode_inner_t)address_book_person_decode_inner));
 }
 
-static void address_book_address_book_init(
+void address_book_address_book_init(
     struct address_book_address_book_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct address_book_address_book_t *next_p)
@@ -298,7 +298,7 @@ static void address_book_address_book_init(
     self_p->people.length = 0;
 }
 
-static void address_book_address_book_encode_inner(
+void address_book_address_book_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct address_book_address_book_t *self_p)
 {
@@ -308,7 +308,7 @@ static void address_book_address_book_encode_inner(
         &self_p->people);
 }
 
-static void address_book_address_book_decode_inner(
+void address_book_address_book_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_address_book_t *self_p)
 {
@@ -347,7 +347,7 @@ int address_book_address_book_people_alloc(
                 (pbtools_message_init_t)address_book_person_init));
 }
 
-static void address_book_person_encode_repeated_inner(
+void address_book_person_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct address_book_person_repeated_t *repeated_p)
@@ -359,7 +359,7 @@ static void address_book_person_encode_repeated_inner(
         (pbtools_message_encode_inner_t)address_book_person_encode_inner);
 }
 
-static void address_book_person_decode_repeated_inner(
+void address_book_person_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct address_book_person_repeated_t *repeated_p)
@@ -373,7 +373,7 @@ static void address_book_person_decode_repeated_inner(
         (pbtools_message_decode_inner_t)address_book_person_decode_inner);
 }
 
-static void address_book_person_finalize_repeated_inner(
+void address_book_person_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_repeated_t *repeated_p)
 {

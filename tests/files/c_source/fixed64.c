@@ -30,20 +30,20 @@
 
 #include "fixed64.h"
 
-static void fixed64_message_init(
+void fixed64_message_init(
     struct fixed64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct fixed64_message_t *next_p);
 
-static void fixed64_message_encode_inner(
+void fixed64_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct fixed64_message_t *self_p);
 
-static void fixed64_message_decode_inner(
+void fixed64_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct fixed64_message_t *self_p);
 
-static void fixed64_message_init(
+void fixed64_message_init(
     struct fixed64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct fixed64_message_t *next_p)
@@ -53,14 +53,14 @@ static void fixed64_message_init(
     self_p->value = 0;
 }
 
-static void fixed64_message_encode_inner(
+void fixed64_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct fixed64_message_t *self_p)
 {
     pbtools_encoder_write_fixed64(encoder_p, 1, self_p->value);
 }
 
-static void fixed64_message_decode_inner(
+void fixed64_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct fixed64_message_t *self_p)
 {

@@ -30,20 +30,20 @@
 
 #include "float.h"
 
-static void float_message_init(
+void float_message_init(
     struct float_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct float_message_t *next_p);
 
-static void float_message_encode_inner(
+void float_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct float_message_t *self_p);
 
-static void float_message_decode_inner(
+void float_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct float_message_t *self_p);
 
-static void float_message_init(
+void float_message_init(
     struct float_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct float_message_t *next_p)
@@ -53,14 +53,14 @@ static void float_message_init(
     self_p->value = 0;
 }
 
-static void float_message_encode_inner(
+void float_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct float_message_t *self_p)
 {
     pbtools_encoder_write_float(encoder_p, 1, self_p->value);
 }
 
-static void float_message_decode_inner(
+void float_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct float_message_t *self_p)
 {

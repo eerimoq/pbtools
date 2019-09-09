@@ -30,47 +30,47 @@
 
 #include "repeated.h"
 
-static void repeated_message_init(
+void repeated_message_init(
     struct repeated_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct repeated_message_t *next_p);
 
-static void repeated_message_encode_inner(
+void repeated_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct repeated_message_t *self_p);
 
-static void repeated_message_decode_inner(
+void repeated_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_t *self_p);
 
-static void repeated_message_encode_repeated_inner(
+void repeated_message_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct repeated_message_repeated_t *repeated_p);
 
-static void repeated_message_decode_repeated_inner(
+void repeated_message_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct repeated_message_repeated_t *repeated_p);
 
-static void repeated_message_finalize_repeated_inner(
+void repeated_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_repeated_t *repeated_p);
 
-static void repeated_message_scalar_value_types_init(
+void repeated_message_scalar_value_types_init(
     struct repeated_message_scalar_value_types_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct repeated_message_scalar_value_types_t *next_p);
 
-static void repeated_message_scalar_value_types_encode_inner(
+void repeated_message_scalar_value_types_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct repeated_message_scalar_value_types_t *self_p);
 
-static void repeated_message_scalar_value_types_decode_inner(
+void repeated_message_scalar_value_types_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_scalar_value_types_t *self_p);
 
-static void repeated_message_init(
+void repeated_message_init(
     struct repeated_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct repeated_message_t *next_p)
@@ -83,7 +83,7 @@ static void repeated_message_init(
     self_p->bytes.length = 0;
 }
 
-static void repeated_message_encode_inner(
+void repeated_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct repeated_message_t *self_p)
 {
@@ -96,7 +96,7 @@ static void repeated_message_encode_inner(
     pbtools_encoder_write_repeated_int32(encoder_p, 1, &self_p->int32s);
 }
 
-static void repeated_message_decode_inner(
+void repeated_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_t *self_p)
 {
@@ -175,7 +175,7 @@ int repeated_message_messages_alloc(
                 (pbtools_message_init_t)repeated_message_init));
 }
 
-static void repeated_message_encode_repeated_inner(
+void repeated_message_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct repeated_message_repeated_t *repeated_p)
@@ -187,7 +187,7 @@ static void repeated_message_encode_repeated_inner(
         (pbtools_message_encode_inner_t)repeated_message_encode_inner);
 }
 
-static void repeated_message_decode_repeated_inner(
+void repeated_message_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct repeated_message_repeated_t *repeated_p)
@@ -201,7 +201,7 @@ static void repeated_message_decode_repeated_inner(
         (pbtools_message_decode_inner_t)repeated_message_decode_inner);
 }
 
-static void repeated_message_finalize_repeated_inner(
+void repeated_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_repeated_t *repeated_p)
 {
@@ -266,7 +266,7 @@ int repeated_message_decode(
                 (pbtools_message_decode_inner_t)repeated_message_decode_inner));
 }
 
-static void repeated_message_scalar_value_types_init(
+void repeated_message_scalar_value_types_init(
     struct repeated_message_scalar_value_types_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct repeated_message_scalar_value_types_t *next_p)
@@ -290,7 +290,7 @@ static void repeated_message_scalar_value_types_init(
     self_p->bytess.length = 0;
 }
 
-static void repeated_message_scalar_value_types_encode_inner(
+void repeated_message_scalar_value_types_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct repeated_message_scalar_value_types_t *self_p)
 {
@@ -311,7 +311,7 @@ static void repeated_message_scalar_value_types_encode_inner(
     pbtools_encoder_write_repeated_int32(encoder_p, 1, &self_p->int32s);
 }
 
-static void repeated_message_scalar_value_types_decode_inner(
+void repeated_message_scalar_value_types_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_scalar_value_types_t *self_p)
 {

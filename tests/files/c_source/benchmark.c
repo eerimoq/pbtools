@@ -30,33 +30,33 @@
 
 #include "benchmark.h"
 
-static void benchmarks_proto3_google_message1_sub_message_init(
+void benchmarks_proto3_google_message1_sub_message_init(
     struct benchmarks_proto3_google_message1_sub_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct benchmarks_proto3_google_message1_sub_message_t *next_p);
 
-static void benchmarks_proto3_google_message1_sub_message_encode_inner(
+void benchmarks_proto3_google_message1_sub_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct benchmarks_proto3_google_message1_sub_message_t *self_p);
 
-static void benchmarks_proto3_google_message1_sub_message_decode_inner(
+void benchmarks_proto3_google_message1_sub_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_sub_message_t *self_p);
 
-static void benchmarks_proto3_google_message1_init(
+void benchmarks_proto3_google_message1_init(
     struct benchmarks_proto3_google_message1_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct benchmarks_proto3_google_message1_t *next_p);
 
-static void benchmarks_proto3_google_message1_encode_inner(
+void benchmarks_proto3_google_message1_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct benchmarks_proto3_google_message1_t *self_p);
 
-static void benchmarks_proto3_google_message1_decode_inner(
+void benchmarks_proto3_google_message1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_t *self_p);
 
-static void benchmarks_proto3_google_message1_sub_message_init(
+void benchmarks_proto3_google_message1_sub_message_init(
     struct benchmarks_proto3_google_message1_sub_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct benchmarks_proto3_google_message1_sub_message_t *next_p)
@@ -85,7 +85,7 @@ static void benchmarks_proto3_google_message1_sub_message_init(
     self_p->field300 = 0;
 }
 
-static void benchmarks_proto3_google_message1_sub_message_encode_inner(
+void benchmarks_proto3_google_message1_sub_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct benchmarks_proto3_google_message1_sub_message_t *self_p)
 {
@@ -111,7 +111,7 @@ static void benchmarks_proto3_google_message1_sub_message_encode_inner(
     pbtools_encoder_write_int32(encoder_p, 1, self_p->field1);
 }
 
-static void benchmarks_proto3_google_message1_sub_message_decode_inner(
+void benchmarks_proto3_google_message1_sub_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_sub_message_t *self_p)
 {
@@ -243,7 +243,7 @@ int benchmarks_proto3_google_message1_sub_message_decode(
                 (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner));
 }
 
-static void benchmarks_proto3_google_message1_init(
+void benchmarks_proto3_google_message1_init(
     struct benchmarks_proto3_google_message1_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct benchmarks_proto3_google_message1_t *next_p)
@@ -293,7 +293,7 @@ static void benchmarks_proto3_google_message1_init(
     self_p->field131 = 0;
 }
 
-static void benchmarks_proto3_google_message1_encode_inner(
+void benchmarks_proto3_google_message1_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct benchmarks_proto3_google_message1_t *self_p)
 {
@@ -344,7 +344,7 @@ static void benchmarks_proto3_google_message1_encode_inner(
     pbtools_encoder_write_string(encoder_p, 1, &self_p->field1);
 }
 
-static void benchmarks_proto3_google_message1_decode_inner(
+void benchmarks_proto3_google_message1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_t *self_p)
 {

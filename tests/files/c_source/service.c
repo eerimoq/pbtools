@@ -30,33 +30,33 @@
 
 #include "service.h"
 
-static void service_request_init(
+void service_request_init(
     struct service_request_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct service_request_t *next_p);
 
-static void service_request_encode_inner(
+void service_request_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct service_request_t *self_p);
 
-static void service_request_decode_inner(
+void service_request_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct service_request_t *self_p);
 
-static void service_response_init(
+void service_response_init(
     struct service_response_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct service_response_t *next_p);
 
-static void service_response_encode_inner(
+void service_response_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct service_response_t *self_p);
 
-static void service_response_decode_inner(
+void service_response_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct service_response_t *self_p);
 
-static void service_request_init(
+void service_request_init(
     struct service_request_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct service_request_t *next_p)
@@ -66,14 +66,14 @@ static void service_request_init(
     pbtools_string_init(&self_p->value);
 }
 
-static void service_request_encode_inner(
+void service_request_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct service_request_t *self_p)
 {
     pbtools_encoder_write_string(encoder_p, 1, &self_p->value);
 }
 
-static void service_request_decode_inner(
+void service_request_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct service_request_t *self_p)
 {
@@ -129,7 +129,7 @@ int service_request_decode(
                 (pbtools_message_decode_inner_t)service_request_decode_inner));
 }
 
-static void service_response_init(
+void service_response_init(
     struct service_response_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct service_response_t *next_p)
@@ -139,14 +139,14 @@ static void service_response_init(
     pbtools_string_init(&self_p->value);
 }
 
-static void service_response_encode_inner(
+void service_response_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct service_response_t *self_p)
 {
     pbtools_encoder_write_string(encoder_p, 1, &self_p->value);
 }
 
-static void service_response_decode_inner(
+void service_response_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct service_response_t *self_p)
 {

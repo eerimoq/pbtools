@@ -135,22 +135,22 @@ int {name}_decode(
 '''
 
 MESSAGE_STATIC_DECLARATIONS_FMT = '''\
-static void {name}_init(
+void {name}_init(
     struct {name}_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct {name}_t *next_p);
 
-static void {name}_encode_inner(
+void {name}_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct {name}_t *self_p);
 
-static void {name}_decode_inner(
+void {name}_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {name}_t *self_p);
 '''
 
 MESSAGE_STATIC_DEFINITIONS_FMT = '''\
-static void {name}_init(
+void {name}_init(
     struct {name}_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct {name}_t *next_p)
@@ -160,14 +160,14 @@ static void {name}_init(
 {members_init}
 }}
 
-static void {name}_encode_inner(
+void {name}_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct {name}_t *self_p)
 {{
 {encode_body}\
 }}
 
-static void {name}_decode_inner(
+void {name}_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {name}_t *self_p)
 {{
@@ -338,7 +338,7 @@ int {name}_{field_name}_alloc(
                 (pbtools_message_init_t){type}_init));
 }}
 
-static void {type}_encode_repeated_inner(
+void {type}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct {type}_repeated_t *repeated_p)
@@ -350,7 +350,7 @@ static void {type}_encode_repeated_inner(
         (pbtools_message_encode_inner_t){type}_encode_inner);
 }}
 
-static void {type}_decode_repeated_inner(
+void {type}_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct {type}_repeated_t *repeated_p)
@@ -364,7 +364,7 @@ static void {type}_decode_repeated_inner(
         (pbtools_message_decode_inner_t){type}_decode_inner);
 }}
 
-static void {type}_finalize_repeated_inner(
+void {type}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {type}_repeated_t *repeated_p)
 {{
@@ -375,17 +375,17 @@ static void {type}_finalize_repeated_inner(
 '''
 
 REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT = '''\
-static void {type}_encode_repeated_inner(
+void {type}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct {type}_repeated_t *repeated_p);
 
-static void {type}_decode_repeated_inner(
+void {type}_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct {type}_repeated_t *repeated_p);
 
-static void {type}_finalize_repeated_inner(
+void {type}_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {type}_repeated_t *repeated_p);
 '''

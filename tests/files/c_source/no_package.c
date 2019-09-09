@@ -30,47 +30,47 @@
 
 #include "no_package.h"
 
-static void m0_init(
+void m0_init(
     struct m0_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct m0_t *next_p);
 
-static void m0_encode_inner(
+void m0_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct m0_t *self_p);
 
-static void m0_decode_inner(
+void m0_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_t *self_p);
 
-static void m0_m1_encode_repeated_inner(
+void m0_m1_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct m0_m1_repeated_t *repeated_p);
 
-static void m0_m1_decode_repeated_inner(
+void m0_m1_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct m0_m1_repeated_t *repeated_p);
 
-static void m0_m1_finalize_repeated_inner(
+void m0_m1_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_m1_repeated_t *repeated_p);
 
-static void m0_m1_init(
+void m0_m1_init(
     struct m0_m1_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct m0_m1_t *next_p);
 
-static void m0_m1_encode_inner(
+void m0_m1_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct m0_m1_t *self_p);
 
-static void m0_m1_decode_inner(
+void m0_m1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_m1_t *self_p);
 
-static void m0_m1_init(
+void m0_m1_init(
     struct m0_m1_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct m0_m1_t *next_p)
@@ -80,14 +80,14 @@ static void m0_m1_init(
     self_p->v1 = 0;
 }
 
-static void m0_m1_encode_inner(
+void m0_m1_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct m0_m1_t *self_p)
 {
     pbtools_encoder_write_enum(encoder_p, 1, self_p->v1);
 }
 
-static void m0_m1_decode_inner(
+void m0_m1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_m1_t *self_p)
 {
@@ -107,7 +107,7 @@ static void m0_m1_decode_inner(
     }
 }
 
-static void m0_init(
+void m0_init(
     struct m0_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct m0_t *next_p)
@@ -119,7 +119,7 @@ static void m0_init(
     self_p->v3 = 0;
 }
 
-static void m0_encode_inner(
+void m0_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct m0_t *self_p)
 {
@@ -135,7 +135,7 @@ static void m0_encode_inner(
         (pbtools_message_encode_inner_t)m0_m1_encode_inner);
 }
 
-static void m0_decode_inner(
+void m0_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_t *self_p)
 {
@@ -186,7 +186,7 @@ int m0_v2_alloc(
                 (pbtools_message_init_t)m0_m1_init));
 }
 
-static void m0_m1_encode_repeated_inner(
+void m0_m1_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
     struct m0_m1_repeated_t *repeated_p)
@@ -198,7 +198,7 @@ static void m0_m1_encode_repeated_inner(
         (pbtools_message_encode_inner_t)m0_m1_encode_inner);
 }
 
-static void m0_m1_decode_repeated_inner(
+void m0_m1_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct m0_m1_repeated_t *repeated_p)
@@ -212,7 +212,7 @@ static void m0_m1_decode_repeated_inner(
         (pbtools_message_decode_inner_t)m0_m1_decode_inner);
 }
 
-static void m0_m1_finalize_repeated_inner(
+void m0_m1_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_m1_repeated_t *repeated_p)
 {

@@ -30,20 +30,20 @@
 
 #include "uint32.h"
 
-static void uint32_message_init(
+void uint32_message_init(
     struct uint32_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct uint32_message_t *next_p);
 
-static void uint32_message_encode_inner(
+void uint32_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct uint32_message_t *self_p);
 
-static void uint32_message_decode_inner(
+void uint32_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct uint32_message_t *self_p);
 
-static void uint32_message_init(
+void uint32_message_init(
     struct uint32_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct uint32_message_t *next_p)
@@ -53,14 +53,14 @@ static void uint32_message_init(
     self_p->value = 0;
 }
 
-static void uint32_message_encode_inner(
+void uint32_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct uint32_message_t *self_p)
 {
     pbtools_encoder_write_uint32(encoder_p, 1, self_p->value);
 }
 
-static void uint32_message_decode_inner(
+void uint32_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct uint32_message_t *self_p)
 {

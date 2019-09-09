@@ -30,20 +30,20 @@
 
 #include "scalar_value_types.h"
 
-static void scalar_value_types_message_init(
+void scalar_value_types_message_init(
     struct scalar_value_types_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct scalar_value_types_message_t *next_p);
 
-static void scalar_value_types_message_encode_inner(
+void scalar_value_types_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct scalar_value_types_message_t *self_p);
 
-static void scalar_value_types_message_decode_inner(
+void scalar_value_types_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct scalar_value_types_message_t *self_p);
 
-static void scalar_value_types_message_init(
+void scalar_value_types_message_init(
     struct scalar_value_types_message_t *self_p,
     struct pbtools_heap_t *heap_p,
     struct scalar_value_types_message_t *next_p)
@@ -67,7 +67,7 @@ static void scalar_value_types_message_init(
     self_p->v15 = 0;
 }
 
-static void scalar_value_types_message_encode_inner(
+void scalar_value_types_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct scalar_value_types_message_t *self_p)
 {
@@ -88,7 +88,7 @@ static void scalar_value_types_message_encode_inner(
     pbtools_encoder_write_bool(encoder_p, 1, self_p->v1);
 }
 
-static void scalar_value_types_message_decode_inner(
+void scalar_value_types_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct scalar_value_types_message_t *self_p)
 {
