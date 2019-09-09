@@ -46,7 +46,7 @@ In this example we use the simple proto-file `hello_world.proto`_.
        int32 bar = 1;
    }
 
-Next we generate C source code from the proto-file.
+Generate C source code from the proto-file.
 
 .. code-block:: text
 
