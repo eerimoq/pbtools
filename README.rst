@@ -13,9 +13,7 @@ Google Protocol Buffers tools in Python 3.6+.
 
 Known limitations:
 
-- Oneof and imports are not yet supported.
-
-- Recursive types are not yet supported.
+- Oneof, imports and recursive messages are not yet supported.
 
 - Options, services (gRPC) and maps are ignored.
 
