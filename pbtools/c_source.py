@@ -427,6 +427,28 @@ struct {name}_oneof_t {{
 }};
 '''
 
+ONEOF_ENCODE_FMT = '''\
+void {type}_{name}_encode(
+    struct pbtools_encoder_t *encoder_p,
+    struct {type}_oneof_t *oneof_p)
+{{
+    switch (oneof_p->choice) {{
+{choices}
+    default:
+        break;
+    }}
+}}
+'''
+
+ONEOF_ENCODE_CHOICE_FMT = '''\
+    case {type}_choice_{field_name}_e:
+        pbtools_encoder_write_{type}(
+            encoder_p,
+            {field_number},
+            oneof_p->value.{field_name});
+        break;
+'''
+
 
 class Generator:
 
@@ -730,6 +752,18 @@ class Generator:
 
         return '\n'.join(declarations + definitions)
 
+    def generate_oneof_definitions(self, oneof, declarations, definitions):
+        choices = []
+
+        for field in oneof.fields:
+            ONEOF_ENCODE_CHOICE_FMT.format(type=field.type,
+                                           field_number=field.field_number,
+                                           field_name=field.name)
+
+        ONEOF_ENCODE_FMT.format(type=oneof.name,
+                                name=oneof.name,
+                                choices='\n'.join(choices))
+
     def generate_message_definitions(self,
                                      message,
                                      declarations,
@@ -746,6 +780,9 @@ class Generator:
             declarations.append(
                 REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
                     type=field.full_type_snake_case))
+
+        for oneof in message.oneofs:
+            self.generate_oneof_definitions(oneof, declarations, definitions)
 
         for inner_message in message.messages:
             self.generate_message_definitions(inner_message,

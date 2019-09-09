@@ -30,22 +30,22 @@
 
 #include "oneof.h"
 
-static void oneof_message_encode_inner(
-    struct oneof_message_t *self_p,
-    struct pbtools_encoder_t *encoder_p)
+static void oneof_message_value_encode(
+    struct pbtools_encoder_t *encoder_p,
+    struct oneof_message_value_oneof_t *oneof_p)
 {
-    switch (self_p->value.choice) {
+    switch (oneof_p->choice) {
 
     case oneof_message_value_choice_v1_e:
         pbtools_encoder_write_int32(encoder_p,
                                     1,
-                                    self_p->value.value.v1);
+                                    oneof_p->value.v1);
         break;
 
     case oneof_message_value_choice_v2_e:
         pbtools_encoder_write_string(encoder_p,
                                      2,
-                                     &self_p->value.value.v2);
+                                     &oneof_p->value.v2);
         break;
 
     default:
@@ -53,9 +53,38 @@ static void oneof_message_encode_inner(
     }
 }
 
+static void oneof_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct oneof_message_t *self_p)
+{
+    oneof_message_value_encode(encoder_p, &self_p->value);
+}
+
+static void oneof_message_value_v1_decode(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct oneof_message_value_oneof_t *oneof_p)
+{
+    oneof_p->choice = oneof_message_value_choice_v1_e;
+    oneof_p->value.v1 = pbtools_decoder_read_int32(
+        decoder_p,
+        wire_type);
+}
+
+static void oneof_message_value_v2_decode(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct oneof_message_value_oneof_t *oneof_p)
+{
+    oneof_p->choice = oneof_message_value_choice_v2_e;
+    pbtools_decoder_read_string(decoder_p,
+                                wire_type,
+                                &oneof_p->value.v2);
+}
+
 static void oneof_message_decode_inner(
-    struct oneof_message_t *self_p,
-    struct pbtools_decoder_t *decoder_p)
+    struct pbtools_decoder_t *decoder_p,
+    struct oneof_message_t *self_p)
 {
     int wire_type;
 
@@ -63,17 +92,17 @@ static void oneof_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            self_p->value.choice = oneof_message_value_choice_v1_e;
-            self_p->value.value.v1 = pbtools_decoder_read_int32(
+            oneof_message_value_v1_decode(
                 decoder_p,
-                wire_type);
+                wire_type,
+                &self_p->value);
             break;
 
         case 2:
-            self_p->value.choice = oneof_message_value_choice_v2_e;
-            pbtools_decoder_read_string(decoder_p,
-                                        wire_type,
-                                        &self_p->value.value.v2);
+            oneof_message_value_v2_decode(
+                decoder_p,
+                wire_type,
+                &self_p->value);
             break;
 
         default:
@@ -111,12 +140,11 @@ int oneof_message_encode(
     uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_encoder_t encoder;
-
-    pbtools_encoder_init(&encoder, encoded_p, size);
-    oneof_message_encode_inner(self_p, &encoder);
-
-    return (pbtools_encoder_get_result(&encoder));
+    return (pbtools_message_encode(
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)oneof_message_encode_inner));
 }
 
 int oneof_message_decode(
@@ -124,10 +152,9 @@ int oneof_message_decode(
     const uint8_t *encoded_p,
     size_t size)
 {
-    struct pbtools_decoder_t decoder;
-
-    pbtools_decoder_init(&decoder, encoded_p, size, self_p->base.heap_p);
-    oneof_message_decode_inner(self_p, &decoder);
-
-    return (pbtools_decoder_get_result(&decoder));
+    return (pbtools_message_decode(
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)oneof_message_decode_inner));
 }
