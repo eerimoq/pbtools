@@ -5,13 +5,19 @@
 About
 =====
 
-!!! Work in progress !!!
-
 Google Protocol Buffers tools in Python 3.6+.
 
 - `C` source code generator.
 
 - Only supports proto3.
+
+Known limitations:
+
+- Oneof and imports are not yet supported.
+
+- Recursive types are not yet supported.
+
+- Options, services (gRPC) and maps are ignored.
 
 Project homepage: https://github.com/eerimoq/pbtools
 
