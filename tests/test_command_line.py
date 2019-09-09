@@ -25,6 +25,8 @@ class CommandLineTest(unittest.TestCase):
             'fixed32',
             'fixed64',
             'float',
+            # 'imported',
+            # 'importing',
             'int32',
             'int64',
             'message',

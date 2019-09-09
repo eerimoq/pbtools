@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package imported;
+
+enum ImportedEnum {
+    A = 0;
+    B = 1;
+}
+
+message ImportedMessage {
+    bool v1 = 1;
+}

@@ -30,6 +30,7 @@
 #include "files/c_source/message.h"
 #include "files/c_source/benchmark.h"
 #include "files/c_source/no_package.h"
+#include "files/c_source/importing.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -2500,6 +2501,30 @@ TEST(no_package)
     ASSERT_EQ(message_p->v3, m0_e1_c_e);
 }
 
+TEST(importing)
+{
+    int size;
+    struct importing_message_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
+
+    message_p = importing_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v1 = imported_imported_enum_b_e;
+    message_p->v2.v1 = true;
+
+    size = importing_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 6);
+    ASSERT_MEMORY(&encoded[0], "\x08\x01\x12\x02\x08\x01", size);
+
+    message_p = importing_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = importing_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 6);
+    ASSERT_EQ(message_p->v1, imported_imported_enum_b_e);
+    ASSERT_EQ(message_p->v2.v1, true);
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -2576,6 +2601,7 @@ int main(void)
         message,
         message_does_not_fit_in_workspace,
         benchmark,
-        no_package
+        no_package,
+        importing
     );
 }

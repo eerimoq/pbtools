@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "imported.proto";
+
+package importing;
+
+message Message {
+  imported.ImportedEnum v1 = 1;
+  imported.ImportedMessage v2 = 2;
+}

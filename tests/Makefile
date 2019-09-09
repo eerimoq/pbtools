@@ -54,6 +54,8 @@ all:
 	    files/c_source/benchmark.c \
 	    files/c_source/message.c \
 	    files/c_source/no_package.c \
+	    files/c_source/imported.c \
+	    files/c_source/importing.c \
 	    main.c
 	./a.out
 
