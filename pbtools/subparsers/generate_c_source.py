@@ -10,22 +10,23 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def _do_generate_c_source(args):
-    parsed = parse_file(args.infile)
+    for filename in args.infiles:
+        parsed = parse_file(filename)
 
-    basename = os.path.basename(args.infile)
-    name = os.path.splitext(basename)[0]
-    name = camel_to_snake_case(name)
+        basename = os.path.basename(filename)
+        name = os.path.splitext(basename)[0]
+        name = camel_to_snake_case(name)
 
-    filename_h = f'{name}.h'
-    filename_c = f'{name}.c'
+        filename_h = f'{name}.h'
+        filename_c = f'{name}.c'
 
-    header, source = generate(name, parsed, filename_h)
+        header, source = generate(name, parsed, filename_h)
 
-    with open(filename_h, 'w') as fout:
-        fout.write(header)
+        with open(filename_h, 'w') as fout:
+            fout.write(header)
 
-    with open(filename_c, 'w') as fout:
-        fout.write(source)
+        with open(filename_c, 'w') as fout:
+            fout.write(source)
 
     for filename in ['pbtools.h', 'pbtools.c']:
         shutil.copy(
@@ -40,6 +41,7 @@ def add_subparser(subparsers):
         'generate_c_source',
         description='Generate C source code from given protobuf file.')
     generate_c_source_parser.add_argument(
-        'infile',
-        help='Input protobuf file.')
+        'infiles',
+        nargs='+',
+        help='Input protobuf file(s).')
     generate_c_source_parser.set_defaults(func=_do_generate_c_source)

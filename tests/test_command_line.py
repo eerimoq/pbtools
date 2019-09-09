@@ -56,21 +56,17 @@ class CommandLineTest(unittest.TestCase):
             filename_h = f'{spec}.h'
             filename_c = f'{spec}.c'
 
-            if os.path.exists(filename_h):
-                os.remove(filename_h)
-
-            if os.path.exists(filename_c):
-                os.remove(filename_c)
+            for filename in [filename_h, filename_c]:
+                if os.path.exists(filename):
+                    os.remove(filename)
 
             with patch('sys.argv', argv):
                 pbtools._main()
 
-            self.assertEqual(
-                read_file(f'tests/files/c_source/{filename_h}'),
-                read_file(filename_h))
-            self.assertEqual(
-                read_file(f'tests/files/c_source/{filename_c}'),
-                read_file(filename_c))
+            for filename in [filename_h, filename_c]:
+                self.assertEqual(
+                    read_file(f'tests/files/c_source/{filename}'),
+                    read_file(filename))
 
     def test_command_line_generate_c_source_headers(self):
         specs = [
@@ -95,6 +91,66 @@ class CommandLineTest(unittest.TestCase):
             self.assertEqual(
                 read_file(f'tests/files/c_source/{filename_h}'),
                 read_file(filename_h))
+
+    def test_command_line_generate_c_source_multiple_input_files(self):
+        argv = [
+            'pbtools',
+            'generate_c_source',
+            'tests/files/int32.proto',
+            'tests/files/int64.proto'
+        ]
+
+        filenames = [
+            'int32.h',
+            'int32.c',
+            'int64.h',
+            'int64.c'
+        ]
+
+        for filename in filenames:
+            if os.path.exists(filename):
+                os.remove(filename)
+
+        with patch('sys.argv', argv):
+            pbtools._main()
+
+        for filename in filenames:
+            self.assertEqual(
+                read_file(f'tests/files/c_source/{filename}'),
+                read_file(filename))
+
+    def test_command_line_generate_c_source_pbtools_h_c(self):
+        argv = [
+            'pbtools',
+            'generate_c_source',
+            'tests/files/int32.proto'
+        ]
+
+        filenames = [
+            'int32.h',
+            'int32.c'
+        ]
+        pbtools_filenames = [
+            'pbtools.h',
+            'pbtools.c'
+        ]
+
+        for filename in filenames + pbtools_filenames:
+            if os.path.exists(filename):
+                os.remove(filename)
+
+        with patch('sys.argv', argv):
+            pbtools._main()
+
+        for filename in filenames:
+            self.assertEqual(
+                read_file(f'tests/files/c_source/{filename}'),
+                read_file(filename))
+
+        for filename in pbtools_filenames:
+            self.assertEqual(
+                read_file(f'pbtools/c_source/{filename}'),
+                read_file(filename))
 
 
 if __name__ == '__main__':
