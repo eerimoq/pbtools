@@ -26,6 +26,7 @@ class CommandLineTest(unittest.TestCase):
             'fixed64',
             'float',
             # 'imported',
+            # ('imported2', 'imports'),
             # 'importing',
             'int32',
             'int64',
@@ -47,10 +48,18 @@ class CommandLineTest(unittest.TestCase):
         ]
 
         for spec in specs:
+            if isinstance(spec, tuple):
+                proto = f'tests/files/{spec[1]}/{spec[0]}.proto'
+                options = ['-i', f'tests/files/{spec[1]}']
+            else:
+                proto = f'tests/files/{spec}.proto'
+                options = []
+
             argv = [
                 'pbtools',
                 'generate_c_source',
-                'tests/files/{}.proto'.format(spec)
+                *options,
+                proto
             ]
 
             filename_h = f'{spec}.h'

@@ -43,6 +43,10 @@ def add_subparser(subparsers):
         'generate_c_source',
         description='Generate C source code from given protobuf file(s).')
     generate_c_source_parser.add_argument(
+        '-i', '--include-path',
+        action='append',
+        help='Path(s) where to search for imports.')
+    generate_c_source_parser.add_argument(
         'infiles',
         nargs='+',
         help='Input protobuf file(s).')

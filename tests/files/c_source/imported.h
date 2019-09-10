@@ -69,46 +69,6 @@ void imported_imported_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct imported_imported_message_t *self_p);
 
-static inline void imported_imported_enum_encode_imported(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    enum imported_imported_enum_e *self_p)
-{
-    pbtools_encoder_write_enum(encoder_p, field_number, *self_p);
-}
-
-static inline void imported_imported_enum_decode_imported(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    enum imported_imported_enum_e *self_p)
-{
-    *self_p = pbtools_decoder_read_enum(decoder_p, wire_type);
-}
-
-static inline void imported_imported_message_encode_imported(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct imported_imported_message_t *self_p)
-{
-    pbtools_encoder_sub_message_encode(
-        encoder_p,
-        field_number,
-        &self_p->base,
-        (pbtools_message_encode_inner_t)imported_imported_message_encode_inner);
-}
-
-static inline void imported_imported_message_decode_imported(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct imported_imported_message_t *self_p)
-{
-    pbtools_decoder_sub_message_decode(
-        decoder_p,
-        wire_type,
-        &self_p->base,
-        (pbtools_message_decode_inner_t)imported_imported_message_decode_inner);
-}
-
 /**
  * Create a new message imported.ImportedMessage in given workspace.
  *

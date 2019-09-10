@@ -1,10 +1,16 @@
 syntax = "proto3";
 
 import "imported.proto";
+import "imported2.proto";
 
 package importing;
 
 message Message {
-  imported.ImportedEnum v1 = 1;
-  imported.ImportedMessage v2 = 2;
+    imported.ImportedEnum v1 = 1;
+    imported.ImportedMessage v2 = 2;
+}
+
+message Message2 {
+    importing.Message v1 = 1;
+    imported2.foo.bar.Imported2Message v2 = 2;
 }
