@@ -31,6 +31,7 @@ class CommandLineTest(unittest.TestCase):
             'int32',
             'int64',
             'message',
+            'map',
             'no_package',
             # 'oneof',
             'options',

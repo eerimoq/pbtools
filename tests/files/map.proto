@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package map;
+
+message Message {
+    map<int32, bool> map1 = 1;
+    map<int32, Message> map2 = 2;
+    map<int32, .foo.Message> map3 = 3;
+}

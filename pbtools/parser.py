@@ -6,7 +6,6 @@ from textparser import OneOrMore
 from textparser import ZeroOrMoreDict
 from textparser import choice
 from textparser import Optional
-from textparser import NoMatch
 from textparser import Forward
 from textparser import Tag
 
@@ -71,6 +70,8 @@ class Parser(textparser.Parser):
             ('RPAREN',   ')', r'\)'),
             ('LBRACK',   '[', r'\['),
             ('RBRACK',   ']', r'\]'),
+            ('LT',       '<', r'<'),
+            ('GT',       '>', r'>'),
             ('MISMATCH',      r'.')
         ]
 
@@ -89,7 +90,8 @@ class Parser(textparser.Parser):
             'oneof',
             'option',
             'true',
-            'false'
+            'false',
+            'map'
         ])
 
     def grammar(self):
@@ -107,7 +109,8 @@ class Parser(textparser.Parser):
                        'oneof',
                        'option',
                        'true',
-                       'false')
+                       'false',
+                       'map')
         full_ident = choice(ident, 'LIDENT')
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
@@ -139,6 +142,14 @@ class Parser(textparser.Parser):
                          ZeroOrMore(choice(oneof_field, empty_statement)),
                          '}')
 
+        map_field = Sequence('map', '<', ident, ',', message_type, '>',
+                             ident, '=', 'INT',
+                             Optional(Sequence('[',
+                                               OneOrMore(
+                                                   Sequence(ident, '=', constant)),
+                                               ']')),
+                             ';')
+          
         field = Sequence(Optional('repeated'),
                          message_type, ident, '=', 'INT',
                          Optional(Sequence('[',
@@ -154,6 +165,7 @@ class Parser(textparser.Parser):
                                                enum,
                                                message,
                                                oneof,
+                                               map_field,
                                                empty_statement)),
                              '}')
 
@@ -313,7 +325,7 @@ class Message:
                 self.messages.append(Message(item, inner_namespace))
             elif kind == 'oneof':
                 self.oneofs.append(Oneof(item, inner_namespace))
-            elif kind == ';':
+            elif kind in ['map', ';']:
                 pass
             else:
                 raise InternalError(kind)
