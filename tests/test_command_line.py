@@ -50,8 +50,9 @@ class CommandLineTest(unittest.TestCase):
 
         for spec in specs:
             if isinstance(spec, tuple):
-                proto = f'tests/files/{spec[1]}/{spec[0]}.proto'
+                proto = f'{spec[0]}.proto'
                 options = ['-i', f'tests/files/{spec[1]}']
+                spec = spec[0]
             else:
                 proto = f'tests/files/{spec}.proto'
                 options = []
