@@ -48,7 +48,7 @@ struct benchmarks_proto3_google_message1_sub_message_t {
     int32_t field1;
     int32_t field2;
     int32_t field3;
-    struct pbtools_bytes_t field15;
+    char *field15_p;
     bool field12;
     int64_t field13;
     int64_t field14;
@@ -62,7 +62,7 @@ struct benchmarks_proto3_google_message1_sub_message_t {
     bool field206;
     uint32_t field203;
     int32_t field204;
-    struct pbtools_bytes_t field205;
+    char *field205_p;
     uint64_t field207;
     uint64_t field300;
 };
@@ -79,9 +79,9 @@ struct benchmarks_proto3_google_message1_repeated_t {
 
 struct benchmarks_proto3_google_message1_t {
     struct pbtools_message_base_t base;
-    struct pbtools_bytes_t field1;
-    struct pbtools_bytes_t field9;
-    struct pbtools_bytes_t field18;
+    char *field1_p;
+    char *field9_p;
+    char *field18_p;
     bool field80;
     bool field81;
     int32_t field2;
@@ -89,10 +89,10 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field280;
     int32_t field6;
     int64_t field22;
-    struct pbtools_bytes_t field4;
+    char *field4_p;
     struct pbtools_repeated_uint64_t field5;
     bool field59;
-    struct pbtools_bytes_t field7;
+    char *field7_p;
     int32_t field16;
     int32_t field130;
     bool field12;
@@ -102,8 +102,8 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field104;
     int32_t field100;
     int32_t field101;
-    struct pbtools_bytes_t field102;
-    struct pbtools_bytes_t field103;
+    char *field102_p;
+    char *field103_p;
     int32_t field29;
     bool field30;
     int32_t field60;
@@ -118,7 +118,7 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field67;
     int32_t field68;
     int32_t field128;
-    struct pbtools_bytes_t field129;
+    char *field129_p;
     int32_t field131;
 };
 

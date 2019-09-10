@@ -54,7 +54,7 @@ struct address_book_person_phone_number_repeated_t {
 
 struct address_book_person_phone_number_t {
     struct pbtools_message_base_t base;
-    struct pbtools_bytes_t number;
+    char *number_p;
     enum address_book_person_phone_type_e type;
 };
 
@@ -70,9 +70,9 @@ struct address_book_person_repeated_t {
 
 struct address_book_person_t {
     struct pbtools_message_base_t base;
-    struct pbtools_bytes_t name;
+    char *name_p;
     int32_t id;
-    struct pbtools_bytes_t email;
+    char *email_p;
     struct address_book_person_phone_number_repeated_t phones;
 };
 

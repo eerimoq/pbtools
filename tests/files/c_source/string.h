@@ -45,7 +45,7 @@ struct string_message_repeated_t {
 
 struct string_message_t {
     struct pbtools_message_base_t base;
-    struct pbtools_bytes_t value;
+    char *value_p;
 };
 
 /**

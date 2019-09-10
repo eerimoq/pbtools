@@ -396,9 +396,19 @@ void pbtools_encoder_write_enum(struct pbtools_encoder_t *self_p,
 
 void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
                                   int field_number,
-                                  struct pbtools_bytes_t *string_p)
+                                  char *value_p)
 {
-    pbtools_encoder_write_bytes(self_p, field_number, string_p);
+    size_t length;
+
+    length = strlen(value_p);
+
+    if (length > 0) {
+        pbtools_encoder_write(self_p, (uint8_t *)value_p, length);
+        pbtools_encoder_write_tagged_varint(self_p,
+                                            field_number,
+                                            PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
+                                            length);
+    }
 }
 
 void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
@@ -686,9 +696,9 @@ void pbtools_encoder_write_repeated_string(
     }
 
     for (i = repeated_p->length - 1; i >= 0; i--) {
-        pbtools_encoder_write_bytes(self_p,
-                                    field_number,
-                                    repeated_p->items_pp[i]);
+        pbtools_encoder_write_string(self_p,
+                                     field_number,
+                                     repeated_p->items_pp[i]->value_p);
     }
 }
 
@@ -1020,7 +1030,7 @@ int pbtools_decoder_read_enum(struct pbtools_decoder_t *self_p,
 
 void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                  int wire_type,
-                                 struct pbtools_bytes_t *string_p)
+                                 char **value_pp)
 {
     uint64_t size;
 
@@ -1038,15 +1048,14 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
         return;
     }
 
-    string_p->size = size;
-    string_p->buf_p = pbtools_decoder_heap_alloc(self_p, string_p->size + 1);
+    *value_pp = pbtools_decoder_heap_alloc(self_p, size + 1);
 
-    if (string_p->buf_p == NULL) {
+    if (*value_pp == NULL) {
         return;
     }
 
-    pbtools_decoder_read(self_p, string_p->buf_p, string_p->size);
-    string_p->buf_p[string_p->size] = '\0';
+    pbtools_decoder_read(self_p, (uint8_t *)*value_pp, size);
+    (*value_pp)[size] = '\0';
 }
 
 void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
@@ -1856,7 +1865,7 @@ int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
                                   struct pbtools_repeated_string_t *repeated_p)
 {
     int i;
-    struct pbtools_bytes_t *items_p;
+    struct pbtools_string_t *items_p;
 
     items_p = alloc_repeated((void ***)&repeated_p->items_pp,
                              self_p->heap_p,
@@ -1864,12 +1873,11 @@ int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-112);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {
-        items_p[i].buf_p = (uint8_t *)"";
-        items_p[i].size = 0;
+        items_p[i].value_p = "";
         items_p[i].next_p = &items_p[i + 1];
         repeated_p->items_pp[i] = &items_p[i];
     }
@@ -1887,7 +1895,7 @@ void pbtools_decoder_read_repeated_string(
     int wire_type,
     struct pbtools_repeated_string_t *repeated_p)
 {
-    struct pbtools_bytes_t *item_p;
+    struct pbtools_string_t *item_p;
 
     item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
 
@@ -1895,7 +1903,7 @@ void pbtools_decoder_read_repeated_string(
         return;
     }
 
-    pbtools_decoder_read_string(self_p, wire_type, item_p);
+    pbtools_decoder_read_string(self_p, wire_type, &item_p->value_p);
 
     if (repeated_p->length == 0) {
         repeated_p->head_p = item_p;
@@ -1911,7 +1919,7 @@ void pbtools_decoder_finalize_repeated_string(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_string_t *repeated_p)
 {
-    struct pbtools_bytes_t *item_p;
+    struct pbtools_string_t *item_p;
     int i;
 
     if (repeated_p->length > 0) {
@@ -1945,7 +1953,7 @@ int pbtools_alloc_repeated_bytes(struct pbtools_message_base_t *self_p,
                              sizeof(*items_p));
 
     if (items_p == NULL) {
-        return (-113);
+        return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
     for (i = 0; i < length; i++) {

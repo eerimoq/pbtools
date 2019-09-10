@@ -17,6 +17,8 @@ Known limitations:
 
 - Options, services (gRPC) and maps are ignored.
 
+- The `C` type ``char`` must be 8 bits.
+
 Project homepage: https://github.com/eerimoq/pbtools
 
 Documentation: http://pbtools.readthedocs.org/en/latest

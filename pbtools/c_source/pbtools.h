@@ -113,6 +113,11 @@ struct pbtools_bool_t {
     bool value;
 };
 
+struct pbtools_string_t {
+    struct pbtools_string_t *next_p;
+    char *value_p;
+};
+
 struct pbtools_bytes_t {
     struct pbtools_bytes_t *next_p;
     uint8_t *buf_p;
@@ -170,9 +175,9 @@ struct pbtools_repeated_bool_t {
 
 struct pbtools_repeated_string_t {
     int length;
-    struct pbtools_bytes_t **items_pp;
-    struct pbtools_bytes_t *head_p;
-    struct pbtools_bytes_t *tail_p;
+    struct pbtools_string_t **items_pp;
+    struct pbtools_string_t *head_p;
+    struct pbtools_string_t *tail_p;
 };
 
 struct pbtools_repeated_bytes_t {
@@ -306,7 +311,7 @@ void pbtools_encoder_write_enum(struct pbtools_encoder_t *self_p,
 
 void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
                                   int field_number,
-                                  struct pbtools_bytes_t *string_p);
+                                  char *value_p);
 
 void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
                                  int field_number,
@@ -463,7 +468,7 @@ int pbtools_decoder_read_enum(struct pbtools_decoder_t *self_p,
 
 void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
                                  int wire_type,
-                                 struct pbtools_bytes_t *string_p);
+                                 char **value_pp);
 
 void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
                                 int wire_type,

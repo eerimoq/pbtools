@@ -45,7 +45,7 @@ static void oneof_message_value_encode(
     case oneof_message_value_choice_v2_e:
         pbtools_encoder_write_string(encoder_p,
                                      2,
-                                     &oneof_p->value.v2);
+                                     oneof_p->value.v2_p);
         break;
 
     default:
@@ -79,7 +79,7 @@ static void oneof_message_value_v2_decode(
     oneof_p->choice = oneof_message_value_choice_v2_e;
     pbtools_decoder_read_string(decoder_p,
                                 wire_type,
-                                &oneof_p->value.v2);
+                                &oneof_p->value.v2_p);
 }
 
 static void oneof_message_decode_inner(

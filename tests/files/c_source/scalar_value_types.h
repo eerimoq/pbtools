@@ -57,7 +57,7 @@ struct scalar_value_types_message_t {
     int64_t v10;
     int32_t v11;
     int64_t v12;
-    struct pbtools_bytes_t v13;
+    char *v13_p;
     uint32_t v14;
     uint64_t v15;
 };

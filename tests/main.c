@@ -909,7 +909,7 @@ TEST(string)
 
         message_p = string_message_new(&workspace[0], sizeof(workspace));
         ASSERT_NE(message_p, NULL);
-        pbtools_set_string(&message_p->value, datas[i].decoded_p);
+        message_p->value_p = datas[i].decoded_p;
         size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
         ASSERT_EQ(size, datas[i].size);
         ASSERT_MEMORY(&encoded[0], datas[i].encoded_p, size);
@@ -918,10 +918,7 @@ TEST(string)
         ASSERT_NE(message_p, NULL);
         size = string_message_decode(message_p, &encoded[0], size);
         ASSERT_EQ(size, datas[i].size);
-        ASSERT_EQ(message_p->value.size, datas[i].decoded_size);
-        ASSERT_MEMORY(message_p->value.buf_p,
-                      datas[i].decoded_p,
-                      datas[i].decoded_size + 1);
+        ASSERT_EQ(message_p->value_p, datas[i].decoded_p);
     }
 }
 
@@ -934,12 +931,10 @@ TEST(string_encode_buffer_full)
 
     message_p = string_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    pbtools_set_string(
-        &message_p->value,
+    message_p->value_p =
         "123456789012345678901234567890123456789012345678901234567890"
         "123456789012345678901234567890123456789012345678901234567890"
-        "123456789012345678901234567890");
-    message_p->value.size = 150;
+        "123456789012345678901234567890";
     size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, -PBTOOLS_ENCODE_BUFFER_FULL);
 }
@@ -961,29 +956,6 @@ TEST(string_decode_out_of_data)
                                  (uint8_t *)"\x0a\x96\x01\x31",
                                  4);
     ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
-}
-
-TEST(string_embedded_zero_termination)
-{
-    uint8_t encoded[256];
-    int size;
-    uint8_t workspace[512];
-    struct string_message_t *message_p;
-
-    message_p = string_message_new(&workspace[0], sizeof(workspace));
-    ASSERT_NE(message_p, NULL);
-    message_p->value.buf_p = (uint8_t *)"\x31\x00\x32";
-    message_p->value.size = 3;
-    size = string_message_encode(message_p, &encoded[0], sizeof(encoded));
-    ASSERT_EQ(size, 5);
-    ASSERT_MEMORY(&encoded[0], "\x0a\x03\x31\x00\x32", size);
-
-    message_p = string_message_new(&workspace[0], sizeof(workspace));
-    ASSERT_NE(message_p, NULL);
-    size = string_message_decode(message_p, &encoded[0], size);
-    ASSERT_EQ(size, 5);
-    ASSERT_EQ(message_p->value.size, 3);
-    ASSERT_MEMORY(message_p->value.buf_p, "\x31\x00\x32\x00", 4);
 }
 
 TEST(bytes)
@@ -1168,21 +1140,21 @@ TEST(address_book)
     /* Add one person to the address book. */
     ASSERT_EQ(address_book_address_book_people_alloc(address_book_p, 1), 0);
     person_p = address_book_p->people.items_pp[0];
-    pbtools_set_string(&person_p->name, "Kalle Kula");
+    person_p->name_p = "Kalle Kula";
     person_p->id = 56;
-    pbtools_set_string(&person_p->email, "kalle.kula@foobar.com");
+    person_p->email_p = "kalle.kula@foobar.com";
 
     /* Add phone numbers. */
     ASSERT_EQ(address_book_person_phones_alloc(person_p, 2), 0);
 
     /* Home. */
     phone_number_p = person_p->phones.items_pp[0];
-    pbtools_set_string(&phone_number_p->number, "+46701232345");
+    phone_number_p->number_p = "+46701232345";
     phone_number_p->type = address_book_person_phone_type_home_e;
 
     /* Work. */
     phone_number_p = person_p->phones.items_pp[1];
-    pbtools_set_string(&phone_number_p->number, "+46999999999");
+    phone_number_p->number_p = "+46999999999";
     phone_number_p->type = address_book_person_phone_type_work_e;
 
     /* Encode the message. */
@@ -1211,21 +1183,21 @@ TEST(address_book)
     /* Check the decoded person. */
     ASSERT_EQ(address_book_p->people.length, 1);
     person_p = address_book_p->people.items_pp[0];
-    ASSERT_EQ(pbtools_get_string(&person_p->name), "Kalle Kula");
+    ASSERT_EQ(person_p->name_p, "Kalle Kula");
     ASSERT_EQ(person_p->id, 56);
-    ASSERT_EQ(pbtools_get_string(&person_p->email), "kalle.kula@foobar.com");
+    ASSERT_EQ(person_p->email_p, "kalle.kula@foobar.com");
 
     /* Check phone numbers. */
     ASSERT_EQ(person_p->phones.length, 2);
 
     /* Home. */
     phone_number_p = person_p->phones.items_pp[0];
-    ASSERT_EQ(pbtools_get_string(&phone_number_p->number), "+46701232345");
+    ASSERT_EQ(phone_number_p->number_p, "+46701232345");
     ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_home_e);
 
     /* Work. */
     phone_number_p = person_p->phones.items_pp[1];
-    ASSERT_EQ(pbtools_get_string(&phone_number_p->number), "+46999999999");
+    ASSERT_EQ(phone_number_p->number_p, "+46999999999");
     ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_work_e);
 }
 
@@ -1287,9 +1259,9 @@ TEST(address_book_default_person)
 
     /* Check the decoded person. */
     person_p = address_book_p->people.items_pp[0];
-    ASSERT_EQ(pbtools_get_string(&person_p->name), "");
+    ASSERT_EQ(person_p->name_p, "");
     ASSERT_EQ(person_p->id, 0);
-    ASSERT_EQ(pbtools_get_string(&person_p->email), "");
+    ASSERT_EQ(person_p->email_p, "");
     ASSERT_EQ(person_p->phones.length, 0);
 }
 
@@ -1303,9 +1275,9 @@ TEST(address_book_person)
     person_p = address_book_person_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(person_p, NULL);
 
-    pbtools_set_string(&person_p->name, "Kalle Kula");
+    person_p->name_p = "Kalle Kula";
     person_p->id = 56;
-    pbtools_set_string(&person_p->email, "kalle.kula@foobar.com");
+    person_p->email_p = "kalle.kula@foobar.com";
 
     /* Encode the message. */
     size = address_book_person_encode(person_p, &encoded[0], sizeof(encoded));
@@ -1324,9 +1296,9 @@ TEST(address_book_person)
     ASSERT_EQ(size, 37);
 
     /* Check the decoded person. */
-    ASSERT_EQ(pbtools_get_string(&person_p->name), "Kalle Kula");
+    ASSERT_EQ(person_p->name_p, "Kalle Kula");
     ASSERT_EQ(person_p->id, 56);
-    ASSERT_EQ(pbtools_get_string(&person_p->email), "kalle.kula@foobar.com");
+    ASSERT_EQ(person_p->email_p, "kalle.kula@foobar.com");
     ASSERT_EQ(person_p->phones.length, 0);
 }
 
@@ -1442,9 +1414,9 @@ TEST(address_book_decode_issue_7)
     ASSERT_EQ(address_book_p->people.length, 1);
 
     person_p = address_book_p->people.items_pp[0];
-    ASSERT_EQ(pbtools_get_string(&person_p->name), "");
+    ASSERT_EQ(person_p->name_p, "");
     ASSERT_EQ(person_p->id, -536870913);
-    ASSERT_EQ(pbtools_get_string(&person_p->email), "");
+    ASSERT_EQ(person_p->email_p, "");
     ASSERT_EQ(person_p->phones.length, 0);
 }
 
@@ -1634,7 +1606,7 @@ TEST(oneof_v2)
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     message_p->value.choice = oneof_message_value_choice_v2_e;
-    pbtools_set_string(&message_p->value.value.v2, "Hello!");
+    message_p->value.value.v2_p = "Hello!";
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 8);
     ASSERT_MEMORY(&encoded[0], "\x12\x06Hello!", size);
@@ -1644,7 +1616,7 @@ TEST(oneof_v2)
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 8);
     ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v2_e);
-    ASSERT_EQ(pbtools_get_string(&message_p->value.value.v2), "Hello!");
+    ASSERT_EQ(message_p->value.value.v2_p, "Hello!");
 }
 
 TEST(oneof_none)
@@ -1903,8 +1875,8 @@ TEST(repeated_nested)
 
     /* strings[0..1]. */
     ASSERT_EQ(repeated_message_strings_alloc(message_p, 2), 0);
-    pbtools_set_string(message_p->strings.items_pp[0], "foo");
-    pbtools_set_string(message_p->strings.items_pp[1], "bar");
+    message_p->strings.items_pp[0]->value_p = "foo";
+    message_p->strings.items_pp[1]->value_p = "bar";
 
     size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 31);
@@ -1928,8 +1900,8 @@ TEST(repeated_nested)
 
     /* strings[0..1]. */
     ASSERT_EQ(message_p->strings.length, 2);
-    ASSERT_EQ(pbtools_get_string(message_p->strings.items_pp[0]), "foo");
-    ASSERT_EQ(pbtools_get_string(message_p->strings.items_pp[1]), "bar");
+    ASSERT_EQ(message_p->strings.items_pp[0]->value_p, "foo");
+    ASSERT_EQ(message_p->strings.items_pp[1]->value_p, "bar");
 
     /* messages[0]. */
     ASSERT_EQ(message_p->messages.length, 2);
@@ -2003,8 +1975,8 @@ TEST(repeated_nested_decode_out_of_order)
 
         /* strings[0..1]. */
         ASSERT_EQ(message_p->strings.length, 2);
-        ASSERT_EQ(pbtools_get_string(message_p->strings.items_pp[0]), "foo");
-        ASSERT_EQ(pbtools_get_string(message_p->strings.items_pp[1]), "bar");
+        ASSERT_EQ(message_p->strings.items_pp[0]->value_p, "foo");
+        ASSERT_EQ(message_p->strings.items_pp[1]->value_p, "bar");
 
         /* messages[0]. */
         ASSERT_EQ(message_p->messages.length, 2);
@@ -2067,7 +2039,7 @@ TEST(repeated_scalar_value_types)
     ASSERT_EQ(repeated_message_scalar_value_types_bools_alloc(message_p, 1), 0);
     message_p->bools.items_pp[0]->value = true;
     ASSERT_EQ(repeated_message_scalar_value_types_strings_alloc(message_p, 1), 0);
-    pbtools_set_string(message_p->strings.items_pp[0], "16");
+    message_p->strings.items_pp[0]->value_p = "16";
     ASSERT_EQ(repeated_message_scalar_value_types_bytess_alloc(message_p, 1), 0);
     message_p->bytess.items_pp[0]->buf_p = (uint8_t *)"17";
     message_p->bytess.items_pp[0]->size = 2;
@@ -2123,7 +2095,7 @@ TEST(repeated_scalar_value_types)
     ASSERT_EQ(message_p->bools.length, 1);
     ASSERT_EQ(message_p->bools.items_pp[0]->value, true);
     ASSERT_EQ(message_p->strings.length, 1);
-    ASSERT_EQ(pbtools_get_string(message_p->strings.items_pp[0]), "16");
+    ASSERT_EQ(message_p->strings.items_pp[0]->value_p, "16");
     ASSERT_EQ(message_p->bytess.length, 1);
     ASSERT_EQ(message_p->bytess.items_pp[0]->size, 2);
     ASSERT_MEMORY(message_p->bytess.items_pp[0]->buf_p, "17", 2);
@@ -2246,7 +2218,7 @@ TEST(scalar_value_types_decode_merge_two_decodes)
     ASSERT_EQ(message_p->v10, 0);
     ASSERT_EQ(message_p->v11, 0);
     ASSERT_EQ(message_p->v12, 0);
-    ASSERT_EQ(pbtools_get_string(&message_p->v13), "123");
+    ASSERT_EQ(message_p->v13_p, "123");
     ASSERT_EQ(message_p->v14, 0);
     ASSERT_EQ(message_p->v15, 0);
 
@@ -2268,7 +2240,7 @@ TEST(scalar_value_types_decode_merge_two_decodes)
     ASSERT_EQ(message_p->v10, 0);
     ASSERT_EQ(message_p->v11, 0);
     ASSERT_EQ(message_p->v12, 0);
-    ASSERT_EQ(pbtools_get_string(&message_p->v13), "12");
+    ASSERT_EQ(message_p->v13_p, "12");
     ASSERT_EQ(message_p->v14, 0);
     ASSERT_EQ(message_p->v15, 0);
 }
@@ -2303,7 +2275,7 @@ TEST(scalar_value_types_decode_merge_one_decode)
     ASSERT_EQ(message_p->v10, 0);
     ASSERT_EQ(message_p->v11, 0);
     ASSERT_EQ(message_p->v12, 0);
-    ASSERT_EQ(pbtools_get_string(&message_p->v13), "12");
+    ASSERT_EQ(message_p->v13_p, "12");
     ASSERT_EQ(message_p->v14, 0);
     ASSERT_EQ(message_p->v15, 0);
 }
@@ -2403,23 +2375,21 @@ TEST(benchmark)
     ASSERT_NE(message_p, NULL);
     message_p->field2 = 8;
     message_p->field3 = 2066379;
-    pbtools_set_string(&message_p->field4, "3K+6)#");
-    pbtools_set_string(
-        &message_p->field9,
+    message_p->field4_p = "3K+6)#";
+    message_p->field9_p =
         "10)2uiSuoXL1^)v}icF@>P(j<t#~tz\\lg??S&(<hr7EVs\'l{\'5`Gohc_(="
-        "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z");
+        "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z";
     message_p->field12 = true;
     message_p->field14 = true;
     message_p->field15.field1 = 25;
     message_p->field15.field2 = 36;
-    pbtools_set_string(
-        &message_p->field15.field15,
+    message_p->field15.field15_p =
         "\"?6PY4]L2c<}~2;\\TVF_w^[@YfbIc*v/N+Z-oYuaWZr4C;5ib|*s@RC"
-        "BbuvrQ3g(k,N");
+        "BbuvrQ3g(k,N";
     message_p->field15.field21 = 2813090458170031956;
     message_p->field15.field22 = 38;
     message_p->field15.field23 = true;
-    pbtools_set_string(&message_p->field18, "{=Qwfe~#n{");
+    message_p->field18_p = "{=Qwfe~#n{";
     message_p->field67 = 1591432;
     message_p->field100 = 31;
 
@@ -2454,21 +2424,21 @@ TEST(benchmark)
     ASSERT_EQ(size, 221);
     ASSERT_EQ(message_p->field2, 8);
     ASSERT_EQ(message_p->field3, 2066379);
-    ASSERT_EQ(pbtools_get_string(&message_p->field4), "3K+6)#");
-    ASSERT_EQ(pbtools_get_string(&message_p->field9),
+    ASSERT_EQ(message_p->field4_p, "3K+6)#");
+    ASSERT_EQ(message_p->field9_p,
               "10)2uiSuoXL1^)v}icF@>P(j<t#~tz\\lg??S&(<hr7EVs\'l{\'5`Gohc_(="
               "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z");
     ASSERT_EQ(message_p->field12, true);
     ASSERT_EQ(message_p->field14, true);
     ASSERT_EQ(message_p->field15.field1, 25);
     ASSERT_EQ(message_p->field15.field2, 36);
-    ASSERT_EQ(pbtools_get_string(&message_p->field15.field15),
+    ASSERT_EQ(message_p->field15.field15_p,
               "\"?6PY4]L2c<}~2;\\TVF_w^[@YfbIc*v/N+Z-oYuaWZr4C;5ib|*s@RC"
               "BbuvrQ3g(k,N");
     ASSERT_EQ(message_p->field15.field21, 2813090458170031956);
     ASSERT_EQ(message_p->field15.field22, 38);
     ASSERT_EQ(message_p->field15.field23, true);
-    ASSERT_EQ(pbtools_get_string(&message_p->field18), "{=Qwfe~#n{");
+    ASSERT_EQ(message_p->field18_p, "{=Qwfe~#n{");
     ASSERT_EQ(message_p->field67, 1591432);
     ASSERT_EQ(message_p->field100, 31);
 }
@@ -2552,7 +2522,6 @@ int main(void)
         string,
         string_encode_buffer_full,
         string_decode_out_of_data,
-        string_embedded_zero_termination,
         bytes,
         enum_message,
         enum_message2,
