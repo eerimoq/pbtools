@@ -234,6 +234,12 @@ struct oneof_message3_t {
     struct oneof_message3_oneof1_oneof_t oneof1;
 };
 
+void oneof_message_value_v1_init(
+    struct oneof_message_t *self_p);
+
+void oneof_message_value_v2_init(
+    struct oneof_message_t *self_p);
+
 /**
  * Create a new message oneof.Message in given workspace.
  *
@@ -274,6 +280,24 @@ int oneof_message_decode(
     struct oneof_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+void oneof_message2_oneof1_v4_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof1_v5_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof1_v6_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof2_v1_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof2_v2_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof2_v3_init(
+    struct oneof_message2_t *self_p);
 
 /**
  * Create a new message oneof.Message2 in given workspace.
@@ -316,9 +340,18 @@ int oneof_message2_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+void oneof_message3_foo_inner_oneof_v1_init(
+    struct oneof_message3_foo_t *self_p);
+
+void oneof_message3_foo_inner_oneof_v2_init(
+    struct oneof_message3_foo_t *self_p);
+
 int oneof_message3_bar_foo_alloc(
     struct oneof_message3_bar_t *self_p,
     int length);
+
+void oneof_message3_oneof1_v1_init(
+    struct oneof_message3_t *self_p);
 
 /**
  * Create a new message oneof.Message3 in given workspace.

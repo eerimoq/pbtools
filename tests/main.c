@@ -1702,8 +1702,6 @@ TEST(oneof_message2_v2_v5)
 
 TEST(oneof_message3)
 {
-#if 0
-
     uint8_t encoded[128];
     int size;
     uint8_t workspace[1024];
@@ -1712,17 +1710,16 @@ TEST(oneof_message3)
 
     message_p = oneof_message3_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    //message_p->oneof1.choice = oneof_message3_oneof1_choice_v1_e;
     oneof_message3_oneof1_v1_init(message_p);
     ASSERT_EQ(oneof_message3_bar_foo_alloc(&message_p->oneof1.value.v1, 2), 0);
 
     foo_p = message_p->oneof1.value.v1.foo.items_pp[0];
-    foo_p->inner_oneof.choice = oneof_message3_foo_inner_oneof_choice_v2_e;
+    oneof_message3_foo_inner_oneof_v2_init(foo_p);
     foo_p->inner_oneof.value.v2.buf_p = (uint8_t *)"456";
     foo_p->inner_oneof.value.v2.size = 3;
 
     foo_p = message_p->oneof1.value.v1.foo.items_pp[1];
-    foo_p->inner_oneof.choice = oneof_message3_foo_inner_oneof_choice_v1_e;
+    oneof_message3_foo_inner_oneof_v1_init(foo_p);
     foo_p->inner_oneof.value.v1 = true;
 
     size = oneof_message3_encode(message_p, &encoded[0], sizeof(encoded));
@@ -1739,7 +1736,16 @@ TEST(oneof_message3)
     ASSERT_EQ(message_p->oneof1.choice, oneof_message3_oneof1_choice_v1_e);
     ASSERT_EQ(message_p->oneof1.value.v1.foo.length, 2);
 
-#endif
+    foo_p = message_p->oneof1.value.v1.foo.items_pp[0];
+    ASSERT_EQ(foo_p->inner_oneof.choice,
+              oneof_message3_foo_inner_oneof_choice_v2_e);
+    ASSERT_EQ(foo_p->inner_oneof.value.v2.size, 3);
+    ASSERT_MEMORY(foo_p->inner_oneof.value.v2.buf_p, "456", 3);
+
+    foo_p = message_p->oneof1.value.v1.foo.items_pp[1];
+    ASSERT_EQ(foo_p->inner_oneof.choice,
+              oneof_message3_foo_inner_oneof_choice_v1_e);
+    ASSERT_EQ(foo_p->inner_oneof.value.v1, true);
 }
 
 TEST(repeated_int32s_one_item)

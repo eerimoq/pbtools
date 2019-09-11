@@ -79,30 +79,6 @@ class CommandLineTest(unittest.TestCase):
                     read_file(f'tests/files/c_source/{filename}'),
                     read_file(filename))
 
-    def test_command_line_generate_c_source_headers(self):
-        specs = [
-            'oneof'
-        ]
-
-        for spec in specs:
-            argv = [
-                'pbtools',
-                'generate_c_source',
-                'tests/files/{}.proto'.format(spec)
-            ]
-
-            filename_h = f'{spec}.h'
-
-            if os.path.exists(filename_h):
-                os.remove(filename_h)
-
-            with patch('sys.argv', argv):
-                pbtools._main()
-
-            self.assertEqual(
-                read_file(f'tests/files/c_source/{filename_h}'),
-                read_file(filename_h))
-
     def test_command_line_generate_c_source_multiple_input_files(self):
         argv = [
             'pbtools',
