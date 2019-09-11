@@ -123,247 +123,91 @@ struct tags_message6_t {
     bool value;
 };
 
-/**
- * Create a new message tags.Message1 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct tags_message1_t *
 tags_message1_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message tags.Message1.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int tags_message1_encode(
     struct tags_message1_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message tags.Message1.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int tags_message1_decode(
     struct tags_message1_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message tags.Message2 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct tags_message2_t *
 tags_message2_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message tags.Message2.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int tags_message2_encode(
     struct tags_message2_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message tags.Message2.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int tags_message2_decode(
     struct tags_message2_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message tags.Message3 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct tags_message3_t *
 tags_message3_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message tags.Message3.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int tags_message3_encode(
     struct tags_message3_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message tags.Message3.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int tags_message3_decode(
     struct tags_message3_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message tags.Message4 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct tags_message4_t *
 tags_message4_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message tags.Message4.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int tags_message4_encode(
     struct tags_message4_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message tags.Message4.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int tags_message4_decode(
     struct tags_message4_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message tags.Message5 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct tags_message5_t *
 tags_message5_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message tags.Message5.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int tags_message5_encode(
     struct tags_message5_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message tags.Message5.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int tags_message5_decode(
     struct tags_message5_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message tags.Message6 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct tags_message6_t *
 tags_message6_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message tags.Message6.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int tags_message6_encode(
     struct tags_message6_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message tags.Message6.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int tags_message6_decode(
     struct tags_message6_t *self_p,
     const uint8_t *encoded_p,

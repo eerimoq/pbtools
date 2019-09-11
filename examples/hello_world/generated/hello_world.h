@@ -48,42 +48,16 @@ struct hello_world_foo_t {
     int32_t bar;
 };
 
-/**
- * Create a new message hello_world.Foo in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct hello_world_foo_t *
 hello_world_foo_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message hello_world.Foo.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int hello_world_foo_encode(
     struct hello_world_foo_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message hello_world.Foo.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int hello_world_foo_decode(
     struct hello_world_foo_t *self_p,
     const uint8_t *encoded_p,

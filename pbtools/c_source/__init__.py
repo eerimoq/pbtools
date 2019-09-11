@@ -97,42 +97,16 @@ struct {message.full_name_snake_case}_t {{
 '''
 
 MESSAGE_DECLARATION_FMT = '''\
-/**
- * Create a new message {message.full_name} in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct {message.full_name_snake_case}_t *
 {message.full_name_snake_case}_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message {message.full_name}.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int {message.full_name_snake_case}_encode(
     struct {message.full_name_snake_case}_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message {message.full_name}.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int {message.full_name_snake_case}_decode(
     struct {message.full_name_snake_case}_t *self_p,
     const uint8_t *encoded_p,

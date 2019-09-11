@@ -62,42 +62,16 @@ struct scalar_value_types_message_t {
     uint64_t v15;
 };
 
-/**
- * Create a new message scalar_value_types.Message in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct scalar_value_types_message_t *
 scalar_value_types_message_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message scalar_value_types.Message.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int scalar_value_types_message_encode(
     struct scalar_value_types_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message scalar_value_types.Message.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int scalar_value_types_message_decode(
     struct scalar_value_types_message_t *self_p,
     const uint8_t *encoded_p,

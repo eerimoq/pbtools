@@ -155,165 +155,61 @@ struct message_unused_inner_types_t {
     bool v2;
 };
 
-/**
- * Create a new message message.Foo in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct message_foo_t *
 message_foo_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message message.Foo.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int message_foo_encode(
     struct message_foo_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message message.Foo.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int message_foo_decode(
     struct message_foo_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message message.Bar in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct message_bar_t *
 message_bar_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message message.Bar.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int message_bar_encode(
     struct message_bar_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message message.Bar.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int message_bar_decode(
     struct message_bar_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message message.Message in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct message_message_t *
 message_message_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message message.Message.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int message_message_encode(
     struct message_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message message.Message.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int message_message_decode(
     struct message_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message message.UnusedInnerTypes in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct message_unused_inner_types_t *
 message_unused_inner_types_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message message.UnusedInnerTypes.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int message_unused_inner_types_encode(
     struct message_unused_inner_types_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message message.UnusedInnerTypes.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int message_unused_inner_types_decode(
     struct message_unused_inner_types_t *self_p,
     const uint8_t *encoded_p,

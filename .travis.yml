@@ -12,6 +12,7 @@ script:
   - make test-c
   - make -C examples/hello_world
   - make -C examples/address_book
+  - make -C examples/oneof
 
 after_success:
   - coveralls

@@ -142,42 +142,16 @@ int repeated_message_bytes_alloc(
     struct repeated_message_t *self_p,
     int length);
 
-/**
- * Create a new message repeated.Message in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct repeated_message_t *
 repeated_message_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message repeated.Message.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int repeated_message_encode(
     struct repeated_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message repeated.Message.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int repeated_message_decode(
     struct repeated_message_t *self_p,
     const uint8_t *encoded_p,
@@ -243,42 +217,16 @@ int repeated_message_scalar_value_types_bytess_alloc(
     struct repeated_message_scalar_value_types_t *self_p,
     int length);
 
-/**
- * Create a new message repeated.MessageScalarValueTypes in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct repeated_message_scalar_value_types_t *
 repeated_message_scalar_value_types_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message repeated.MessageScalarValueTypes.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int repeated_message_scalar_value_types_encode(
     struct repeated_message_scalar_value_types_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message repeated.MessageScalarValueTypes.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int repeated_message_scalar_value_types_decode(
     struct repeated_message_scalar_value_types_t *self_p,
     const uint8_t *encoded_p,
@@ -288,42 +236,16 @@ int repeated_foo_messages_alloc(
     struct repeated_foo_t *self_p,
     int length);
 
-/**
- * Create a new message repeated.Foo in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct repeated_foo_t *
 repeated_foo_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message repeated.Foo.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int repeated_foo_encode(
     struct repeated_foo_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message repeated.Foo.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int repeated_foo_decode(
     struct repeated_foo_t *self_p,
     const uint8_t *encoded_p,
@@ -341,42 +263,16 @@ int repeated_bar_fie_inner_foos_alloc(
     struct repeated_bar_fie_t *self_p,
     int length);
 
-/**
- * Create a new message repeated.Bar in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct repeated_bar_t *
 repeated_bar_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message repeated.Bar.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int repeated_bar_encode(
     struct repeated_bar_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message repeated.Bar.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int repeated_bar_decode(
     struct repeated_bar_t *self_p,
     const uint8_t *encoded_p,

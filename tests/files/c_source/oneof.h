@@ -240,42 +240,16 @@ void oneof_message_value_v1_init(
 void oneof_message_value_v2_init(
     struct oneof_message_t *self_p);
 
-/**
- * Create a new message oneof.Message in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct oneof_message_t *
 oneof_message_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message oneof.Message.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int oneof_message_encode(
     struct oneof_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message oneof.Message.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int oneof_message_decode(
     struct oneof_message_t *self_p,
     const uint8_t *encoded_p,
@@ -299,42 +273,16 @@ void oneof_message2_oneof2_v2_init(
 void oneof_message2_oneof2_v3_init(
     struct oneof_message2_t *self_p);
 
-/**
- * Create a new message oneof.Message2 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct oneof_message2_t *
 oneof_message2_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message oneof.Message2.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int oneof_message2_encode(
     struct oneof_message2_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message oneof.Message2.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int oneof_message2_decode(
     struct oneof_message2_t *self_p,
     const uint8_t *encoded_p,
@@ -353,42 +301,16 @@ int oneof_message3_bar_foo_alloc(
 void oneof_message3_oneof1_v1_init(
     struct oneof_message3_t *self_p);
 
-/**
- * Create a new message oneof.Message3 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct oneof_message3_t *
 oneof_message3_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message oneof.Message3.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int oneof_message3_encode(
     struct oneof_message3_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message oneof.Message3.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int oneof_message3_decode(
     struct oneof_message3_t *self_p,
     const uint8_t *encoded_p,

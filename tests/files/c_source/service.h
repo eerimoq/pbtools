@@ -63,83 +63,31 @@ struct service_response_t {
     char *value_p;
 };
 
-/**
- * Create a new message service.Request in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct service_request_t *
 service_request_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message service.Request.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int service_request_encode(
     struct service_request_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message service.Request.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int service_request_decode(
     struct service_request_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message service.Response in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct service_response_t *
 service_response_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message service.Response.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int service_response_encode(
     struct service_response_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message service.Response.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int service_response_decode(
     struct service_response_t *self_p,
     const uint8_t *encoded_p,

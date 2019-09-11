@@ -95,42 +95,16 @@ int address_book_person_phones_alloc(
     struct address_book_person_t *self_p,
     int length);
 
-/**
- * Create a new message address_book.Person in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct address_book_person_t *
 address_book_person_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message address_book.Person.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int address_book_person_encode(
     struct address_book_person_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message address_book.Person.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int address_book_person_decode(
     struct address_book_person_t *self_p,
     const uint8_t *encoded_p,
@@ -140,42 +114,16 @@ int address_book_address_book_people_alloc(
     struct address_book_address_book_t *self_p,
     int length);
 
-/**
- * Create a new message address_book.AddressBook in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct address_book_address_book_t *
 address_book_address_book_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message address_book.AddressBook.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int address_book_address_book_encode(
     struct address_book_address_book_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message address_book.AddressBook.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int address_book_address_book_decode(
     struct address_book_address_book_t *self_p,
     const uint8_t *encoded_p,

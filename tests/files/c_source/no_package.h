@@ -77,42 +77,16 @@ int m0_v2_alloc(
     struct m0_t *self_p,
     int length);
 
-/**
- * Create a new message M0 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct m0_t *
 m0_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message M0.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int m0_encode(
     struct m0_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message M0.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int m0_decode(
     struct m0_t *self_p,
     const uint8_t *encoded_p,

@@ -112,124 +112,46 @@ struct enum_limits_t {
     enum enum_limits_enum_e value;
 };
 
-/**
- * Create a new message enum.Message in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct enum_message_t *
 enum_message_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message enum.Message.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int enum_message_encode(
     struct enum_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message enum.Message.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int enum_message_decode(
     struct enum_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message enum.Message2 in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct enum_message2_t *
 enum_message2_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message enum.Message2.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int enum_message2_encode(
     struct enum_message2_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message enum.Message2.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int enum_message2_decode(
     struct enum_message2_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-/**
- * Create a new message enum.Limits in given workspace.
- *
- * @param[in] workspace_p Message workspace.
- * @param[in] size Workspace size.
- *
- * @return Initialized address book, or NULL on failure.
- */
 struct enum_limits_t *
 enum_limits_new(
     void *workspace_p,
     size_t size);
 
-/**
- * Encode message enum.Limits.
- *
- * @param[in] self_p Message to encode.
- * @param[out] encoded_p Buffer to encode the message into.
- * @param[in] size Encoded buffer size.
- *
- * @return Encoded data length or negative error code.
- */
 int enum_limits_encode(
     struct enum_limits_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-/**
- * Decode message enum.Limits.
- *
- * @param[in,out] self_p Initialized message to decode into.
- * @param[in] encoded_p Buffer to decode.
- * @param[in] size Size of the encoded message.
- *
- * @return Number of bytes decoded or negative error code.
- */
 int enum_limits_decode(
     struct enum_limits_t *self_p,
     const uint8_t *encoded_p,
