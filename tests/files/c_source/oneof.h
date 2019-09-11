@@ -34,6 +34,14 @@
 #include "pbtools.h"
 
 /**
+ * Enum oneof.Enum.
+ */
+enum oneof_enum_e {
+    oneof_enum_a_e = 0,
+    oneof_enum_b_e = 1
+};
+
+/**
  * Enum oneof.Message.value.
  */
 enum oneof_message_value_choice_e {
@@ -88,7 +96,9 @@ struct oneof_message2_foo_t {
  */
 enum oneof_message2_oneof1_choice_e {
     oneof_message2_oneof1_choice_none_e = 0,
-    oneof_message2_oneof1_choice_v1_e = 1
+    oneof_message2_oneof1_choice_v4_e = 1,
+    oneof_message2_oneof1_choice_v5_e = 2,
+    oneof_message2_oneof1_choice_v6_e = 3
 };
 
 /**
@@ -97,7 +107,9 @@ enum oneof_message2_oneof1_choice_e {
 struct oneof_message2_oneof1_oneof_t {
     enum oneof_message2_oneof1_choice_e choice;
     union {
-        struct oneof_message2_foo_t v1;
+        struct oneof_message2_foo_t v4;
+        struct pbtools_bytes_t v5;
+        enum oneof_enum_e v6;
     } value;
 };
 

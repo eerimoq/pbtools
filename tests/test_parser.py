@@ -225,23 +225,43 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.full_type, 'string')
         self.assertEqual(field.full_type_snake_case, 'string')
 
+        # Message2.
         message = parsed.messages[1]
         self.assertEqual(len(message.oneofs), 2)
+
+        # Message2.oneof1.
         oneof = message.oneofs[0]
         self.assertEqual(oneof.name, 'oneof1')
-        self.assertEqual(len(oneof.fields), 1)
+        self.assertEqual(len(oneof.fields), 3)
         self.assertEqual(oneof.namespace, ['oneof', 'Message2'])
         self.assertEqual(oneof.full_name, 'oneof.Message2.oneof1')
         self.assertEqual(oneof.full_name_snake_case, 'oneof_message2_oneof1')
 
         field = oneof.fields[0]
         self.assertEqual(field.type, 'Foo')
-        self.assertEqual(field.name, 'v1')
-        self.assertEqual(field.field_number, 3)
+        self.assertEqual(field.name, 'v4')
+        self.assertEqual(field.field_number, 4)
         self.assertEqual(field.namespace, ['oneof', 'Message2'])
         self.assertEqual(field.full_type, 'oneof.Message2.Foo')
         self.assertEqual(field.full_type_snake_case, 'oneof_message2_foo')
 
+        field = oneof.fields[1]
+        self.assertEqual(field.type, 'bytes')
+        self.assertEqual(field.name, 'v5')
+        self.assertEqual(field.field_number, 5)
+        self.assertEqual(field.namespace, [])
+        self.assertEqual(field.full_type, 'bytes')
+        self.assertEqual(field.full_type_snake_case, 'bytes')
+
+        field = oneof.fields[2]
+        self.assertEqual(field.type, 'Enum')
+        self.assertEqual(field.name, 'v6')
+        self.assertEqual(field.field_number, 6)
+        self.assertEqual(field.namespace, ['oneof'])
+        self.assertEqual(field.full_type, 'oneof.Enum')
+        self.assertEqual(field.full_type_snake_case, 'oneof_enum')
+
+        # Message2.oneof2.
         oneof = message.oneofs[1]
         field = oneof.fields[0]
         self.assertEqual(field.type, 'bool')

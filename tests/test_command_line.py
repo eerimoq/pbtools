@@ -33,7 +33,7 @@ class CommandLineTest(unittest.TestCase):
             'message',
             'map',
             'no_package',
-            # 'oneof',
+            'oneof',
             'options',
             'repeated',
             'scalar_value_types',

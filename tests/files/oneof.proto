@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package oneof;
 
+enum Enum {
+    A = 0;
+    B = 1;
+}
+
 message Message {
     oneof value {
         int32 v1 = 1;
@@ -15,8 +20,11 @@ message Message2 {
     }
 
     oneof oneof1 {
-        Foo v1 = 3;
+        Foo v4 = 4;
+        bytes v5 = 5;
+        Enum v6 = 6;
     };
+
     oneof oneof2 {
         bool v1 = 1;
         Foo v2 = 2;

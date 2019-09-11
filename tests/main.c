@@ -1571,7 +1571,7 @@ TEST(tags_6)
     ASSERT_EQ(message_p->value, true);
 }
 
-TEST(oneof_v1)
+TEST(oneof_message_v1)
 {
     uint8_t encoded[128];
     int size;
@@ -1596,7 +1596,7 @@ TEST(oneof_v1)
     ASSERT_EQ(message_p->value.value.v1, 65);
 }
 
-TEST(oneof_v2)
+TEST(oneof_message_v2)
 {
     uint8_t encoded[128];
     int size;
@@ -1619,7 +1619,7 @@ TEST(oneof_v2)
     ASSERT_EQ(message_p->value.value.v2_p, "Hello!");
 }
 
-TEST(oneof_none)
+TEST(oneof_message_none)
 {
     uint8_t encoded[128];
     int size;
@@ -1636,6 +1636,68 @@ TEST(oneof_none)
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 0);
     ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_none_e);
+}
+
+TEST(oneof_message2_v1_v6)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct oneof_message2_t *message_p;
+
+    message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->oneof1.choice = oneof_message2_oneof1_choice_v6_e;
+    message_p->oneof1.value.v6 = oneof_enum_b_e;
+    message_p->oneof2.choice = oneof_message2_oneof2_choice_v1_e;
+    message_p->oneof2.value.v1 = true;
+
+    size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 4);
+    ASSERT_MEMORY(&encoded[0], "\x08\x01\x30\x01", size);
+
+    message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = oneof_message2_decode(message_p, &encoded[0], size);
+
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v6_e);
+    ASSERT_EQ(message_p->oneof1.value.v6, oneof_enum_b_e);
+    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v1_e);
+    ASSERT_EQ(message_p->oneof2.value.v1, true);
+}
+
+TEST(oneof_message2_v2_v5)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct oneof_message2_t *message_p;
+
+    message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->oneof1.choice = oneof_message2_oneof1_choice_v5_e;
+    message_p->oneof1.value.v5.buf_p = (uint8_t *)"123";
+    message_p->oneof1.value.v5.size = 3;
+    message_p->oneof2.choice = oneof_message2_oneof2_choice_v2_e;
+    message_p->oneof2.value.v2.bar = 9999;
+
+    size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 11);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x12\x04\xb8\x03\x8f\x4e\x2a\x03\x31\x32\x33",
+                  size);
+
+    message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = oneof_message2_decode(message_p, &encoded[0], size);
+
+    ASSERT_EQ(size, 11);
+    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v5_e);
+    ASSERT_EQ(message_p->oneof1.value.v5.size, 3);
+    ASSERT_MEMORY(message_p->oneof1.value.v5.buf_p, "123", 3);
+    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v2_e);
+    ASSERT_EQ(message_p->oneof2.value.v2.bar, 9999);
 }
 
 TEST(repeated_int32s_one_item)
@@ -2544,9 +2606,11 @@ int main(void)
         tags_4,
         tags_5,
         tags_6,
-        oneof_v1,
-        oneof_v2,
-        oneof_none,
+        oneof_message_v1,
+        oneof_message_v2,
+        oneof_message_none,
+        oneof_message2_v1_v6,
+        oneof_message2_v2_v5,
         repeated_int32s_one_item,
         repeated_int32s_two_items,
         repeated_int32s_decode_segments,
