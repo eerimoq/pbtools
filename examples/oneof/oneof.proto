@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package oneof;
+
+message Foo {
+    oneof bar {
+        int32 fie = 1;
+        bool fum = 2;
+    }
+}
