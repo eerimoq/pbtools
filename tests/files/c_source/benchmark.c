@@ -48,6 +48,20 @@ void benchmarks_proto3_google_message1_sub_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_sub_message_t *self_p);
 
+void benchmarks_proto3_google_message1_sub_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
+
+void benchmarks_proto3_google_message1_sub_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
+
+void benchmarks_proto3_google_message1_sub_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
+
 void benchmarks_proto3_google_message1_init(
     struct benchmarks_proto3_google_message1_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -60,6 +74,20 @@ void benchmarks_proto3_google_message1_encode_inner(
 void benchmarks_proto3_google_message1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_t *self_p);
+
+void benchmarks_proto3_google_message1_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
+
+void benchmarks_proto3_google_message1_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
+
+void benchmarks_proto3_google_message1_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
 
 void benchmarks_proto3_google_message1_sub_message_init(
     struct benchmarks_proto3_google_message1_sub_message_t *self_p,
@@ -210,6 +238,41 @@ void benchmarks_proto3_google_message1_sub_message_decode_inner(
             break;
         }
     }
+}
+
+void benchmarks_proto3_google_message1_sub_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_sub_message_encode_inner);
+}
+
+void benchmarks_proto3_google_message1_sub_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmarks_proto3_google_message1_sub_message_t),
+        (pbtools_message_init_t)benchmarks_proto3_google_message1_sub_message_init,
+        (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_sub_message_decode_inner);
+}
+
+void benchmarks_proto3_google_message1_sub_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmarks_proto3_google_message1_sub_message_t *
@@ -548,6 +611,41 @@ int benchmarks_proto3_google_message1_field5_alloc(
                 &self_p->base,
                 length,
                 &self_p->field5));
+}
+
+void benchmarks_proto3_google_message1_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmarks_proto3_google_message1_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)benchmarks_proto3_google_message1_encode_inner);
+}
+
+void benchmarks_proto3_google_message1_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmarks_proto3_google_message1_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmarks_proto3_google_message1_t),
+        (pbtools_message_init_t)benchmarks_proto3_google_message1_init,
+        (pbtools_message_decode_inner_t)benchmarks_proto3_google_message1_decode_inner);
+}
+
+void benchmarks_proto3_google_message1_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmarks_proto3_google_message1_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmarks_proto3_google_message1_t *

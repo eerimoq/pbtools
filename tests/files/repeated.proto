@@ -30,3 +30,16 @@ message MessageScalarValueTypes {
     repeated string strings = 14;
     repeated bytes bytess = 15;
 }
+
+message Foo {
+    repeated Message messages = 1;
+}
+
+message Bar {
+    message Fie {
+        repeated Foo inner_foos = 1;
+    }
+
+    repeated Foo foos = 1;
+    repeated Fie fies = 2;
+}

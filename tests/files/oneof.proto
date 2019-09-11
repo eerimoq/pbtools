@@ -31,3 +31,20 @@ message Message2 {
         Message v3 = 3;
     };
 }
+
+message Message3 {
+    message Foo {
+        oneof inner_oneof {
+            bool v1 = 1;
+            bytes v2 = 2;
+        };
+    }
+
+    message Bar {
+        repeated Foo foo = 1;
+    }
+
+    oneof oneof1 {
+        Bar v1 = 1;
+    };
+}

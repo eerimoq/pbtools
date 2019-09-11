@@ -1700,6 +1700,48 @@ TEST(oneof_message2_v2_v5)
     ASSERT_EQ(message_p->oneof2.value.v2.bar, 9999);
 }
 
+TEST(oneof_message3)
+{
+#if 0
+
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct oneof_message3_t *message_p;
+    struct oneof_message3_foo_t *foo_p;
+
+    message_p = oneof_message3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    //message_p->oneof1.choice = oneof_message3_oneof1_choice_v1_e;
+    oneof_message3_oneof1_v1_init(message_p);
+    ASSERT_EQ(oneof_message3_bar_foo_alloc(&message_p->oneof1.value.v1, 2), 0);
+
+    foo_p = message_p->oneof1.value.v1.foo.items_pp[0];
+    foo_p->inner_oneof.choice = oneof_message3_foo_inner_oneof_choice_v2_e;
+    foo_p->inner_oneof.value.v2.buf_p = (uint8_t *)"456";
+    foo_p->inner_oneof.value.v2.size = 3;
+
+    foo_p = message_p->oneof1.value.v1.foo.items_pp[1];
+    foo_p->inner_oneof.choice = oneof_message3_foo_inner_oneof_choice_v1_e;
+    foo_p->inner_oneof.value.v1 = true;
+
+    size = oneof_message3_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 13);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x0b\x0a\x05\x12\x03\x34\x35\x36\x0a\x02\x08\x01",
+                  size);
+
+    message_p = oneof_message3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = oneof_message3_decode(message_p, &encoded[0], size);
+
+    ASSERT_EQ(size, 13);
+    ASSERT_EQ(message_p->oneof1.choice, oneof_message3_oneof1_choice_v1_e);
+    ASSERT_EQ(message_p->oneof1.value.v1.foo.length, 2);
+
+#endif
+}
+
 TEST(repeated_int32s_one_item)
 {
     uint8_t encoded[128];
@@ -2211,6 +2253,84 @@ TEST(repeated_scalar_value_types_bool)
     ASSERT_EQ(message_p->bools.items_pp[1]->value, false);
 }
 
+TEST(repeated_bar)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct repeated_bar_t *bar_p;
+    struct repeated_foo_t *foo_p;
+    struct repeated_bar_fie_t *fie_p;
+    struct repeated_message_t *message_p;
+
+    bar_p = repeated_bar_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(bar_p, NULL);
+
+    /* foos. */
+    ASSERT_EQ(repeated_bar_foos_alloc(bar_p, 1), 0);
+    foo_p = bar_p->foos.items_pp[0];
+
+    /* foos[0].messages. */
+    ASSERT_EQ(repeated_foo_messages_alloc(foo_p, 1), 0);
+    message_p = foo_p->messages.items_pp[0];
+
+    ASSERT_EQ(repeated_message_int32s_alloc(message_p, 1), 0);
+    message_p->int32s.items_pp[0]->value = 3;
+
+    /* fies. */
+    ASSERT_EQ(repeated_bar_fies_alloc(bar_p, 1), 0);
+    fie_p = bar_p->fies.items_pp[0];
+
+    /* fies[0].inner_foos. */
+    ASSERT_EQ(repeated_bar_fie_inner_foos_alloc(fie_p, 1), 0);
+    foo_p = fie_p->inner_foos.items_pp[0];
+
+    /* fies[0].inner_foos[0].messages. */
+    ASSERT_EQ(repeated_foo_messages_alloc(foo_p, 1), 0);
+    message_p = foo_p->messages.items_pp[0];
+
+    ASSERT_EQ(repeated_message_int32s_alloc(message_p, 1), 0);
+    message_p->int32s.items_pp[0]->value = 1;
+
+    size = repeated_bar_encode(bar_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 16);
+    ASSERT_MEMORY(
+        &encoded[0],
+        "\x0a\x05\x0a\x03\x0a\x01\x03\x12\x07\x0a\x05\x0a\x03\x0a\x01\x01",
+        size);
+
+    bar_p = repeated_bar_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(bar_p, NULL);
+    size = repeated_bar_decode(bar_p, &encoded[0], size);
+    ASSERT_EQ(size, 16);
+
+    /* foos. */
+    ASSERT_EQ(bar_p->foos.length, 1);
+    foo_p = bar_p->foos.items_pp[0];
+
+    /* foos[0].messages. */
+    ASSERT_EQ(foo_p->messages.length, 1);
+    message_p = foo_p->messages.items_pp[0];
+
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 3);
+
+    /* fies. */
+    ASSERT_EQ(bar_p->fies.length, 1);
+    fie_p = bar_p->fies.items_pp[0];
+
+    /* fies[0].inner_foos. */
+    ASSERT_EQ(fie_p->inner_foos.length, 1);
+    foo_p = fie_p->inner_foos.items_pp[0];
+
+    /* fies[0].inner_foos[0].messages. */
+    ASSERT_EQ(foo_p->messages.length, 1);
+    message_p = foo_p->messages.items_pp[0];
+
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+}
+
 TEST(scalar_value_types_decode_bad_wire_types)
 {
     int i;
@@ -2611,6 +2731,7 @@ int main(void)
         oneof_message_none,
         oneof_message2_v1_v6,
         oneof_message2_v2_v5,
+        oneof_message3,
         repeated_int32s_one_item,
         repeated_int32s_two_items,
         repeated_int32s_decode_segments,
@@ -2625,6 +2746,7 @@ int main(void)
         repeated_scalar_value_types,
         repeated_scalar_value_types_empty,
         repeated_scalar_value_types_bool,
+        repeated_bar,
         scalar_value_types_decode_bad_wire_types,
         scalar_value_types_decode_merge_two_decodes,
         scalar_value_types_decode_merge_one_decode,

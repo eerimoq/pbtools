@@ -48,6 +48,20 @@ void tags_message1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct tags_message1_t *self_p);
 
+void tags_message1_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message1_repeated_t *repeated_p);
+
+void tags_message1_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message1_repeated_t *repeated_p);
+
+void tags_message1_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message1_repeated_t *repeated_p);
+
 void tags_message2_init(
     struct tags_message2_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -60,6 +74,20 @@ void tags_message2_encode_inner(
 void tags_message2_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct tags_message2_t *self_p);
+
+void tags_message2_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message2_repeated_t *repeated_p);
+
+void tags_message2_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message2_repeated_t *repeated_p);
+
+void tags_message2_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message2_repeated_t *repeated_p);
 
 void tags_message3_init(
     struct tags_message3_t *self_p,
@@ -74,6 +102,20 @@ void tags_message3_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct tags_message3_t *self_p);
 
+void tags_message3_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message3_repeated_t *repeated_p);
+
+void tags_message3_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message3_repeated_t *repeated_p);
+
+void tags_message3_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message3_repeated_t *repeated_p);
+
 void tags_message4_init(
     struct tags_message4_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -86,6 +128,20 @@ void tags_message4_encode_inner(
 void tags_message4_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct tags_message4_t *self_p);
+
+void tags_message4_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message4_repeated_t *repeated_p);
+
+void tags_message4_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message4_repeated_t *repeated_p);
+
+void tags_message4_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message4_repeated_t *repeated_p);
 
 void tags_message5_init(
     struct tags_message5_t *self_p,
@@ -100,6 +156,20 @@ void tags_message5_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct tags_message5_t *self_p);
 
+void tags_message5_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message5_repeated_t *repeated_p);
+
+void tags_message5_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message5_repeated_t *repeated_p);
+
+void tags_message5_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message5_repeated_t *repeated_p);
+
 void tags_message6_init(
     struct tags_message6_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -112,6 +182,20 @@ void tags_message6_encode_inner(
 void tags_message6_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct tags_message6_t *self_p);
+
+void tags_message6_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message6_repeated_t *repeated_p);
+
+void tags_message6_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message6_repeated_t *repeated_p);
+
+void tags_message6_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message6_repeated_t *repeated_p);
 
 void tags_message1_init(
     struct tags_message1_t *self_p,
@@ -148,6 +232,41 @@ void tags_message1_decode_inner(
             break;
         }
     }
+}
+
+void tags_message1_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message1_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)tags_message1_encode_inner);
+}
+
+void tags_message1_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message1_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct tags_message1_t),
+        (pbtools_message_init_t)tags_message1_init,
+        (pbtools_message_decode_inner_t)tags_message1_decode_inner);
+}
+
+void tags_message1_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message1_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct tags_message1_t *
@@ -223,6 +342,41 @@ void tags_message2_decode_inner(
     }
 }
 
+void tags_message2_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message2_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)tags_message2_encode_inner);
+}
+
+void tags_message2_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message2_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct tags_message2_t),
+        (pbtools_message_init_t)tags_message2_init,
+        (pbtools_message_decode_inner_t)tags_message2_decode_inner);
+}
+
+void tags_message2_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message2_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
+}
+
 struct tags_message2_t *
 tags_message2_new(
     void *workspace_p,
@@ -294,6 +448,41 @@ void tags_message3_decode_inner(
             break;
         }
     }
+}
+
+void tags_message3_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message3_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)tags_message3_encode_inner);
+}
+
+void tags_message3_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message3_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct tags_message3_t),
+        (pbtools_message_init_t)tags_message3_init,
+        (pbtools_message_decode_inner_t)tags_message3_decode_inner);
+}
+
+void tags_message3_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message3_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct tags_message3_t *
@@ -369,6 +558,41 @@ void tags_message4_decode_inner(
     }
 }
 
+void tags_message4_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message4_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)tags_message4_encode_inner);
+}
+
+void tags_message4_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message4_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct tags_message4_t),
+        (pbtools_message_init_t)tags_message4_init,
+        (pbtools_message_decode_inner_t)tags_message4_decode_inner);
+}
+
+void tags_message4_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message4_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
+}
+
 struct tags_message4_t *
 tags_message4_new(
     void *workspace_p,
@@ -442,6 +666,41 @@ void tags_message5_decode_inner(
     }
 }
 
+void tags_message5_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message5_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)tags_message5_encode_inner);
+}
+
+void tags_message5_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message5_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct tags_message5_t),
+        (pbtools_message_init_t)tags_message5_init,
+        (pbtools_message_decode_inner_t)tags_message5_decode_inner);
+}
+
+void tags_message5_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message5_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
+}
+
 struct tags_message5_t *
 tags_message5_new(
     void *workspace_p,
@@ -513,6 +772,41 @@ void tags_message6_decode_inner(
             break;
         }
     }
+}
+
+void tags_message6_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct tags_message6_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        (pbtools_message_encode_inner_t)tags_message6_encode_inner);
+}
+
+void tags_message6_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct tags_message6_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        wire_type,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct tags_message6_t),
+        (pbtools_message_init_t)tags_message6_init,
+        (pbtools_message_decode_inner_t)tags_message6_decode_inner);
+}
+
+void tags_message6_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct tags_message6_repeated_t *repeated_p)
+{
+    pbtools_finalize_repeated_inner(
+        decoder_p,
+        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct tags_message6_t *

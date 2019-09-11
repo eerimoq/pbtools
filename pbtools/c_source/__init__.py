@@ -366,7 +366,6 @@ static void {name}_{field_name}_decode(
 '''
 
 MESSAGE_DEFINITION_FMT = '''\
-{repeated}\
 struct {name}_t *
 {name}_new(
     void *workspace_p,
@@ -431,7 +430,7 @@ int {name}_{field_name}_alloc(
 }}
 '''
 
-REPEATED_MESSAGE_DEFINITION_FMT = '''\
+REPEATED_MESSAGE_DEFINITION_ALLOC_FMT = '''\
 int {name}_{field_name}_alloc(
     struct {name}_t *self_p,
     int length)
@@ -443,7 +442,9 @@ int {name}_{field_name}_alloc(
                 sizeof(struct {type}_t),
                 (pbtools_message_init_t){type}_init));
 }}
+'''
 
+REPEATED_MESSAGE_DEFINITION_FMT = '''\
 void {type}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
@@ -721,18 +722,31 @@ class Generator:
 
     def generate_declarations(self):
         declarations = []
+        self.generate_messages_declarations(self.messages,
+                                            declarations,
+                                            public=True)
 
-        for message in self.messages:
-            declarations += [
+        return '\n'.join(declarations)
+
+    def generate_messages_declarations(self, messages, declarations, public):
+        for message in messages:
+            self.generate_message_declarations(message, declarations, public)
+
+    def generate_message_declarations(self, message, declarations, public):
+        for field in message.repeated_fields:
+            declarations.append(
                 REPEATED_DECLARATION_FMT.format(name=message.full_name_snake_case,
-                                                field_name=field.name_snake_case)
-                for field in message.repeated_fields
-            ]
+                                                field_name=field.name_snake_case))
+
+        for inner_message in message.messages:
+            self.generate_message_declarations(inner_message,
+                                               declarations,
+                                               public=False)
+
+        if public:
             declarations.append(
                 MESSAGE_DECLARATION_FMT.format(name=message.full_name_snake_case,
                                                full_name=message.full_name))
-
-        return '\n'.join(declarations)
 
     def generate_message_encode_body(self, message):
         members = []
@@ -837,14 +851,15 @@ class Generator:
             if field.type_kind == 'scalar-value-type':
                 fmt = REPEATED_DEFINITION_FMT
             else:
-                fmt = REPEATED_MESSAGE_DEFINITION_FMT
-
+                fmt = REPEATED_MESSAGE_DEFINITION_ALLOC_FMT
+        
             members.append(fmt.format(name=message.full_name_snake_case,
                                       field_name=field.name,
                                       type=field.full_type_snake_case))
 
-        if members:
-            members.append('')
+        members.append(
+            REPEATED_MESSAGE_DEFINITION_FMT.format(
+                type=message.full_name_snake_case))
 
         return '\n'.join(members)
 
@@ -938,13 +953,17 @@ class Generator:
             MESSAGE_STATIC_DECLARATIONS_FMT.format(
                 name=message.full_name_snake_case))
 
-        for field in message.repeated_fields:
-            if field.type_kind == 'scalar-value-type':
-                continue
+        # for field in message.repeated_fields:
+        #     if field.type_kind == 'scalar-value-type':
+        #         continue
+        # 
+        #     declarations.append(
+        #         REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
+        #             type=field.full_type_snake_case))
 
-            declarations.append(
-                REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                    type=field.full_type_snake_case))
+        declarations.append(
+            REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
+                type=message.full_name_snake_case))
 
         for oneof in message.oneofs:
             self.generate_oneof_definitions(oneof, declarations, definitions)
@@ -963,11 +982,14 @@ class Generator:
                 members_init=self.generate_message_members_init(message),
                 finalizers=self.generate_repeated_finalizers(message)))
 
+        repeated = self.generate_repeated_definitions(message)
+
+        if repeated:
+            definitions.append(repeated)
+
         if public:
             definitions.append(
-                MESSAGE_DEFINITION_FMT.format(
-                    name=message.full_name_snake_case,
-                    repeated=self.generate_repeated_definitions(message)))
+                MESSAGE_DEFINITION_FMT.format(name=message.full_name_snake_case))
 
     def generate(self):
         namespace_upper = self.namespace.upper()

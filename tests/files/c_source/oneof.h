@@ -152,6 +152,89 @@ struct oneof_message2_t {
 };
 
 /**
+ * Enum oneof.Message3.Foo.inner_oneof.
+ */
+enum oneof_message3_foo_inner_oneof_choice_e {
+    oneof_message3_foo_inner_oneof_choice_none_e = 0,
+    oneof_message3_foo_inner_oneof_choice_v1_e = 1,
+    oneof_message3_foo_inner_oneof_choice_v2_e = 2
+};
+
+/**
+ * Oneof oneof.Message3.Foo.inner_oneof.
+ */
+struct oneof_message3_foo_inner_oneof_oneof_t {
+    enum oneof_message3_foo_inner_oneof_choice_e choice;
+    union {
+        bool v1;
+        struct pbtools_bytes_t v2;
+    } value;
+};
+
+/**
+ * Message oneof.Message3.Foo.
+ */
+struct oneof_message3_foo_repeated_t {
+    int length;
+    struct oneof_message3_foo_t **items_pp;
+    struct oneof_message3_foo_t *head_p;
+    struct oneof_message3_foo_t *tail_p;
+};
+
+struct oneof_message3_foo_t {
+    struct pbtools_message_base_t base;
+    struct oneof_message3_foo_inner_oneof_oneof_t inner_oneof;
+};
+
+/**
+ * Message oneof.Message3.Bar.
+ */
+struct oneof_message3_bar_repeated_t {
+    int length;
+    struct oneof_message3_bar_t **items_pp;
+    struct oneof_message3_bar_t *head_p;
+    struct oneof_message3_bar_t *tail_p;
+};
+
+struct oneof_message3_bar_t {
+    struct pbtools_message_base_t base;
+    struct oneof_message3_foo_repeated_t foo;
+};
+
+/**
+ * Enum oneof.Message3.oneof1.
+ */
+enum oneof_message3_oneof1_choice_e {
+    oneof_message3_oneof1_choice_none_e = 0,
+    oneof_message3_oneof1_choice_v1_e = 1
+};
+
+/**
+ * Oneof oneof.Message3.oneof1.
+ */
+struct oneof_message3_oneof1_oneof_t {
+    enum oneof_message3_oneof1_choice_e choice;
+    union {
+        struct oneof_message3_bar_t v1;
+    } value;
+};
+
+/**
+ * Message oneof.Message3.
+ */
+struct oneof_message3_repeated_t {
+    int length;
+    struct oneof_message3_t **items_pp;
+    struct oneof_message3_t *head_p;
+    struct oneof_message3_t *tail_p;
+};
+
+struct oneof_message3_t {
+    struct pbtools_message_base_t base;
+    struct oneof_message3_oneof1_oneof_t oneof1;
+};
+
+/**
  * Create a new message oneof.Message in given workspace.
  *
  * @param[in] workspace_p Message workspace.
@@ -230,6 +313,51 @@ int oneof_message2_encode(
  */
 int oneof_message2_decode(
     struct oneof_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int oneof_message3_bar_foo_alloc(
+    struct oneof_message3_bar_t *self_p,
+    int length);
+
+/**
+ * Create a new message oneof.Message3 in given workspace.
+ *
+ * @param[in] workspace_p Message workspace.
+ * @param[in] size Workspace size.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct oneof_message3_t *
+oneof_message3_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message oneof.Message3.
+ *
+ * @param[in] self_p Message to encode.
+ * @param[out] encoded_p Buffer to encode the message into.
+ * @param[in] size Encoded buffer size.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int oneof_message3_encode(
+    struct oneof_message3_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message oneof.Message3.
+ *
+ * @param[in,out] self_p Initialized message to decode into.
+ * @param[in] encoded_p Buffer to decode.
+ * @param[in] size Size of the encoded message.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int oneof_message3_decode(
+    struct oneof_message3_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 

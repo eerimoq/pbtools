@@ -80,6 +80,52 @@ struct repeated_message_scalar_value_types_t {
     struct pbtools_repeated_bytes_t bytess;
 };
 
+/**
+ * Message repeated.Foo.
+ */
+struct repeated_foo_repeated_t {
+    int length;
+    struct repeated_foo_t **items_pp;
+    struct repeated_foo_t *head_p;
+    struct repeated_foo_t *tail_p;
+};
+
+struct repeated_foo_t {
+    struct pbtools_message_base_t base;
+    struct repeated_message_repeated_t messages;
+};
+
+/**
+ * Message repeated.Bar.Fie.
+ */
+struct repeated_bar_fie_repeated_t {
+    int length;
+    struct repeated_bar_fie_t **items_pp;
+    struct repeated_bar_fie_t *head_p;
+    struct repeated_bar_fie_t *tail_p;
+};
+
+struct repeated_bar_fie_t {
+    struct pbtools_message_base_t base;
+    struct repeated_foo_repeated_t inner_foos;
+};
+
+/**
+ * Message repeated.Bar.
+ */
+struct repeated_bar_repeated_t {
+    int length;
+    struct repeated_bar_t **items_pp;
+    struct repeated_bar_t *head_p;
+    struct repeated_bar_t *tail_p;
+};
+
+struct repeated_bar_t {
+    struct pbtools_message_base_t base;
+    struct repeated_foo_repeated_t foos;
+    struct repeated_bar_fie_repeated_t fies;
+};
+
 int repeated_message_int32s_alloc(
     struct repeated_message_t *self_p,
     int length);
@@ -235,6 +281,104 @@ int repeated_message_scalar_value_types_encode(
  */
 int repeated_message_scalar_value_types_decode(
     struct repeated_message_scalar_value_types_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int repeated_foo_messages_alloc(
+    struct repeated_foo_t *self_p,
+    int length);
+
+/**
+ * Create a new message repeated.Foo in given workspace.
+ *
+ * @param[in] workspace_p Message workspace.
+ * @param[in] size Workspace size.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct repeated_foo_t *
+repeated_foo_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message repeated.Foo.
+ *
+ * @param[in] self_p Message to encode.
+ * @param[out] encoded_p Buffer to encode the message into.
+ * @param[in] size Encoded buffer size.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int repeated_foo_encode(
+    struct repeated_foo_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message repeated.Foo.
+ *
+ * @param[in,out] self_p Initialized message to decode into.
+ * @param[in] encoded_p Buffer to decode.
+ * @param[in] size Size of the encoded message.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int repeated_foo_decode(
+    struct repeated_foo_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int repeated_bar_foos_alloc(
+    struct repeated_bar_t *self_p,
+    int length);
+
+int repeated_bar_fies_alloc(
+    struct repeated_bar_t *self_p,
+    int length);
+
+int repeated_bar_fie_inner_foos_alloc(
+    struct repeated_bar_fie_t *self_p,
+    int length);
+
+/**
+ * Create a new message repeated.Bar in given workspace.
+ *
+ * @param[in] workspace_p Message workspace.
+ * @param[in] size Workspace size.
+ *
+ * @return Initialized address book, or NULL on failure.
+ */
+struct repeated_bar_t *
+repeated_bar_new(
+    void *workspace_p,
+    size_t size);
+
+/**
+ * Encode message repeated.Bar.
+ *
+ * @param[in] self_p Message to encode.
+ * @param[out] encoded_p Buffer to encode the message into.
+ * @param[in] size Encoded buffer size.
+ *
+ * @return Encoded data length or negative error code.
+ */
+int repeated_bar_encode(
+    struct repeated_bar_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Decode message repeated.Bar.
+ *
+ * @param[in,out] self_p Initialized message to decode into.
+ * @param[in] encoded_p Buffer to decode.
+ * @param[in] size Size of the encoded message.
+ *
+ * @return Number of bytes decoded or negative error code.
+ */
+int repeated_bar_decode(
+    struct repeated_bar_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
