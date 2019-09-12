@@ -69,6 +69,7 @@ all:
 	    files/c_source/imported.c \
 	    files/c_source/imported2.c \
 	    files/c_source/importing.c \
+	    files/c_source/ordering.c \
 	    main.o
 	./a.out
 

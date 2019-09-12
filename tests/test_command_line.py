@@ -35,6 +35,7 @@ class CommandLineTest(unittest.TestCase):
             'no_package',
             'oneof',
             'options',
+            'ordering',
             'repeated',
             'scalar_value_types',
             'service',

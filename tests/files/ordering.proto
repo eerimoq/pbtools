@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package ordering;
+
+message Foo {
+    Bar bar = 1;
+    Fam fam = 2;
+}
+
+message Bar {
+    bool value = 1;
+    Fie fie = 2;
+    Fum fum = 3;
+    Gom gom = 4;
+
+    message Gom {
+        Fie v1 = 1;
+    }
+
+    message Fie {
+        bool v1 = 1;
+        Fam v2 = 2;
+    }
+
+    enum Fum {
+        A = 0;
+    }
+
+}
+
+enum Fam {
+    A = 0;
+}

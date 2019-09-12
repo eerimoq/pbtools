@@ -149,7 +149,7 @@ class Parser(textparser.Parser):
                                                    Sequence(ident, '=', constant)),
                                                ']')),
                              ';')
-          
+
         field = Sequence(Optional('repeated'),
                          message_type, ident, '=', 'INT',
                          Optional(Sequence('[',
@@ -349,6 +349,27 @@ class Message:
     def full_name_snake_case(self):
         return camel_to_snake_case(self.full_name)
 
+    def used_types(self):
+        used_types = []
+
+        for field in self.fields:
+            if field.full_type in SCALAR_VALUE_TYPES:
+                continue
+
+            used_types.append(field.full_type)
+
+        for oneof in self.oneofs:
+            for field in oneof.fields:
+                if field.full_type in SCALAR_VALUE_TYPES:
+                    continue
+
+                used_types.append(field.full_type)
+
+        for message in self.messages:
+            used_types += message.used_types()
+
+        return list(set(used_types))
+
 
 class Rpc:
 
@@ -422,6 +443,7 @@ class Proto:
         self.messages_stack = []
         self.resolve_messages_fields_types()
         self.resolve_messages_fields_type_kinds()
+        self.messages = self.sort_messages_by_usage(self.messages)
 
     def namespace_base(self):
         if self.package is None:
@@ -517,6 +539,25 @@ class Proto:
             for message in messages:
                 if message.name == name:
                     return message
+
+    def sort_messages_by_usage(self, messages):
+        reversed_sorted_messages = []
+
+        for message in messages:
+            message.messages = self.sort_messages_by_usage(message.messages)
+
+            # Insert first in the reversed list if there are no types
+            # using this type.
+            insert_index = 0
+
+            for i, sorted_message in enumerate(reversed_sorted_messages, 1):
+                if message.full_name in sorted_message.used_types():
+                    if i > insert_index:
+                        insert_index = i
+
+            reversed_sorted_messages.insert(insert_index, message)
+
+        return list(reversed(reversed_sorted_messages))
 
 
 def parse_string(text):
