@@ -9,6 +9,8 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/int32.proto')
 
         self.assertEqual(parsed.package, 'int32')
+        self.assertEqual(parsed.imports, [])
+        self.assertEqual(parsed.options, [])
         self.assertEqual(len(parsed.messages), 2)
 
         message = parsed.messages[0]
@@ -528,6 +530,15 @@ class ParserTest(unittest.TestCase):
 
         self.assertEqual(parsed.package, None)
         self.assertEqual(len(parsed.messages), 1)
+
+    def test_importing(self):
+        parsed = pbtools.parse_file('tests/files/importing.proto')
+
+        self.assertEqual(parsed.imports,
+                         [
+                             'imported.proto',
+                             'imported2.proto'
+                         ])
 
 
 if __name__ == '__main__':

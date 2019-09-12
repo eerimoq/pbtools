@@ -403,6 +403,13 @@ def load_package(tokens):
         return None
 
 
+def load_imports(tokens):
+    return [
+        import_[2].strip('"')
+        for import_ in tokens[1].get('import', [])
+    ]
+
+
 def load_options(tokens):
     return [
         Option(option)
@@ -435,6 +442,7 @@ class Proto:
 
     def __init__(self, tree):
         self.package = load_package(tree)
+        self.imports = load_imports(tree)
         namespace = self.namespace_base()
         self.options = load_options(tree)
         self.messages = load_messages(tree, namespace)
