@@ -146,7 +146,9 @@ proto-file.
 .. code-block:: text
 
    $ pbtools generate_c_source examples/address_book/address_book.proto
-   Successfully created pbtools.[hc] and address_book.[hc].
+   Parsing examples/address_book/address_book.proto.
+   Successfully generated address_book.h and address_book.c.
+   Successfully created pbtools.h and pbtools.c.
 
 See `address_book.h`_ and `address_book.c`_ for the contents of the
 generated files.
