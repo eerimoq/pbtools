@@ -53,7 +53,9 @@ Generate C source code from the proto-file.
 .. code-block:: text
 
    $ pbtools generate_c_source examples/hello_world/hello_world.proto
-   Successfully created pbtools.[hc] and hello_world.[hc].
+   Parsing examples/hello_world/hello_world.proto.
+   Successfully generated hello_world.h and hello_world.c.
+   Successfully created pbtools.h and pbtools.c.
 
 See `hello_world.h`_ and `hello_world.c`_ for the contents of the
 generated files.
