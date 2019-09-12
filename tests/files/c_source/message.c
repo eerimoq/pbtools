@@ -238,12 +238,16 @@ void message_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct message_foo_t *self_p)
 {
+    (void)encoder_p;
+    (void)self_p;
 }
 
 void message_foo_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct message_foo_t *self_p)
 {
+    (void)self_p;
+
     int wire_type;
 
     while (pbtools_decoder_available(decoder_p)) {

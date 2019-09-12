@@ -216,10 +216,10 @@ struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
                                         size_t size);
 
 void *pbtools_heap_alloc(struct pbtools_heap_t *self_p,
-                         int size);
+                         size_t size);
 
 void *pbtools_decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                 int size);
+                                 size_t size);
 
 void pbtools_encoder_init(struct pbtools_encoder_t *self_p,
                           uint8_t *buf_p,
@@ -739,12 +739,5 @@ void pbtools_decoder_sub_message_decode(
     int wire_type,
     struct pbtools_message_base_t *message_p,
     pbtools_message_decode_inner_t decode_inner);
-
-#if 0
-#    include <stdio.h>
-#    define PRINTF(fmt, ...) printf(fmt, ##__VA_ARGS__)
-#else
-#    define PRINTF(fmt, ...)
-#endif
 
 #endif

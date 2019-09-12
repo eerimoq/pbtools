@@ -62,7 +62,7 @@ struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
     if (size >= sizeof(*heap_p)) {
         heap_p = (struct pbtools_heap_t *)buf_p;
         heap_p->buf_p = buf_p;
-        heap_p->size = size;
+        heap_p->size = (int)size;
         heap_p->pos = sizeof(*heap_p);
     } else {
         heap_p = NULL;
@@ -72,16 +72,16 @@ struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
 }
 
 void *pbtools_heap_alloc(struct pbtools_heap_t *self_p,
-                         int size)
+                         size_t size)
 {
     void *buf_p;
     int left;
 
     left = (self_p->size - self_p->pos);
 
-    if (size <= left) {
+    if ((int)size <= left) {
         buf_p = &self_p->buf_p[self_p->pos];
-        self_p->pos += size;
+        self_p->pos += (int)size;
     } else {
         buf_p = NULL;
     }
@@ -90,7 +90,7 @@ void *pbtools_heap_alloc(struct pbtools_heap_t *self_p,
 }
 
 void *pbtools_decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                 int size)
+                                 size_t size)
 {
     void *buf_p;
 
@@ -105,24 +105,22 @@ void *pbtools_decoder_heap_alloc(struct pbtools_decoder_t *self_p,
 
 void pbtools_encoder_init(struct pbtools_encoder_t *self_p,
                           uint8_t *buf_p,
-                          size_t size)
+                          size_t  size)
 {
     self_p->buf_p = buf_p;
-    self_p->size = size;
-    self_p->pos = (size - 1);
+    self_p->size = (int)size;
+    self_p->pos = ((int)size - 1);
 }
 
 int pbtools_encoder_get_result(struct pbtools_encoder_t *self_p)
 {
     int length;
 
-    PRINTF("pbtools_encoder_get_result(): pos: %d\n", self_p->pos);
-
     if (self_p->pos >= 0) {
         length = (self_p->size - self_p->pos - 1);
         memmove(self_p->buf_p,
                 &self_p->buf_p[self_p->pos + 1],
-                length);
+                (size_t)length);
     } else {
         length = self_p->pos;
     }
@@ -134,7 +132,6 @@ void pbtools_encoder_abort(struct pbtools_encoder_t *self_p,
                            int error)
 {
     if (self_p->size >= 0) {
-        PRINTF("pbtools_encoder_abort(): error: %d\n", error);
         self_p->size = -error;
         self_p->pos = -error;
     }
@@ -146,7 +143,7 @@ void pbtools_encoder_write(struct pbtools_encoder_t *self_p,
 {
     if (self_p->pos >= size) {
         self_p->pos -= size;
-        memcpy(&self_p->buf_p[self_p->pos + 1], buf_p, size);
+        memcpy(&self_p->buf_p[self_p->pos + 1], buf_p, (size_t)size);
     } else {
         pbtools_encoder_abort(self_p, PBTOOLS_ENCODE_BUFFER_FULL);
     }
@@ -160,11 +157,11 @@ void pbtools_encoder_write_tag(struct pbtools_encoder_t *self_p,
     int pos;
     uint32_t value;
 
-    value = ((field_number << 3) | wire_type);
+    value = (((uint32_t)field_number << 3) | (uint32_t)wire_type);
     pos = 0;
 
     while (value > 0) {
-        buf[pos++] = (value | 0x80);
+        buf[pos++] = (uint8_t)(value | 0x80);
         value >>= 7;
     }
 
@@ -178,20 +175,15 @@ void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
     uint8_t buf[10];
     int pos;
 
-    PRINTF("pbtools_encoder_write_varint(): value: 0x%llx\n",
-           (unsigned long long)value);
-
     pos = 0;
 
     do {
-        buf[pos++] = (value | 0x80);
+        buf[pos++] = (uint8_t)(value | 0x80);
         value >>= 7;
     } while (value > 0);
 
     buf[pos - 1] &= 0x7f;
     pbtools_encoder_write(self_p, &buf[0], pos);
-
-    PRINTF("pbtools_encoder_write_varint(): done\n");
 }
 
 void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
@@ -281,10 +273,10 @@ void pbtools_encoder_write_fixed32_value(struct pbtools_encoder_t *self_p,
 {
     uint8_t buf[4];
 
-    buf[0] = (value & 0xff);
-    buf[1] = ((value >> 8) & 0xff);
-    buf[2] = ((value >> 16) & 0xff);
-    buf[3] = ((value >> 24) & 0xff);
+    buf[0] = (uint8_t)(value & 0xff);
+    buf[1] = (uint8_t)((value >> 8) & 0xff);
+    buf[2] = (uint8_t)((value >> 16) & 0xff);
+    buf[3] = (uint8_t)((value >> 24) & 0xff);
     pbtools_encoder_write(self_p, &buf[0], 4);
 }
 
@@ -292,14 +284,8 @@ void pbtools_encoder_write_fixed32(struct pbtools_encoder_t *self_p,
                                    int field_number,
                                    uint32_t value)
 {
-    uint8_t buf[4];
-
     if (value != 0) {
-        buf[0] = (value & 0xff);
-        buf[1] = ((value >> 8) & 0xff);
-        buf[2] = ((value >> 16) & 0xff);
-        buf[3] = ((value >> 24) & 0xff);
-        pbtools_encoder_write(self_p, &buf[0], 4);
+        pbtools_encoder_write_fixed32_value(self_p, value);
         pbtools_encoder_write_tag(self_p,
                                   field_number,
                                   PBTOOLS_WIRE_TYPE_FIXED_32);
@@ -311,14 +297,14 @@ void pbtools_encoder_write_fixed64_value(struct pbtools_encoder_t *self_p,
 {
     uint8_t buf[8];
 
-    buf[0] = (value & 0xff);
-    buf[1] = ((value >> 8) & 0xff);
-    buf[2] = ((value >> 16) & 0xff);
-    buf[3] = ((value >> 24) & 0xff);
-    buf[4] = ((value >> 32) & 0xff);
-    buf[5] = ((value >> 40) & 0xff);
-    buf[6] = ((value >> 48) & 0xff);
-    buf[7] = ((value >> 56) & 0xff);
+    buf[0] = (uint8_t)(value & 0xff);
+    buf[1] = (uint8_t)((value >> 8) & 0xff);
+    buf[2] = (uint8_t)((value >> 16) & 0xff);
+    buf[3] = (uint8_t)((value >> 24) & 0xff);
+    buf[4] = (uint8_t)((value >> 32) & 0xff);
+    buf[5] = (uint8_t)((value >> 40) & 0xff);
+    buf[6] = (uint8_t)((value >> 48) & 0xff);
+    buf[7] = (uint8_t)((value >> 56) & 0xff);
     pbtools_encoder_write(self_p, &buf[0], 8);
 }
 
@@ -326,18 +312,8 @@ void pbtools_encoder_write_fixed64(struct pbtools_encoder_t *self_p,
                                    int field_number,
                                    uint64_t value)
 {
-    uint8_t buf[8];
-
     if (value != 0) {
-        buf[0] = (value & 0xff);
-        buf[1] = ((value >> 8) & 0xff);
-        buf[2] = ((value >> 16) & 0xff);
-        buf[3] = ((value >> 24) & 0xff);
-        buf[4] = ((value >> 32) & 0xff);
-        buf[5] = ((value >> 40) & 0xff);
-        buf[6] = ((value >> 48) & 0xff);
-        buf[7] = ((value >> 56) & 0xff);
-        pbtools_encoder_write(self_p, &buf[0], 8);
+        pbtools_encoder_write_fixed64_value(self_p, value);
         pbtools_encoder_write_tag(self_p,
                                   field_number,
                                   PBTOOLS_WIRE_TYPE_FIXED_64);
@@ -348,14 +324,14 @@ void pbtools_encoder_write_sfixed32(struct pbtools_encoder_t *self_p,
                                     int field_number,
                                     int32_t value)
 {
-    pbtools_encoder_write_fixed32(self_p, field_number, value);
+    pbtools_encoder_write_fixed32(self_p, field_number, (uint32_t)value);
 }
 
 void pbtools_encoder_write_sfixed64(struct pbtools_encoder_t *self_p,
                                     int field_number,
                                     int64_t value)
 {
-    pbtools_encoder_write_fixed64(self_p, field_number, value);
+    pbtools_encoder_write_fixed64(self_p, field_number, (uint64_t)value);
 }
 
 void pbtools_encoder_write_float(struct pbtools_encoder_t *self_p,
@@ -403,7 +379,7 @@ void pbtools_encoder_write_string(struct pbtools_encoder_t *self_p,
     length = strlen(value_p);
 
     if (length > 0) {
-        pbtools_encoder_write(self_p, (uint8_t *)value_p, length);
+        pbtools_encoder_write(self_p, (uint8_t *)value_p, (int)length);
         pbtools_encoder_write_tagged_varint(self_p,
                                             field_number,
                                             PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
@@ -416,7 +392,7 @@ void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
                                  struct pbtools_bytes_t *value_p)
 {
     if (value_p->size > 0) {
-        pbtools_encoder_write(self_p, value_p->buf_p, value_p->size);
+        pbtools_encoder_write(self_p, value_p->buf_p, (int)value_p->size);
         pbtools_encoder_write_tagged_varint(self_p,
                                             field_number,
                                             PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
@@ -446,15 +422,16 @@ static void write_repeated_scalar_value_type(
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
                                         PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+                                        (uint64_t)(pos - self_p->pos));
 }
 
 static void write_repeated_int32_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    pbtools_encoder_write_varint(self_p,
-                                 ((struct pbtools_int32_t *)item_p)->value);
+    pbtools_encoder_write_varint(
+        self_p,
+        (uint64_t)((struct pbtools_int32_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_int32(
@@ -469,8 +446,9 @@ static void write_repeated_int64_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    pbtools_encoder_write_varint(self_p,
-                                 ((struct pbtools_int64_t *)item_p)->value);
+    pbtools_encoder_write_varint(
+        self_p,
+        (uint64_t)((struct pbtools_int64_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_int64(
@@ -601,8 +579,9 @@ static void write_repeated_sfixed32_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    pbtools_encoder_write_fixed32_value(self_p,
-                                        ((struct pbtools_int32_t *)item_p)->value);
+    pbtools_encoder_write_fixed32_value(
+        self_p,
+        (uint32_t)((struct pbtools_int32_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_sfixed32(
@@ -617,8 +596,9 @@ static void write_repeated_sfixed64_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    pbtools_encoder_write_fixed64_value(self_p,
-                                        ((struct pbtools_int64_t *)item_p)->value);
+    pbtools_encoder_write_fixed64_value(
+        self_p,
+        (uint64_t)((struct pbtools_int64_t *)item_p)->value);
 }
 
 void pbtools_encoder_write_repeated_sfixed64(
@@ -726,7 +706,7 @@ void pbtools_decoder_init(struct pbtools_decoder_t *self_p,
                           struct pbtools_heap_t *heap_p)
 {
     self_p->buf_p = buf_p;
-    self_p->size = size;
+    self_p->size = (int)size;
     self_p->pos = 0;
     self_p->heap_p = heap_p;
 }
@@ -756,10 +736,8 @@ uint8_t pbtools_decoder_get(struct pbtools_decoder_t *self_p)
 
     if (pbtools_decoder_available(self_p)) {
         value = self_p->buf_p[self_p->pos];
-        PRINTF("pbtools_decoder_get(): 0x%02x\n", value);
         self_p->pos++;
     } else {
-        PRINTF("pbtools_decoder_get(): failed\n");
         pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_DATA);
         value = 0;
     }
@@ -771,9 +749,9 @@ void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
                           uint8_t *buf_p,
                           size_t size)
 {
-    if ((self_p->size - self_p->pos) >= size) {
+    if ((self_p->size - self_p->pos) >= (int)size) {
         memcpy(buf_p, &self_p->buf_p[self_p->pos], size);
-        self_p->pos += size;
+        self_p->pos += (int)size;
     } else {
         memset(buf_p, 0, size);
         pbtools_decoder_abort(self_p, PBTOOLS_OUT_OF_DATA);
@@ -796,13 +774,9 @@ uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p)
     } while ((offset < 64) && (byte & 0x80));
 
     if (byte & 0x80) {
-        PRINTF("overflow\n");
         pbtools_decoder_abort(self_p, PBTOOLS_VARINT_OVERFLOW);
         value = 0;
     }
-
-    PRINTF("pbtools_decoder_read_varint(): value: 0x%llx\n",
-           (unsigned long long)value);
 
     return (value);
 }
@@ -837,17 +811,13 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
     uint32_t value;
     int field_number;
 
-    value = pbtools_decoder_read_varint(self_p);
-    field_number = (value >> 3);
+    value = (uint32_t)pbtools_decoder_read_varint(self_p);
+    field_number = (int)(value >> 3);
     *wire_type_p = (value & 0x7);
 
     if (field_number == 0) {
         pbtools_decoder_abort(self_p, PBTOOLS_BAD_FIELD_NUMBER);
     }
-
-    PRINTF("pbtools_decoder_read_tag(): %d %d\n",
-           field_number,
-           *wire_type_p);
 
     return (field_number);
 }
@@ -855,20 +825,21 @@ int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
 int32_t pbtools_decoder_read_int32(struct pbtools_decoder_t *self_p,
                                    int wire_type)
 {
-    return (pbtools_decoder_read_int64(self_p, wire_type));
+    return ((int32_t)pbtools_decoder_read_int64(self_p, wire_type));
 }
 
 int64_t pbtools_decoder_read_int64(struct pbtools_decoder_t *self_p,
                                    int wire_type)
 {
-    return (pbtools_decoder_read_varint_check_wire_type_varint(self_p,
-                                                               wire_type));
+    return ((int64_t)pbtools_decoder_read_varint_check_wire_type_varint(
+                self_p,
+                wire_type));
 }
 
 int32_t pbtools_decoder_read_sint32(struct pbtools_decoder_t *self_p,
                                     int wire_type)
 {
-    return (pbtools_decoder_read_sint64(self_p, wire_type));
+    return ((int32_t)pbtools_decoder_read_sint64(self_p, wire_type));
 }
 
 int64_t pbtools_decoder_read_sint64(struct pbtools_decoder_t *self_p,
@@ -886,13 +857,13 @@ int64_t pbtools_decoder_read_sint64(struct pbtools_decoder_t *self_p,
         value >>= 1;
     }
 
-    return (value);
+    return ((int64_t)value);
 }
 
 uint32_t pbtools_decoder_read_uint32(struct pbtools_decoder_t *self_p,
                                      int wire_type)
 {
-    return (pbtools_decoder_read_uint64(self_p, wire_type));
+    return ((uint32_t)pbtools_decoder_read_uint64(self_p, wire_type));
 }
 
 uint64_t pbtools_decoder_read_uint64(struct pbtools_decoder_t *self_p,
@@ -983,13 +954,13 @@ uint64_t pbtools_decoder_read_fixed64(struct pbtools_decoder_t *self_p,
 int32_t pbtools_decoder_read_sfixed32(struct pbtools_decoder_t *self_p,
                                       int wire_type)
 {
-    return (pbtools_decoder_read_fixed32(self_p, wire_type));
+    return ((int32_t)pbtools_decoder_read_fixed32(self_p, wire_type));
 }
 
 int64_t pbtools_decoder_read_sfixed64(struct pbtools_decoder_t *self_p,
                                       int wire_type)
 {
-    return (pbtools_decoder_read_fixed64(self_p, wire_type));
+    return ((int64_t)pbtools_decoder_read_fixed64(self_p, wire_type));
 }
 
 float pbtools_decoder_read_float(struct pbtools_decoder_t *self_p,
@@ -1096,10 +1067,10 @@ static void *alloc_repeated(void ***items_ppp,
     void *items_p;
 
     items_p = NULL;
-    *items_ppp = pbtools_heap_alloc(heap_p, sizeof(items_p) * length);
+    *items_ppp = pbtools_heap_alloc(heap_p, sizeof(items_p) * (size_t)length);
 
     if (*items_ppp != NULL) {
-        items_p = pbtools_heap_alloc(heap_p, item_size * length);
+        items_p = pbtools_heap_alloc(heap_p, item_size * (size_t)length);
     }
 
     return (items_p);
@@ -1152,7 +1123,7 @@ static void read_repeated_scalar_value_type(
         PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
     pos = self_p->pos;
 
-    while (self_p->pos < (pos + size)) {
+    while (self_p->pos < (pos + (int)size)) {
         item_p = pbtools_decoder_heap_alloc(self_p, item_size);
 
         if (item_p == NULL) {
@@ -1177,7 +1148,10 @@ static void read_repeated_int32_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    ((struct pbtools_int32_t *)item_p)->value = pbtools_decoder_read_varint(self_p);
+    struct pbtools_int32_t *int32_item_p;
+
+    int32_item_p = (struct pbtools_int32_t *)item_p;
+    int32_item_p->value = (int32_t)pbtools_decoder_read_varint(self_p);
 }
 
 void pbtools_decoder_read_repeated_int32(
@@ -1198,7 +1172,7 @@ void pbtools_decoder_finalize_repeated_int32(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1247,7 +1221,10 @@ static void read_repeated_int64_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    ((struct pbtools_int64_t *)item_p)->value = pbtools_decoder_read_varint(self_p);
+    struct pbtools_int64_t *int64_item_p;
+
+    int64_item_p = (struct pbtools_int64_t *)item_p;
+    int64_item_p->value = (int64_t)pbtools_decoder_read_varint(self_p);
 }
 
 void pbtools_decoder_read_repeated_int64(
@@ -1268,7 +1245,7 @@ void pbtools_decoder_finalize_repeated_int64(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1317,7 +1294,10 @@ static void read_repeated_uint32_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    ((struct pbtools_uint32_t *)item_p)->value = pbtools_decoder_read_varint(self_p);
+    struct pbtools_uint32_t *uint32_item_p;
+
+    uint32_item_p = (struct pbtools_uint32_t *)item_p;
+    uint32_item_p->value = (uint32_t)pbtools_decoder_read_varint(self_p);
 }
 
 void pbtools_decoder_read_repeated_uint32(
@@ -1338,7 +1318,7 @@ void pbtools_decoder_finalize_repeated_uint32(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1408,7 +1388,7 @@ void pbtools_decoder_finalize_repeated_uint64(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1445,7 +1425,7 @@ static void read_repeated_sint32_item(
         value >>= 1;
     }
 
-    ((struct pbtools_int32_t *)item_p)->value = value;
+    ((struct pbtools_int32_t *)item_p)->value = (int32_t)value;
 }
 
 void pbtools_decoder_read_repeated_sint32(
@@ -1485,7 +1465,7 @@ static void read_repeated_sint64_item(
         value >>= 1;
     }
 
-    ((struct pbtools_int64_t *)item_p)->value = value;
+    ((struct pbtools_int64_t *)item_p)->value = (int64_t)value;
 }
 
 void pbtools_decoder_read_repeated_sint64(
@@ -1574,8 +1554,10 @@ static void read_repeated_sfixed32_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    ((struct pbtools_int32_t *)item_p)->value =
-        pbtools_decoder_read_fixed32_value(self_p);
+    struct pbtools_int32_t *int32_item_p;
+
+    int32_item_p = (struct pbtools_int32_t *)item_p;
+    int32_item_p->value = (int32_t)pbtools_decoder_read_fixed32_value(self_p);
 }
 
 void pbtools_decoder_read_repeated_sfixed32(
@@ -1604,8 +1586,10 @@ static void read_repeated_sfixed64_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    ((struct pbtools_int64_t *)item_p)->value =
-        pbtools_decoder_read_fixed64_value(self_p);
+    struct pbtools_int64_t *int64_item_p;
+
+    int64_item_p = (struct pbtools_int64_t *)item_p;
+    int64_item_p->value = (int64_t)pbtools_decoder_read_fixed64_value(self_p);
 }
 
 void pbtools_decoder_read_repeated_sfixed64(
@@ -1681,7 +1665,7 @@ void pbtools_decoder_finalize_repeated_float(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1754,7 +1738,7 @@ void pbtools_decoder_finalize_repeated_double(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1814,7 +1798,7 @@ void pbtools_decoder_read_repeated_bool(
         PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
     pos = self_p->pos;
 
-    while (self_p->pos < (pos + size)) {
+    while (self_p->pos < (pos + (int)size)) {
         item_p = pbtools_decoder_heap_alloc(self_p, sizeof(*item_p));
 
         if (item_p == NULL) {
@@ -1845,7 +1829,7 @@ void pbtools_decoder_finalize_repeated_bool(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1925,7 +1909,7 @@ void pbtools_decoder_finalize_repeated_string(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -2005,7 +1989,7 @@ void pbtools_decoder_finalize_repeated_bytes(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = pbtools_decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length);
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -2040,8 +2024,6 @@ void pbtools_decoder_init_slice(struct pbtools_decoder_t *self_p,
 void pbtools_decoder_seek(struct pbtools_decoder_t *self_p,
                           int offset)
 {
-    PRINTF("seek: %d\n", offset);
-
     if (self_p->pos >= 0) {
         if (offset < 0) {
             pbtools_decoder_abort(self_p, -offset);
@@ -2060,7 +2042,6 @@ void pbtools_decoder_seek(struct pbtools_decoder_t *self_p,
 void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
                                 int wire_type)
 {
-    PRINTF("pbtools_decoder_skip_field(): %d\n", wire_type);
     uint64_t value;
 
     switch (wire_type) {
@@ -2182,7 +2163,7 @@ int pbtools_alloc_repeated(
 
     repeated_p->items_pp = pbtools_heap_alloc(
         heap_p,
-        sizeof(item_p) * length);
+        sizeof(item_p) * (size_t)length);
 
     if (repeated_p->items_pp != NULL) {
         next_item_p = NULL;
@@ -2221,7 +2202,7 @@ void pbtools_encode_repeated_inner(
         message_encode_inner(encoder_p, repeated_p->items_pp[i]);
         pbtools_encoder_write_length_delimited(encoder_p,
                                                field_number,
-                                               pos - encoder_p->pos);
+                                               (uint64_t)(pos - encoder_p->pos));
     }
 }
 
@@ -2233,7 +2214,7 @@ void pbtools_decode_repeated_inner(
     pbtools_message_init_t message_init,
     pbtools_message_decode_inner_t message_decode_inner)
 {
-    size_t size;
+    int size;
     struct pbtools_decoder_t decoder;
     struct pbtools_message_base_t *item_p;
 
@@ -2249,7 +2230,7 @@ void pbtools_decode_repeated_inner(
         return;
     }
 
-    size = pbtools_decoder_read_varint(decoder_p);
+    size = (int)pbtools_decoder_read_varint(decoder_p);
     message_init(item_p, decoder_p->heap_p, NULL);
     pbtools_decoder_init_slice(&decoder, decoder_p, size);
     message_decode_inner(&decoder, item_p);
@@ -2279,7 +2260,7 @@ void pbtools_finalize_repeated_inner(
 
     repeated_p->items_pp = pbtools_decoder_heap_alloc(
         decoder_p,
-        sizeof(item_p) * repeated_p->length);
+        sizeof(item_p) * (size_t)repeated_p->length);
 
     if (repeated_p->items_pp == NULL) {
         return;
@@ -2306,7 +2287,7 @@ void pbtools_encoder_sub_message_encode(
     pbtools_encoder_write_tagged_varint(self_p,
                                         field_number,
                                         PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                        pos - self_p->pos);
+                                        (uint64_t)(pos - self_p->pos));
 }
 
 void pbtools_decoder_sub_message_decode(
@@ -2315,7 +2296,7 @@ void pbtools_decoder_sub_message_decode(
     struct pbtools_message_base_t *message_p,
     pbtools_message_decode_inner_t decode_inner)
 {
-    size_t size;
+    int size;
     struct pbtools_decoder_t decoder;
 
     if (wire_type != PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
@@ -2324,7 +2305,7 @@ void pbtools_decoder_sub_message_decode(
         return;
     }
 
-    size = pbtools_decoder_read_varint(self_p);
+    size = (int)pbtools_decoder_read_varint(self_p);
     pbtools_decoder_init_slice(&decoder, self_p, size);
     decode_inner(&decoder, message_p);
     pbtools_decoder_seek(self_p, pbtools_decoder_get_result(&decoder));

@@ -150,6 +150,7 @@ void {name}_decode_inner(
     struct pbtools_decoder_t *decoder_p,
     struct {name}_t *self_p)
 {{
+{unused_decode}\
     int wire_type;
 
     while (pbtools_decoder_available(decoder_p)) {{
@@ -776,6 +777,12 @@ class Generator:
                 ENCODE_ONEOF_FMT.format(name=oneof.full_name_snake_case,
                                         field_name=oneof.name))
 
+        if not members:
+            members = [
+                '    (void)encoder_p;\n'
+                '    (void)self_p;\n'
+            ]
+            
         return ''.join(members)
 
     def generate_message_decode_body(self, message):
@@ -991,11 +998,19 @@ class Generator:
                                               definitions,
                                               public=False)
 
+        decode_body = self.generate_message_decode_body(message)
+
+        if decode_body:
+            unused_decode = ''
+        else:
+            unused_decode = '    (void)self_p;\n\n'
+
         definitions.append(
             MESSAGE_STATIC_DEFINITIONS_FMT.format(
                 name=message.full_name_snake_case,
                 encode_body=self.generate_message_encode_body(message),
-                decode_body=self.generate_message_decode_body(message),
+                decode_body=decode_body,
+                unused_decode=unused_decode,
                 members_init=self.generate_message_members_init(message),
                 finalizers=self.generate_repeated_finalizers(message)))
 

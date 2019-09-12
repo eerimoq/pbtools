@@ -19,16 +19,28 @@ CFLAGS ?= \
 	-fprofile-arcs \
 	-ftest-coverage \
 	-fsanitize=address \
-	-fsanitize=signed-integer-overflow
+	-fsanitize=signed-integer-overflow \
+	-Wjump-misses-init \
+	-Wlogical-op \
+	-Wdouble-promotion \
+	-Wfloat-equal \
+	-Wformat=2 \
+	-Wshadow \
+	-Werror \
+	-O3 \
+	-std=gnu11 \
+	-Wconversion \
+	-Wall \
+	-Wextra \
+	-Wpedantic
 
 all:
+	gcc -O2 narwhal.c -c -o narwhal.o
+	gcc -O2 -I../pbtools/c_source main.c -c -o main.o
 	gcc \
-	    -Wall \
-	    -O2 \
-	    -std=gnu11  \
 	    $(CFLAGS) \
 	    -I../pbtools/c_source \
-	    narwhal.c \
+	    narwhal.o \
 	    ../pbtools/c_source/pbtools.c \
 	    files/c_source/int32.c \
 	    files/c_source/int64.c \
@@ -57,7 +69,7 @@ all:
 	    files/c_source/imported.c \
 	    files/c_source/imported2.c \
 	    files/c_source/importing.c \
-	    main.c
+	    main.o
 	./a.out
 
 fuzzer:
