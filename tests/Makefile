@@ -28,6 +28,7 @@ CFLAGS ?= \
 	-Wshadow \
 	-Werror \
 	-O3 \
+	-g \
 	-std=gnu11 \
 	-Wconversion \
 	-Wall \
@@ -35,8 +36,8 @@ CFLAGS ?= \
 	-Wpedantic
 
 all:
-	gcc -O2 narwhal.c -c -o narwhal.o
-	gcc -O2 -I../pbtools/c_source main.c -c -o main.o
+	gcc -O2 -g narwhal.c -c -o narwhal.o
+	gcc -O2 -g -I../pbtools/c_source main.c -c -o main.o
 	gcc \
 	    $(CFLAGS) \
 	    -I../pbtools/c_source \
