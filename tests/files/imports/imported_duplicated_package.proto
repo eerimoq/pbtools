@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package imported;
+
+enum ImportedDuplicatedPackageEnum {
+    E = 0;
+    F = 1;
+}
+
+message ImportedDuplicatedPackageMessage {
+    bool v1 = 1;
+}

@@ -2,11 +2,13 @@ syntax = "proto3";
 
 package imported2.foo.bar;
 
+import "imported_duplicated_package.proto";
+
 enum Imported2Enum {
     A = 0;
     B = 1;
 }
 
 message Imported2Message {
-    bool v1 = 1;
+    ImportedDuplicatedPackageMessage v1 = 1;
 }

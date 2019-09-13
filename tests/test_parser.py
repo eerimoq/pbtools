@@ -9,6 +9,8 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/int32.proto')
 
         self.assertEqual(parsed.package, 'int32')
+        self.assertTrue(parsed.abspath.startswith('/'))
+        self.assertTrue(parsed.abspath.endswith('/tests/files/int32.proto'))
         self.assertEqual(parsed.imports, [])
         self.assertEqual(parsed.options, [])
         self.assertEqual(len(parsed.messages), 2)
@@ -532,13 +534,52 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(len(parsed.messages), 1)
 
     def test_importing(self):
-        parsed = pbtools.parse_file('tests/files/importing.proto')
+        parsed = pbtools.parse_file('tests/files/importing.proto',
+                                    [
+                                        'tests/files',
+                                        'tests/files/imports'
+                                    ])
 
-        self.assertEqual(parsed.imports,
-                         [
-                             'imported.proto',
-                             'imported2.proto'
-                         ])
+        # Imports in importing.proto
+        self.assertEqual(len(parsed.imports), 3)
+
+        imported = parsed.imports[0]
+        self.assertEqual(imported.path, 'imported.proto')
+        self.assertEqual(imported.proto.package, 'imported')
+        self.assertTrue(
+            imported.proto.abspath.endswith('/tests/files/imported.proto'))
+
+        imported = parsed.imports[1]
+        self.assertEqual(imported.path, 'imported_duplicated_package.proto')
+        self.assertEqual(imported.proto.package, 'imported')
+        self.assertTrue(
+            imported.proto.abspath.endswith(
+                '/tests/files/imports/imported_duplicated_package.proto'))
+
+        imported = parsed.imports[2]
+        self.assertEqual(imported.path, 'imported2.proto')
+        self.assertEqual(imported.proto.package, 'imported2.foo.bar')
+        self.assertTrue(
+            imported.proto.abspath.endswith('/tests/files/imports/imported2.proto'))
+
+        # Imports in importing.proto -> imported.proto
+        proto = parsed.imports[0].proto
+        self.assertEqual(len(proto.imports), 0)
+
+        # Imports in importing.proto -> imported_duplicated_package.proto
+        proto = parsed.imports[1].proto
+        self.assertEqual(len(proto.imports), 0)
+
+        # Imports in importing.proto -> imported2.proto
+        proto = parsed.imports[2].proto
+        self.assertEqual(len(proto.imports), 1)
+
+        imported = proto.imports[0]
+        self.assertEqual(imported.path, 'imported_duplicated_package.proto')
+        self.assertEqual(imported.proto.package, 'imported')
+        self.assertTrue(
+            imported.proto.abspath.endswith(
+                '/tests/files/imports/imported_duplicated_package.proto'))
 
 
 if __name__ == '__main__':

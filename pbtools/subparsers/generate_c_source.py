@@ -9,25 +9,9 @@ from ..c_source import generate
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-def find_file(filename, include_paths):
-    for include_path in include_paths:
-        filepath = os.path.join(include_path, filename)
-
-        if os.path.exists(filepath):
-            break
-    else:
-        filepath = filename
-
-    return filepath
-
-
 def _do_generate_c_source(args):
     for filename in args.infiles:
-        filepath = find_file(filename, args.include_path)
-
-        print(f'Parsing {filepath}.')
-
-        parsed = parse_file(filepath)
+        parsed = parse_file(filename, args.import_path)
         basename = os.path.basename(filename)
         name = os.path.splitext(basename)[0]
         name = camel_to_snake_case(name)
@@ -58,7 +42,7 @@ def add_subparser(subparsers):
         'generate_c_source',
         description='Generate C source code from given protobuf file(s).')
     generate_c_source_parser.add_argument(
-        '-i', '--include-path',
+        '-i', '--import-path',
         action='append',
         default=[],
         help='Path(s) where to search for imports.')

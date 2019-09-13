@@ -1,3 +1,4 @@
+import os
 import re
 import textparser
 from textparser import Sequence
@@ -396,6 +397,14 @@ class Service:
                 raise InternalError(kind)
 
 
+class Import:
+
+    def __init__(self, tokens):
+        self.path = tokens[2].strip('"')
+        self.abspath = None
+        self.proto = None
+
+
 def load_package(tokens):
     try:
         return tokens[1]['package'][0][1]
@@ -405,8 +414,8 @@ def load_package(tokens):
 
 def load_imports(tokens):
     return [
-        import_[2].strip('"')
-        for import_ in tokens[1].get('import', [])
+        Import(imported)
+        for imported in tokens[1].get('import', [])
     ]
 
 
@@ -440,7 +449,8 @@ def load_enums(tokens, namespace):
 
 class Proto:
 
-    def __init__(self, tree):
+    def __init__(self, tree, abspath):
+        self.abspath = abspath
         self.package = load_package(tree)
         self.imports = load_imports(tree)
         namespace = self.namespace_base()
@@ -568,10 +578,57 @@ class Proto:
         return list(reversed(reversed_sorted_messages))
 
 
-def parse_string(text):
-    return Proto(Parser().parse(text))
+def find_file(filename, import_paths):
+    for import_path in import_paths:
+        filepath = os.path.join(import_path, filename)
+
+        if os.path.exists(filepath):
+            break
+    else:
+        filepath = filename
+
+    filepath = os.path.abspath(filepath)
+
+    if not os.path.exists(filepath):
+        raise Exception(f"'{filename}' not found in import path.")
+
+    return filepath
 
 
-def parse_file(filename):
+def _parse_file(filename, import_paths, abspath_to_proto):
+    abspath = find_file(filename, import_paths)
+
     with open(filename, 'r') as fin:
-        return parse_string(fin.read())
+        proto = Proto(Parser().parse(fin.read()), abspath)
+
+    abspath_to_proto[abspath] = proto
+
+    # Recursivly parse all imported files, unless already parsed.
+    for imported in proto.imports:
+        abspath = find_file(imported.path, import_paths)
+
+        if abspath in abspath_to_proto:
+            imported_proto = abspath_to_proto[abspath]
+        else:
+            imported_proto = _parse_file(abspath,
+                                         import_paths,
+                                         abspath_to_proto)
+
+        imported.proto = imported_proto
+
+    # ToDo: Public imports.
+
+    return proto
+
+
+def parse_file(filename, import_paths=None):
+    if import_paths is None:
+        import_paths = []
+
+    abspath_to_proto = {}
+    proto = _parse_file(filename, import_paths, abspath_to_proto)
+
+    # Resolve types in all parsed files. Can only use types from
+    # directly imported files, unless 'import public'.
+
+    return proto
