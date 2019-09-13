@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package imported2.foo.bar;
 
+import "imported3.proto";
+import "imported1.proto";
 import "imported_duplicated_package.proto";
 
 enum Imported2Enum {
@@ -10,5 +12,26 @@ enum Imported2Enum {
 }
 
 message Imported2Message {
-    ImportedDuplicatedPackageMessage v1 = 1;
+    imported.ImportedDuplicatedPackageMessage v1 = 1;
+}
+
+message Imported3Message {
+    message Imported2Message {
+        imported.ImportedDuplicatedPackageMessage v1 = 1;
+    }
+
+    imported.ImportedDuplicatedPackageMessage v1 = 1;
+    Imported2Message v2 = 2;
+    // All three from this file.
+    bar.Imported2Message v3 = 3;
+    foo.bar.Imported2Message v4 = 4;
+    imported2.foo.bar.Imported2Message v5 = 5;
+    imported.Imported2Message v6 = 6;
+    // From this file.
+    repeated bar.Imported3Message v7 = 7;
+    repeated foo.bar.Imported3Message v9 = 9;
+    // From imported3.proto.
+    repeated .bar.Imported3Message v8 = 8;
+    // From imported1.proto.
+    repeated .foo.bar.Imported3Message v10 = 10;
 }

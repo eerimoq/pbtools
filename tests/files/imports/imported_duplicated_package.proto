@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package imported;
 
+message Imported2Message {
+    int32 v1 = 1;
+}
+
 enum ImportedDuplicatedPackageEnum {
     E = 0;
     F = 1;

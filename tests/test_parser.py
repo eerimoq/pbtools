@@ -564,7 +564,13 @@ class ParserTest(unittest.TestCase):
 
         # Imports in importing.proto -> imported.proto
         proto = parsed.imports[0].proto
-        self.assertEqual(len(proto.imports), 0)
+        self.assertEqual(len(proto.imports), 1)
+
+        imported = parsed.imports[0]
+        self.assertEqual(imported.path, 'imported.proto')
+        self.assertEqual(imported.proto.package, 'imported')
+        self.assertTrue(
+            imported.proto.abspath.endswith('/tests/files/imported.proto'))
 
         # Imports in importing.proto -> imported_duplicated_package.proto
         proto = parsed.imports[1].proto
@@ -572,9 +578,21 @@ class ParserTest(unittest.TestCase):
 
         # Imports in importing.proto -> imported2.proto
         proto = parsed.imports[2].proto
-        self.assertEqual(len(proto.imports), 1)
+        self.assertEqual(len(proto.imports), 3)
 
         imported = proto.imports[0]
+        self.assertEqual(imported.path, 'imported3.proto')
+        self.assertEqual(imported.proto.package, 'bar')
+        self.assertTrue(
+            imported.proto.abspath.endswith('/tests/files/imports/imported3.proto'))
+
+        imported = proto.imports[1]
+        self.assertEqual(imported.path, 'imported1.proto')
+        self.assertEqual(imported.proto.package, 'foo.bar')
+        self.assertTrue(
+            imported.proto.abspath.endswith('/tests/files/imports/imported1.proto'))
+
+        imported = proto.imports[2]
         self.assertEqual(imported.path, 'imported_duplicated_package.proto')
         self.assertEqual(imported.proto.package, 'imported')
         self.assertTrue(

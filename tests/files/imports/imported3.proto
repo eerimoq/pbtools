@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package bar;
+
+import "imported1.proto";
+
+message Imported2Message {
+    int32 v1 = 2;
+}
+
+message Imported3Message {
+    enum Enum {
+        A = 0;
+    }
+
+    int32 v1 = 3;
+}
+
+message Imported4Message {
+    // From this file.
+    bar.Imported3Message v1 = 1;
+
+    // From imported1.proto
+    foo.bar.Imported3Message v2 = 2;
+}
