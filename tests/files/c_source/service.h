@@ -63,6 +63,38 @@ struct service_response_t {
     char *value_p;
 };
 
+struct service_request_t *
+service_request_new(
+    void *workspace_p,
+    size_t size);
+
+int service_request_encode(
+    struct service_request_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int service_request_decode(
+    struct service_request_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct service_response_t *
+service_response_new(
+    void *workspace_p,
+    size_t size);
+
+int service_response_encode(
+    struct service_response_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int service_response_decode(
+    struct service_response_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void service_request_init(
     struct service_request_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -90,21 +122,6 @@ void service_request_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct service_request_repeated_t *repeated_p);
 
-struct service_request_t *
-service_request_new(
-    void *workspace_p,
-    size_t size);
-
-int service_request_encode(
-    struct service_request_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int service_request_decode(
-    struct service_request_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void service_response_init(
     struct service_response_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -131,20 +148,5 @@ void service_response_decode_repeated_inner(
 void service_response_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct service_response_repeated_t *repeated_p);
-
-struct service_response_t *
-service_response_new(
-    void *workspace_p,
-    size_t size);
-
-int service_response_encode(
-    struct service_response_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int service_response_decode(
-    struct service_response_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

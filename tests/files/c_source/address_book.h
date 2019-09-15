@@ -91,6 +91,46 @@ struct address_book_address_book_t {
     struct address_book_person_repeated_t people;
 };
 
+int address_book_person_phones_alloc(
+    struct address_book_person_t *self_p,
+    int length);
+
+struct address_book_person_t *
+address_book_person_new(
+    void *workspace_p,
+    size_t size);
+
+int address_book_person_encode(
+    struct address_book_person_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int address_book_person_decode(
+    struct address_book_person_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int address_book_address_book_people_alloc(
+    struct address_book_address_book_t *self_p,
+    int length);
+
+struct address_book_address_book_t *
+address_book_address_book_new(
+    void *workspace_p,
+    size_t size);
+
+int address_book_address_book_encode(
+    struct address_book_address_book_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int address_book_address_book_decode(
+    struct address_book_address_book_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void address_book_person_init(
     struct address_book_person_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -117,10 +157,6 @@ void address_book_person_decode_repeated_inner(
 void address_book_person_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_repeated_t *repeated_p);
-
-int address_book_person_phones_alloc(
-    struct address_book_person_t *self_p,
-    int length);
 
 void address_book_person_phone_number_init(
     struct address_book_person_phone_number_t *self_p,
@@ -149,21 +185,6 @@ void address_book_person_phone_number_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_person_phone_number_repeated_t *repeated_p);
 
-struct address_book_person_t *
-address_book_person_new(
-    void *workspace_p,
-    size_t size);
-
-int address_book_person_encode(
-    struct address_book_person_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int address_book_person_decode(
-    struct address_book_person_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void address_book_address_book_init(
     struct address_book_address_book_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -190,24 +211,5 @@ void address_book_address_book_decode_repeated_inner(
 void address_book_address_book_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_address_book_repeated_t *repeated_p);
-
-int address_book_address_book_people_alloc(
-    struct address_book_address_book_t *self_p,
-    int length);
-
-struct address_book_address_book_t *
-address_book_address_book_new(
-    void *workspace_p,
-    size_t size);
-
-int address_book_address_book_encode(
-    struct address_book_address_book_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int address_book_address_book_decode(
-    struct address_book_address_book_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

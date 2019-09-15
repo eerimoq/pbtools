@@ -48,6 +48,23 @@ struct bool_message_t {
     bool value;
 };
 
+struct bool_message_t *
+bool_message_new(
+    void *workspace_p,
+    size_t size);
+
+int bool_message_encode(
+    struct bool_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int bool_message_decode(
+    struct bool_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void bool_message_init(
     struct bool_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void bool_message_decode_repeated_inner(
 void bool_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct bool_message_repeated_t *repeated_p);
-
-struct bool_message_t *
-bool_message_new(
-    void *workspace_p,
-    size_t size);
-
-int bool_message_encode(
-    struct bool_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int bool_message_decode(
-    struct bool_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

@@ -73,6 +73,27 @@ struct m0_t {
     enum m0_e1_e v3;
 };
 
+int m0_v2_alloc(
+    struct m0_t *self_p,
+    int length);
+
+struct m0_t *
+m0_new(
+    void *workspace_p,
+    size_t size);
+
+int m0_encode(
+    struct m0_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int m0_decode(
+    struct m0_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void m0_init(
     struct m0_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -100,10 +121,6 @@ void m0_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_repeated_t *repeated_p);
 
-int m0_v2_alloc(
-    struct m0_t *self_p,
-    int length);
-
 void m0_m1_init(
     struct m0_m1_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -130,20 +147,5 @@ void m0_m1_decode_repeated_inner(
 void m0_m1_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_m1_repeated_t *repeated_p);
-
-struct m0_t *
-m0_new(
-    void *workspace_p,
-    size_t size);
-
-int m0_encode(
-    struct m0_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int m0_decode(
-    struct m0_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

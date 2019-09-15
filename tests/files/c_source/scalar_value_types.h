@@ -62,6 +62,23 @@ struct scalar_value_types_message_t {
     uint64_t v15;
 };
 
+struct scalar_value_types_message_t *
+scalar_value_types_message_new(
+    void *workspace_p,
+    size_t size);
+
+int scalar_value_types_message_encode(
+    struct scalar_value_types_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int scalar_value_types_message_decode(
+    struct scalar_value_types_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void scalar_value_types_message_init(
     struct scalar_value_types_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -88,20 +105,5 @@ void scalar_value_types_message_decode_repeated_inner(
 void scalar_value_types_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct scalar_value_types_message_repeated_t *repeated_p);
-
-struct scalar_value_types_message_t *
-scalar_value_types_message_new(
-    void *workspace_p,
-    size_t size);
-
-int scalar_value_types_message_encode(
-    struct scalar_value_types_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int scalar_value_types_message_decode(
-    struct scalar_value_types_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

@@ -49,6 +49,23 @@ struct pkg_message_t {
     enum pkg_enum_e v1;
 };
 
+struct pkg_message_t *
+pkg_message_new(
+    void *workspace_p,
+    size_t size);
+
+int pkg_message_encode(
+    struct pkg_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int pkg_message_decode(
+    struct pkg_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void pkg_message_init(
     struct pkg_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -75,20 +92,5 @@ void pkg_message_decode_repeated_inner(
 void pkg_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct pkg_message_repeated_t *repeated_p);
-
-struct pkg_message_t *
-pkg_message_new(
-    void *workspace_p,
-    size_t size);
-
-int pkg_message_encode(
-    struct pkg_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int pkg_message_decode(
-    struct pkg_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

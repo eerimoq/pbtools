@@ -98,6 +98,54 @@ struct imported2_foo_bar_imported3_message_t {
     struct foo_bar_imported3_message_repeated_t v10;
 };
 
+struct imported2_foo_bar_imported2_message_t *
+imported2_foo_bar_imported2_message_new(
+    void *workspace_p,
+    size_t size);
+
+int imported2_foo_bar_imported2_message_encode(
+    struct imported2_foo_bar_imported2_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int imported2_foo_bar_imported2_message_decode(
+    struct imported2_foo_bar_imported2_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int imported2_foo_bar_imported3_message_v7_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p,
+    int length);
+
+int imported2_foo_bar_imported3_message_v9_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p,
+    int length);
+
+int imported2_foo_bar_imported3_message_v8_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p,
+    int length);
+
+int imported2_foo_bar_imported3_message_v10_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p,
+    int length);
+
+struct imported2_foo_bar_imported3_message_t *
+imported2_foo_bar_imported3_message_new(
+    void *workspace_p,
+    size_t size);
+
+int imported2_foo_bar_imported3_message_encode(
+    struct imported2_foo_bar_imported3_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int imported2_foo_bar_imported3_message_decode(
+    struct imported2_foo_bar_imported3_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void imported2_foo_bar_imported2_message_init(
     struct imported2_foo_bar_imported2_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -124,21 +172,6 @@ void imported2_foo_bar_imported2_message_decode_repeated_inner(
 void imported2_foo_bar_imported2_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct imported2_foo_bar_imported2_message_repeated_t *repeated_p);
-
-struct imported2_foo_bar_imported2_message_t *
-imported2_foo_bar_imported2_message_new(
-    void *workspace_p,
-    size_t size);
-
-int imported2_foo_bar_imported2_message_encode(
-    struct imported2_foo_bar_imported2_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int imported2_foo_bar_imported2_message_decode(
-    struct imported2_foo_bar_imported2_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 void imported2_foo_bar_imported3_message_init(
     struct imported2_foo_bar_imported3_message_t *self_p,
@@ -167,22 +200,6 @@ void imported2_foo_bar_imported3_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct imported2_foo_bar_imported3_message_repeated_t *repeated_p);
 
-int imported2_foo_bar_imported3_message_v7_alloc(
-    struct imported2_foo_bar_imported3_message_t *self_p,
-    int length);
-
-int imported2_foo_bar_imported3_message_v9_alloc(
-    struct imported2_foo_bar_imported3_message_t *self_p,
-    int length);
-
-int imported2_foo_bar_imported3_message_v8_alloc(
-    struct imported2_foo_bar_imported3_message_t *self_p,
-    int length);
-
-int imported2_foo_bar_imported3_message_v10_alloc(
-    struct imported2_foo_bar_imported3_message_t *self_p,
-    int length);
-
 void imported2_foo_bar_imported3_message_imported2_message_init(
     struct imported2_foo_bar_imported3_message_imported2_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -209,20 +226,5 @@ void imported2_foo_bar_imported3_message_imported2_message_decode_repeated_inner
 void imported2_foo_bar_imported3_message_imported2_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct imported2_foo_bar_imported3_message_imported2_message_repeated_t *repeated_p);
-
-struct imported2_foo_bar_imported3_message_t *
-imported2_foo_bar_imported3_message_new(
-    void *workspace_p,
-    size_t size);
-
-int imported2_foo_bar_imported3_message_encode(
-    struct imported2_foo_bar_imported3_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int imported2_foo_bar_imported3_message_decode(
-    struct imported2_foo_bar_imported3_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

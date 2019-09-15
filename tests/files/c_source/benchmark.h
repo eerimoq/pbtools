@@ -122,6 +122,42 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field131;
 };
 
+struct benchmarks_proto3_google_message1_sub_message_t *
+benchmarks_proto3_google_message1_sub_message_new(
+    void *workspace_p,
+    size_t size);
+
+int benchmarks_proto3_google_message1_sub_message_encode(
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int benchmarks_proto3_google_message1_sub_message_decode(
+    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int benchmarks_proto3_google_message1_field5_alloc(
+    struct benchmarks_proto3_google_message1_t *self_p,
+    int length);
+
+struct benchmarks_proto3_google_message1_t *
+benchmarks_proto3_google_message1_new(
+    void *workspace_p,
+    size_t size);
+
+int benchmarks_proto3_google_message1_encode(
+    struct benchmarks_proto3_google_message1_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int benchmarks_proto3_google_message1_decode(
+    struct benchmarks_proto3_google_message1_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void benchmarks_proto3_google_message1_sub_message_init(
     struct benchmarks_proto3_google_message1_sub_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -149,21 +185,6 @@ void benchmarks_proto3_google_message1_sub_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
 
-struct benchmarks_proto3_google_message1_sub_message_t *
-benchmarks_proto3_google_message1_sub_message_new(
-    void *workspace_p,
-    size_t size);
-
-int benchmarks_proto3_google_message1_sub_message_encode(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int benchmarks_proto3_google_message1_sub_message_decode(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void benchmarks_proto3_google_message1_init(
     struct benchmarks_proto3_google_message1_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -190,24 +211,5 @@ void benchmarks_proto3_google_message1_decode_repeated_inner(
 void benchmarks_proto3_google_message1_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
-
-int benchmarks_proto3_google_message1_field5_alloc(
-    struct benchmarks_proto3_google_message1_t *self_p,
-    int length);
-
-struct benchmarks_proto3_google_message1_t *
-benchmarks_proto3_google_message1_new(
-    void *workspace_p,
-    size_t size);
-
-int benchmarks_proto3_google_message1_encode(
-    struct benchmarks_proto3_google_message1_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int benchmarks_proto3_google_message1_decode(
-    struct benchmarks_proto3_google_message1_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

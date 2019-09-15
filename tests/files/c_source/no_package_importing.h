@@ -49,6 +49,23 @@ struct npi_message2_t {
     struct no_package_imported_message_t v3;
 };
 
+struct npi_message2_t *
+npi_message2_new(
+    void *workspace_p,
+    size_t size);
+
+int npi_message2_encode(
+    struct npi_message2_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int npi_message2_decode(
+    struct npi_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void npi_message2_init(
     struct npi_message2_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -75,20 +92,5 @@ void npi_message2_decode_repeated_inner(
 void npi_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct npi_message2_repeated_t *repeated_p);
-
-struct npi_message2_t *
-npi_message2_new(
-    void *workspace_p,
-    size_t size);
-
-int npi_message2_encode(
-    struct npi_message2_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int npi_message2_decode(
-    struct npi_message2_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

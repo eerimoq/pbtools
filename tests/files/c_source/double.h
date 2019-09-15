@@ -48,6 +48,23 @@ struct double_message_t {
     double value;
 };
 
+struct double_message_t *
+double_message_new(
+    void *workspace_p,
+    size_t size);
+
+int double_message_encode(
+    struct double_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int double_message_decode(
+    struct double_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void double_message_init(
     struct double_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void double_message_decode_repeated_inner(
 void double_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct double_message_repeated_t *repeated_p);
-
-struct double_message_t *
-double_message_new(
-    void *workspace_p,
-    size_t size);
-
-int double_message_encode(
-    struct double_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int double_message_decode(
-    struct double_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

@@ -35,33 +35,6 @@
 #    error "Number of bits in a char must be 8."
 #endif
 
-void oneof_foo_init(
-    struct oneof_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_foo_t *next_p);
-
-void oneof_foo_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_foo_t *self_p);
-
-void oneof_foo_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct oneof_foo_t *self_p);
-
-void oneof_foo_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct oneof_foo_repeated_t *repeated_p);
-
-void oneof_foo_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_foo_repeated_t *repeated_p);
-
-void oneof_foo_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct oneof_foo_repeated_t *repeated_p);
-
 void oneof_foo_bar_fie_init(
     struct oneof_foo_t *self_p)
 {

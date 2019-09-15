@@ -48,6 +48,23 @@ struct float_message_t {
     float value;
 };
 
+struct float_message_t *
+float_message_new(
+    void *workspace_p,
+    size_t size);
+
+int float_message_encode(
+    struct float_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int float_message_decode(
+    struct float_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void float_message_init(
     struct float_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void float_message_decode_repeated_inner(
 void float_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct float_message_repeated_t *repeated_p);
-
-struct float_message_t *
-float_message_new(
-    void *workspace_p,
-    size_t size);
-
-int float_message_encode(
-    struct float_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int float_message_decode(
-    struct float_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

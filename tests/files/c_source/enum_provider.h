@@ -42,4 +42,7 @@ enum pkg_enum_e {
 };
 
 
+/* Internal functions. Do not use! */
+
+
 #endif

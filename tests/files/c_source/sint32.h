@@ -48,6 +48,23 @@ struct sint32_message_t {
     int32_t value;
 };
 
+struct sint32_message_t *
+sint32_message_new(
+    void *workspace_p,
+    size_t size);
+
+int sint32_message_encode(
+    struct sint32_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int sint32_message_decode(
+    struct sint32_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void sint32_message_init(
     struct sint32_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void sint32_message_decode_repeated_inner(
 void sint32_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct sint32_message_repeated_t *repeated_p);
-
-struct sint32_message_t *
-sint32_message_new(
-    void *workspace_p,
-    size_t size);
-
-int sint32_message_encode(
-    struct sint32_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int sint32_message_decode(
-    struct sint32_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

@@ -47,6 +47,23 @@ struct map_message_t {
     struct pbtools_message_base_t base;
 };
 
+struct map_message_t *
+map_message_new(
+    void *workspace_p,
+    size_t size);
+
+int map_message_encode(
+    struct map_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int map_message_decode(
+    struct map_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void map_message_init(
     struct map_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -73,20 +90,5 @@ void map_message_decode_repeated_inner(
 void map_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct map_message_repeated_t *repeated_p);
-
-struct map_message_t *
-map_message_new(
-    void *workspace_p,
-    size_t size);
-
-int map_message_encode(
-    struct map_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int map_message_decode(
-    struct map_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

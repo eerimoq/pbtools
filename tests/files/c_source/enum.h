@@ -112,6 +112,53 @@ struct enum_limits_t {
     enum enum_limits_enum_e value;
 };
 
+struct enum_message_t *
+enum_message_new(
+    void *workspace_p,
+    size_t size);
+
+int enum_message_encode(
+    struct enum_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int enum_message_decode(
+    struct enum_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct enum_message2_t *
+enum_message2_new(
+    void *workspace_p,
+    size_t size);
+
+int enum_message2_encode(
+    struct enum_message2_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int enum_message2_decode(
+    struct enum_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct enum_limits_t *
+enum_limits_new(
+    void *workspace_p,
+    size_t size);
+
+int enum_limits_encode(
+    struct enum_limits_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int enum_limits_decode(
+    struct enum_limits_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void enum_message_init(
     struct enum_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -138,21 +185,6 @@ void enum_message_decode_repeated_inner(
 void enum_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_message_repeated_t *repeated_p);
-
-struct enum_message_t *
-enum_message_new(
-    void *workspace_p,
-    size_t size);
-
-int enum_message_encode(
-    struct enum_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int enum_message_decode(
-    struct enum_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 void enum_message2_init(
     struct enum_message2_t *self_p,
@@ -181,21 +213,6 @@ void enum_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_message2_repeated_t *repeated_p);
 
-struct enum_message2_t *
-enum_message2_new(
-    void *workspace_p,
-    size_t size);
-
-int enum_message2_encode(
-    struct enum_message2_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int enum_message2_decode(
-    struct enum_message2_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void enum_limits_init(
     struct enum_limits_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -222,20 +239,5 @@ void enum_limits_decode_repeated_inner(
 void enum_limits_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_limits_repeated_t *repeated_p);
-
-struct enum_limits_t *
-enum_limits_new(
-    void *workspace_p,
-    size_t size);
-
-int enum_limits_encode(
-    struct enum_limits_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int enum_limits_decode(
-    struct enum_limits_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

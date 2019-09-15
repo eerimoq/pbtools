@@ -234,6 +234,90 @@ struct oneof_message3_t {
     struct oneof_message3_oneof1_oneof_t oneof1;
 };
 
+void oneof_message_value_v1_init(
+    struct oneof_message_t *self_p);
+
+void oneof_message_value_v2_init(
+    struct oneof_message_t *self_p);
+
+struct oneof_message_t *
+oneof_message_new(
+    void *workspace_p,
+    size_t size);
+
+int oneof_message_encode(
+    struct oneof_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int oneof_message_decode(
+    struct oneof_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+void oneof_message2_oneof1_v4_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof1_v5_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof1_v6_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof2_v1_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof2_v2_init(
+    struct oneof_message2_t *self_p);
+
+void oneof_message2_oneof2_v3_init(
+    struct oneof_message2_t *self_p);
+
+struct oneof_message2_t *
+oneof_message2_new(
+    void *workspace_p,
+    size_t size);
+
+int oneof_message2_encode(
+    struct oneof_message2_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int oneof_message2_decode(
+    struct oneof_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+void oneof_message3_foo_inner_oneof_v1_init(
+    struct oneof_message3_foo_t *self_p);
+
+void oneof_message3_foo_inner_oneof_v2_init(
+    struct oneof_message3_foo_t *self_p);
+
+int oneof_message3_bar_foo_alloc(
+    struct oneof_message3_bar_t *self_p,
+    int length);
+
+void oneof_message3_oneof1_v1_init(
+    struct oneof_message3_t *self_p);
+
+struct oneof_message3_t *
+oneof_message3_new(
+    void *workspace_p,
+    size_t size);
+
+int oneof_message3_encode(
+    struct oneof_message3_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int oneof_message3_decode(
+    struct oneof_message3_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void oneof_message_init(
     struct oneof_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -260,27 +344,6 @@ void oneof_message_decode_repeated_inner(
 void oneof_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message_repeated_t *repeated_p);
-
-void oneof_message_value_v1_init(
-    struct oneof_message_t *self_p);
-
-void oneof_message_value_v2_init(
-    struct oneof_message_t *self_p);
-
-struct oneof_message_t *
-oneof_message_new(
-    void *workspace_p,
-    size_t size);
-
-int oneof_message_encode(
-    struct oneof_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int oneof_message_decode(
-    struct oneof_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 void oneof_message2_init(
     struct oneof_message2_t *self_p,
@@ -336,39 +399,6 @@ void oneof_message2_foo_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message2_foo_repeated_t *repeated_p);
 
-void oneof_message2_oneof1_v4_init(
-    struct oneof_message2_t *self_p);
-
-void oneof_message2_oneof1_v5_init(
-    struct oneof_message2_t *self_p);
-
-void oneof_message2_oneof1_v6_init(
-    struct oneof_message2_t *self_p);
-
-void oneof_message2_oneof2_v1_init(
-    struct oneof_message2_t *self_p);
-
-void oneof_message2_oneof2_v2_init(
-    struct oneof_message2_t *self_p);
-
-void oneof_message2_oneof2_v3_init(
-    struct oneof_message2_t *self_p);
-
-struct oneof_message2_t *
-oneof_message2_new(
-    void *workspace_p,
-    size_t size);
-
-int oneof_message2_encode(
-    struct oneof_message2_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int oneof_message2_decode(
-    struct oneof_message2_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void oneof_message3_init(
     struct oneof_message3_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -423,12 +453,6 @@ void oneof_message3_foo_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message3_foo_repeated_t *repeated_p);
 
-void oneof_message3_foo_inner_oneof_v1_init(
-    struct oneof_message3_foo_t *self_p);
-
-void oneof_message3_foo_inner_oneof_v2_init(
-    struct oneof_message3_foo_t *self_p);
-
 void oneof_message3_bar_init(
     struct oneof_message3_bar_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -455,27 +479,5 @@ void oneof_message3_bar_decode_repeated_inner(
 void oneof_message3_bar_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message3_bar_repeated_t *repeated_p);
-
-int oneof_message3_bar_foo_alloc(
-    struct oneof_message3_bar_t *self_p,
-    int length);
-
-void oneof_message3_oneof1_v1_init(
-    struct oneof_message3_t *self_p);
-
-struct oneof_message3_t *
-oneof_message3_new(
-    void *workspace_p,
-    size_t size);
-
-int oneof_message3_encode(
-    struct oneof_message3_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int oneof_message3_decode(
-    struct oneof_message3_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

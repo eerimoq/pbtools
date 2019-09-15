@@ -48,6 +48,23 @@ struct string_message_t {
     char *value_p;
 };
 
+struct string_message_t *
+string_message_new(
+    void *workspace_p,
+    size_t size);
+
+int string_message_encode(
+    struct string_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int string_message_decode(
+    struct string_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void string_message_init(
     struct string_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void string_message_decode_repeated_inner(
 void string_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct string_message_repeated_t *repeated_p);
-
-struct string_message_t *
-string_message_new(
-    void *workspace_p,
-    size_t size);
-
-int string_message_encode(
-    struct string_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int string_message_decode(
-    struct string_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

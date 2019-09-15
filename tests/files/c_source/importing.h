@@ -84,6 +84,53 @@ struct importing_message3_t {
     struct imported_imported_duplicated_package_message_t v2;
 };
 
+struct importing_message_t *
+importing_message_new(
+    void *workspace_p,
+    size_t size);
+
+int importing_message_encode(
+    struct importing_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int importing_message_decode(
+    struct importing_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct importing_message2_t *
+importing_message2_new(
+    void *workspace_p,
+    size_t size);
+
+int importing_message2_encode(
+    struct importing_message2_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int importing_message2_decode(
+    struct importing_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct importing_message3_t *
+importing_message3_new(
+    void *workspace_p,
+    size_t size);
+
+int importing_message3_encode(
+    struct importing_message3_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int importing_message3_decode(
+    struct importing_message3_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void importing_message_init(
     struct importing_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -110,21 +157,6 @@ void importing_message_decode_repeated_inner(
 void importing_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct importing_message_repeated_t *repeated_p);
-
-struct importing_message_t *
-importing_message_new(
-    void *workspace_p,
-    size_t size);
-
-int importing_message_encode(
-    struct importing_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int importing_message_decode(
-    struct importing_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 void importing_message2_init(
     struct importing_message2_t *self_p,
@@ -153,21 +185,6 @@ void importing_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct importing_message2_repeated_t *repeated_p);
 
-struct importing_message2_t *
-importing_message2_new(
-    void *workspace_p,
-    size_t size);
-
-int importing_message2_encode(
-    struct importing_message2_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int importing_message2_decode(
-    struct importing_message2_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void importing_message3_init(
     struct importing_message3_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -194,20 +211,5 @@ void importing_message3_decode_repeated_inner(
 void importing_message3_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct importing_message3_repeated_t *repeated_p);
-
-struct importing_message3_t *
-importing_message3_new(
-    void *workspace_p,
-    size_t size);
-
-int importing_message3_encode(
-    struct importing_message3_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int importing_message3_decode(
-    struct importing_message3_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

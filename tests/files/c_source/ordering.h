@@ -112,6 +112,38 @@ struct ordering_foo_t {
     enum ordering_fam_e fam;
 };
 
+struct ordering_bar_t *
+ordering_bar_new(
+    void *workspace_p,
+    size_t size);
+
+int ordering_bar_encode(
+    struct ordering_bar_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int ordering_bar_decode(
+    struct ordering_bar_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct ordering_foo_t *
+ordering_foo_new(
+    void *workspace_p,
+    size_t size);
+
+int ordering_foo_encode(
+    struct ordering_foo_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int ordering_foo_decode(
+    struct ordering_foo_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void ordering_bar_init(
     struct ordering_bar_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -193,21 +225,6 @@ void ordering_bar_gom_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct ordering_bar_gom_repeated_t *repeated_p);
 
-struct ordering_bar_t *
-ordering_bar_new(
-    void *workspace_p,
-    size_t size);
-
-int ordering_bar_encode(
-    struct ordering_bar_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int ordering_bar_decode(
-    struct ordering_bar_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void ordering_foo_init(
     struct ordering_foo_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -234,20 +251,5 @@ void ordering_foo_decode_repeated_inner(
 void ordering_foo_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct ordering_foo_repeated_t *repeated_p);
-
-struct ordering_foo_t *
-ordering_foo_new(
-    void *workspace_p,
-    size_t size);
-
-int ordering_foo_encode(
-    struct ordering_foo_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int ordering_foo_decode(
-    struct ordering_foo_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

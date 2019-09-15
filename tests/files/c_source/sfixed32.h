@@ -48,6 +48,23 @@ struct sfixed32_message_t {
     int32_t value;
 };
 
+struct sfixed32_message_t *
+sfixed32_message_new(
+    void *workspace_p,
+    size_t size);
+
+int sfixed32_message_encode(
+    struct sfixed32_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int sfixed32_message_decode(
+    struct sfixed32_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void sfixed32_message_init(
     struct sfixed32_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void sfixed32_message_decode_repeated_inner(
 void sfixed32_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct sfixed32_message_repeated_t *repeated_p);
-
-struct sfixed32_message_t *
-sfixed32_message_new(
-    void *workspace_p,
-    size_t size);
-
-int sfixed32_message_encode(
-    struct sfixed32_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int sfixed32_message_decode(
-    struct sfixed32_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

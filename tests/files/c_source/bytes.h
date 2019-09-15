@@ -48,6 +48,23 @@ struct bytes_message_t {
     struct pbtools_bytes_t value;
 };
 
+struct bytes_message_t *
+bytes_message_new(
+    void *workspace_p,
+    size_t size);
+
+int bytes_message_encode(
+    struct bytes_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int bytes_message_decode(
+    struct bytes_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void bytes_message_init(
     struct bytes_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void bytes_message_decode_repeated_inner(
 void bytes_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct bytes_message_repeated_t *repeated_p);
-
-struct bytes_message_t *
-bytes_message_new(
-    void *workspace_p,
-    size_t size);
-
-int bytes_message_encode(
-    struct bytes_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int bytes_message_decode(
-    struct bytes_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

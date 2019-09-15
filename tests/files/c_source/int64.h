@@ -48,6 +48,23 @@ struct int64_message_t {
     int64_t value;
 };
 
+struct int64_message_t *
+int64_message_new(
+    void *workspace_p,
+    size_t size);
+
+int int64_message_encode(
+    struct int64_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int int64_message_decode(
+    struct int64_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void int64_message_init(
     struct int64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void int64_message_decode_repeated_inner(
 void int64_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct int64_message_repeated_t *repeated_p);
-
-struct int64_message_t *
-int64_message_new(
-    void *workspace_p,
-    size_t size);
-
-int int64_message_encode(
-    struct int64_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int int64_message_decode(
-    struct int64_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

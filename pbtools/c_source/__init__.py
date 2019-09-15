@@ -43,6 +43,9 @@ HEADER_FMT = '''\
 
 {types}
 {declarations}
+/* Internal functions. Do not use! */
+
+{internal_declarations}
 #endif
 '''
 
@@ -116,7 +119,7 @@ int {message.full_name_snake_case}_decode(
     size_t size);
 '''
 
-MESSAGE_STATIC_DECLARATIONS_FMT = '''\
+MESSAGE_DECLARATIONS_FMT = '''\
 void {message.full_name_snake_case}_init(
     struct {message.full_name_snake_case}_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -131,7 +134,7 @@ void {message.full_name_snake_case}_decode_inner(
     struct {message.full_name_snake_case}_t *self_p);
 '''
 
-MESSAGE_STATIC_DEFINITIONS_FMT = '''\
+MESSAGE_DEFINITIONS_FMT = '''\
 void {name}_init(
     struct {name}_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -476,7 +479,7 @@ void {type}_finalize_repeated_inner(
 }}
 '''
 
-REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT = '''\
+REPEATED_MESSAGE_DECLARATIONS_FMT = '''\
 void {message.full_name_snake_case}_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
@@ -719,24 +722,13 @@ class Generator:
 
     def generate_declarations(self):
         declarations = []
-        self.generate_messages_declarations(self.messages,
-                                            declarations,
-                                            public=True)
+
+        for message in self.messages:
+            self.generate_message_declarations(message, declarations, True)
 
         return '\n'.join(declarations)
 
-    def generate_messages_declarations(self, messages, declarations, public):
-        for message in messages:
-            self.generate_message_declarations(message, declarations, public)
-
     def generate_message_declarations(self, message, declarations, public):
-        declarations.append(
-            MESSAGE_STATIC_DECLARATIONS_FMT.format(message=message))
-
-        declarations.append(
-            REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                message=message))
-
         for field in message.repeated_fields:
             declarations.append(
                 REPEATED_DECLARATION_FMT.format(message=message, field=field))
@@ -756,6 +748,24 @@ class Generator:
         if public:
             declarations.append(
                 MESSAGE_DECLARATION_FMT.format(message=message))
+
+    def generate_internal_declarations(self):
+        declarations = []
+
+        for message in self.messages:
+            self.generate_internal_message_declarations(message,
+                                                        declarations)
+
+        return '\n'.join(declarations)
+
+    def generate_internal_message_declarations(self, message, declarations):
+        declarations.append(MESSAGE_DECLARATIONS_FMT.format(message=message))
+        declarations.append(
+            REPEATED_MESSAGE_DECLARATIONS_FMT.format(message=message))
+
+        for inner_message in message.messages:
+            self.generate_internal_message_declarations(inner_message,
+                                                        declarations)
 
     def generate_message_encode_body(self, message):
         members = []
@@ -1009,7 +1019,7 @@ class Generator:
             unused_decode = '    (void)self_p;\n\n'
 
         definitions.append(
-            MESSAGE_STATIC_DEFINITIONS_FMT.format(
+            MESSAGE_DEFINITIONS_FMT.format(
                 name=message.full_name_snake_case,
                 encode_body=self.generate_message_encode_body(message),
                 decode_body=decode_body,
@@ -1043,10 +1053,12 @@ class Generator:
         return f'{os.path.splitext(self.header_name)[0].upper()}_H'
 
     def generate(self):
-        header = HEADER_FMT.format(include_guard=self.generate_include_guard(),
-                                   includes=self.generate_includes(),
-                                   types=self.generate_types(),
-                                   declarations=self.generate_declarations())
+        header = HEADER_FMT.format(
+            include_guard=self.generate_include_guard(),
+            includes=self.generate_includes(),
+            types=self.generate_types(),
+            declarations=self.generate_declarations(),
+            internal_declarations=self.generate_internal_declarations())
         source = SOURCE_FMT.format(header=self.header_name,
                                    definitions=self.generate_definitions())
 

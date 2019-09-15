@@ -48,6 +48,23 @@ struct no_package_imported_message_t {
     int32_t value;
 };
 
+struct no_package_imported_message_t *
+no_package_imported_message_new(
+    void *workspace_p,
+    size_t size);
+
+int no_package_imported_message_encode(
+    struct no_package_imported_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int no_package_imported_message_decode(
+    struct no_package_imported_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void no_package_imported_message_init(
     struct no_package_imported_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -74,20 +91,5 @@ void no_package_imported_message_decode_repeated_inner(
 void no_package_imported_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct no_package_imported_message_repeated_t *repeated_p);
-
-struct no_package_imported_message_t *
-no_package_imported_message_new(
-    void *workspace_p,
-    size_t size);
-
-int no_package_imported_message_encode(
-    struct no_package_imported_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int no_package_imported_message_decode(
-    struct no_package_imported_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif

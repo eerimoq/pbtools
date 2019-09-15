@@ -63,6 +63,38 @@ struct int32_message2_t {
     int32_t value;
 };
 
+struct int32_message_t *
+int32_message_new(
+    void *workspace_p,
+    size_t size);
+
+int int32_message_encode(
+    struct int32_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int int32_message_decode(
+    struct int32_message_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+struct int32_message2_t *
+int32_message2_new(
+    void *workspace_p,
+    size_t size);
+
+int int32_message2_encode(
+    struct int32_message2_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int int32_message2_decode(
+    struct int32_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/* Internal functions. Do not use! */
+
 void int32_message_init(
     struct int32_message_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -90,21 +122,6 @@ void int32_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct int32_message_repeated_t *repeated_p);
 
-struct int32_message_t *
-int32_message_new(
-    void *workspace_p,
-    size_t size);
-
-int int32_message_encode(
-    struct int32_message_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int int32_message_decode(
-    struct int32_message_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-
 void int32_message2_init(
     struct int32_message2_t *self_p,
     struct pbtools_heap_t *heap_p,
@@ -131,20 +148,5 @@ void int32_message2_decode_repeated_inner(
 void int32_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct int32_message2_repeated_t *repeated_p);
-
-struct int32_message2_t *
-int32_message2_new(
-    void *workspace_p,
-    size_t size);
-
-int int32_message2_encode(
-    struct int32_message2_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int int32_message2_decode(
-    struct int32_message2_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
 
 #endif
