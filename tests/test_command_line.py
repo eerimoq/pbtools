@@ -25,9 +25,12 @@ class CommandLineTest(unittest.TestCase):
             'fixed32',
             'fixed64',
             'float',
-            # 'imported',
-            # ('imported2', 'imports'),
-            # 'importing',
+            ('imported', ['imports']),
+            ('imports/imported1', ['imports']),
+            ('imports/imported2', ['imports']),
+            ('imports/imported3', ['imports']),
+            ('imports/imported_duplicated_package', ['imports']),
+            # ('importing', ['.', 'imports']),
             'int32',
             'int64',
             'message',
@@ -51,9 +54,13 @@ class CommandLineTest(unittest.TestCase):
 
         for spec in specs:
             if isinstance(spec, tuple):
-                proto = f'{spec[0]}.proto'
-                options = ['-i', f'tests/files/{spec[1]}']
-                spec = spec[0]
+                proto = f'tests/files/{spec[0]}.proto'
+                options = []
+
+                for include_path in spec[1]:
+                    options += ['-i', f'tests/files/{include_path}']
+
+                spec = os.path.basename(spec[0])
             else:
                 proto = f'tests/files/{spec}.proto'
                 options = []

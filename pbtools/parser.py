@@ -198,16 +198,16 @@ class Parser(textparser.Parser):
 
 
 def load_message_type(tokens):
-    return tokens[1]
+    return tokens[1].split('.')
 
 
 class Field:
 
     def __init__(self, type, name, field_number):
-        self.type = type
+        self.type = type[-1]
         self.name = name
         self.field_number = field_number
-        self.namespace = []
+        self.namespace = type[:-1]
         self.type_kind = None
 
     @property
@@ -495,6 +495,9 @@ class Proto:
         self.messages_stack.pop()
 
     def resolve_field_type(self, field):
+        if field.namespace:
+            return
+
         for message in reversed(self.messages_stack):
             if field.type in message.type_names:
                 namespace = message.namespace + [message.name]

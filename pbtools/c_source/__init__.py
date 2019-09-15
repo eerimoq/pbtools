@@ -1,3 +1,5 @@
+import os
+
 from ..parser import SCALAR_VALUE_TYPES
 from ..parser import camel_to_snake_case
 
@@ -37,6 +39,7 @@ HEADER_FMT = '''\
 #define {include_guard}
 
 #include "pbtools.h"
+{includes}\
 
 {types}
 {declarations}
@@ -782,7 +785,7 @@ class Generator:
                 '    (void)encoder_p;\n'
                 '    (void)self_p;\n'
             ]
-            
+
         return ''.join(members)
 
     def generate_message_decode_body(self, message):
@@ -1022,9 +1025,26 @@ class Generator:
         if public:
             definitions.append(MESSAGE_DEFINITION_FMT.format(message=message))
 
+    def generate_includes(self):
+        includes = []
+
+        for imported in self.parsed.imports:
+            filename = imported.path.replace('.proto', '.h')
+            includes.append(f'#include "{filename}"')
+
+        includes = '\n'.join(includes)
+
+        if includes:
+            includes += '\n'
+
+        return includes
+
+    def generate_include_guard(self):
+        return f'{os.path.splitext(self.header_name)[0].upper()}_H'
+
     def generate(self):
-        namespace_upper = self.namespace.upper()
-        header = HEADER_FMT.format(include_guard='{}_H'.format(namespace_upper),
+        header = HEADER_FMT.format(include_guard=self.generate_include_guard(),
+                                   includes=self.generate_includes(),
                                    types=self.generate_types(),
                                    declarations=self.generate_declarations())
         source = SOURCE_FMT.format(header=self.header_name,
