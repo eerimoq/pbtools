@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "enum_provider.proto";
+
+package pkg;
+
+message Message {
+    Enum v1 = 1;
+}

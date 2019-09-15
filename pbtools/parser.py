@@ -572,6 +572,13 @@ class Proto:
             field.type_kind = 'message'
 
     def is_field_enum(self, field):
+        for imported in self.imports:
+            if field.package == imported.package:
+                if field.type in imported.enums:
+                    return True
+                elif field.type in imported.messages:
+                    return False
+
         if field.package == self.package:
             offset = len(self.namespace_base())
             type = self.lookup_type(field.namespace[offset:] + [field.type],
@@ -579,15 +586,8 @@ class Proto:
                                     self.messages)
 
             return isinstance(type, Enum)
-        else:
-            for imported in self.imports:
-                if field.package == imported.package:
-                    if field.type in imported.enums:
-                        return True
-                    elif field.type in imported.messages:
-                        return False
 
-            raise Exception(f"Type '{field.type}' not found in any import.")
+        raise Exception(f"Type '{field.type}' not found in any import.")
 
     def lookup_type(self, path, enums, messages):
         name = path[0]

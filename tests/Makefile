@@ -76,6 +76,8 @@ all:
 	    files/c_source/imported_duplicated_package.c \
 	    files/c_source/no_package_importing.c \
 	    files/c_source/no_package_imported.c \
+	    files/c_source/enum_user.c \
+	    files/c_source/enum_provider.c \
 	    main.o
 	./a.out
 

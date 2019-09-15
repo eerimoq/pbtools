@@ -22,6 +22,8 @@ class CommandLineTest(unittest.TestCase):
             'bytes',
             'double',
             'enum',
+            'enum_provider',
+            ('enum_user', ['.']),
             'fixed32',
             'fixed64',
             'float',
