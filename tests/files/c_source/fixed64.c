@@ -38,33 +38,6 @@
 void fixed64_message_init(
     struct fixed64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct fixed64_message_t *next_p);
-
-void fixed64_message_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct fixed64_message_t *self_p);
-
-void fixed64_message_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct fixed64_message_t *self_p);
-
-void fixed64_message_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct fixed64_message_repeated_t *repeated_p);
-
-void fixed64_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct fixed64_message_repeated_t *repeated_p);
-
-void fixed64_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct fixed64_message_repeated_t *repeated_p);
-
-void fixed64_message_init(
-    struct fixed64_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
     struct fixed64_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;

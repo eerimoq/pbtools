@@ -38,33 +38,6 @@
 void sint64_message_init(
     struct sint64_message_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct sint64_message_t *next_p);
-
-void sint64_message_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct sint64_message_t *self_p);
-
-void sint64_message_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct sint64_message_t *self_p);
-
-void sint64_message_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct sint64_message_repeated_t *repeated_p);
-
-void sint64_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct sint64_message_repeated_t *repeated_p);
-
-void sint64_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct sint64_message_repeated_t *repeated_p);
-
-void sint64_message_init(
-    struct sint64_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
     struct sint64_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;

@@ -71,6 +71,33 @@ struct imported_imported_duplicated_package_message_t {
     bool v1;
 };
 
+void imported_imported2_message_init(
+    struct imported_imported2_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct imported_imported2_message_t *next_p);
+
+void imported_imported2_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct imported_imported2_message_t *self_p);
+
+void imported_imported2_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct imported_imported2_message_t *self_p);
+
+void imported_imported2_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct imported_imported2_message_repeated_t *repeated_p);
+
+void imported_imported2_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct imported_imported2_message_repeated_t *repeated_p);
+
+void imported_imported2_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct imported_imported2_message_repeated_t *repeated_p);
+
 struct imported_imported2_message_t *
 imported_imported2_message_new(
     void *workspace_p,
@@ -85,6 +112,33 @@ int imported_imported2_message_decode(
     struct imported_imported2_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+void imported_imported_duplicated_package_message_init(
+    struct imported_imported_duplicated_package_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct imported_imported_duplicated_package_message_t *next_p);
+
+void imported_imported_duplicated_package_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct imported_imported_duplicated_package_message_t *self_p);
+
+void imported_imported_duplicated_package_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct imported_imported_duplicated_package_message_t *self_p);
+
+void imported_imported_duplicated_package_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct imported_imported_duplicated_package_message_repeated_t *repeated_p);
+
+void imported_imported_duplicated_package_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct imported_imported_duplicated_package_message_repeated_t *repeated_p);
+
+void imported_imported_duplicated_package_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct imported_imported_duplicated_package_message_repeated_t *repeated_p);
 
 struct imported_imported_duplicated_package_message_t *
 imported_imported_duplicated_package_message_new(

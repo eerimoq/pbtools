@@ -48,6 +48,33 @@ struct int64_message_t {
     int64_t value;
 };
 
+void int64_message_init(
+    struct int64_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct int64_message_t *next_p);
+
+void int64_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct int64_message_t *self_p);
+
+void int64_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct int64_message_t *self_p);
+
+void int64_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct int64_message_repeated_t *repeated_p);
+
+void int64_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct int64_message_repeated_t *repeated_p);
+
+void int64_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct int64_message_repeated_t *repeated_p);
+
 struct int64_message_t *
 int64_message_new(
     void *workspace_p,

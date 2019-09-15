@@ -112,6 +112,87 @@ struct ordering_foo_t {
     enum ordering_fam_e fam;
 };
 
+void ordering_bar_init(
+    struct ordering_bar_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct ordering_bar_t *next_p);
+
+void ordering_bar_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct ordering_bar_t *self_p);
+
+void ordering_bar_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_bar_t *self_p);
+
+void ordering_bar_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct ordering_bar_repeated_t *repeated_p);
+
+void ordering_bar_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct ordering_bar_repeated_t *repeated_p);
+
+void ordering_bar_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_bar_repeated_t *repeated_p);
+
+void ordering_bar_fie_init(
+    struct ordering_bar_fie_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct ordering_bar_fie_t *next_p);
+
+void ordering_bar_fie_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct ordering_bar_fie_t *self_p);
+
+void ordering_bar_fie_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_bar_fie_t *self_p);
+
+void ordering_bar_fie_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct ordering_bar_fie_repeated_t *repeated_p);
+
+void ordering_bar_fie_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct ordering_bar_fie_repeated_t *repeated_p);
+
+void ordering_bar_fie_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_bar_fie_repeated_t *repeated_p);
+
+void ordering_bar_gom_init(
+    struct ordering_bar_gom_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct ordering_bar_gom_t *next_p);
+
+void ordering_bar_gom_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct ordering_bar_gom_t *self_p);
+
+void ordering_bar_gom_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_bar_gom_t *self_p);
+
+void ordering_bar_gom_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct ordering_bar_gom_repeated_t *repeated_p);
+
+void ordering_bar_gom_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct ordering_bar_gom_repeated_t *repeated_p);
+
+void ordering_bar_gom_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_bar_gom_repeated_t *repeated_p);
+
 struct ordering_bar_t *
 ordering_bar_new(
     void *workspace_p,
@@ -126,6 +207,33 @@ int ordering_bar_decode(
     struct ordering_bar_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+void ordering_foo_init(
+    struct ordering_foo_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct ordering_foo_t *next_p);
+
+void ordering_foo_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct ordering_foo_t *self_p);
+
+void ordering_foo_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_foo_t *self_p);
+
+void ordering_foo_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct ordering_foo_repeated_t *repeated_p);
+
+void ordering_foo_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct ordering_foo_repeated_t *repeated_p);
+
+void ordering_foo_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct ordering_foo_repeated_t *repeated_p);
 
 struct ordering_foo_t *
 ordering_foo_new(

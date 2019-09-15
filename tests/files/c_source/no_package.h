@@ -73,9 +73,63 @@ struct m0_t {
     enum m0_e1_e v3;
 };
 
+void m0_init(
+    struct m0_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct m0_t *next_p);
+
+void m0_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct m0_t *self_p);
+
+void m0_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct m0_t *self_p);
+
+void m0_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct m0_repeated_t *repeated_p);
+
+void m0_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct m0_repeated_t *repeated_p);
+
+void m0_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct m0_repeated_t *repeated_p);
+
 int m0_v2_alloc(
     struct m0_t *self_p,
     int length);
+
+void m0_m1_init(
+    struct m0_m1_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct m0_m1_t *next_p);
+
+void m0_m1_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct m0_m1_t *self_p);
+
+void m0_m1_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct m0_m1_t *self_p);
+
+void m0_m1_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct m0_m1_repeated_t *repeated_p);
+
+void m0_m1_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct m0_m1_repeated_t *repeated_p);
+
+void m0_m1_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct m0_m1_repeated_t *repeated_p);
 
 struct m0_t *
 m0_new(

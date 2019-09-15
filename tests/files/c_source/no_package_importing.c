@@ -29,32 +29,36 @@
  */
 
 #include <limits.h>
-#include "sfixed32.h"
+#include "no_package_importing.h"
 
 #if CHAR_BIT != 8
 #    error "Number of bits in a char must be 8."
 #endif
 
-void sfixed32_message_init(
-    struct sfixed32_message_t *self_p,
+void npi_message2_init(
+    struct npi_message2_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct sfixed32_message_t *next_p)
+    struct npi_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
     self_p->base.next_p = &next_p->base;
-    self_p->value = 0;
+    no_package_imported_message_init(&self_p->v3, heap_p, NULL);
 }
 
-void sfixed32_message_encode_inner(
+void npi_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
-    struct sfixed32_message_t *self_p)
+    struct npi_message2_t *self_p)
 {
-    pbtools_encoder_write_sfixed32(encoder_p, 1, self_p->value);
+    pbtools_encoder_sub_message_encode(
+        encoder_p,
+        1,
+        &self_p->v3.base,
+        (pbtools_message_encode_inner_t)no_package_imported_message_encode_inner);
 }
 
-void sfixed32_message_decode_inner(
+void npi_message2_decode_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct sfixed32_message_t *self_p)
+    struct npi_message2_t *self_p)
 {
     int wire_type;
 
@@ -62,7 +66,11 @@ void sfixed32_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            self_p->value = pbtools_decoder_read_sfixed32(decoder_p, wire_type);
+            pbtools_decoder_sub_message_decode(
+                decoder_p,
+                wire_type,
+                &self_p->v3.base,
+                (pbtools_message_decode_inner_t)no_package_imported_message_decode_inner);
             break;
 
         default:
@@ -72,55 +80,55 @@ void sfixed32_message_decode_inner(
     }
 }
 
-void sfixed32_message_encode_repeated_inner(
+void npi_message2_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct sfixed32_message_repeated_t *repeated_p)
+    struct npi_message2_repeated_t *repeated_p)
 {
     pbtools_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
-        (pbtools_message_encode_inner_t)sfixed32_message_encode_inner);
+        (pbtools_message_encode_inner_t)npi_message2_encode_inner);
 }
 
-void sfixed32_message_decode_repeated_inner(
+void npi_message2_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct sfixed32_message_repeated_t *repeated_p)
+    struct npi_message2_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
         decoder_p,
         wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
-        sizeof(struct sfixed32_message_t),
-        (pbtools_message_init_t)sfixed32_message_init,
-        (pbtools_message_decode_inner_t)sfixed32_message_decode_inner);
+        sizeof(struct npi_message2_t),
+        (pbtools_message_init_t)npi_message2_init,
+        (pbtools_message_decode_inner_t)npi_message2_decode_inner);
 }
 
-void sfixed32_message_finalize_repeated_inner(
+void npi_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct sfixed32_message_repeated_t *repeated_p)
+    struct npi_message2_repeated_t *repeated_p)
 {
     pbtools_finalize_repeated_inner(
         decoder_p,
         (struct pbtools_repeated_message_t *)repeated_p);
 }
 
-struct sfixed32_message_t *
-sfixed32_message_new(
+struct npi_message2_t *
+npi_message2_new(
     void *workspace_p,
     size_t size)
 {
     return (pbtools_message_new(
                 workspace_p,
                 size,
-                sizeof(struct sfixed32_message_t),
-                (pbtools_message_init_t)sfixed32_message_init));
+                sizeof(struct npi_message2_t),
+                (pbtools_message_init_t)npi_message2_init));
 }
 
-int sfixed32_message_encode(
-    struct sfixed32_message_t *self_p,
+int npi_message2_encode(
+    struct npi_message2_t *self_p,
     uint8_t *encoded_p,
     size_t size)
 {
@@ -128,11 +136,11 @@ int sfixed32_message_encode(
                 &self_p->base,
                 encoded_p,
                 size,
-                (pbtools_message_encode_inner_t)sfixed32_message_encode_inner));
+                (pbtools_message_encode_inner_t)npi_message2_encode_inner));
 }
 
-int sfixed32_message_decode(
-    struct sfixed32_message_t *self_p,
+int npi_message2_decode(
+    struct npi_message2_t *self_p,
     const uint8_t *encoded_p,
     size_t size)
 {
@@ -140,5 +148,5 @@ int sfixed32_message_decode(
                 &self_p->base,
                 encoded_p,
                 size,
-                (pbtools_message_decode_inner_t)sfixed32_message_decode_inner));
+                (pbtools_message_decode_inner_t)npi_message2_decode_inner));
 }

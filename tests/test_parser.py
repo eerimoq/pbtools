@@ -565,71 +565,34 @@ class ParserTest(unittest.TestCase):
                                         'tests/files/imports'
                                     ])
 
-        # Imports in importing.proto
         self.assertEqual(len(parsed.imports), 3)
 
         imported = parsed.imports[0]
         self.assertEqual(imported.path, 'imported.proto')
-        self.assertEqual(imported.proto.package, 'imported')
+        self.assertEqual(imported.package, 'imported')
         self.assertTrue(
-            imported.proto.abspath.endswith('/tests/files/imported.proto'))
+            imported.abspath.endswith('/tests/files/imported.proto'))
+        self.assertEqual(imported.enums, ['ImportedEnum'])
+        self.assertEqual(imported.messages, ['ImportedMessage'])
 
         imported = parsed.imports[1]
         self.assertEqual(imported.path, 'imported_duplicated_package.proto')
-        self.assertEqual(imported.proto.package, 'imported')
+        self.assertEqual(imported.package, 'imported')
         self.assertTrue(
-            imported.proto.abspath.endswith(
+            imported.abspath.endswith(
                 '/tests/files/imports/imported_duplicated_package.proto'))
+        self.assertEqual(imported.enums, ['ImportedDuplicatedPackageEnum'])
+        self.assertEqual(imported.messages,
+                         ['Imported2Message', 'ImportedDuplicatedPackageMessage'])
 
         imported = parsed.imports[2]
         self.assertEqual(imported.path, 'imported2.proto')
-        self.assertEqual(imported.proto.package, 'imported2.foo.bar')
+        self.assertEqual(imported.package, 'imported2.foo.bar')
         self.assertTrue(
-            imported.proto.abspath.endswith('/tests/files/imports/imported2.proto'))
-
-        # Imports in importing.proto -> imported.proto
-        proto = parsed.imports[0].proto
-        self.assertEqual(len(proto.imports), 1)
-
-        imported = parsed.imports[0]
-        self.assertEqual(imported.path, 'imported.proto')
-        self.assertEqual(imported.proto.package, 'imported')
-        self.assertTrue(
-            imported.proto.abspath.endswith('/tests/files/imported.proto'))
-
-        # Imports in importing.proto -> imported_duplicated_package.proto
-        proto = parsed.imports[1].proto
-        self.assertEqual(len(proto.imports), 0)
-
-        # Imports in importing.proto -> imported2.proto
-        proto = parsed.imports[2].proto
-        self.assertEqual(len(proto.imports), 3)
-
-        imported = proto.imports[0]
-        self.assertEqual(imported.path, 'imported3.proto')
-        self.assertEqual(imported.proto.package, 'bar')
-        self.assertTrue(
-            imported.proto.abspath.endswith('/tests/files/imports/imported3.proto'))
-
-        imported = proto.imports[1]
-        self.assertEqual(imported.path, 'imported1.proto')
-        self.assertEqual(imported.proto.package, 'foo.bar')
-        self.assertTrue(
-            imported.proto.abspath.endswith('/tests/files/imports/imported1.proto'))
-
-        imported = proto.imports[2]
-        self.assertEqual(imported.path, 'imported_duplicated_package.proto')
-        self.assertEqual(imported.proto.package, 'imported')
-        self.assertTrue(
-            imported.proto.abspath.endswith(
-                '/tests/files/imports/imported_duplicated_package.proto'))
-
-    def test_importing_messages(self):
-        parsed = pbtools.parse_file('tests/files/importing.proto',
-                                    [
-                                        'tests/files',
-                                        'tests/files/imports'
-                                    ])
+            imported.abspath.endswith('/tests/files/imports/imported2.proto'))
+        self.assertEqual(imported.enums, ['Imported2Enum'])
+        self.assertEqual(imported.messages,
+                         ['Imported2Message', 'Imported3Message'])
 
         self.assertEqual(len(parsed.messages), 3)
 
@@ -639,15 +602,17 @@ class ParserTest(unittest.TestCase):
 
         field = message.fields[0]
         self.assertEqual(field.type, 'ImportedEnum')
+        self.assertEqual(field.type_kind, 'enum')
         self.assertEqual(field.name, 'v1')
         self.assertEqual(field.field_number, 1)
-        self.assertEqual(field.namespace, ['imported'])
+        self.assertEqual(field.package, 'imported')
 
         field = message.fields[1]
         self.assertEqual(field.type, 'ImportedMessage')
+        self.assertEqual(field.type_kind, 'message')
         self.assertEqual(field.name, 'v2')
         self.assertEqual(field.field_number, 2)
-        self.assertEqual(field.namespace, ['imported'])
+        self.assertEqual(field.package, 'imported')
 
         # Message2.
         message = parsed.messages[1]
@@ -655,15 +620,17 @@ class ParserTest(unittest.TestCase):
 
         field = message.fields[0]
         self.assertEqual(field.type, 'Message')
+        self.assertEqual(field.type_kind, 'message')
         self.assertEqual(field.name, 'v1')
         self.assertEqual(field.field_number, 1)
-        self.assertEqual(field.namespace, ['importing'])
+        self.assertEqual(field.package, 'importing')
 
         field = message.fields[1]
         self.assertEqual(field.type, 'Imported2Message')
+        self.assertEqual(field.type_kind, 'message')
         self.assertEqual(field.name, 'v2')
         self.assertEqual(field.field_number, 2)
-        self.assertEqual(field.namespace, ['imported2', 'foo', 'bar'])
+        self.assertEqual(field.package, 'imported2.foo.bar')
 
         # Message3.
         message = parsed.messages[2]
@@ -671,15 +638,33 @@ class ParserTest(unittest.TestCase):
 
         field = message.fields[0]
         self.assertEqual(field.type, 'ImportedDuplicatedPackageEnum')
+        self.assertEqual(field.type_kind, 'enum')
         self.assertEqual(field.name, 'v1')
         self.assertEqual(field.field_number, 1)
-        self.assertEqual(field.namespace, ['imported'])
+        self.assertEqual(field.package, 'imported')
 
         field = message.fields[1]
         self.assertEqual(field.type, 'ImportedDuplicatedPackageMessage')
+        self.assertEqual(field.type_kind, 'message')
         self.assertEqual(field.name, 'v2')
         self.assertEqual(field.field_number, 2)
-        self.assertEqual(field.namespace, ['imported'])
+        self.assertEqual(field.package, 'imported')
+
+    def test_no_package_importing(self):
+        parsed = pbtools.parse_file('tests/files/no_package_importing.proto',
+                                    ['tests/files'])
+
+        self.assertEqual(len(parsed.messages), 1)
+
+        message = parsed.messages[0]
+        self.assertEqual(len(message.fields), 1)
+
+        field = message.fields[0]
+        self.assertEqual(field.type, 'NoPackageImportedMessage')
+        self.assertEqual(field.type_kind, 'message')
+        self.assertEqual(field.name, 'v3')
+        self.assertEqual(field.field_number, 1)
+        self.assertEqual(field.package, None)
 
 
 if __name__ == '__main__':

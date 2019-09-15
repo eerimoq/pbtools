@@ -48,6 +48,33 @@ struct bytes_message_t {
     struct pbtools_bytes_t value;
 };
 
+void bytes_message_init(
+    struct bytes_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct bytes_message_t *next_p);
+
+void bytes_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct bytes_message_t *self_p);
+
+void bytes_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct bytes_message_t *self_p);
+
+void bytes_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct bytes_message_repeated_t *repeated_p);
+
+void bytes_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct bytes_message_repeated_t *repeated_p);
+
+void bytes_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct bytes_message_repeated_t *repeated_p);
+
 struct bytes_message_t *
 bytes_message_new(
     void *workspace_p,

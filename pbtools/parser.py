@@ -209,6 +209,7 @@ class Field:
         self.field_number = field_number
         self.namespace = type[:-1]
         self.type_kind = None
+        self.package = '.'.join(self.namespace)
 
     @property
     def full_type(self):
@@ -397,13 +398,28 @@ class Service:
                 raise InternalError(kind)
 
 
-class Import:
+class ImportedProto:
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, import_paths):
         self.path = tokens[2].strip('"')
-        self.abspath = None
-        self.proto = None
+        self.abspath = find_file(self.path, import_paths)
 
+        with open(self.abspath) as fin:
+            tree = Parser().parse(fin.read())
+
+        self.package = load_package(tree)
+        self.enums = [
+            tokens[1]
+            for tokens in tree[1].get('enum', [])
+        ]
+        self.messages = [
+            tokens[1]
+            for tokens in tree[1].get('message', [])
+        ]
+
+    @property
+    def type_names(self):
+        return self.enums + self.messages
 
 def load_package(tokens):
     try:
@@ -412,9 +428,9 @@ def load_package(tokens):
         return None
 
 
-def load_imports(tokens):
+def load_imports(tokens, import_paths):
     return [
-        Import(imported)
+        ImportedProto(imported, import_paths)
         for imported in tokens[1].get('import', [])
     ]
 
@@ -449,10 +465,10 @@ def load_enums(tokens, namespace):
 
 class Proto:
 
-    def __init__(self, tree, abspath):
+    def __init__(self, tree, abspath, import_paths):
         self.abspath = abspath
         self.package = load_package(tree)
-        self.imports = load_imports(tree)
+        self.imports = load_imports(tree, import_paths)
         namespace = self.namespace_base()
         self.options = load_options(tree)
         self.messages = load_messages(tree, namespace)
@@ -468,6 +484,13 @@ class Proto:
             return []
         else:
             return [self.package]
+
+    @property
+    def type_names(self):
+        type_names = [enum.name for enum in self.enums]
+        type_names += [message.name for message in self.messages]
+
+        return type_names
 
     def resolve_messages_fields_types(self):
         for message in self.messages:
@@ -501,11 +524,25 @@ class Proto:
         for message in reversed(self.messages_stack):
             if field.type in message.type_names:
                 namespace = message.namespace + [message.name]
+                package = self.package
                 break
         else:
-            namespace = self.namespace_base()
+            if field.type in self.type_names:
+                namespace = self.namespace_base()
+                package = self.package
+            else:
+                for imported in self.imports:
+                    if imported.package == self.package:
+                        if field.type in imported.type_names:
+                            namespace = self.namespace_base()
+                            package = self.package
+                            break
+                else:
+                    namespace = []
+                    package = None
 
         field.namespace = namespace
+        field.package = package
 
     def resolve_messages_fields_type_kinds(self):
         for message in self.messages:
@@ -535,12 +572,22 @@ class Proto:
             field.type_kind = 'message'
 
     def is_field_enum(self, field):
-        offset = len(self.namespace_base())
-        type = self.lookup_type(field.namespace[offset:] + [field.type],
-                                self.enums,
-                                self.messages)
+        if field.package == self.package:
+            offset = len(self.namespace_base())
+            type = self.lookup_type(field.namespace[offset:] + [field.type],
+                                    self.enums,
+                                    self.messages)
 
-        return isinstance(type, Enum)
+            return isinstance(type, Enum)
+        else:
+            for imported in self.imports:
+                if field.package == imported.package:
+                    if field.type in imported.enums:
+                        return True
+                    elif field.type in imported.messages:
+                        return False
+
+            raise Exception(f"Type '{field.type}' not found in any import.")
 
     def lookup_type(self, path, enums, messages):
         name = path[0]
@@ -598,40 +645,11 @@ def find_file(filename, import_paths):
     return filepath
 
 
-def _parse_file(filename, import_paths, abspath_to_proto):
-    abspath = find_file(filename, import_paths)
-
-    with open(filename, 'r') as fin:
-        proto = Proto(Parser().parse(fin.read()), abspath)
-
-    abspath_to_proto[abspath] = proto
-
-    # Recursivly parse all imported files, unless already parsed.
-    for imported in proto.imports:
-        abspath = find_file(imported.path, import_paths)
-
-        if abspath in abspath_to_proto:
-            imported_proto = abspath_to_proto[abspath]
-        else:
-            imported_proto = _parse_file(abspath,
-                                         import_paths,
-                                         abspath_to_proto)
-
-        imported.proto = imported_proto
-
-    # ToDo: Public imports.
-
-    return proto
-
-
 def parse_file(filename, import_paths=None):
     if import_paths is None:
         import_paths = []
 
-    abspath_to_proto = {}
-    proto = _parse_file(filename, import_paths, abspath_to_proto)
-
-    # Resolve types in all parsed files. Can only use types from
-    # directly imported files, unless 'import public'.
-
-    return proto
+    with open(filename, 'r') as fin:
+        return Proto(Parser().parse(fin.read()),
+                     find_file(filename, import_paths),
+                     import_paths)

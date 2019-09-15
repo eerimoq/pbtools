@@ -38,92 +38,11 @@
 void importing_message_init(
     struct importing_message_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct importing_message_t *next_p);
-
-void importing_message_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct importing_message_t *self_p);
-
-void importing_message_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct importing_message_t *self_p);
-
-void importing_message_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct importing_message_repeated_t *repeated_p);
-
-void importing_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct importing_message_repeated_t *repeated_p);
-
-void importing_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct importing_message_repeated_t *repeated_p);
-
-void importing_message2_init(
-    struct importing_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct importing_message2_t *next_p);
-
-void importing_message2_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct importing_message2_t *self_p);
-
-void importing_message2_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct importing_message2_t *self_p);
-
-void importing_message2_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct importing_message2_repeated_t *repeated_p);
-
-void importing_message2_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct importing_message2_repeated_t *repeated_p);
-
-void importing_message2_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct importing_message2_repeated_t *repeated_p);
-
-void importing_message3_init(
-    struct importing_message3_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct importing_message3_t *next_p);
-
-void importing_message3_encode_inner(
-    struct pbtools_encoder_t *encoder_p,
-    struct importing_message3_t *self_p);
-
-void importing_message3_decode_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct importing_message3_t *self_p);
-
-void importing_message3_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct importing_message3_repeated_t *repeated_p);
-
-void importing_message3_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct importing_message3_repeated_t *repeated_p);
-
-void importing_message3_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct importing_message3_repeated_t *repeated_p);
-
-void importing_message_init(
-    struct importing_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
     struct importing_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
     self_p->base.next_p = &next_p->base;
-    imported_imported_enum_init(&self_p->v1, heap_p, NULL);
+    self_p->v1 = 0;
     imported_imported_message_init(&self_p->v2, heap_p, NULL);
 }
 
@@ -136,11 +55,7 @@ void importing_message_encode_inner(
         2,
         &self_p->v2.base,
         (pbtools_message_encode_inner_t)imported_imported_message_encode_inner);
-    pbtools_encoder_sub_message_encode(
-        encoder_p,
-        1,
-        &self_p->v1.base,
-        (pbtools_message_encode_inner_t)imported_imported_enum_encode_inner);
+    pbtools_encoder_write_enum(encoder_p, 1, self_p->v1);
 }
 
 void importing_message_decode_inner(
@@ -153,11 +68,7 @@ void importing_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            pbtools_decoder_sub_message_decode(
-                decoder_p,
-                wire_type,
-                &self_p->v1.base,
-                (pbtools_message_decode_inner_t)imported_imported_enum_decode_inner);
+            self_p->v1 = pbtools_decoder_read_enum(decoder_p, wire_type);
             break;
 
         case 2:
@@ -383,7 +294,7 @@ void importing_message3_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->base.next_p = &next_p->base;
-    imported_imported_duplicated_package_enum_init(&self_p->v1, heap_p, NULL);
+    self_p->v1 = 0;
     imported_imported_duplicated_package_message_init(&self_p->v2, heap_p, NULL);
 }
 
@@ -396,11 +307,7 @@ void importing_message3_encode_inner(
         2,
         &self_p->v2.base,
         (pbtools_message_encode_inner_t)imported_imported_duplicated_package_message_encode_inner);
-    pbtools_encoder_sub_message_encode(
-        encoder_p,
-        1,
-        &self_p->v1.base,
-        (pbtools_message_encode_inner_t)imported_imported_duplicated_package_enum_encode_inner);
+    pbtools_encoder_write_enum(encoder_p, 1, self_p->v1);
 }
 
 void importing_message3_decode_inner(
@@ -413,11 +320,7 @@ void importing_message3_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            pbtools_decoder_sub_message_decode(
-                decoder_p,
-                wire_type,
-                &self_p->v1.base,
-                (pbtools_message_decode_inner_t)imported_imported_duplicated_package_enum_decode_inner);
+            self_p->v1 = pbtools_decoder_read_enum(decoder_p, wire_type);
             break;
 
         case 2:

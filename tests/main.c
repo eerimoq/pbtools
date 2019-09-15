@@ -32,6 +32,7 @@
 #include "files/c_source/no_package.h"
 #include "files/c_source/importing.h"
 #include "files/c_source/ordering.h"
+#include "files/c_source/no_package_importing.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -2660,9 +2661,8 @@ TEST(no_package)
     ASSERT_EQ(message_p->v3, m0_e1_c_e);
 }
 
-TEST(importing)
+TEST(importing_message)
 {
-#if 0
     int size;
     struct importing_message_t *message_p;
     uint8_t encoded[256];
@@ -2683,7 +2683,56 @@ TEST(importing)
     ASSERT_EQ(size, 6);
     ASSERT_EQ(message_p->v1, imported_imported_enum_b_e);
     ASSERT_EQ(message_p->v2.v1, true);
-#endif
+}
+
+TEST(importing_message_same_package)
+{
+    int size;
+    struct importing_message_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
+
+    message_p = importing_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v2.v2.v1 = true;
+
+    size = importing_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 7);
+    ASSERT_MEMORY(&encoded[0], "\x12\x05\x12\x03\x98\x06\x01", size);
+
+    message_p = importing_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = importing_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 7);
+    ASSERT_EQ(message_p->v1, imported_imported_enum_a_e);
+    ASSERT_EQ(message_p->v2.v1, false);
+    ASSERT_EQ(message_p->v2.v2.v1, true);
+}
+
+TEST(importing_message_2)
+{
+    int size;
+    struct importing_message2_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
+
+    message_p = importing_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v1.v1 = imported_imported_enum_b_e;
+    message_p->v2.v1.v1 = true;
+
+    size = importing_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 11);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x02\x08\x01\x12\x05\x7a\x03\x98\x06\x01",
+                  size);
+
+    message_p = importing_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = importing_message2_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 11);
+    ASSERT_EQ(message_p->v1.v1, imported_imported_enum_b_e);
+    ASSERT_EQ(message_p->v2.v1.v1, true);
 }
 
 int main(void)
@@ -2766,6 +2815,8 @@ int main(void)
         message_does_not_fit_in_workspace,
         benchmark,
         no_package,
-        importing
+        importing_message,
+        importing_message_same_package,
+        importing_message_2
     );
 }

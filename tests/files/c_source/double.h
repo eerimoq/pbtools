@@ -48,6 +48,33 @@ struct double_message_t {
     double value;
 };
 
+void double_message_init(
+    struct double_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct double_message_t *next_p);
+
+void double_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct double_message_t *self_p);
+
+void double_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct double_message_t *self_p);
+
+void double_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct double_message_repeated_t *repeated_p);
+
+void double_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct double_message_repeated_t *repeated_p);
+
+void double_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct double_message_repeated_t *repeated_p);
+
 struct double_message_t *
 double_message_new(
     void *workspace_p,

@@ -3,7 +3,7 @@ syntax = "proto3";
 package imported;
 
 message Imported2Message {
-    int32 v1 = 1;
+    int32 v1 = 902;
 }
 
 enum ImportedDuplicatedPackageEnum {
@@ -12,5 +12,5 @@ enum ImportedDuplicatedPackageEnum {
 }
 
 message ImportedDuplicatedPackageMessage {
-    bool v1 = 1;
+    bool v1 = 99;
 }

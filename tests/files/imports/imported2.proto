@@ -12,15 +12,15 @@ enum Imported2Enum {
 }
 
 message Imported2Message {
-    imported.ImportedDuplicatedPackageMessage v1 = 1;
+    imported.ImportedDuplicatedPackageMessage v1 = 15;
 }
 
 message Imported3Message {
     message Imported2Message {
-        imported.ImportedDuplicatedPackageMessage v1 = 1;
+        imported.ImportedDuplicatedPackageMessage v1 = 16;
     }
 
-    imported.ImportedDuplicatedPackageMessage v1 = 1;
+    imported.ImportedDuplicatedPackageMessage v1 = 17;
     Imported2Message v2 = 2;
     // All three from this file.
     bar.Imported2Message v3 = 3;

@@ -730,6 +730,13 @@ class Generator:
             self.generate_message_declarations(message, declarations, public)
 
     def generate_message_declarations(self, message, declarations, public):
+        declarations.append(
+            MESSAGE_STATIC_DECLARATIONS_FMT.format(message=message))
+
+        declarations.append(
+            REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
+                message=message))
+
         for field in message.repeated_fields:
             declarations.append(
                 REPEATED_DECLARATION_FMT.format(message=message, field=field))
@@ -985,13 +992,6 @@ class Generator:
                                      declarations,
                                      definitions,
                                      public):
-        declarations.append(
-            MESSAGE_STATIC_DECLARATIONS_FMT.format(message=message))
-
-        declarations.append(
-            REPEATED_MESSAGE_STATIC_DECLARATIONS_FMT.format(
-                message=message))
-
         for oneof in message.oneofs:
             self.generate_oneof_definitions(message, oneof, declarations, definitions)
 

@@ -13,7 +13,7 @@ Google Protocol Buffers tools in Python 3.6+.
 
 Known limitations:
 
-- Imports and recursive messages are not yet supported.
+- Recursive messages are not yet supported (probably never will be).
 
 - Options, services (gRPC) and maps are ignored.
 

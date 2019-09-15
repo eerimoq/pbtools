@@ -3,7 +3,7 @@ syntax = "proto3";
 package foo.bar;
 
 message Imported2Message {
-    int32 v1 = 1;
+    int32 v1 = 10;
 }
 
 message Imported3Message {
@@ -11,5 +11,5 @@ message Imported3Message {
         A = 0;
     }
 
-    int32 v1 = 2;
+    int32 v1 = 20;
 }

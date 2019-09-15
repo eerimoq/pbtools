@@ -63,6 +63,33 @@ struct int32_message2_t {
     int32_t value;
 };
 
+void int32_message_init(
+    struct int32_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct int32_message_t *next_p);
+
+void int32_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct int32_message_t *self_p);
+
+void int32_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message_t *self_p);
+
+void int32_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct int32_message_repeated_t *repeated_p);
+
+void int32_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct int32_message_repeated_t *repeated_p);
+
+void int32_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message_repeated_t *repeated_p);
+
 struct int32_message_t *
 int32_message_new(
     void *workspace_p,
@@ -77,6 +104,33 @@ int int32_message_decode(
     struct int32_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+void int32_message2_init(
+    struct int32_message2_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct int32_message2_t *next_p);
+
+void int32_message2_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct int32_message2_t *self_p);
+
+void int32_message2_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message2_t *self_p);
+
+void int32_message2_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct int32_message2_repeated_t *repeated_p);
+
+void int32_message2_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct int32_message2_repeated_t *repeated_p);
+
+void int32_message2_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct int32_message2_repeated_t *repeated_p);
 
 struct int32_message2_t *
 int32_message2_new(

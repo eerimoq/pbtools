@@ -13,13 +13,13 @@ message Imported3Message {
         A = 0;
     }
 
-    int32 v1 = 3;
+    int32 v1 = 35;
 }
 
 message Imported4Message {
     // From this file.
-    bar.Imported3Message v1 = 1;
+    bar.Imported3Message v1 = 100;
 
     // From imported1.proto
-    foo.bar.Imported3Message v2 = 2;
+    foo.bar.Imported3Message v2 = 200;
 }

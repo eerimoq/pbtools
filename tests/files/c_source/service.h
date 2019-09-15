@@ -63,6 +63,33 @@ struct service_response_t {
     char *value_p;
 };
 
+void service_request_init(
+    struct service_request_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct service_request_t *next_p);
+
+void service_request_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct service_request_t *self_p);
+
+void service_request_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct service_request_t *self_p);
+
+void service_request_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct service_request_repeated_t *repeated_p);
+
+void service_request_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct service_request_repeated_t *repeated_p);
+
+void service_request_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct service_request_repeated_t *repeated_p);
+
 struct service_request_t *
 service_request_new(
     void *workspace_p,
@@ -77,6 +104,33 @@ int service_request_decode(
     struct service_request_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+void service_response_init(
+    struct service_response_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct service_response_t *next_p);
+
+void service_response_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct service_response_t *self_p);
+
+void service_response_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct service_response_t *self_p);
+
+void service_response_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct service_response_repeated_t *repeated_p);
+
+void service_response_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct service_response_repeated_t *repeated_p);
+
+void service_response_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct service_response_repeated_t *repeated_p);
 
 struct service_response_t *
 service_response_new(

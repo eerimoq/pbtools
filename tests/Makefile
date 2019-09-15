@@ -68,6 +68,14 @@ all:
 	    files/c_source/message.c \
 	    files/c_source/no_package.c \
 	    files/c_source/ordering.c \
+	    files/c_source/importing.c \
+	    files/c_source/imported.c \
+	    files/c_source/imported1.c \
+	    files/c_source/imported2.c \
+	    files/c_source/imported3.c \
+	    files/c_source/imported_duplicated_package.c \
+	    files/c_source/no_package_importing.c \
+	    files/c_source/no_package_imported.c \
 	    main.o
 	./a.out
 
