@@ -129,7 +129,12 @@ class Parser(textparser.Parser):
         option_name = full_ident
         option = Sequence('option', option_name, '=', constant, ';')
 
-        enum_field = Sequence(ident, '=', 'INT', ';')
+        enum_field = Sequence(ident, '=', 'INT',
+                              Optional(Sequence('[',
+                                                OneOrMore(
+                                                    Sequence(ident, '=', constant)),
+                                                ']')),
+                              ';')
         enum = Sequence('enum',
                         ident,
                         '{',
