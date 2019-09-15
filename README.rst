@@ -82,7 +82,7 @@ We'll use the generated types and functions below.
        const uint8_t *encoded_p,
        size_t size);
 
-Encode and decode the Foo-message.
+Encode and decode the Foo-message in ``main.c``.
 
 .. code-block:: c
 
@@ -130,6 +130,16 @@ Encode and decode the Foo-message.
 
        return (0);
    }
+
+Build and run the program.
+
+.. code-block:: text
+
+   $ gcc main.c hello_world.c pbtools.c -o main
+   $ ./main
+   Successfully encoded Foo into 2 bytes.
+   Successfully decoded 2 bytes into Foo.
+   Foo.bar: 78
 
 See `hello_world`_ for all files used in this example.
 
