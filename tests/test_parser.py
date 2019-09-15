@@ -666,6 +666,12 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(field.field_number, 1)
         self.assertEqual(field.package, None)
 
+    def test_missing_type(self):
+        with self.assertRaises(pbtools.Error) as cm:
+            pbtools.parse_file('tests/files/missing_type.proto')
+
+        self.assertEqual(str(cm.exception), "'MissingType' is not defined.")
+
 
 if __name__ == '__main__':
     unittest.main()

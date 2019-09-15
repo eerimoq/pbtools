@@ -9,6 +9,7 @@ from textparser import choice
 from textparser import Optional
 from textparser import Forward
 from textparser import Tag
+from .errors import Error
 
 
 SCALAR_VALUE_TYPES = [
@@ -587,7 +588,7 @@ class Proto:
 
             return isinstance(type, Enum)
 
-        raise Exception(f"Type '{field.type}' not found in any import.")
+        raise Error(f"'{field.type}' is not defined.")
 
     def lookup_type(self, path, enums, messages):
         name = path[0]
