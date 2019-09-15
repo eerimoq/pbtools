@@ -48,6 +48,9 @@ struct fixed32_message_t {
     uint32_t value;
 };
 
+/**
+ * Encoding and decoding of fixed32.Message.
+ */
 struct fixed32_message_t *
 fixed32_message_new(
     void *workspace_p,

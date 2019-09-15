@@ -77,6 +77,9 @@ int m0_v2_alloc(
     struct m0_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of M0.
+ */
 struct m0_t *
 m0_new(
     void *workspace_p,

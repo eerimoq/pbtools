@@ -112,6 +112,9 @@ struct ordering_foo_t {
     enum ordering_fam_e fam;
 };
 
+/**
+ * Encoding and decoding of ordering.Bar.
+ */
 struct ordering_bar_t *
 ordering_bar_new(
     void *workspace_p,
@@ -127,6 +130,9 @@ int ordering_bar_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of ordering.Foo.
+ */
 struct ordering_foo_t *
 ordering_foo_new(
     void *workspace_p,

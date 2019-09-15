@@ -48,6 +48,9 @@ struct float_message_t {
     float value;
 };
 
+/**
+ * Encoding and decoding of float.Message.
+ */
 struct float_message_t *
 float_message_new(
     void *workspace_p,

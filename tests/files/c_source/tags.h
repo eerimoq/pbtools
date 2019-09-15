@@ -123,6 +123,9 @@ struct tags_message6_t {
     bool value;
 };
 
+/**
+ * Encoding and decoding of tags.Message1.
+ */
 struct tags_message1_t *
 tags_message1_new(
     void *workspace_p,
@@ -138,6 +141,9 @@ int tags_message1_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of tags.Message2.
+ */
 struct tags_message2_t *
 tags_message2_new(
     void *workspace_p,
@@ -153,6 +159,9 @@ int tags_message2_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of tags.Message3.
+ */
 struct tags_message3_t *
 tags_message3_new(
     void *workspace_p,
@@ -168,6 +177,9 @@ int tags_message3_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of tags.Message4.
+ */
 struct tags_message4_t *
 tags_message4_new(
     void *workspace_p,
@@ -183,6 +195,9 @@ int tags_message4_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of tags.Message5.
+ */
 struct tags_message5_t *
 tags_message5_new(
     void *workspace_p,
@@ -198,6 +213,9 @@ int tags_message5_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of tags.Message6.
+ */
 struct tags_message6_t *
 tags_message6_new(
     void *workspace_p,

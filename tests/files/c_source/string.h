@@ -48,6 +48,9 @@ struct string_message_t {
     char *value_p;
 };
 
+/**
+ * Encoding and decoding of string.Message.
+ */
 struct string_message_t *
 string_message_new(
     void *workspace_p,

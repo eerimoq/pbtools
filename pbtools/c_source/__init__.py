@@ -102,7 +102,44 @@ struct {message.full_name_snake_case}_t {{
 }};
 '''
 
+REPEATED_MESSAGE_STRUCT_FMT = '''\
+struct {message.full_name_snake_case}_repeated_t {{
+    int length;
+    struct {message.full_name_snake_case}_t **items_pp;
+    struct {message.full_name_snake_case}_t *head_p;
+    struct {message.full_name_snake_case}_t *tail_p;
+}};\
+'''
+
+ENUM_FMT = '''\
+/**
+ * Enum {full_name}.
+ */
+enum {name}_e {{
+{members}
+}};
+'''
+
+ENUM_MEMBER_FMT = '''\
+    {enum.full_name_snake_case}_{field.name_snake_case}_e = {field.field_number}\
+'''
+
+ONEOF_STRUCT_FMT = '''\
+/**
+ * Oneof {oneof.full_name}.
+ */
+struct {oneof.full_name_snake_case}_oneof_t {{
+    enum {oneof.full_name_snake_case}_choice_e choice;
+    union {{
+{members}
+    }} value;
+}};
+'''
+
 MESSAGE_DECLARATION_FMT = '''\
+/**
+ * Encoding and decoding of {message.full_name}.
+ */
 struct {message.full_name_snake_case}_t *
 {message.full_name_snake_case}_new(
     void *workspace_p,
@@ -119,6 +156,12 @@ int {message.full_name_snake_case}_decode(
     size_t size);
 '''
 
+REPEATED_DECLARATION_FMT = '''\
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
+    struct {message.full_name_snake_case}_t *self_p,
+    int length);
+'''
+
 MESSAGE_DECLARATIONS_FMT = '''\
 void {message.full_name_snake_case}_init(
     struct {message.full_name_snake_case}_t *self_p,
@@ -131,6 +174,25 @@ void {message.full_name_snake_case}_encode_inner(
 
 void {message.full_name_snake_case}_decode_inner(
     struct pbtools_decoder_t *decoder_p,
+    struct {message.full_name_snake_case}_t *self_p);
+
+void {message.full_name_snake_case}_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct {message.full_name_snake_case}_repeated_t *repeated_p);
+
+void {message.full_name_snake_case}_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct {message.full_name_snake_case}_repeated_t *repeated_p);
+
+void {message.full_name_snake_case}_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct {message.full_name_snake_case}_repeated_t *repeated_p);
+'''
+
+INIT_ONEOF_FMT = '''\
+void {oneof.full_name_snake_case}_{field.name}_init(
     struct {message.full_name_snake_case}_t *self_p);
 '''
 
@@ -199,11 +261,11 @@ ENCODE_ENUM_FMT = '''\
     pbtools_encoder_write_enum(encoder_p, {field.field_number}, self_p->{field.name});
 '''
 
-ENCODE_ONEOF_FMT = '''\
+ENCODE_ONEOF_MEMBER_FMT = '''\
     {name}_encode(encoder_p, &self_p->{field_name});
 '''
 
-ENCODE_ONEOF_MEMBER_FMT = '''\
+ENCODE_ONEOF_CHOICE_FMT = '''\
     case {oneof.full_name_snake_case}_choice_{field.name}_e:
         pbtools_encoder_write_{field.full_type_snake_case}(
             encoder_p,
@@ -245,6 +307,20 @@ ENCODE_REPEATED_MESSAGE_MEMBER_FMT = '''\
         encoder_p,
         {field.field_number},
         &self_p->{field.name});
+'''
+
+ENCODE_ONEOF_FMT = '''\
+void {oneof.full_name_snake_case}_encode(
+    struct pbtools_encoder_t *encoder_p,
+    struct {oneof.full_name_snake_case}_oneof_t *self_p)
+{{
+    switch (self_p->choice) {{
+
+{choices}
+    default:
+        break;
+    }}
+}}
 '''
 
 DECODE_MEMBER_FMT = '''\
@@ -401,21 +477,6 @@ int {message.full_name_snake_case}_decode(
 }}
 '''
 
-REPEATED_STRUCT_FMT = '''\
-struct {message.full_name_snake_case}_repeated_t {{
-    int length;
-    struct {message.full_name_snake_case}_t **items_pp;
-    struct {message.full_name_snake_case}_t *head_p;
-    struct {message.full_name_snake_case}_t *tail_p;
-}};\
-'''
-
-REPEATED_DECLARATION_FMT = '''\
-int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
-    struct {message.full_name_snake_case}_t *self_p,
-    int length);
-'''
-
 REPEATED_DEFINITION_FMT = '''\
 int {name}_{field_name}_alloc(
     struct {name}_t *self_p,
@@ -479,22 +540,6 @@ void {type}_finalize_repeated_inner(
 }}
 '''
 
-REPEATED_MESSAGE_DECLARATIONS_FMT = '''\
-void {message.full_name_snake_case}_encode_repeated_inner(
-    struct pbtools_encoder_t *encoder_p,
-    int field_number,
-    struct {message.full_name_snake_case}_repeated_t *repeated_p);
-
-void {message.full_name_snake_case}_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct {message.full_name_snake_case}_repeated_t *repeated_p);
-
-void {message.full_name_snake_case}_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct {message.full_name_snake_case}_repeated_t *repeated_p);
-'''
-
 REPEATED_FINALIZER_FMT = '''\
     pbtools_decoder_finalize_repeated_{field.full_type_snake_case}(
         decoder_p,
@@ -505,50 +550,6 @@ REPEATED_MESSAGE_FINALIZER_FMT = '''\
     {field.full_type_snake_case}_finalize_repeated_inner(
         decoder_p,
         &self_p->{field.name});\
-'''
-
-ENUM_FMT = '''\
-/**
- * Enum {full_name}.
- */
-enum {name}_e {{
-{members}
-}};
-'''
-
-ENUM_MEMBER_FMT = '''\
-    {enum.full_name_snake_case}_{field.name_snake_case}_e = {field.field_number}\
-'''
-
-ONEOF_FMT = '''\
-/**
- * Oneof {oneof.full_name}.
- */
-struct {oneof.full_name_snake_case}_oneof_t {{
-    enum {oneof.full_name_snake_case}_choice_e choice;
-    union {{
-{members}
-    }} value;
-}};
-'''
-
-ONEOF_ENCODE_FMT = '''\
-void {oneof.full_name_snake_case}_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct {oneof.full_name_snake_case}_oneof_t *self_p)
-{{
-    switch (self_p->choice) {{
-
-{choices}
-    default:
-        break;
-    }}
-}}
-'''
-
-ONEOF_INIT_FMT = '''\
-void {oneof.full_name_snake_case}_{field.name}_init(
-    struct {message.full_name_snake_case}_t *self_p);
 '''
 
 
@@ -639,7 +640,7 @@ class Generator:
         return members
 
     def generate_repeated_struct(self, message):
-        return REPEATED_STRUCT_FMT.format(message=message)
+        return REPEATED_MESSAGE_STRUCT_FMT.format(message=message)
 
     def generate_enum_members(self, enum):
         return ',\n'.join([
@@ -682,8 +683,8 @@ class Generator:
     def generate_oneof_type(self, oneof):
         types = [self.generate_oneof_choices(oneof)]
         types += [
-            ONEOF_FMT.format(oneof=oneof,
-                             members=self.generate_oneof_members(oneof))
+            ONEOF_STRUCT_FMT.format(oneof=oneof,
+                                    members=self.generate_oneof_members(oneof))
         ]
 
         return ['\n'.join(types)]
@@ -741,7 +742,7 @@ class Generator:
         for oneof in message.oneofs:
             for field in oneof.fields:
                 declarations.append(
-                    ONEOF_INIT_FMT.format(oneof=oneof,
+                    INIT_ONEOF_FMT.format(oneof=oneof,
                                           message=message,
                                           field=field))
 
@@ -760,8 +761,6 @@ class Generator:
 
     def generate_internal_message_declarations(self, message, declarations):
         declarations.append(MESSAGE_DECLARATIONS_FMT.format(message=message))
-        declarations.append(
-            REPEATED_MESSAGE_DECLARATIONS_FMT.format(message=message))
 
         for inner_message in message.messages:
             self.generate_internal_message_declarations(inner_message,
@@ -794,8 +793,8 @@ class Generator:
 
         for oneof in message.oneofs:
             members.append(
-                ENCODE_ONEOF_FMT.format(name=oneof.full_name_snake_case,
-                                        field_name=oneof.name))
+                ENCODE_ONEOF_MEMBER_FMT.format(name=oneof.full_name_snake_case,
+                                               field_name=oneof.name))
 
         if not members:
             members = [
@@ -949,7 +948,7 @@ class Generator:
                 if field.type == 'string':
                     fmt = ENCODE_ONEOF_STRING_MEMBER_FMT
                 else:
-                    fmt = ENCODE_ONEOF_MEMBER_FMT
+                    fmt = ENCODE_ONEOF_CHOICE_FMT
             else:
                 if field.type_kind == 'message':
                     fmt = ENCODE_ONEOF_SUB_MESSAGE_MEMBER_FMT
@@ -963,7 +962,7 @@ class Generator:
             choices.append(choice)
 
         definitions.append(
-            ONEOF_ENCODE_FMT.format(oneof=oneof, choices='\n'.join(choices)))
+            ENCODE_ONEOF_FMT.format(oneof=oneof, choices='\n'.join(choices)))
 
     def generate_oneof_decode_definitions(self,
                                           message,

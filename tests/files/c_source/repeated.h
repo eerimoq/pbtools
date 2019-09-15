@@ -142,6 +142,9 @@ int repeated_message_bytes_alloc(
     struct repeated_message_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of repeated.Message.
+ */
 struct repeated_message_t *
 repeated_message_new(
     void *workspace_p,
@@ -217,6 +220,9 @@ int repeated_message_scalar_value_types_bytess_alloc(
     struct repeated_message_scalar_value_types_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of repeated.MessageScalarValueTypes.
+ */
 struct repeated_message_scalar_value_types_t *
 repeated_message_scalar_value_types_new(
     void *workspace_p,
@@ -236,6 +242,9 @@ int repeated_foo_messages_alloc(
     struct repeated_foo_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of repeated.Foo.
+ */
 struct repeated_foo_t *
 repeated_foo_new(
     void *workspace_p,
@@ -263,6 +272,9 @@ int repeated_bar_fie_inner_foos_alloc(
     struct repeated_bar_fie_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of repeated.Bar.
+ */
 struct repeated_bar_t *
 repeated_bar_new(
     void *workspace_p,

@@ -48,6 +48,9 @@ struct uint32_message_t {
     uint32_t value;
 };
 
+/**
+ * Encoding and decoding of uint32.Message.
+ */
 struct uint32_message_t *
 uint32_message_new(
     void *workspace_p,

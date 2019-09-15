@@ -203,10 +203,6 @@ class Parser(textparser.Parser):
         return proto
 
 
-def load_message_type(tokens):
-    return tokens[1].split('.')
-
-
 class Field:
 
     def __init__(self, type, name, field_number):
@@ -427,47 +423,6 @@ class ImportedProto:
     def type_names(self):
         return self.enums + self.messages
 
-def load_package(tokens):
-    try:
-        return tokens[1]['package'][0][1]
-    except KeyError:
-        return None
-
-
-def load_imports(tokens, import_paths):
-    return [
-        ImportedProto(imported, import_paths)
-        for imported in tokens[1].get('import', [])
-    ]
-
-
-def load_options(tokens):
-    return [
-        Option(option)
-        for option in tokens[1].get('option', [])
-    ]
-
-
-def load_messages(tokens, namespace):
-    return [
-        Message(message, namespace)
-        for message in tokens[1].get('message', [])
-    ]
-
-
-def load_services(tokens):
-    return [
-        Service(service)
-        for service in tokens[1].get('service', [])
-    ]
-
-
-def load_enums(tokens, namespace):
-    return [
-        Enum(enum, namespace)
-        for enum in tokens[1].get('enum', [])
-    ]
-
 
 class Proto:
 
@@ -485,18 +440,18 @@ class Proto:
         self.resolve_messages_fields_type_kinds()
         self.messages = self.sort_messages_by_usage(self.messages)
 
-    def namespace_base(self):
-        if self.package is None:
-            return []
-        else:
-            return [self.package]
-
     @property
     def type_names(self):
         type_names = [enum.name for enum in self.enums]
         type_names += [message.name for message in self.messages]
 
         return type_names
+
+    def namespace_base(self):
+        if self.package is None:
+            return []
+        else:
+            return [self.package]
 
     def resolve_messages_fields_types(self):
         for message in self.messages:
@@ -632,6 +587,52 @@ class Proto:
             reversed_sorted_messages.insert(insert_index, message)
 
         return list(reversed(reversed_sorted_messages))
+
+
+def load_message_type(tokens):
+    return tokens[1].split('.')
+
+
+def load_package(tokens):
+    try:
+        return tokens[1]['package'][0][1]
+    except KeyError:
+        return None
+
+
+def load_imports(tokens, import_paths):
+    return [
+        ImportedProto(imported, import_paths)
+        for imported in tokens[1].get('import', [])
+    ]
+
+
+def load_options(tokens):
+    return [
+        Option(option)
+        for option in tokens[1].get('option', [])
+    ]
+
+
+def load_messages(tokens, namespace):
+    return [
+        Message(message, namespace)
+        for message in tokens[1].get('message', [])
+    ]
+
+
+def load_services(tokens):
+    return [
+        Service(service)
+        for service in tokens[1].get('service', [])
+    ]
+
+
+def load_enums(tokens, namespace):
+    return [
+        Enum(enum, namespace)
+        for enum in tokens[1].get('enum', [])
+    ]
 
 
 def find_file(filename, import_paths):

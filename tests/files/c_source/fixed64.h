@@ -48,6 +48,9 @@ struct fixed64_message_t {
     uint64_t value;
 };
 
+/**
+ * Encoding and decoding of fixed64.Message.
+ */
 struct fixed64_message_t *
 fixed64_message_new(
     void *workspace_p,

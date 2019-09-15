@@ -49,6 +49,9 @@ struct npi_message2_t {
     struct no_package_imported_message_t v3;
 };
 
+/**
+ * Encoding and decoding of npi.Message2.
+ */
 struct npi_message2_t *
 npi_message2_new(
     void *workspace_p,

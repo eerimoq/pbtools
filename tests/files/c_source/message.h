@@ -155,6 +155,9 @@ struct message_unused_inner_types_t {
     bool v2;
 };
 
+/**
+ * Encoding and decoding of message.Foo.
+ */
 struct message_foo_t *
 message_foo_new(
     void *workspace_p,
@@ -170,6 +173,9 @@ int message_foo_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of message.Bar.
+ */
 struct message_bar_t *
 message_bar_new(
     void *workspace_p,
@@ -185,6 +191,9 @@ int message_bar_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of message.Message.
+ */
 struct message_message_t *
 message_message_new(
     void *workspace_p,
@@ -200,6 +209,9 @@ int message_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of message.UnusedInnerTypes.
+ */
 struct message_unused_inner_types_t *
 message_unused_inner_types_new(
     void *workspace_p,

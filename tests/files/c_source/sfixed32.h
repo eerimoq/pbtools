@@ -48,6 +48,9 @@ struct sfixed32_message_t {
     int32_t value;
 };
 
+/**
+ * Encoding and decoding of sfixed32.Message.
+ */
 struct sfixed32_message_t *
 sfixed32_message_new(
     void *workspace_p,

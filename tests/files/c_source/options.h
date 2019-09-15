@@ -48,6 +48,9 @@ struct options_message_t {
     bool value;
 };
 
+/**
+ * Encoding and decoding of options.Message.
+ */
 struct options_message_t *
 options_message_new(
     void *workspace_p,

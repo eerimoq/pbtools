@@ -74,6 +74,9 @@ void oneof_foo_bar_fie_init(
 void oneof_foo_bar_fum_init(
     struct oneof_foo_t *self_p);
 
+/**
+ * Encoding and decoding of oneof.Foo.
+ */
 struct oneof_foo_t *
 oneof_foo_new(
     void *workspace_p,

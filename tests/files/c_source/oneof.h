@@ -240,6 +240,9 @@ void oneof_message_value_v1_init(
 void oneof_message_value_v2_init(
     struct oneof_message_t *self_p);
 
+/**
+ * Encoding and decoding of oneof.Message.
+ */
 struct oneof_message_t *
 oneof_message_new(
     void *workspace_p,
@@ -273,6 +276,9 @@ void oneof_message2_oneof2_v2_init(
 void oneof_message2_oneof2_v3_init(
     struct oneof_message2_t *self_p);
 
+/**
+ * Encoding and decoding of oneof.Message2.
+ */
 struct oneof_message2_t *
 oneof_message2_new(
     void *workspace_p,
@@ -301,6 +307,9 @@ int oneof_message3_bar_foo_alloc(
 void oneof_message3_oneof1_v1_init(
     struct oneof_message3_t *self_p);
 
+/**
+ * Encoding and decoding of oneof.Message3.
+ */
 struct oneof_message3_t *
 oneof_message3_new(
     void *workspace_p,

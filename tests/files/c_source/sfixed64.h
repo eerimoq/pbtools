@@ -48,6 +48,9 @@ struct sfixed64_message_t {
     int64_t value;
 };
 
+/**
+ * Encoding and decoding of sfixed64.Message.
+ */
 struct sfixed64_message_t *
 sfixed64_message_new(
     void *workspace_p,

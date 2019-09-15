@@ -48,6 +48,9 @@ struct no_package_imported_message_t {
     int32_t value;
 };
 
+/**
+ * Encoding and decoding of NoPackageImportedMessage.
+ */
 struct no_package_imported_message_t *
 no_package_imported_message_new(
     void *workspace_p,

@@ -98,6 +98,9 @@ struct imported2_foo_bar_imported3_message_t {
     struct foo_bar_imported3_message_repeated_t v10;
 };
 
+/**
+ * Encoding and decoding of imported2.foo.bar.Imported2Message.
+ */
 struct imported2_foo_bar_imported2_message_t *
 imported2_foo_bar_imported2_message_new(
     void *workspace_p,
@@ -129,6 +132,9 @@ int imported2_foo_bar_imported3_message_v10_alloc(
     struct imported2_foo_bar_imported3_message_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of imported2.foo.bar.Imported3Message.
+ */
 struct imported2_foo_bar_imported3_message_t *
 imported2_foo_bar_imported3_message_new(
     void *workspace_p,

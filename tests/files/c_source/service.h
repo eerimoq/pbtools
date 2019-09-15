@@ -63,6 +63,9 @@ struct service_response_t {
     char *value_p;
 };
 
+/**
+ * Encoding and decoding of service.Request.
+ */
 struct service_request_t *
 service_request_new(
     void *workspace_p,
@@ -78,6 +81,9 @@ int service_request_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of service.Response.
+ */
 struct service_response_t *
 service_response_new(
     void *workspace_p,

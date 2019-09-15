@@ -48,6 +48,9 @@ struct sint32_message_t {
     int32_t value;
 };
 
+/**
+ * Encoding and decoding of sint32.Message.
+ */
 struct sint32_message_t *
 sint32_message_new(
     void *workspace_p,

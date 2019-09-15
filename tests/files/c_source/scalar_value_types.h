@@ -62,6 +62,9 @@ struct scalar_value_types_message_t {
     uint64_t v15;
 };
 
+/**
+ * Encoding and decoding of scalar_value_types.Message.
+ */
 struct scalar_value_types_message_t *
 scalar_value_types_message_new(
     void *workspace_p,

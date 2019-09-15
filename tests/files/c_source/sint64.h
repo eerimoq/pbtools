@@ -48,6 +48,9 @@ struct sint64_message_t {
     int64_t value;
 };
 
+/**
+ * Encoding and decoding of sint64.Message.
+ */
 struct sint64_message_t *
 sint64_message_new(
     void *workspace_p,

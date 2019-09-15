@@ -48,6 +48,9 @@ struct bool_message_t {
     bool value;
 };
 
+/**
+ * Encoding and decoding of bool.Message.
+ */
 struct bool_message_t *
 bool_message_new(
     void *workspace_p,

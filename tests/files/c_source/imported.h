@@ -58,6 +58,9 @@ struct imported_imported_message_t {
     struct imported_imported_duplicated_package_message_t v2;
 };
 
+/**
+ * Encoding and decoding of imported.ImportedMessage.
+ */
 struct imported_imported_message_t *
 imported_imported_message_new(
     void *workspace_p,

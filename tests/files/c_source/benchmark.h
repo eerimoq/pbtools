@@ -122,6 +122,9 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field131;
 };
 
+/**
+ * Encoding and decoding of benchmarks.proto3.GoogleMessage1SubMessage.
+ */
 struct benchmarks_proto3_google_message1_sub_message_t *
 benchmarks_proto3_google_message1_sub_message_new(
     void *workspace_p,
@@ -141,6 +144,9 @@ int benchmarks_proto3_google_message1_field5_alloc(
     struct benchmarks_proto3_google_message1_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of benchmarks.proto3.GoogleMessage1.
+ */
 struct benchmarks_proto3_google_message1_t *
 benchmarks_proto3_google_message1_new(
     void *workspace_p,

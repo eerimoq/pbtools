@@ -48,6 +48,9 @@ struct bytes_message_t {
     struct pbtools_bytes_t value;
 };
 
+/**
+ * Encoding and decoding of bytes.Message.
+ */
 struct bytes_message_t *
 bytes_message_new(
     void *workspace_p,

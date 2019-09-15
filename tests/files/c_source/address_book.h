@@ -95,6 +95,9 @@ int address_book_person_phones_alloc(
     struct address_book_person_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of address_book.Person.
+ */
 struct address_book_person_t *
 address_book_person_new(
     void *workspace_p,
@@ -114,6 +117,9 @@ int address_book_address_book_people_alloc(
     struct address_book_address_book_t *self_p,
     int length);
 
+/**
+ * Encoding and decoding of address_book.AddressBook.
+ */
 struct address_book_address_book_t *
 address_book_address_book_new(
     void *workspace_p,

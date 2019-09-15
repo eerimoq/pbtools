@@ -84,6 +84,9 @@ struct importing_message3_t {
     struct imported_imported_duplicated_package_message_t v2;
 };
 
+/**
+ * Encoding and decoding of importing.Message.
+ */
 struct importing_message_t *
 importing_message_new(
     void *workspace_p,
@@ -99,6 +102,9 @@ int importing_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of importing.Message2.
+ */
 struct importing_message2_t *
 importing_message2_new(
     void *workspace_p,
@@ -114,6 +120,9 @@ int importing_message2_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of importing.Message3.
+ */
 struct importing_message3_t *
 importing_message3_new(
     void *workspace_p,

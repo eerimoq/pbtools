@@ -63,6 +63,9 @@ struct int32_message2_t {
     int32_t value;
 };
 
+/**
+ * Encoding and decoding of int32.Message.
+ */
 struct int32_message_t *
 int32_message_new(
     void *workspace_p,
@@ -78,6 +81,9 @@ int int32_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of int32.Message2.
+ */
 struct int32_message2_t *
 int32_message2_new(
     void *workspace_p,

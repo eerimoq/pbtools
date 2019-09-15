@@ -48,6 +48,9 @@ struct uint64_message_t {
     uint64_t value;
 };
 
+/**
+ * Encoding and decoding of uint64.Message.
+ */
 struct uint64_message_t *
 uint64_message_new(
     void *workspace_p,

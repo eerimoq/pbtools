@@ -48,6 +48,9 @@ struct double_message_t {
     double value;
 };
 
+/**
+ * Encoding and decoding of double.Message.
+ */
 struct double_message_t *
 double_message_new(
     void *workspace_p,

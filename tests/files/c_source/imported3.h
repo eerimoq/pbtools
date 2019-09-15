@@ -87,6 +87,9 @@ struct bar_imported4_message_t {
     struct foo_bar_imported3_message_t v2;
 };
 
+/**
+ * Encoding and decoding of bar.Imported2Message.
+ */
 struct bar_imported2_message_t *
 bar_imported2_message_new(
     void *workspace_p,
@@ -102,6 +105,9 @@ int bar_imported2_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of bar.Imported3Message.
+ */
 struct bar_imported3_message_t *
 bar_imported3_message_new(
     void *workspace_p,
@@ -117,6 +123,9 @@ int bar_imported3_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of bar.Imported4Message.
+ */
 struct bar_imported4_message_t *
 bar_imported4_message_new(
     void *workspace_p,

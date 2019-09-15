@@ -112,6 +112,9 @@ struct enum_limits_t {
     enum enum_limits_enum_e value;
 };
 
+/**
+ * Encoding and decoding of enum.Message.
+ */
 struct enum_message_t *
 enum_message_new(
     void *workspace_p,
@@ -127,6 +130,9 @@ int enum_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of enum.Message2.
+ */
 struct enum_message2_t *
 enum_message2_new(
     void *workspace_p,
@@ -142,6 +148,9 @@ int enum_message2_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of enum.Limits.
+ */
 struct enum_limits_t *
 enum_limits_new(
     void *workspace_p,

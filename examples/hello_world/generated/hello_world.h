@@ -48,6 +48,9 @@ struct hello_world_foo_t {
     int32_t bar;
 };
 
+/**
+ * Encoding and decoding of hello_world.Foo.
+ */
 struct hello_world_foo_t *
 hello_world_foo_new(
     void *workspace_p,

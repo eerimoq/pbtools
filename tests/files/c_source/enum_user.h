@@ -49,6 +49,9 @@ struct pkg_message_t {
     enum pkg_enum_e v1;
 };
 
+/**
+ * Encoding and decoding of pkg.Message.
+ */
 struct pkg_message_t *
 pkg_message_new(
     void *workspace_p,

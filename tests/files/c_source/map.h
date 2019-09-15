@@ -47,6 +47,9 @@ struct map_message_t {
     struct pbtools_message_base_t base;
 };
 
+/**
+ * Encoding and decoding of map.Message.
+ */
 struct map_message_t *
 map_message_new(
     void *workspace_p,

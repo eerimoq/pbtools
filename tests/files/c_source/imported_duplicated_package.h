@@ -71,6 +71,9 @@ struct imported_imported_duplicated_package_message_t {
     bool v1;
 };
 
+/**
+ * Encoding and decoding of imported.Imported2Message.
+ */
 struct imported_imported2_message_t *
 imported_imported2_message_new(
     void *workspace_p,
@@ -86,6 +89,9 @@ int imported_imported2_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+/**
+ * Encoding and decoding of imported.ImportedDuplicatedPackageMessage.
+ */
 struct imported_imported_duplicated_package_message_t *
 imported_imported_duplicated_package_message_new(
     void *workspace_p,
