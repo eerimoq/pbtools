@@ -204,11 +204,11 @@ typedef void (*pbtools_message_init_t)(void *self_p,
                                        struct pbtools_heap_t *heap_p,
                                        void *next_p);
 
-typedef int (*pbtools_message_encode_inner_t)(
+typedef void (*pbtools_message_encode_inner_t)(
     struct pbtools_encoder_t *encoder_p,
     void *self_p);
 
-typedef int (*pbtools_message_decode_inner_t)(
+typedef void (*pbtools_message_decode_inner_t)(
     struct pbtools_decoder_t *decoder_p,
     void *self_p);
 
