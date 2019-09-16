@@ -34,54 +34,57 @@
 #include "pbtools.h"
 
 /**
- * Message benchmarks.proto3.GoogleMessage1SubMessage.
+ * Enum benchmark.Enum.
  */
-struct benchmarks_proto3_google_message1_sub_message_repeated_t {
-    int length;
-    struct benchmarks_proto3_google_message1_sub_message_t **items_pp;
-    struct benchmarks_proto3_google_message1_sub_message_t *head_p;
-    struct benchmarks_proto3_google_message1_sub_message_t *tail_p;
+enum benchmark_enum_e {
+    benchmark_enum_e0_e = 0,
+    benchmark_enum_e1_e = 1,
+    benchmark_enum_e2_e = 2,
+    benchmark_enum_e3_e = 3,
+    benchmark_enum_e5_e = 5
 };
 
-struct benchmarks_proto3_google_message1_sub_message_t {
+/**
+ * Message benchmark.SubMessage.
+ */
+struct benchmark_sub_message_repeated_t {
+    int length;
+    struct benchmark_sub_message_t **items_pp;
+    struct benchmark_sub_message_t *head_p;
+    struct benchmark_sub_message_t *tail_p;
+};
+
+struct benchmark_sub_message_t {
     struct pbtools_message_base_t base;
-    int32_t field1;
-    int32_t field2;
+    uint32_t field1;
+    uint32_t field2;
     int32_t field3;
     char *field15_p;
-    bool field12;
+    struct pbtools_bytes_t field12;
     int64_t field13;
     int64_t field14;
-    int32_t field16;
-    int32_t field19;
-    bool field20;
-    bool field28;
     uint64_t field21;
     int32_t field22;
-    bool field23;
     bool field206;
     uint32_t field203;
     int32_t field204;
     char *field205_p;
     uint64_t field207;
-    uint64_t field300;
+    enum benchmark_enum_e field300;
 };
 
 /**
- * Message benchmarks.proto3.GoogleMessage1.
+ * Message benchmark.Message1.
  */
-struct benchmarks_proto3_google_message1_repeated_t {
+struct benchmark_message1_repeated_t {
     int length;
-    struct benchmarks_proto3_google_message1_t **items_pp;
-    struct benchmarks_proto3_google_message1_t *head_p;
-    struct benchmarks_proto3_google_message1_t *tail_p;
+    struct benchmark_message1_t **items_pp;
+    struct benchmark_message1_t *head_p;
+    struct benchmark_message1_t *tail_p;
 };
 
-struct benchmarks_proto3_google_message1_t {
+struct benchmark_message1_t {
     struct pbtools_message_base_t base;
-    char *field1_p;
-    char *field9_p;
-    char *field18_p;
     bool field80;
     bool field81;
     int32_t field2;
@@ -89,31 +92,14 @@ struct benchmarks_proto3_google_message1_t {
     int32_t field280;
     int32_t field6;
     int64_t field22;
-    char *field4_p;
-    struct pbtools_repeated_uint64_t field5;
+    struct pbtools_repeated_string_t field4;
     bool field59;
-    char *field7_p;
     int32_t field16;
-    int32_t field130;
-    bool field12;
-    bool field17;
-    bool field13;
-    bool field14;
-    int32_t field104;
-    int32_t field100;
-    int32_t field101;
-    char *field102_p;
-    char *field103_p;
-    int32_t field29;
-    bool field30;
-    int32_t field60;
-    int32_t field271;
-    int32_t field272;
     int32_t field150;
     int32_t field23;
     bool field24;
     int32_t field25;
-    struct benchmarks_proto3_google_message1_sub_message_t field15;
+    struct benchmark_sub_message_t field15;
     bool field78;
     int32_t field67;
     int32_t field68;
@@ -123,99 +109,365 @@ struct benchmarks_proto3_google_message1_t {
 };
 
 /**
- * Encoding and decoding of benchmarks.proto3.GoogleMessage1SubMessage.
+ * Message benchmark.Message2.
  */
-struct benchmarks_proto3_google_message1_sub_message_t *
-benchmarks_proto3_google_message1_sub_message_new(
+struct benchmark_message2_repeated_t {
+    int length;
+    struct benchmark_message2_t **items_pp;
+    struct benchmark_message2_t *head_p;
+    struct benchmark_message2_t *tail_p;
+};
+
+struct benchmark_message2_t {
+    struct pbtools_message_base_t base;
+    enum benchmark_enum_e field1;
+    uint64_t field2;
+    int32_t field3;
+    char *field4_p;
+    int32_t field5;
+    bool field6;
+};
+
+/**
+ * Message benchmark.Message3.SubMessage.
+ */
+struct benchmark_message3_sub_message_repeated_t {
+    int length;
+    struct benchmark_message3_sub_message_t **items_pp;
+    struct benchmark_message3_sub_message_t *head_p;
+    struct benchmark_message3_sub_message_t *tail_p;
+};
+
+struct benchmark_message3_sub_message_t {
+    struct pbtools_message_base_t base;
+    int32_t field28;
+    int64_t field2;
+    int32_t field12;
+    char *field19_p;
+    int32_t field11;
+};
+
+/**
+ * Message benchmark.Message3.
+ */
+struct benchmark_message3_repeated_t {
+    int length;
+    struct benchmark_message3_t **items_pp;
+    struct benchmark_message3_t *head_p;
+    struct benchmark_message3_t *tail_p;
+};
+
+struct benchmark_message3_t {
+    struct pbtools_message_base_t base;
+    struct benchmark_message3_sub_message_repeated_t field13;
+};
+
+/**
+ * Enum benchmark.Message.oneof.
+ */
+enum benchmark_message_oneof_choice_e {
+    benchmark_message_oneof_choice_none_e = 0,
+    benchmark_message_oneof_choice_message1_e = 1,
+    benchmark_message_oneof_choice_message2_e = 2,
+    benchmark_message_oneof_choice_message3_e = 3
+};
+
+/**
+ * Oneof benchmark.Message.oneof.
+ */
+struct benchmark_message_oneof_oneof_t {
+    enum benchmark_message_oneof_choice_e choice;
+    union {
+        struct benchmark_message1_t message1;
+        struct benchmark_message2_t message2;
+        struct benchmark_message3_t message3;
+    } value;
+};
+
+/**
+ * Message benchmark.Message.
+ */
+struct benchmark_message_repeated_t {
+    int length;
+    struct benchmark_message_t **items_pp;
+    struct benchmark_message_t *head_p;
+    struct benchmark_message_t *tail_p;
+};
+
+struct benchmark_message_t {
+    struct pbtools_message_base_t base;
+    struct benchmark_message_oneof_oneof_t oneof;
+};
+
+/**
+ * Encoding and decoding of benchmark.SubMessage.
+ */
+struct benchmark_sub_message_t *
+benchmark_sub_message_new(
     void *workspace_p,
     size_t size);
 
-int benchmarks_proto3_google_message1_sub_message_encode(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+int benchmark_sub_message_encode(
+    struct benchmark_sub_message_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-int benchmarks_proto3_google_message1_sub_message_decode(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+int benchmark_sub_message_decode(
+    struct benchmark_sub_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
-int benchmarks_proto3_google_message1_field5_alloc(
-    struct benchmarks_proto3_google_message1_t *self_p,
+int benchmark_message1_field4_alloc(
+    struct benchmark_message1_t *self_p,
     int length);
 
 /**
- * Encoding and decoding of benchmarks.proto3.GoogleMessage1.
+ * Encoding and decoding of benchmark.Message1.
  */
-struct benchmarks_proto3_google_message1_t *
-benchmarks_proto3_google_message1_new(
+struct benchmark_message1_t *
+benchmark_message1_new(
     void *workspace_p,
     size_t size);
 
-int benchmarks_proto3_google_message1_encode(
-    struct benchmarks_proto3_google_message1_t *self_p,
+int benchmark_message1_encode(
+    struct benchmark_message1_t *self_p,
     uint8_t *encoded_p,
     size_t size);
 
-int benchmarks_proto3_google_message1_decode(
-    struct benchmarks_proto3_google_message1_t *self_p,
+int benchmark_message1_decode(
+    struct benchmark_message1_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Encoding and decoding of benchmark.Message2.
+ */
+struct benchmark_message2_t *
+benchmark_message2_new(
+    void *workspace_p,
+    size_t size);
+
+int benchmark_message2_encode(
+    struct benchmark_message2_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int benchmark_message2_decode(
+    struct benchmark_message2_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int benchmark_message3_field13_alloc(
+    struct benchmark_message3_t *self_p,
+    int length);
+
+/**
+ * Encoding and decoding of benchmark.Message3.
+ */
+struct benchmark_message3_t *
+benchmark_message3_new(
+    void *workspace_p,
+    size_t size);
+
+int benchmark_message3_encode(
+    struct benchmark_message3_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int benchmark_message3_decode(
+    struct benchmark_message3_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+void benchmark_message_oneof_message1_init(
+    struct benchmark_message_t *self_p);
+
+void benchmark_message_oneof_message2_init(
+    struct benchmark_message_t *self_p);
+
+void benchmark_message_oneof_message3_init(
+    struct benchmark_message_t *self_p);
+
+/**
+ * Encoding and decoding of benchmark.Message.
+ */
+struct benchmark_message_t *
+benchmark_message_new(
+    void *workspace_p,
+    size_t size);
+
+int benchmark_message_encode(
+    struct benchmark_message_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int benchmark_message_decode(
+    struct benchmark_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
 /* Internal functions. Do not use! */
 
-void benchmarks_proto3_google_message1_sub_message_init(
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p,
+void benchmark_sub_message_init(
+    struct benchmark_sub_message_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *next_p);
+    struct benchmark_sub_message_t *next_p);
 
-void benchmarks_proto3_google_message1_sub_message_encode_inner(
+void benchmark_sub_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
+    struct benchmark_sub_message_t *self_p);
 
-void benchmarks_proto3_google_message1_sub_message_decode_inner(
+void benchmark_sub_message_decode_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_t *self_p);
+    struct benchmark_sub_message_t *self_p);
 
-void benchmarks_proto3_google_message1_sub_message_encode_repeated_inner(
+void benchmark_sub_message_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
+    struct benchmark_sub_message_repeated_t *repeated_p);
 
-void benchmarks_proto3_google_message1_sub_message_decode_repeated_inner(
+void benchmark_sub_message_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
+    struct benchmark_sub_message_repeated_t *repeated_p);
 
-void benchmarks_proto3_google_message1_sub_message_finalize_repeated_inner(
+void benchmark_sub_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct benchmarks_proto3_google_message1_sub_message_repeated_t *repeated_p);
+    struct benchmark_sub_message_repeated_t *repeated_p);
 
-void benchmarks_proto3_google_message1_init(
-    struct benchmarks_proto3_google_message1_t *self_p,
+void benchmark_message1_init(
+    struct benchmark_message1_t *self_p,
     struct pbtools_heap_t *heap_p,
-    struct benchmarks_proto3_google_message1_t *next_p);
+    struct benchmark_message1_t *next_p);
 
-void benchmarks_proto3_google_message1_encode_inner(
+void benchmark_message1_encode_inner(
     struct pbtools_encoder_t *encoder_p,
-    struct benchmarks_proto3_google_message1_t *self_p);
+    struct benchmark_message1_t *self_p);
 
-void benchmarks_proto3_google_message1_decode_inner(
+void benchmark_message1_decode_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct benchmarks_proto3_google_message1_t *self_p);
+    struct benchmark_message1_t *self_p);
 
-void benchmarks_proto3_google_message1_encode_repeated_inner(
+void benchmark_message1_encode_repeated_inner(
     struct pbtools_encoder_t *encoder_p,
     int field_number,
-    struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
+    struct benchmark_message1_repeated_t *repeated_p);
 
-void benchmarks_proto3_google_message1_decode_repeated_inner(
+void benchmark_message1_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
-    struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
+    struct benchmark_message1_repeated_t *repeated_p);
 
-void benchmarks_proto3_google_message1_finalize_repeated_inner(
+void benchmark_message1_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
-    struct benchmarks_proto3_google_message1_repeated_t *repeated_p);
+    struct benchmark_message1_repeated_t *repeated_p);
+
+void benchmark_message2_init(
+    struct benchmark_message2_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct benchmark_message2_t *next_p);
+
+void benchmark_message2_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct benchmark_message2_t *self_p);
+
+void benchmark_message2_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message2_t *self_p);
+
+void benchmark_message2_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmark_message2_repeated_t *repeated_p);
+
+void benchmark_message2_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmark_message2_repeated_t *repeated_p);
+
+void benchmark_message2_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message2_repeated_t *repeated_p);
+
+void benchmark_message3_init(
+    struct benchmark_message3_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct benchmark_message3_t *next_p);
+
+void benchmark_message3_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct benchmark_message3_t *self_p);
+
+void benchmark_message3_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message3_t *self_p);
+
+void benchmark_message3_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmark_message3_repeated_t *repeated_p);
+
+void benchmark_message3_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmark_message3_repeated_t *repeated_p);
+
+void benchmark_message3_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message3_repeated_t *repeated_p);
+
+void benchmark_message3_sub_message_init(
+    struct benchmark_message3_sub_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct benchmark_message3_sub_message_t *next_p);
+
+void benchmark_message3_sub_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct benchmark_message3_sub_message_t *self_p);
+
+void benchmark_message3_sub_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message3_sub_message_t *self_p);
+
+void benchmark_message3_sub_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmark_message3_sub_message_repeated_t *repeated_p);
+
+void benchmark_message3_sub_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmark_message3_sub_message_repeated_t *repeated_p);
+
+void benchmark_message3_sub_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message3_sub_message_repeated_t *repeated_p);
+
+void benchmark_message_init(
+    struct benchmark_message_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct benchmark_message_t *next_p);
+
+void benchmark_message_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct benchmark_message_t *self_p);
+
+void benchmark_message_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message_t *self_p);
+
+void benchmark_message_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct benchmark_message_repeated_t *repeated_p);
+
+void benchmark_message_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct benchmark_message_repeated_t *repeated_p);
+
+void benchmark_message_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct benchmark_message_repeated_t *repeated_p);
 
 #endif

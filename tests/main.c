@@ -2554,84 +2554,189 @@ TEST(message_does_not_fit_in_workspace)
     ASSERT_EQ(message_p, NULL);
 }
 
-TEST(benchmark)
+TEST(benchmark_oneof_message_1)
 {
     int size;
-    struct benchmarks_proto3_google_message1_t *message_p;
-    uint8_t encoded[256];
-    uint8_t workspace[1024];
+    struct benchmark_message_t *message_p;
+    uint8_t encoded[1024];
+    uint8_t workspace[2048];
 
-    message_p = benchmarks_proto3_google_message1_new(&workspace[0],
-                                                      sizeof(workspace));
+    message_p = benchmark_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    message_p->field2 = 8;
-    message_p->field3 = 2066379;
-    message_p->field4_p = "3K+6)#";
-    message_p->field9_p =
-        "10)2uiSuoXL1^)v}icF@>P(j<t#~tz\\lg??S&(<hr7EVs\'l{\'5`Gohc_(="
-        "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z";
-    message_p->field12 = true;
-    message_p->field14 = true;
-    message_p->field15.field1 = 25;
-    message_p->field15.field2 = 36;
-    message_p->field15.field15_p =
-        "\"?6PY4]L2c<}~2;\\TVF_w^[@YfbIc*v/N+Z-oYuaWZr4C;5ib|*s@RC"
-        "BbuvrQ3g(k,N";
-    message_p->field15.field21 = 2813090458170031956;
-    message_p->field15.field22 = 38;
-    message_p->field15.field23 = true;
-    message_p->field18_p = "{=Qwfe~#n{";
-    message_p->field67 = 1591432;
-    message_p->field100 = 31;
+    benchmark_message_oneof_message1_init(message_p);
+    message_p->oneof.value.message1.field80 = true;
+    message_p->oneof.value.message1.field2 = -336;
+    message_p->oneof.value.message1.field6 = 5000;
+    message_p->oneof.value.message1.field22 = 5;
+    benchmark_message1_field4_alloc(&message_p->oneof.value.message1, 3);
+    message_p->oneof.value.message1.field4.items_pp[0]->value_p = "The first string";
+    message_p->oneof.value.message1.field4.items_pp[1]->value_p = "The second string";
+    message_p->oneof.value.message1.field4.items_pp[2]->value_p = "The third string";
+    message_p->oneof.value.message1.field15.field1 = 0;
+    message_p->oneof.value.message1.field15.field3 = 9999;
+    message_p->oneof.value.message1.field15.field15_p = (
+        "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+        "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+        "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+        "Hello! Hello! Hello!");
+    message_p->oneof.value.message1.field15.field12.buf_p = (uint8_t *)(
+        "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+        "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+        "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+        "Hello! Hello! Hello!");
+    message_p->oneof.value.message1.field15.field12.size = 230;
+    message_p->oneof.value.message1.field15.field21 = 449932;
+    message_p->oneof.value.message1.field15.field204 = 1;
+    message_p->oneof.value.message1.field15.field300 = benchmark_enum_e3_e;
 
-    size = benchmarks_proto3_google_message1_encode(message_p,
-                                                    &encoded[0],
-                                                    sizeof(encoded));
-    ASSERT_EQ(size, 221);
+    size = benchmark_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 566);
     ASSERT_MEMORY(
         &encoded[0],
-        "\x4a\x59\x31\x30\x29\x32\x75\x69\x53\x75\x6f\x58\x4c\x31\x5e\x29"
-        "\x76\x7d\x69\x63\x46\x40\x3e\x50\x28\x6a\x3c\x74\x23\x7e\x74\x7a"
-        "\x5c\x6c\x67\x3f\x3f\x53\x26\x28\x3c\x68\x72\x37\x45\x56\x73\x27"
-        "\x6c\x7b\x27\x35\x60\x47\x6f\x68\x63\x5f\x28\x3d\x74\x20\x65\x53"
-        "\x20\x73\x7b\x5f\x49\x3f\x69\x43\x77\x61\x47\x5d\x4c\x27\x2a\x50"
-        "\x75\x35\x28\x26\x77\x5f\x3a\x34\x7b\x7e\x5a\x92\x01\x0a\x7b\x3d"
-        "\x51\x77\x66\x65\x7e\x23\x6e\x7b\x10\x08\x18\xcb\x8f\x7e\x22\x06"
-        "\x33\x4b\x2b\x36\x29\x23\x60\x01\x70\x01\xa0\x06\x1f\x7a\x59\x08"
-        "\x19\x10\x24\x7a\x43\x22\x3f\x36\x50\x59\x34\x5d\x4c\x32\x63\x3c"
-        "\x7d\x7e\x32\x3b\x5c\x54\x56\x46\x5f\x77\x5e\x5b\x40\x59\x66\x62"
-        "\x49\x63\x2a\x76\x2f\x4e\x2b\x5a\x2d\x6f\x59\x75\x61\x57\x5a\x72"
-        "\x34\x43\x3b\x35\x69\x62\x7c\x2a\x73\x40\x52\x43\x42\x62\x75\x76"
-        "\x72\x51\x33\x67\x28\x6b\x2c\x4e\xa9\x01\x54\xff\x43\x08\xde\x1a"
-        "\x0a\x27\xb0\x01\x26\xb8\x01\x01\x98\x04\x88\x91\x61",
-        221);
+        "\x0a\xb3\x04\x80\x05\x01\x10\xb0\xfd\xff\xff\xff\xff\xff\xff\xff"
+        "\x01\x30\x88\x27\xb0\x01\x05\x22\x10\x54\x68\x65\x20\x66\x69\x72"
+        "\x73\x74\x20\x73\x74\x72\x69\x6e\x67\x22\x11\x54\x68\x65\x20\x73"
+        "\x65\x63\x6f\x6e\x64\x20\x73\x74\x72\x69\x6e\x67\x22\x10\x54\x68"
+        "\x65\x20\x74\x68\x69\x72\x64\x20\x73\x74\x72\x69\x6e\x67\x7a\xe5"
+        "\x03\x18\x8f\x4e\x7a\xe6\x01\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65"
+        "\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c"
+        "\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21"
+        "\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48"
+        "\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c"
+        "\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f"
+        "\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20"
+        "\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65"
+        "\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c"
+        "\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21"
+        "\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48"
+        "\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c"
+        "\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f"
+        "\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20"
+        "\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x62\xe6\x01"
+        "\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65"
+        "\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c"
+        "\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21"
+        "\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48"
+        "\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c"
+        "\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f"
+        "\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20"
+        "\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65"
+        "\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c"
+        "\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21"
+        "\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48"
+        "\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c"
+        "\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f"
+        "\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20\x48\x65\x6c\x6c\x6f\x21\x20"
+        "\x48\x65\x6c\x6c\x6f\x21\xa9\x01\x8c\xdd\x06\x00\x00\x00\x00\x00"
+        "\xe0\x0c\x01\xe0\x12\x03",
+        size);
 
-    message_p = benchmarks_proto3_google_message1_new(&workspace[0],
-                                                      sizeof(workspace));
+    message_p = benchmark_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    size = benchmarks_proto3_google_message1_decode(message_p,
-                                                    &encoded[0],
-                                                    221);
-    ASSERT_EQ(size, 221);
-    ASSERT_EQ(message_p->field2, 8);
-    ASSERT_EQ(message_p->field3, 2066379);
-    ASSERT_EQ(message_p->field4_p, "3K+6)#");
-    ASSERT_EQ(message_p->field9_p,
-              "10)2uiSuoXL1^)v}icF@>P(j<t#~tz\\lg??S&(<hr7EVs\'l{\'5`Gohc_(="
-              "t eS s{_I?iCwaG]L\'*Pu5(&w_:4{~Z");
-    ASSERT_EQ(message_p->field12, true);
-    ASSERT_EQ(message_p->field14, true);
-    ASSERT_EQ(message_p->field15.field1, 25);
-    ASSERT_EQ(message_p->field15.field2, 36);
-    ASSERT_EQ(message_p->field15.field15_p,
-              "\"?6PY4]L2c<}~2;\\TVF_w^[@YfbIc*v/N+Z-oYuaWZr4C;5ib|*s@RC"
-              "BbuvrQ3g(k,N");
-    ASSERT_EQ(message_p->field15.field21, 2813090458170031956);
-    ASSERT_EQ(message_p->field15.field22, 38);
-    ASSERT_EQ(message_p->field15.field23, true);
-    ASSERT_EQ(message_p->field18_p, "{=Qwfe~#n{");
-    ASSERT_EQ(message_p->field67, 1591432);
-    ASSERT_EQ(message_p->field100, 31);
+    size = benchmark_message_decode(message_p, &encoded[0], 566);
+    ASSERT_EQ(size, 566);
+
+    ASSERT_EQ(message_p->oneof.choice, benchmark_message_oneof_choice_message1_e);
+    ASSERT_EQ(message_p->oneof.value.message1.field80, true);
+    ASSERT_EQ(message_p->oneof.value.message1.field2, -336);
+    ASSERT_EQ(message_p->oneof.value.message1.field6, 5000);
+    ASSERT_EQ(message_p->oneof.value.message1.field22, 5);
+    ASSERT_EQ(message_p->oneof.value.message1.field4.length, 3);
+    ASSERT_EQ(message_p->oneof.value.message1.field4.items_pp[0]->value_p,
+              "The first string");
+    ASSERT_EQ(message_p->oneof.value.message1.field4.items_pp[1]->value_p,
+              "The second string");
+    ASSERT_EQ(message_p->oneof.value.message1.field4.items_pp[2]->value_p,
+              "The third string");
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field1, 0);
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field3, 9999);
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field15_p,
+              "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+              "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+              "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+              "Hello! Hello! Hello!");
+    ASSERT_MEMORY(message_p->oneof.value.message1.field15.field12.buf_p,
+                  "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+                  "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+                  "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
+                  "Hello! Hello! Hello!",
+                  230);
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field12.size, 230);
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field21, 449932);
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field204, 1);
+    ASSERT_EQ(message_p->oneof.value.message1.field15.field300, benchmark_enum_e3_e);
+}
+
+TEST(benchmark_message_3)
+{
+    int size;
+    struct benchmark_message3_t *message_p;
+    uint8_t encoded[1024];
+    uint8_t workspace[2048];
+
+    message_p = benchmark_message3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+
+    benchmark_message3_field13_alloc(message_p, 5);
+
+    message_p->field13.items_pp[0]->field28 = 7777777;
+    message_p->field13.items_pp[0]->field2 = -3949833;
+    message_p->field13.items_pp[0]->field12 = 1;
+    message_p->field13.items_pp[0]->field19_p = "123";
+
+    message_p->field13.items_pp[2]->field28 = 1;
+    message_p->field13.items_pp[2]->field2 = 2;
+    message_p->field13.items_pp[2]->field12 = 3;
+
+    message_p->field13.items_pp[3]->field28 = 7777777;
+    message_p->field13.items_pp[3]->field2 = -3949833;
+    message_p->field13.items_pp[3]->field12 = 1;
+    message_p->field13.items_pp[3]->field19_p = "123088410dhihf9q8hfqouwhfoquwh";
+
+    message_p->field13.items_pp[4]->field28 = 4493;
+    message_p->field13.items_pp[4]->field2 = 393211234353453ll;
+
+    size = benchmark_message3_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 106);
+    ASSERT_MEMORY(
+        &encoded[0],
+        "\x6a\x19\xe0\x01\xf1\xdb\xda\x03\x10\xf7\xf5\x8e\xfe\xff\xff\xff"
+        "\xff\xff\x01\x60\x01\x9a\x01\x03\x31\x32\x33\x6a\x00\x6a\x07\xe0"
+        "\x01\x01\x10\x02\x60\x03\x6a\x34\xe0\x01\xf1\xdb\xda\x03\x10\xf7"
+        "\xf5\x8e\xfe\xff\xff\xff\xff\xff\x01\x60\x01\x9a\x01\x1e\x31\x32"
+        "\x33\x30\x38\x38\x34\x31\x30\x64\x68\x69\x68\x66\x39\x71\x38\x68"
+        "\x66\x71\x6f\x75\x77\x68\x66\x6f\x71\x75\x77\x68\x6a\x0c\xe0\x01"
+        "\x8d\x23\x10\xad\x82\xc8\xff\xf9\xb3\x59",
+        size);
+
+    message_p = benchmark_message3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = benchmark_message3_decode(message_p, &encoded[0], 106);
+    ASSERT_EQ(size, 106);
+
+    ASSERT_EQ(message_p->field13.length, 5);
+
+    ASSERT_EQ(message_p->field13.items_pp[0]->field28, 7777777);
+    ASSERT_EQ(message_p->field13.items_pp[0]->field2, -3949833);
+    ASSERT_EQ(message_p->field13.items_pp[0]->field12, 1);
+    ASSERT_EQ(message_p->field13.items_pp[0]->field19_p, "123");
+
+    ASSERT_EQ(message_p->field13.items_pp[1]->field28, 0);
+    ASSERT_EQ(message_p->field13.items_pp[1]->field2, 0);
+    ASSERT_EQ(message_p->field13.items_pp[1]->field12, 0);
+
+    ASSERT_EQ(message_p->field13.items_pp[2]->field28, 1);
+    ASSERT_EQ(message_p->field13.items_pp[2]->field2, 2);
+    ASSERT_EQ(message_p->field13.items_pp[2]->field12, 3);
+
+    ASSERT_EQ(message_p->field13.items_pp[3]->field28, 7777777);
+    ASSERT_EQ(message_p->field13.items_pp[3]->field2, -3949833);
+    ASSERT_EQ(message_p->field13.items_pp[3]->field12, 1);
+    ASSERT_EQ(message_p->field13.items_pp[3]->field19_p,
+              "123088410dhihf9q8hfqouwhfoquwh");
+
+    ASSERT_EQ(message_p->field13.items_pp[4]->field28, 4493);
+    ASSERT_EQ(message_p->field13.items_pp[4]->field2, 393211234353453ll);
 }
 
 TEST(no_package)
@@ -2814,7 +2919,8 @@ int main(void)
         skip_fixed_32,
         message,
         message_does_not_fit_in_workspace,
-        benchmark,
+        benchmark_oneof_message_1,
+        benchmark_message_3,
         no_package,
         importing_message,
         importing_message_same_package,

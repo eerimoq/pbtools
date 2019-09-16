@@ -510,21 +510,24 @@ class ParserTest(unittest.TestCase):
     def test_benchmark(self):
         parsed = pbtools.parse_file('tests/files/benchmark.proto')
 
-        self.assertEqual(parsed.package, 'benchmarks.proto3')
-        self.assertEqual(len(parsed.messages), 2)
+        self.assertEqual(parsed.package, 'benchmark')
+        self.assertEqual(len(parsed.messages), 5)
         self.assertEqual(len(parsed.options), 3)
 
-        # Options. ToDo: Value as boolean and strip '"' in strings.
+        # Options.
         option = parsed.options[0]
         self.assertEqual(option.name, 'java_package')
+        self.assertEqual(option.kind, 'string')
         self.assertEqual(option.value, 'com.google.protobuf.benchmarks')
 
         option = parsed.options[1]
         self.assertEqual(option.name, 'optimize_for')
+        self.assertEqual(option.kind, 'ident')
         self.assertEqual(option.value, 'SPEED')
 
         option = parsed.options[2]
         self.assertEqual(option.name, 'cc_enable_arenas')
+        self.assertEqual(option.kind, 'bool')
         self.assertEqual(option.value, True)
 
     def test_no_package(self):

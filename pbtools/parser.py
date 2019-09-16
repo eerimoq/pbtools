@@ -104,7 +104,7 @@ class Parser(textparser.Parser):
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
         constant = choice(Tag('bool', choice('true', 'false')),
-                          Tag('full_ident', full_ident),
+                          Tag('ident', full_ident),
                           Tag('string', 'STRING'))
 
         options = Optional(Sequence('[',
