@@ -54,6 +54,24 @@ def camel_to_snake_case(value):
 
 class Parser(textparser.Parser):
 
+    KEYWORDS = [
+        'syntax',
+        'package',
+        'message',
+        'repeated',
+        'enum',
+        'service',
+        'rpc',
+        'returns',
+        'stream',
+        'import',
+        'oneof',
+        'option',
+        'true',
+        'false',
+        'map'
+    ]
+
     def token_specs(self):
         return [
             ('SKIP',          r'[ \r\n\t]+|//.*?\n'),
@@ -78,41 +96,10 @@ class Parser(textparser.Parser):
         ]
 
     def keywords(self):
-        return set([
-            'syntax',
-            'package',
-            'message',
-            'repeated',
-            'enum',
-            'service',
-            'rpc',
-            'returns',
-            'stream',
-            'import',
-            'oneof',
-            'option',
-            'true',
-            'false',
-            'map'
-        ])
+        return set(self.KEYWORDS)
 
     def grammar(self):
-        ident = choice('IDENT',
-                       'syntax',
-                       'package',
-                       'message',
-                       'repeated',
-                       'enum',
-                       'service',
-                       'rpc',
-                       'returns',
-                       'stream',
-                       'import',
-                       'oneof',
-                       'option',
-                       'true',
-                       'false',
-                       'map')
+        ident = choice('IDENT', *self.KEYWORDS)
         full_ident = choice(ident, 'LIDENT')
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
@@ -120,28 +107,32 @@ class Parser(textparser.Parser):
                           Tag('full_ident', full_ident),
                           Tag('string', 'STRING'))
 
+        options = Optional(Sequence('[',
+                                    OneOrMore(
+                                        Sequence(ident, '=', constant)),
+                                    ']'))
+
+        # Import.
         import_ = Sequence('import',
                            Optional(choice('weak', 'public')),
                            'STRING')
 
+        # Package.
         package = Sequence('package', full_ident, ';')
 
+        # Option.
         option_name = full_ident
         option = Sequence('option', option_name, '=', constant, ';')
 
-        enum_field = Sequence(ident, '=', 'INT',
-                              Optional(Sequence('[',
-                                                OneOrMore(
-                                                    Sequence(ident, '=', constant)),
-                                                ']')),
-                              ';')
+        # Enum.
+        enum_field = Sequence(ident, '=', 'INT', options, ';')
         enum = Sequence('enum',
                         ident,
                         '{',
                         ZeroOrMore(choice(enum_field, empty_statement)),
                         '}')
 
-
+        # Oneof.
         oneof_field = Sequence(message_type, ident, '=', 'INT', ';')
         oneof = Sequence('oneof',
                          ident,
@@ -149,21 +140,13 @@ class Parser(textparser.Parser):
                          ZeroOrMore(choice(oneof_field, empty_statement)),
                          '}')
 
+        # Map.
         map_field = Sequence('map', '<', ident, ',', message_type, '>',
-                             ident, '=', 'INT',
-                             Optional(Sequence('[',
-                                               OneOrMore(
-                                                   Sequence(ident, '=', constant)),
-                                               ']')),
-                             ';')
+                             ident, '=', 'INT', options, ';')
 
+        # Message.
         field = Sequence(Optional('repeated'),
-                         message_type, ident, '=', 'INT',
-                         Optional(Sequence('[',
-                                           OneOrMore(
-                                               Sequence(ident, '=', constant)),
-                                           ']')),
-                         ';')
+                         message_type, ident, '=', 'INT', options, ';')
         message = Forward()
         message <<= Sequence('message',
                              ident,
@@ -176,23 +159,22 @@ class Parser(textparser.Parser):
                                                empty_statement)),
                              '}')
 
+        # Service.
         rpc = Sequence('rpc',
                        ident,
                        '(', Optional('stream'), message_type, ')',
                        'returns',
                        '(', Optional('stream'), message_type, ')',
                        ';')
-
         service = Sequence('service',
                            ident,
                            '{',
                            ZeroOrMore(choice(option, rpc, empty_statement)),
                            '}')
 
+        # Proto3-file.
         top_level_def = choice(message, enum, service)
-
         syntax = Sequence('syntax', '=', 'PROTO3', ';')
-
         proto = Sequence(syntax,
                          ZeroOrMoreDict(choice(import_,
                                                package,
@@ -238,6 +220,7 @@ class Option:
         elif kind == 'bool':
             value = (value == 'true')
 
+        self.kind = kind
         self.value = value
 
 
@@ -319,16 +302,16 @@ class Message:
 
         for item in tokens[3]:
             kind = item[0]
-            inner_namespace = namespace + [self.name]
+            sub_namespace = namespace + [self.name]
 
             if kind == 'field':
                 self.fields.append(MessageField(item[1]))
             elif kind == 'enum':
-                self.enums.append(Enum(item, inner_namespace))
+                self.enums.append(Enum(item, sub_namespace))
             elif kind == 'message':
-                self.messages.append(Message(item, inner_namespace))
+                self.messages.append(Message(item, sub_namespace))
             elif kind == 'oneof':
-                self.oneofs.append(Oneof(item, inner_namespace))
+                self.oneofs.append(Oneof(item, sub_namespace))
             elif kind in ['map', ';']:
                 pass
             else:
@@ -466,8 +449,8 @@ class Proto:
 
             self.resolve_field_type(field)
 
-        for inner_message in message.messages:
-            self.resolve_message_fields_types(inner_message)
+        for sub_message in message.messages:
+            self.resolve_message_fields_types(sub_message)
 
         for oneof in message.oneofs:
             for field in oneof.fields:
@@ -515,8 +498,8 @@ class Proto:
         for field in message.fields:
             self.resolve_field_type_kind(field)
 
-        for inner_message in message.messages:
-            self.resolve_message_fields_type_kinds(inner_message)
+        for sub_message in message.messages:
+            self.resolve_message_fields_type_kinds(sub_message)
 
         for oneof in message.oneofs:
             for field in oneof.fields:
