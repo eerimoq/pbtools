@@ -62,7 +62,7 @@ class CommandLineTest(unittest.TestCase):
                 options = []
 
                 for include_path in spec[1]:
-                    options += ['-i', f'tests/files/{include_path}']
+                    options += ['-I', f'tests/files/{include_path}']
 
                 spec = os.path.basename(spec[0])
             else:
