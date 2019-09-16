@@ -19,6 +19,8 @@ Known limitations:
 
 - The `C` type ``char`` must be 8 bits.
 
+- Only single line comments are currently supported.
+
 Project homepage: https://github.com/eerimoq/pbtools
 
 Documentation: http://pbtools.readthedocs.org/en/latest
