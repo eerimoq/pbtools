@@ -30,7 +30,7 @@ Installation
 
 .. code-block:: python
 
-    pip install pbtools
+   pip install pbtools
 
 Example usage
 =============
