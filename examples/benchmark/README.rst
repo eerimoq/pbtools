@@ -16,6 +16,10 @@ nanopb:
 Repeated, bytes, strings, oneofs and submessages are hard to use,
 otherwise easy.
 
+google:
+
+Easy to use.
+
 Executable size
 ---------------
 

@@ -212,47 +212,6 @@ typedef void (*pbtools_message_decode_inner_t)(
     struct pbtools_decoder_t *decoder_p,
     void *self_p);
 
-struct pbtools_heap_t *pbtools_heap_new(void *buf_p,
-                                        size_t size);
-
-void *pbtools_heap_alloc(struct pbtools_heap_t *self_p,
-                         size_t size);
-
-void *pbtools_decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                 size_t size);
-
-void pbtools_encoder_init(struct pbtools_encoder_t *self_p,
-                          uint8_t *buf_p,
-                          size_t size);
-
-int pbtools_encoder_get_result(struct pbtools_encoder_t *self_p);
-
-void pbtools_encoder_abort(struct pbtools_encoder_t *self_p,
-                           int error);
-
-void pbtools_encoder_put(struct pbtools_encoder_t *self_p,
-                         uint8_t value);
-
-void pbtools_encoder_write(struct pbtools_encoder_t *self_p,
-                           uint8_t *buf_p,
-                           int size);
-
-void pbtools_encoder_write_tag(struct pbtools_encoder_t *self_p,
-                               int field_number,
-                               int wire_type);
-
-void pbtools_encoder_write_varint(struct pbtools_encoder_t *self_p,
-                                  uint64_t value);
-
-void pbtools_encoder_write_tagged_varint(struct pbtools_encoder_t *self_p,
-                                         int field_number,
-                                         int wire_type,
-                                         uint64_t value);
-
-void pbtools_encoder_write_length_delimited(struct pbtools_encoder_t *self_p,
-                                            int field_number,
-                                            uint64_t value);
-
 void pbtools_encoder_write_int32(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  int32_t value);
@@ -392,34 +351,7 @@ void pbtools_encoder_write_repeated_bytes(
     int field_number,
     struct pbtools_repeated_bytes_t *repeated_p);
 
-void pbtools_decoder_init(struct pbtools_decoder_t *self_p,
-                          const uint8_t *buf_p,
-                          size_t size,
-                          struct pbtools_heap_t *heap_p);
-
-int pbtools_decoder_get_result(struct pbtools_decoder_t *self_p);
-
-void pbtools_decoder_abort(struct pbtools_decoder_t *self_p,
-                           int error);
-
 bool pbtools_decoder_available(struct pbtools_decoder_t *self_p);
-
-uint8_t pbtools_decoder_get(struct pbtools_decoder_t *self_p);
-
-void pbtools_decoder_read(struct pbtools_decoder_t *self_p,
-                          uint8_t *buf_p,
-                          size_t size);
-
-uint64_t pbtools_decoder_read_varint(struct pbtools_decoder_t *self_p);
-
-uint64_t pbtools_decoder_read_varint_check_wire_type(
-    struct pbtools_decoder_t *self_p,
-    int wire_type,
-    int expected_wire_type);
-
-uint64_t pbtools_decoder_read_varint_check_wire_type_varint(
-    struct pbtools_decoder_t *self_p,
-    int wire_type);
 
 int pbtools_decoder_read_tag(struct pbtools_decoder_t *self_p,
                              int *wire_type_p);
@@ -669,22 +601,8 @@ void pbtools_decoder_finalize_repeated_bytes(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_bytes_t *repeated_p);
 
-void pbtools_decoder_init_slice(struct pbtools_decoder_t *self_p,
-                                struct pbtools_decoder_t *parent_p,
-                                int size);
-
-void pbtools_decoder_seek(struct pbtools_decoder_t *self_p,
-                          int offset);
-
 void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
                                 int wire_type);
-
-void pbtools_set_string(struct pbtools_bytes_t *self_p,
-                        char *string_p);
-
-char *pbtools_get_string(struct pbtools_bytes_t *self_p);
-
-void pbtools_string_init(struct pbtools_bytes_t *self_p);
 
 void pbtools_bytes_init(struct pbtools_bytes_t *self_p);
 
