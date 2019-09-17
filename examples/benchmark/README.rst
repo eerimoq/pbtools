@@ -4,6 +4,17 @@ About
 Benchmark of protobuf libraries using gcc 8.3.0 on an Intel(R)
 Core(TM) i7-4510U CPU @ 2.00GHz.
 
+Usability
+---------
+
+pbtools:
+
+Easy to use.
+
+nanopb:
+
+Callbacks and oneofs are hard to use, otherwise easy.
+
 Executable size
 ---------------
 
