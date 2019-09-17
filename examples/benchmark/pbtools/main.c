@@ -69,7 +69,8 @@ static void decode(int iterations)
 
     for (i = 0; i < iterations; i++) {
         message_p = benchmark_message_new(&workspace[0], sizeof(workspace));
-        benchmark_message_decode(message_p, &encoded[0], size);
+        size = benchmark_message_decode(message_p, &encoded[0], 566);
+        assert(size == 566);
     }
 }
 
