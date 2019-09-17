@@ -13,7 +13,8 @@ Easy to use.
 
 nanopb:
 
-Callbacks and oneofs are hard to use, otherwise easy.
+Repeated, bytes, strings, oneofs and submessages are hard to use,
+otherwise easy.
 
 Executable size
 ---------------
@@ -24,16 +25,16 @@ pbtools:
 
    $ size main-size
       text    data     bss     dec     hex filename
-     12587     632       8   13227    33ab main-size
+     14076     632       8   14716    397c main-size
    $ size main-size-lto
       text    data     bss     dec     hex filename
-     10268     632       8   10908    2a9c main-size-lto
+     11612     632       8   12252    2fdc main-size-lto
    $ size main-speed
       text    data     bss     dec     hex filename
-     30244     656       8   30908    78bc main-speed
+     32132     656       8   32796    801c main-speed
    $ size main-speed-lto
       text    data     bss     dec     hex filename
-     35052     664       8   35724    8b8c main-speed-lto
+     44908     664       8   45580    b20c main-speed-lto
 
 nanopb:
 
@@ -41,64 +42,64 @@ nanopb:
 
    $ size main-size
       text    data     bss     dec     hex filename
-     16092    1066      32   17190    4326 main-size
+     18036    1066      32   19134    4abe main-size
    $ size main-size-lto
       text    data     bss     dec     hex filename
-     14988    1066      32   16086    3ed6 main-size-lto
+     17002    1050      32   18084    46a4 main-size-lto
    $ size main-speed
       text    data     bss     dec     hex filename
-     24696    1082      32   25810    64d2 main-speed
+     26928    1082      32   28042    6d8a main-speed
    $ size main-speed-lto
       text    data     bss     dec     hex filename
-     28846    1096      32   29974    7516 main-speed-lto
+     36574    1088      32   37694    933e main-speed-lto
 
 Execution time
 --------------
 
-Encoding ``benchmark.Message`` 3,000,000 times for each library and
-optimization combination.
+Encoding ``Message`` and ``Message3`` 2,000,000 times each for each
+library and optimization combination.
 
 +---------+--------------+--------------------+--------+
 | Library | Optimization | Exexution time [s] | Ratio  |
 +=========+==============+====================+========+
-| pbtools |    -O3 -flto |              0.589 |  100 % |
+| pbtools |    -O3 -flto |              0.723 |  100 % |
 +---------+--------------+--------------------+--------+
-| pbtools |          -O3 |              0.883 |  150 % |
+| pbtools |          -O3 |              1.097 |  151 % |
 +---------+--------------+--------------------+--------+
-| pbtools |    -Os -flto |              2.723 |  462 % |
+| pbtools |    -Os -flto |              3.584 |  495 % |
 +---------+--------------+--------------------+--------+
-| pbtools |          -Os |              2.882 |  489 % |
+| pbtools |          -Os |              3.607 |  498 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |    -O3 -flto |              6.783 | 1151 % |
+| nanopb  |    -O3 -flto |              7.453 | 1030 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |          -O3 |              7.743 | 1314 % |
+| nanopb  |          -O3 |              8.480 | 1172 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |    -Os -flto |             12.282 | 2085 % |
+| nanopb  |          -Os |             12.958 | 1792 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |          -Os |             12.594 | 2138 % |
+| nanopb  |    -Os -flto |             13.191 | 1824 % |
 +---------+--------------+--------------------+--------+
 
-Decoding ``benchmark.Message`` 3,000,000 times for each library and
-optimization combination.
+Decoding ``Message`` and ``Message3`` 2,000,000 times each for each
+library and optimization combination.
 
 +---------+--------------+--------------------+--------+
 | Library | Optimization | Exexution time [s] | Ratio  |
 +=========+==============+====================+========+
-| pbtools |    -O3 -flto |              0.510 |  100 % |
+| pbtools |    -O3 -flto |              0.677 |  100 % |
 +---------+--------------+--------------------+--------+
-| pbtools |          -O3 |              0.642 |  125 % |
+| pbtools |          -O3 |              1.002 |  148 % |
 +---------+--------------+--------------------+--------+
-| pbtools |    -Os -flto |              0.890 |  174 % |
+| pbtools |    -Os -flto |              1.270 |  187 % |
 +---------+--------------+--------------------+--------+
-| pbtools |          -Os |              1.221 |  239 % |
+| pbtools |          -Os |              1.857 |  274 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |    -O3 -flto |              4.485 |  879 % |
+| nanopb  |    -O3 -flto |              5.767 |  851 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |          -O3 |              4.720 |  925 % |
+| nanopb  |          -O3 |              6.133 |  905 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |    -Os -flto |              7.494 | 1469 % |
+| nanopb  |          -Os |              9.685 | 1430 % |
 +---------+--------------+--------------------+--------+
-| nanopb  |          -Os |              7.757 | 1520 % |
+| nanopb  |    -Os -flto |             10.035 | 1482 % |
 +---------+--------------+--------------------+--------+
 
 Help
