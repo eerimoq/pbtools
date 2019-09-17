@@ -407,7 +407,17 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/options.proto')
 
         self.assertEqual(parsed.package, 'options')
-        self.assertEqual(len(parsed.messages), 1)
+        self.assertEqual(len(parsed.options), 2)
+
+        option = parsed.options[0]
+        self.assertEqual(option.name, 'foo')
+        self.assertEqual(option.kind, 'bool')
+        self.assertEqual(option.value, True)
+
+        option = parsed.options[1]
+        self.assertEqual(option.name, '(bar).fie')
+        self.assertEqual(option.kind, 'bool')
+        self.assertEqual(option.value, True)
 
     def test_message(self):
         parsed = pbtools.parse_file('tests/files/message.proto')

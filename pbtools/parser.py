@@ -9,6 +9,7 @@ from textparser import choice
 from textparser import Optional
 from textparser import Forward
 from textparser import Tag
+from textparser import DelimitedList
 from .errors import Error
 
 
@@ -75,7 +76,6 @@ class Parser(textparser.Parser):
     def token_specs(self):
         return [
             ('SKIP',          r'[ \r\n\t]+|//.*?\n'),
-            ('LIDENT',        r'[a-zA-Z]\w*(\.[a-zA-Z]\w*)+'),
             ('IDENT',         r'[a-zA-Z]\w*'),
             ('INT',           r'-?(0[xX][a-fA-F0-9]+|[0-9]+)'),
             ('PROTO3',        r'"proto3"'),
@@ -100,7 +100,7 @@ class Parser(textparser.Parser):
 
     def grammar(self):
         ident = choice('IDENT', *self.KEYWORDS)
-        full_ident = choice(ident, 'LIDENT')
+        full_ident = DelimitedList(ident, '.')
         empty_statement = ';'
         message_type = Sequence(Optional('.'), full_ident)
         constant = choice(Tag('bool', choice('true', 'false')),
@@ -121,7 +121,9 @@ class Parser(textparser.Parser):
         package = Sequence('package', full_ident, ';')
 
         # Option.
-        option_name = full_ident
+        option_name = Sequence(choice(ident,
+                                      Sequence('(', full_ident, ')')),
+                               ZeroOrMore(Sequence('.', ident)))
         option = Sequence('option', option_name, '=', constant, ';')
 
         # Enum.
@@ -211,7 +213,13 @@ class Field:
 class Option:
 
     def __init__(self, tokens):
-        self.name = tokens[1]
+        if tokens[1][0][0] == '(':
+            full_ident = '.'.join(tokens[1][0][1])
+            self.name = f'({full_ident})'
+        else:
+            self.name = tokens[1][0]
+
+        self.name += ''.join([f'.{ident}' for _, ident in tokens[1][1]])
 
         kind, value = tokens[3]
 
@@ -219,6 +227,8 @@ class Option:
             value = value[1:-1]
         elif kind == 'bool':
             value = (value == 'true')
+        elif kind == 'ident':
+            value = value[0]
 
         self.kind = kind
         self.value = value
@@ -362,9 +372,9 @@ class Rpc:
 
     def __init__(self, tokens):
         self.name = tokens[1]
-        self.request_type = tokens[4][1]
+        self.request_type = tokens[4][1][0]
         self.request_stream = False
-        self.response_type = tokens[9][1]
+        self.response_type = tokens[9][1][0]
         self.response_stream = False
 
 
@@ -573,12 +583,12 @@ class Proto:
 
 
 def load_message_type(tokens):
-    return tokens[1].split('.')
+    return tokens[1]
 
 
 def load_package(tokens):
     try:
-        return tokens[1]['package'][0][1]
+        return '.'.join(tokens[1]['package'][0][1])
     except KeyError:
         return None
 
