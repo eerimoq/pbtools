@@ -44,7 +44,7 @@ nanopb:
 Execution time
 --------------
 
-Encoding `benchmark.Message` 3,000,000 times for each library and
+Encoding ``benchmark.Message`` 3,000,000 times for each library and
 optimization combination.
 
 +---------+--------------+--------------------+--------+
@@ -67,7 +67,7 @@ optimization combination.
 | nanopb  |          -Os |             12.594 | 2138 % |
 +---------+--------------+--------------------+--------+
 
-Decoding `benchmark.Message` 3,000,000 times for each library and
+Decoding ``benchmark.Message`` 3,000,000 times for each library and
 optimization combination.
 
 +---------+--------------+--------------------+--------+
