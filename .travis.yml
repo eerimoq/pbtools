@@ -13,6 +13,7 @@ script:
   - make -C examples/hello_world
   - make -C examples/address_book
   - make -C examples/oneof
+  - make -C examples/benchmark
 
 after_success:
   - coveralls
