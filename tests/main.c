@@ -2397,6 +2397,75 @@ TEST(repeated_scalar_value_types_string_empty_item)
     ASSERT_EQ(message_p->strings.items_pp[1]->value_p, "1");
 }
 
+TEST(repeated_scalar_value_types_sint32)
+{
+    int size;
+    uint8_t workspace[1024];
+    uint8_t encoded[128];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_scalar_value_types_sint32s_alloc(message_p, 3),
+              0);
+    message_p->sint32s.items_pp[1]->value = -5;
+    message_p->sint32s.items_pp[2]->value = 5;
+
+    size = repeated_message_scalar_value_types_encode(message_p,
+                                                      &encoded[0],
+                                                      sizeof(encoded));
+    ASSERT_EQ(size, 5);
+    ASSERT_MEMORY(&encoded[0], "\x1a\x03\x00\x09\x0a", 5);
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_scalar_value_types_decode(message_p,
+                                                      &encoded[0],
+                                                      5);
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(message_p->sint32s.length, 3);
+    ASSERT_EQ(message_p->sint32s.items_pp[0]->value, 0);
+    ASSERT_EQ(message_p->sint32s.items_pp[1]->value, -5);
+    ASSERT_EQ(message_p->sint32s.items_pp[2]->value, 5);
+}
+
+TEST(repeated_scalar_value_types_sint64)
+{
+    int size;
+    uint8_t workspace[1024];
+    uint8_t encoded[128];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_scalar_value_types_sint64s_alloc(message_p, 3),
+              0);
+    message_p->sint64s.items_pp[0]->value = 555;
+    message_p->sint64s.items_pp[1]->value = 0;
+    message_p->sint64s.items_pp[2]->value = -1;
+
+    size = repeated_message_scalar_value_types_encode(message_p,
+                                                      &encoded[0],
+                                                      sizeof(encoded));
+    ASSERT_EQ(size, 6);
+    ASSERT_MEMORY(&encoded[0], "\x22\x04\xd6\x08\x00\x01", 6);
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_scalar_value_types_decode(message_p,
+                                                      &encoded[0],
+                                                      6);
+    ASSERT_EQ(size, 6);
+    ASSERT_EQ(message_p->sint64s.length, 3);
+    ASSERT_EQ(message_p->sint64s.items_pp[0]->value, 555);
+    ASSERT_EQ(message_p->sint64s.items_pp[1]->value, 0);
+    ASSERT_EQ(message_p->sint64s.items_pp[2]->value, -1);
+}
+
 TEST(scalar_value_types_decode_bad_wire_types)
 {
     int i;
@@ -2970,6 +3039,8 @@ int main(void)
         repeated_scalar_value_types_bool,
         repeated_bar,
         repeated_scalar_value_types_string_empty_item,
+        repeated_scalar_value_types_sint32,
+        repeated_scalar_value_types_sint64,
         scalar_value_types_decode_bad_wire_types,
         scalar_value_types_decode_merge_two_decodes,
         scalar_value_types_decode_merge_one_decode,
