@@ -32,6 +32,34 @@ Installation
 
    pip install pbtools
 
+C source code design
+====================
+
+The C source code is designed with the following in mind:
+
+- Clean and easy to use API.
+
+- No dynamic memory usage.
+
+- Fast encoding and decoding.
+
+- Small memory footprint.
+
+Memory management
+-----------------
+
+A workspace, or arena, is used to allocate memory when encoding and
+decoding messages. For simplicity, allocated memory can't be freed,
+which puts restrictions on how a message can be modified between
+encodings (if one want to do that). Scalar value type fields (ints,
+strings, bytes, etc.) can be modified, but the length of repeated
+fields can't.
+
+Benchmark
+---------
+
+See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
+
 Example usage
 =============
 
@@ -183,3 +211,5 @@ generated files.
 .. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.c
 
 .. _hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world
+
+.. _benchmark: https://github.com/eerimoq/pbtools/blob/master/benchmark
