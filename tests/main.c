@@ -1900,6 +1900,32 @@ TEST(repeated_messages_decode_error_too_big)
     ASSERT_EQ(size, -PBTOOLS_OUT_OF_DATA);
 }
 
+TEST(repeated_bytes_empty_item)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_bytes_alloc(message_p, 2), 0);
+    message_p->bytes.items_pp[1]->size = 1;
+    message_p->bytes.items_pp[1]->buf_p = (uint8_t *)"2";
+    size = repeated_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 5);
+    ASSERT_MEMORY(&encoded[0], "\x22\x00\x22\x01\x32", size);
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(message_p->bytes.length, 2);
+    ASSERT_EQ(message_p->bytes.items_pp[0]->size, 0);
+    ASSERT_EQ(message_p->bytes.items_pp[1]->size, 1);
+    ASSERT_MEMORY(message_p->bytes.items_pp[1]->buf_p, "2", 1);
+}
+
 TEST(repeated_bytes_two_items)
 {
     uint8_t encoded[128];
@@ -2338,6 +2364,37 @@ TEST(repeated_bar)
 
     ASSERT_EQ(message_p->int32s.length, 1);
     ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+}
+
+TEST(repeated_scalar_value_types_string_empty_item)
+{
+    int size;
+    uint8_t workspace[1024];
+    uint8_t encoded[128];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_scalar_value_types_strings_alloc(message_p, 2), 0);
+    message_p->strings.items_pp[1]->value_p = "1";
+
+    size = repeated_message_scalar_value_types_encode(message_p,
+                                                      &encoded[0],
+                                                      sizeof(encoded));
+    ASSERT_EQ(size, 5);
+    ASSERT_MEMORY(&encoded[0], "\x72\x00\x72\x01\x31", 5);
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_scalar_value_types_decode(message_p,
+                                                      &encoded[0],
+                                                      5);
+    ASSERT_EQ(size, 5);
+    ASSERT_EQ(message_p->strings.length, 2);
+    ASSERT_EQ(message_p->strings.items_pp[0]->value_p, "");
+    ASSERT_EQ(message_p->strings.items_pp[1]->value_p, "1");
 }
 
 TEST(scalar_value_types_decode_bad_wire_types)
@@ -2903,6 +2960,7 @@ int main(void)
         repeated_int32s_decode_error_out_of_memory,
         repeated_messages_decode_zero_items,
         repeated_messages_decode_error_too_big,
+        repeated_bytes_empty_item,
         repeated_bytes_two_items,
         repeated_bytes_decode_element_of_zero_bytes,
         repeated_nested,
@@ -2911,6 +2969,7 @@ int main(void)
         repeated_scalar_value_types_empty,
         repeated_scalar_value_types_bool,
         repeated_bar,
+        repeated_scalar_value_types_string_empty_item,
         scalar_value_types_decode_bad_wire_types,
         scalar_value_types_decode_merge_two_decodes,
         scalar_value_types_decode_merge_one_decode,
