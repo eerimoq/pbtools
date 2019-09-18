@@ -1,8 +1,8 @@
 ARGS = \
-	-I../../../pbtools/c_source \
+	-I../../pbtools/c_source \
 	$(CFLAGS) \
 	*.c \
-	../../../pbtools/c_source/pbtools.c
+	../../pbtools/c_source/pbtools.c
 
 all:
 	gcc $(ARGS) $(OPT_SIZE) -o main-size

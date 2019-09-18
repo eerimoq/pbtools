@@ -13,7 +13,7 @@ script:
   - make -C examples/hello_world
   - make -C examples/address_book
   - make -C examples/oneof
-  - make -C examples/benchmark ITERATIONS=1
+  - make -C benchmark ITERATIONS=1
 
 after_success:
   - coveralls
