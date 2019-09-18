@@ -412,7 +412,6 @@ static int alloc_repeated_scalar_value_type(
 {
     int i;
     char *items_p;
-    struct pbtools_scalar_value_type_base_t *item_p;
 
     repeated_p->items_pp = pbtools_heap_alloc(self_p->heap_p,
                                               sizeof(items_p) * (size_t)length);
@@ -810,7 +809,7 @@ void pbtools_encoder_write_repeated_bytes(
     for (i = repeated_p->length - 1; i >= 0; i--) {
         pbtools_encoder_write(self_p,
                               repeated_p->items_pp[i]->buf_p,
-                              repeated_p->items_pp[i]->size);
+                              (int)repeated_p->items_pp[i]->size);
         pbtools_encoder_write_length_delimited(self_p,
                                                field_number,
                                                repeated_p->items_pp[i]->size);
