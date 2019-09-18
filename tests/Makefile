@@ -3,8 +3,7 @@ FUZZER_EXE = main_fuzzer
 FUZZER_C_SOURCES = \
 	main_fuzzer.c \
 	../pbtools/c_source/pbtools.c \
-	files/c_source/address_book.c \
-	files/c_source/scalar_value_types.c
+	files/c_source/fuzzer.c
 FUZZER_CFLAGS = \
 	-fprofile-instr-generate \
 	-fcoverage-mapping \

@@ -249,6 +249,11 @@ ENCODE_REPEATED_MEMBER_FMT = '''\
 encoder_p, {field.field_number}, &self_p->{field.name});
 '''
 
+ENCODE_REPEATED_ENUM_FMT = '''\
+    pbtools_encoder_write_repeated_int32(\
+encoder_p, {field.field_number}, &self_p->{field.name});
+'''
+
 ENCODE_SUB_MESSAGE_MEMBER_FMT = '''\
     pbtools_encoder_sub_message_encode(
         encoder_p,
@@ -347,6 +352,15 @@ decoder_p, wire_type, &self_p->{field.name_snake_case}_p);
 DECODE_REPEATED_MEMBER_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_repeated_{field.full_type_snake_case}(
+                decoder_p,
+                wire_type,
+                &self_p->{field.name_snake_case});
+            break;
+'''
+
+DECODE_REPEATED_ENUM_FMT = '''\
+        case {field.field_number}:
+            pbtools_decoder_read_repeated_int32(
                 decoder_p,
                 wire_type,
                 &self_p->{field.name_snake_case});
@@ -493,6 +507,18 @@ int {message.full_name_snake_case}_{field.name}_alloc(
 }}
 '''
 
+REPEATED_ENUM_DEFINITION_FMT = '''\
+int {message.full_name_snake_case}_{field.name}_alloc(
+    struct {message.full_name_snake_case}_t *self_p,
+    int length)
+{{
+    return (pbtools_alloc_repeated_int32(
+                &self_p->base,
+                length,
+                &self_p->{field.name}));
+}}
+'''
+
 REPEATED_MESSAGE_DEFINITION_ALLOC_FMT = '''\
 int {message.full_name_snake_case}_{field.name}_alloc(
     struct {message.full_name_snake_case}_t *self_p,
@@ -550,6 +576,12 @@ REPEATED_FINALIZER_FMT = '''\
         &self_p->{field.name});\
 '''
 
+REPEATED_ENUM_FINALIZER_FMT = '''\
+    pbtools_decoder_finalize_repeated_int32(
+        decoder_p,
+        &self_p->{field.name});\
+'''
+
 REPEATED_MESSAGE_FINALIZER_FMT = '''\
     {field.full_type_snake_case}_finalize_repeated_inner(
         decoder_p,
@@ -600,7 +632,7 @@ class Generator:
 
         return f'    {type}{name};'
 
-    def generate_repeated_struct_member_fmt(self, type, name):
+    def generate_repeated_struct_member_fmt(self, type, name, type_kind):
         if type in SCALAR_VALUE_TYPES:
             if type in ['sint32', 'sint64']:
                 type = type[1:]
@@ -610,6 +642,8 @@ class Generator:
                 type = f'int{type[6:]}'
 
             type = f'struct pbtools_repeated_{type}_t'
+        elif type_kind == 'enum':
+            type = 'struct pbtools_repeated_int32_t'
         else:
             type = f'struct {type}_repeated_t'
 
@@ -622,7 +656,8 @@ class Generator:
             if field.repeated:
                 member = self.generate_repeated_struct_member_fmt(
                     field.full_type_snake_case,
-                    field.name)
+                    field.name,
+                    field.type_kind)
             else:
                 member = self.generate_struct_member_fmt(
                     field.full_type_snake_case,
@@ -784,7 +819,10 @@ class Generator:
                     fmt = ENCODE_MEMBER_FMT
             else:
                 if field.repeated:
-                    fmt = ENCODE_REPEATED_MESSAGE_MEMBER_FMT
+                    if field.type_kind == 'enum':
+                        fmt = ENCODE_REPEATED_ENUM_FMT
+                    else:
+                        fmt = ENCODE_REPEATED_MESSAGE_MEMBER_FMT
                 elif field.type_kind == 'message':
                     fmt = ENCODE_SUB_MESSAGE_MEMBER_FMT
                 else:
@@ -815,6 +853,8 @@ class Generator:
             if field.repeated:
                 if field.type_kind == 'scalar-value-type':
                     fmt = DECODE_REPEATED_MEMBER_FMT
+                elif field.type_kind == 'enum':
+                    fmt = DECODE_REPEATED_ENUM_FMT
                 else:
                     fmt = DECODE_REPEATED_MESSAGE_MEMBER_FMT
             elif field.type == 'bytes':
@@ -870,6 +910,8 @@ class Generator:
         for field in message.repeated_fields:
             if field.type_kind == 'scalar-value-type':
                 fmt = REPEATED_DEFINITION_FMT
+            elif field.type_kind == 'enum':
+                fmt = REPEATED_ENUM_DEFINITION_FMT
             else:
                 fmt = REPEATED_MESSAGE_DEFINITION_ALLOC_FMT
 
@@ -885,6 +927,8 @@ class Generator:
         for field in message.repeated_fields:
             if field.type_kind == 'scalar-value-type':
                 fmt = REPEATED_FINALIZER_FMT
+            elif field.type_kind == 'enum':
+                fmt = REPEATED_ENUM_FINALIZER_FMT
             else:
                 fmt = REPEATED_MESSAGE_FINALIZER_FMT
 

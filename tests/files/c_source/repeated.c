@@ -672,12 +672,14 @@ void repeated_foo_init(
     self_p->base.heap_p = heap_p;
     self_p->base.next_p = &next_p->base;
     self_p->messages.length = 0;
+    self_p->enums.length = 0;
 }
 
 void repeated_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct repeated_foo_t *self_p)
 {
+    pbtools_encoder_write_repeated_int32(encoder_p, 2, &self_p->enums);
     repeated_message_encode_repeated_inner(
         encoder_p,
         1,
@@ -700,6 +702,13 @@ void repeated_foo_decode_inner(
                 &self_p->messages);
             break;
 
+        case 2:
+            pbtools_decoder_read_repeated_int32(
+                decoder_p,
+                wire_type,
+                &self_p->enums);
+            break;
+
         default:
             pbtools_decoder_skip_field(decoder_p, wire_type);
             break;
@@ -709,6 +718,9 @@ void repeated_foo_decode_inner(
     repeated_message_finalize_repeated_inner(
         decoder_p,
         &self_p->messages);
+    pbtools_decoder_finalize_repeated_int32(
+        decoder_p,
+        &self_p->enums);
 }
 
 int repeated_foo_messages_alloc(
@@ -721,6 +733,16 @@ int repeated_foo_messages_alloc(
                 self_p->base.heap_p,
                 sizeof(struct repeated_message_t),
                 (pbtools_message_init_t)repeated_message_init));
+}
+
+int repeated_foo_enums_alloc(
+    struct repeated_foo_t *self_p,
+    int length)
+{
+    return (pbtools_alloc_repeated_int32(
+                &self_p->base,
+                length,
+                &self_p->enums));
 }
 
 void repeated_foo_encode_repeated_inner(

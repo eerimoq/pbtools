@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package repeated;
 
+enum Enum {
+    A = 0;
+    B = 1;
+}
+
 message Message {
     // Packed by default.
     repeated int32 int32s = 1;
@@ -33,6 +38,7 @@ message MessageScalarValueTypes {
 
 message Foo {
     repeated Message messages = 1;
+    repeated Enum enums = 2;
 }
 
 message Bar {

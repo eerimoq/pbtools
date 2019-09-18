@@ -2466,6 +2466,62 @@ TEST(repeated_scalar_value_types_sint64)
     ASSERT_EQ(message_p->sint64s.items_pp[2]->value, -1);
 }
 
+TEST(repeated_scalar_value_types_int32_two_default_items)
+{
+    int size;
+    uint8_t workspace[1024];
+    uint8_t encoded[128];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_message_scalar_value_types_int32s_alloc(message_p, 2), 0);
+
+    size = repeated_message_scalar_value_types_encode(message_p,
+                                                      &encoded[0],
+                                                      sizeof(encoded));
+    ASSERT_EQ(size, 4);
+    ASSERT_MEMORY(&encoded[0], "\x0a\x02\x00\x00", 4);
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_message_scalar_value_types_decode(message_p,
+                                                      &encoded[0],
+                                                      4);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->int32s.length, 2);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 0);
+    ASSERT_EQ(message_p->int32s.items_pp[1]->value, 0);
+}
+
+TEST(repeated_foo_enums)
+{
+    int size;
+    uint8_t workspace[1024];
+    uint8_t encoded[128];
+    struct repeated_foo_t *message_p;
+
+    message_p = repeated_foo_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    ASSERT_EQ(repeated_foo_enums_alloc(message_p, 2), 0);
+    message_p->enums.items_pp[0]->value = repeated_enum_a_e;
+    message_p->enums.items_pp[1]->value = repeated_enum_b_e;
+
+    size = repeated_foo_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 4);
+    ASSERT_MEMORY(&encoded[0], "\x12\x02\x00\x01", 4);
+
+    message_p = repeated_foo_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = repeated_foo_decode(message_p, &encoded[0], 4);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->enums.length, 2);
+    ASSERT_EQ(message_p->enums.items_pp[0]->value, repeated_enum_a_e);
+    ASSERT_EQ(message_p->enums.items_pp[1]->value, repeated_enum_b_e);
+}
+
 TEST(scalar_value_types_decode_bad_wire_types)
 {
     int i;
@@ -3041,6 +3097,8 @@ int main(void)
         repeated_scalar_value_types_string_empty_item,
         repeated_scalar_value_types_sint32,
         repeated_scalar_value_types_sint64,
+        repeated_scalar_value_types_int32_two_default_items,
+        repeated_foo_enums,
         scalar_value_types_decode_bad_wire_types,
         scalar_value_types_decode_merge_two_decodes,
         scalar_value_types_decode_merge_one_decode,

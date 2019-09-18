@@ -34,10 +34,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "files/c_source/address_book.h"
-#include "files/c_source/scalar_value_types.h"
+#include "files/c_source/fuzzer.h"
 
-static void assert_first_encode(ssize_t res)
+static void assert_res(ssize_t res)
 {
     if (res < 0) {
         printf("First encode failed with %ld.\n", res);
@@ -45,74 +44,31 @@ static void assert_first_encode(ssize_t res)
     }
 }
 
-static void test_address_book(
-    const uint8_t *encoded_p,
-    size_t size)
+static void test(const uint8_t *encoded_p, size_t size)
 {
     ssize_t res;
     ssize_t i;
     uint8_t encoded[4096];
     uint8_t workspace[4096];
-    struct address_book_address_book_t *decoded_p;
-    
-    decoded_p = address_book_address_book_new(&workspace[0],
-                                              sizeof(workspace));
+    struct fuzzer_everything_t *decoded_p;
+
+    decoded_p = fuzzer_everything_new(&workspace[0], sizeof(workspace));
 
     if (decoded_p == NULL) {
         return;
     }
 
-    res = address_book_address_book_decode(
-        decoded_p,
-        encoded_p,
-        size);
+    res = fuzzer_everything_decode(decoded_p, encoded_p, size);
 
     if (res >= 0) {
-        res = address_book_address_book_encode(
-            decoded_p,
-            &encoded[0],
-            sizeof(encoded));
-
-        assert_first_encode(res);
-    }
-}
-
-static void test_scalar_value_types(
-    const uint8_t *encoded_p,
-    size_t size)
-{
-    ssize_t res;
-    ssize_t i;
-    uint8_t encoded[4096];
-    uint8_t workspace[4096];
-    struct scalar_value_types_message_t *decoded_p;
-    
-    decoded_p = scalar_value_types_message_new(&workspace[0],
-                                               sizeof(workspace));
-
-    if (decoded_p == NULL) {
-        return;
-    }
-
-    res = scalar_value_types_message_decode(
-        decoded_p,
-        encoded_p,
-        size);
-
-    if (res >= 0) {
-        res = scalar_value_types_message_encode(
-            decoded_p,
-            &encoded[0],
-            sizeof(encoded));
-
-        assert_first_encode(res);
+        res = fuzzer_everything_encode(decoded_p, &encoded[0], sizeof(encoded));
+        assert_res(res);
     }
 }
 
 int LLVMFuzzerTestOneInput(const uint8_t *data_p, size_t size)
 {
-    test_address_book(data_p, size);
-    test_scalar_value_types(data_p, size);
+    test(data_p, size);
 
     return (0);
 }

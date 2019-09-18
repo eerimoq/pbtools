@@ -1,0 +1,105 @@
+// Protocol Buffers - Google's data interchange format
+// Copyright 2008 Google Inc.  All rights reserved.
+// https://developers.google.com/protocol-buffers/
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//     * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+syntax = "proto3";
+
+package fuzzer;
+
+message Everything {
+    message NestedMessage {
+        oneof oneof_field {
+            int32 a = 1;
+            string b = 10000;
+            float c = 10001;
+        }
+    }
+
+    enum NestedEnum {
+        ZERO = 0;
+        FOO = 1;
+        BAR = 2;
+        BAZ = 3;
+        NEG = -1;  // Intentionally negative.
+    }
+
+    // Singular
+    int32 optional_int32 =  1;
+    int64 optional_int64 =  2;
+    uint32 optional_uint32 =  3;
+    uint64 optional_uint64 =  4;
+    sint32 optional_sint32 =  5;
+    sint64 optional_sint64 =  6;
+    fixed32 optional_fixed32 =  7;
+    fixed64 optional_fixed64 =  8;
+    sfixed32 optional_sfixed32 =  9;
+    sfixed64 optional_sfixed64 = 10;
+    float optional_float = 11;
+    double optional_double = 12;
+    bool optional_bool = 13;
+    string optional_string = 14;
+    bytes optional_bytes = 15;
+    NestedMessage optional_nested_message  = 18;
+    NestedEnum optional_nested_enum = 21;
+    string optional_string_piece = 24 [ctype=STRING_PIECE];
+    string optional_cord = 25 [ctype=CORD];
+
+    NestedMessage optional_lazy_message = 27 [lazy=true];
+
+    // Repeated
+    repeated int32 repeated_int32 = 3100;
+    repeated int64 repeated_int64 = 3200;
+    repeated uint32 repeated_uint32 = 3300;
+    repeated uint64 repeated_uint64 = 3400;
+    repeated sint32 repeated_sint32 = 3500;
+    repeated sint64 repeated_sint64 = 3600;
+    repeated fixed32 repeated_fixed32 = 3700;
+    repeated fixed64 repeated_fixed64 = 3800;
+    repeated sfixed32 repeated_sfixed32 = 3900;
+    repeated sfixed64 repeated_sfixed64 = 4000;
+    repeated float repeated_float = 4100;
+    repeated double repeated_double = 4200;
+    repeated bool repeated_bool = 4300;
+    repeated string repeated_string = 4400;
+    repeated bytes repeated_bytes = 4500;
+    repeated NestedMessage repeated_nested_message = 48;
+    repeated NestedEnum repeated_nested_enum = 51;
+
+    repeated string repeated_string_piece = 54 [ctype=STRING_PIECE];
+    repeated string repeated_cord = 55 [ctype=CORD];
+
+    repeated NestedMessage repeated_lazy_message = 57 [lazy=true];
+
+    oneof oneof_field {
+        uint32 oneof_uint32 = 111;
+        NestedMessage oneof_nested_message = 112;
+        string oneof_string = 113;
+        bytes oneof_bytes = 114;
+    }
+}

@@ -472,7 +472,7 @@ static void read_repeated_scalar_value_type(
     int wire_type,
     struct pbtools_repeated_scalar_value_type_t *repeated_p,
     size_t item_size,
-    repeated_scalar_value_type_read_t member_read)
+    repeated_scalar_value_type_read_t item_read)
 {
     size_t size;
     int pos;
@@ -482,16 +482,23 @@ static void read_repeated_scalar_value_type(
         self_p,
         wire_type,
         PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED);
+
+    if (size > INT_MAX) {
+        decoder_abort(self_p, PBTOOLS_LENGTH_DELIMITED_OVERFLOW);
+
+        return;
+    }
+
     pos = self_p->pos;
 
-    while (self_p->pos < (pos + (int)size)) {
+    while ((size_t)self_p->pos < ((size_t)pos + size)) {
         item_p = decoder_heap_alloc(self_p, item_size);
 
         if (item_p == NULL) {
             return;
         }
 
-        member_read(self_p, item_p);
+        item_read(self_p, item_p);
         item_p->next_p = NULL;
 
         if (repeated_p->length == 0) {

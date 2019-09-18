@@ -34,6 +34,14 @@
 #include "pbtools.h"
 
 /**
+ * Enum repeated.Enum.
+ */
+enum repeated_enum_e {
+    repeated_enum_a_e = 0,
+    repeated_enum_b_e = 1
+};
+
+/**
  * Message repeated.Message.
  */
 struct repeated_message_repeated_t {
@@ -93,6 +101,7 @@ struct repeated_foo_repeated_t {
 struct repeated_foo_t {
     struct pbtools_message_base_t base;
     struct repeated_message_repeated_t messages;
+    struct pbtools_repeated_int32_t enums;
 };
 
 /**
@@ -239,6 +248,10 @@ int repeated_message_scalar_value_types_decode(
     size_t size);
 
 int repeated_foo_messages_alloc(
+    struct repeated_foo_t *self_p,
+    int length);
+
+int repeated_foo_enums_alloc(
     struct repeated_foo_t *self_p,
     int length);
 
