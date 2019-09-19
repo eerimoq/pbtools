@@ -1871,6 +1871,130 @@ TEST(repeated_int32s_decode_error_out_of_memory)
     ASSERT_EQ(size, -PBTOOLS_OUT_OF_MEMORY);
 }
 
+TEST(repeated_int32s_decode_packed)
+{
+    int size;
+    uint8_t workspace[512];
+    struct repeated_message_t *message_p;
+
+    message_p = repeated_message_new(&workspace[0], sizeof(workspace));
+    size = repeated_message_decode(
+        message_p,
+        (uint8_t *)"\x0a\x07\x01\x02\x03\x04\x05\x06\x07",
+        9);
+    ASSERT_EQ(size, 9);
+    ASSERT_EQ(message_p->int32s.length, 7);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[1]->value, 2);
+    ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
+    ASSERT_EQ(message_p->int32s.items_pp[3]->value, 4);
+    ASSERT_EQ(message_p->int32s.items_pp[4]->value, 5);
+    ASSERT_EQ(message_p->int32s.items_pp[5]->value, 6);
+    ASSERT_EQ(message_p->int32s.items_pp[6]->value, 7);
+}
+
+TEST(repeated_int32s_decode_not_packed)
+{
+    int size;
+    uint8_t workspace[1024];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    size = repeated_message_scalar_value_types_decode(
+        message_p,
+        (uint8_t *)"\x08\x01\x08\x02\x08\x03\x08\x04\x08\x05\x08\x06\x08\x07",
+        14);
+    ASSERT_EQ(size, 14);
+    ASSERT_EQ(message_p->int32s.length, 7);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[1]->value, 2);
+    ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
+    ASSERT_EQ(message_p->int32s.items_pp[3]->value, 4);
+    ASSERT_EQ(message_p->int32s.items_pp[4]->value, 5);
+    ASSERT_EQ(message_p->int32s.items_pp[5]->value, 6);
+    ASSERT_EQ(message_p->int32s.items_pp[6]->value, 7);
+}
+
+TEST(repeated_int32s_decode_mixed_packed_and_not_packed)
+{
+    int size;
+    uint8_t workspace[1024];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    size = repeated_message_scalar_value_types_decode(
+        message_p,
+        (uint8_t *)"\x08\x01\x0a\x05\x02\x03\x04\x05\x06\x08\x07",
+        11);
+    ASSERT_EQ(size, 11);
+    ASSERT_EQ(message_p->int32s.length, 7);
+    ASSERT_EQ(message_p->int32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->int32s.items_pp[1]->value, 2);
+    ASSERT_EQ(message_p->int32s.items_pp[2]->value, 3);
+    ASSERT_EQ(message_p->int32s.items_pp[3]->value, 4);
+    ASSERT_EQ(message_p->int32s.items_pp[4]->value, 5);
+    ASSERT_EQ(message_p->int32s.items_pp[5]->value, 6);
+    ASSERT_EQ(message_p->int32s.items_pp[6]->value, 7);
+}
+
+TEST(repeated_fixed32_decode_mixed_packed_and_not_packed)
+{
+    int size;
+    uint8_t workspace[1024];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    size = repeated_message_scalar_value_types_decode(
+        message_p,
+        (uint8_t *)
+        "\x3d\x01\x00\x00\x00\x3a\x14\x02\x00\x00"
+        "\x00\x03\x00\x00\x00\x04\x00\x00\x00\x05"
+        "\x00\x00\x00\x06\x00\x00\x00\x3d\x07\x00"
+        "\x00\x00",
+        32);
+    ASSERT_EQ(size, 32);
+    ASSERT_EQ(message_p->fixed32s.length, 7);
+    ASSERT_EQ(message_p->fixed32s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->fixed32s.items_pp[1]->value, 2);
+    ASSERT_EQ(message_p->fixed32s.items_pp[2]->value, 3);
+    ASSERT_EQ(message_p->fixed32s.items_pp[3]->value, 4);
+    ASSERT_EQ(message_p->fixed32s.items_pp[4]->value, 5);
+    ASSERT_EQ(message_p->fixed32s.items_pp[5]->value, 6);
+    ASSERT_EQ(message_p->fixed32s.items_pp[6]->value, 7);
+}
+
+TEST(repeated_fixed64_decode_mixed_packed_and_not_packed)
+{
+    int size;
+    uint8_t workspace[1024];
+    struct repeated_message_scalar_value_types_t *message_p;
+
+    message_p = repeated_message_scalar_value_types_new(&workspace[0],
+                                                        sizeof(workspace));
+    size = repeated_message_scalar_value_types_decode(
+        message_p,
+        (uint8_t *)
+        "\x41\x01\x00\x00\x00\x00\x00\x00\x00\x42"
+        "\x28\x02\x00\x00\x00\x00\x00\x00\x00\x03"
+        "\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00"
+        "\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00"
+        "\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00"
+        "\x00\x41\x07\x00\x00\x00\x00\x00\x00\x00",
+        60);
+    ASSERT_EQ(size, 60);
+    ASSERT_EQ(message_p->fixed64s.length, 7);
+    ASSERT_EQ(message_p->fixed64s.items_pp[0]->value, 1);
+    ASSERT_EQ(message_p->fixed64s.items_pp[1]->value, 2);
+    ASSERT_EQ(message_p->fixed64s.items_pp[2]->value, 3);
+    ASSERT_EQ(message_p->fixed64s.items_pp[3]->value, 4);
+    ASSERT_EQ(message_p->fixed64s.items_pp[4]->value, 5);
+    ASSERT_EQ(message_p->fixed64s.items_pp[5]->value, 6);
+    ASSERT_EQ(message_p->fixed64s.items_pp[6]->value, 7);
+}
+
 TEST(repeated_messages_decode_zero_items)
 {
     int size;
@@ -3095,6 +3219,11 @@ int main(void)
         repeated_int32s_decode_segments,
         repeated_int32s_decode_zero_items,
         repeated_int32s_decode_error_out_of_memory,
+        repeated_int32s_decode_packed,
+        repeated_int32s_decode_not_packed,
+        repeated_int32s_decode_mixed_packed_and_not_packed,
+        repeated_fixed32_decode_mixed_packed_and_not_packed,
+        repeated_fixed64_decode_mixed_packed_and_not_packed,
         repeated_messages_decode_zero_items,
         repeated_messages_decode_error_too_big,
         repeated_bytes_empty_item,

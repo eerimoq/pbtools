@@ -41,7 +41,7 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/repeated.proto')
 
         self.assertEqual(parsed.package, 'repeated')
-        self.assertEqual(len(parsed.messages), 4)
+        self.assertEqual(len(parsed.messages), 6)
 
         # Message.
         message = parsed.messages[0]

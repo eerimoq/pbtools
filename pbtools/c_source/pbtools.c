@@ -476,7 +476,20 @@ static void read_repeated_scalar_value_type(
     int pos;
     struct pbtools_scalar_value_type_base_t *item_p;
 
-    size = (size_t)decoder_read_length_delimited(self_p, wire_type);
+    /* Accept both packed and not packed. */
+    switch (wire_type) {
+
+    case PBTOOLS_WIRE_TYPE_VARINT:
+    case PBTOOLS_WIRE_TYPE_FIXED_32:
+    case PBTOOLS_WIRE_TYPE_FIXED_64:
+        size = 1;
+        break;
+
+    default:
+        size = (size_t)decoder_read_length_delimited(self_p, wire_type);
+        break;
+    }
+
     pos = self_p->pos;
 
     while ((size_t)self_p->pos < ((size_t)pos + size)) {

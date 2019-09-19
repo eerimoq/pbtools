@@ -89,6 +89,64 @@ struct repeated_message_scalar_value_types_t {
 };
 
 /**
+ * Message repeated.MessageScalarValueTypesPacked.
+ */
+struct repeated_message_scalar_value_types_packed_repeated_t {
+    int length;
+    struct repeated_message_scalar_value_types_packed_t **items_pp;
+    struct repeated_message_scalar_value_types_packed_t *head_p;
+    struct repeated_message_scalar_value_types_packed_t *tail_p;
+};
+
+struct repeated_message_scalar_value_types_packed_t {
+    struct pbtools_message_base_t base;
+    struct pbtools_repeated_int32_t int32s;
+    struct pbtools_repeated_int64_t int64s;
+    struct pbtools_repeated_int32_t sint32s;
+    struct pbtools_repeated_int64_t sint64s;
+    struct pbtools_repeated_uint32_t uint32s;
+    struct pbtools_repeated_uint64_t uint64s;
+    struct pbtools_repeated_uint32_t fixed32s;
+    struct pbtools_repeated_uint64_t fixed64s;
+    struct pbtools_repeated_int32_t sfixed32s;
+    struct pbtools_repeated_int64_t sfixed64s;
+    struct pbtools_repeated_float_t floats;
+    struct pbtools_repeated_double_t doubles;
+    struct pbtools_repeated_bool_t bools;
+    struct pbtools_repeated_string_t strings;
+    struct pbtools_repeated_bytes_t bytess;
+};
+
+/**
+ * Message repeated.MessageScalarValueTypesNotPacked.
+ */
+struct repeated_message_scalar_value_types_not_packed_repeated_t {
+    int length;
+    struct repeated_message_scalar_value_types_not_packed_t **items_pp;
+    struct repeated_message_scalar_value_types_not_packed_t *head_p;
+    struct repeated_message_scalar_value_types_not_packed_t *tail_p;
+};
+
+struct repeated_message_scalar_value_types_not_packed_t {
+    struct pbtools_message_base_t base;
+    struct pbtools_repeated_int32_t int32s;
+    struct pbtools_repeated_int64_t int64s;
+    struct pbtools_repeated_int32_t sint32s;
+    struct pbtools_repeated_int64_t sint64s;
+    struct pbtools_repeated_uint32_t uint32s;
+    struct pbtools_repeated_uint64_t uint64s;
+    struct pbtools_repeated_uint32_t fixed32s;
+    struct pbtools_repeated_uint64_t fixed64s;
+    struct pbtools_repeated_int32_t sfixed32s;
+    struct pbtools_repeated_int64_t sfixed64s;
+    struct pbtools_repeated_float_t floats;
+    struct pbtools_repeated_double_t doubles;
+    struct pbtools_repeated_bool_t bools;
+    struct pbtools_repeated_string_t strings;
+    struct pbtools_repeated_bytes_t bytess;
+};
+
+/**
  * Message repeated.Foo.
  */
 struct repeated_foo_repeated_t {
@@ -247,6 +305,162 @@ int repeated_message_scalar_value_types_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+int repeated_message_scalar_value_types_packed_int32s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_int64s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_sint32s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_sint64s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_uint32s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_uint64s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_fixed32s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_fixed64s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_sfixed32s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_sfixed64s_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_floats_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_doubles_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_bools_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_strings_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_packed_bytess_alloc(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    int length);
+
+/**
+ * Encoding and decoding of repeated.MessageScalarValueTypesPacked.
+ */
+struct repeated_message_scalar_value_types_packed_t *
+repeated_message_scalar_value_types_packed_new(
+    void *workspace_p,
+    size_t size);
+
+int repeated_message_scalar_value_types_packed_encode(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int repeated_message_scalar_value_types_packed_decode(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+int repeated_message_scalar_value_types_not_packed_int32s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_int64s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_sint32s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_sint64s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_uint32s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_uint64s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_fixed32s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_fixed64s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_sfixed32s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_sfixed64s_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_floats_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_doubles_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_bools_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_strings_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+int repeated_message_scalar_value_types_not_packed_bytess_alloc(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    int length);
+
+/**
+ * Encoding and decoding of repeated.MessageScalarValueTypesNotPacked.
+ */
+struct repeated_message_scalar_value_types_not_packed_t *
+repeated_message_scalar_value_types_not_packed_new(
+    void *workspace_p,
+    size_t size);
+
+int repeated_message_scalar_value_types_not_packed_encode(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int repeated_message_scalar_value_types_not_packed_decode(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
 int repeated_foo_messages_alloc(
     struct repeated_foo_t *self_p,
     int length);
@@ -358,6 +572,60 @@ void repeated_message_scalar_value_types_decode_repeated_inner(
 void repeated_message_scalar_value_types_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_scalar_value_types_repeated_t *repeated_p);
+
+void repeated_message_scalar_value_types_packed_init(
+    struct repeated_message_scalar_value_types_packed_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct repeated_message_scalar_value_types_packed_t *next_p);
+
+void repeated_message_scalar_value_types_packed_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct repeated_message_scalar_value_types_packed_t *self_p);
+
+void repeated_message_scalar_value_types_packed_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct repeated_message_scalar_value_types_packed_t *self_p);
+
+void repeated_message_scalar_value_types_packed_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
+
+void repeated_message_scalar_value_types_packed_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
+
+void repeated_message_scalar_value_types_packed_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
+
+void repeated_message_scalar_value_types_not_packed_init(
+    struct repeated_message_scalar_value_types_not_packed_t *self_p,
+    struct pbtools_heap_t *heap_p,
+    struct repeated_message_scalar_value_types_not_packed_t *next_p);
+
+void repeated_message_scalar_value_types_not_packed_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct repeated_message_scalar_value_types_not_packed_t *self_p);
+
+void repeated_message_scalar_value_types_not_packed_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct repeated_message_scalar_value_types_not_packed_t *self_p);
+
+void repeated_message_scalar_value_types_not_packed_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
+
+void repeated_message_scalar_value_types_not_packed_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    int wire_type,
+    struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
+
+void repeated_message_scalar_value_types_not_packed_finalize_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
 
 void repeated_foo_init(
     struct repeated_foo_t *self_p,
