@@ -67,11 +67,6 @@ typedef void (*scalar_value_type_init_t)(void *self_p);
 static void decoder_abort(struct pbtools_decoder_t *self_p,
                           int error);
 
-static uint64_t decoder_read_varint_check_wire_type(
-    struct pbtools_decoder_t *self_p,
-    int wire_type,
-    int expected_wire_type);
-
 static uint64_t decoder_read_length_delimited(struct pbtools_decoder_t *self_p,
                                               int wire_type);
 
