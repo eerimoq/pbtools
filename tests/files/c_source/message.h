@@ -122,7 +122,7 @@ struct message_message_t {
  * Enum message.UnusedInnerTypes.UnusedEnum.
  */
 enum message_unused_inner_types_unused_enum_e {
-    message_unused_inner_types_unused_enum_a_e = 1
+    message_unused_inner_types_unused_enum_a_e = 0
 };
 
 /**

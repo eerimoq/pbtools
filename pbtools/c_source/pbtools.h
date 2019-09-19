@@ -40,8 +40,6 @@
 #define PBTOOLS_VARINT_OVERFLOW                                 6
 #define PBTOOLS_SEEK_OVERFLOW                                   7
 #define PBTOOLS_LENGTH_DELIMITED_OVERFLOW                       8
-#define PBTOOLS_STRING_TOO_LONG                                 9
-#define PBTOOLS_BYTES_TOO_LONG                                 10
 
 /* Wire types. */
 #define PBTOOLS_WIRE_TYPE_VARINT            0

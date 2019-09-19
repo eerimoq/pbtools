@@ -28,7 +28,7 @@ message Message {
 
 message UnusedInnerTypes {
     enum UnusedEnum {
-        A = 1;
+        A = 0;
     }
     message UnusedMessage {
         bool v1 = 1;

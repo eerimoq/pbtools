@@ -1396,7 +1396,7 @@ TEST(address_book_decode_issue_6)
         address_book_p,
         (uint8_t *)"\x0a\x07\x4a\xff\xff\xff\xff\x07\xff\x0e",
         10);
-    ASSERT_EQ(size, -PBTOOLS_SEEK_OVERFLOW);
+    ASSERT_EQ(size, -PBTOOLS_LENGTH_DELIMITED_OVERFLOW);
 }
 
 TEST(address_book_decode_issue_7)
@@ -1445,7 +1445,7 @@ TEST(address_book_decode_issue_8)
         "\xff\xff\xff\x00\x27\x0a\x00\x22\x01\x11"
         "\xbd\x9d\x8a",
         73);
-    ASSERT_EQ(size, -PBTOOLS_STRING_TOO_LONG);
+    ASSERT_EQ(size, -PBTOOLS_LENGTH_DELIMITED_OVERFLOW);
 }
 
 TEST(tags_1)
@@ -2736,6 +2736,18 @@ TEST(message_does_not_fit_in_workspace)
     ASSERT_EQ(message_p, NULL);
 }
 
+TEST(message_decode_error_bad_sub_message_wire_type)
+{
+    int size;
+    struct message_message_t *message_p;
+    uint8_t workspace[1024];
+
+    message_p = message_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = message_message_decode(message_p, "\x81\x34\x03\xe8\x14\x01", 6);
+    ASSERT_EQ(size, -PBTOOLS_BAD_WIRE_TYPE);
+}
+
 TEST(benchmark_oneof_message_1)
 {
     int size;
@@ -3107,6 +3119,7 @@ int main(void)
         skip_fixed_32,
         message,
         message_does_not_fit_in_workspace,
+        message_decode_error_bad_sub_message_wire_type,
         benchmark_oneof_message_1,
         benchmark_message_3,
         no_package,
