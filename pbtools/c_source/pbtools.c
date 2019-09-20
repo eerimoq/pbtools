@@ -24,11 +24,7 @@
  * SOFTWARE.
  */
 
-#include <stdint.h>
-#include <string.h>
-#include <stdio.h>
 #include <limits.h>
-#include <stdlib.h>
 #include "pbtools.h"
 
 #define ALLOC_REPEATED_SCALAR_VALUE_TYPE(type)                          \
