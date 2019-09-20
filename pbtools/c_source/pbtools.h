@@ -31,6 +31,13 @@
 #include <stdbool.h>
 #include <string.h>
 
+/* Compile time configuration. */
+
+/* Support for float and double if 1. */
+#ifndef PBTOOLS_CONFIG_FLOAT
+#    define PBTOOLS_CONFIG_FLOAT                                1
+#endif
+
 /* Errors. */
 #define PBTOOLS_BAD_WIRE_TYPE                                   1
 #define PBTOOLS_OUT_OF_DATA                                     2
@@ -42,10 +49,10 @@
 #define PBTOOLS_LENGTH_DELIMITED_OVERFLOW                       8
 
 /* Wire types. */
-#define PBTOOLS_WIRE_TYPE_VARINT            0
-#define PBTOOLS_WIRE_TYPE_FIXED_64          1
-#define PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED  2
-#define PBTOOLS_WIRE_TYPE_FIXED_32          5
+#define PBTOOLS_WIRE_TYPE_VARINT                                0
+#define PBTOOLS_WIRE_TYPE_FIXED_64                              1
+#define PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED                      2
+#define PBTOOLS_WIRE_TYPE_FIXED_32                              5
 
 struct pbtools_heap_t {
     char *buf_p;
@@ -86,6 +93,8 @@ struct pbtools_uint64_t {
     uint64_t value;
 };
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 struct pbtools_float_t {
     struct pbtools_float_t *next_p;
     float value;
@@ -95,6 +104,8 @@ struct pbtools_double_t {
     struct pbtools_double_t *next_p;
     double value;
 };
+
+#endif
 
 struct pbtools_bool_t {
     struct pbtools_bool_t *next_p;
@@ -149,6 +160,8 @@ struct pbtools_repeated_uint64_t {
     struct pbtools_uint64_t *tail_p;
 };
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 struct pbtools_repeated_float_t {
     int length;
     struct pbtools_float_t **items_pp;
@@ -162,6 +175,8 @@ struct pbtools_repeated_double_t {
     struct pbtools_double_t *head_p;
     struct pbtools_double_t *tail_p;
 };
+
+#endif
 
 struct pbtools_repeated_bool_t {
     int length;
@@ -250,6 +265,8 @@ void pbtools_encoder_write_sfixed64(struct pbtools_encoder_t *self_p,
                                     int field_number,
                                     int64_t value);
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 void pbtools_encoder_write_float(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  float value);
@@ -257,6 +274,8 @@ void pbtools_encoder_write_float(struct pbtools_encoder_t *self_p,
 void pbtools_encoder_write_double(struct pbtools_encoder_t *self_p,
                                   int field_number,
                                   double value);
+
+#endif
 
 void pbtools_encoder_write_bool(struct pbtools_encoder_t *self_p,
                                 int field_number,
@@ -324,6 +343,8 @@ void pbtools_encoder_write_repeated_sfixed64(
     int field_number,
     struct pbtools_repeated_int64_t *repeated_p);
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 void pbtools_encoder_write_repeated_float(
     struct pbtools_encoder_t *self_p,
     int field_number,
@@ -333,6 +354,8 @@ void pbtools_encoder_write_repeated_double(
     struct pbtools_encoder_t *self_p,
     int field_number,
     struct pbtools_repeated_double_t *repeated_p);
+
+#endif
 
 void pbtools_encoder_write_repeated_bool(
     struct pbtools_encoder_t *self_p,
@@ -384,11 +407,15 @@ int32_t pbtools_decoder_read_sfixed32(struct pbtools_decoder_t *self_p,
 int64_t pbtools_decoder_read_sfixed64(struct pbtools_decoder_t *self_p,
                                       int wire_type);
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 float pbtools_decoder_read_float(struct pbtools_decoder_t *self_p,
                                  int wire_type);
 
 double pbtools_decoder_read_double(struct pbtools_decoder_t *self_p,
                                    int wire_type);
+
+#endif
 
 bool pbtools_decoder_read_bool(struct pbtools_decoder_t *self_p,
                                int wire_type);
@@ -534,6 +561,8 @@ void pbtools_decoder_finalize_repeated_sfixed64(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_int64_t *repeated_p);
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 int pbtools_alloc_repeated_float(struct pbtools_message_base_t *self_p,
                                  int length,
                                  struct pbtools_repeated_float_t *repeated_p);
@@ -559,6 +588,8 @@ void pbtools_decoder_read_repeated_double(
 void pbtools_decoder_finalize_repeated_double(
     struct pbtools_decoder_t *self_p,
     struct pbtools_repeated_double_t *repeated_p);
+
+#endif
 
 int pbtools_alloc_repeated_bool(struct pbtools_message_base_t *self_p,
                                 int length,

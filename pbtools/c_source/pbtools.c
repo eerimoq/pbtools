@@ -361,6 +361,8 @@ void pbtools_encoder_write_sfixed64(struct pbtools_encoder_t *self_p,
     pbtools_encoder_write_fixed64(self_p, field_number, (uint64_t)value);
 }
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 void pbtools_encoder_write_float(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  float value)
@@ -380,6 +382,8 @@ void pbtools_encoder_write_double(struct pbtools_encoder_t *self_p,
     memcpy(&data, &value, sizeof(data));
     pbtools_encoder_write_fixed64(self_p, field_number, data);
 }
+
+#endif
 
 void pbtools_encoder_write_bool(struct pbtools_encoder_t *self_p,
                                 int field_number,
@@ -703,6 +707,8 @@ void pbtools_encoder_write_repeated_sfixed64(
     WRITE_REPEATED_SCALAR_VALUE_TYPE(sfixed64);
 }
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 static void write_repeated_float_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
@@ -738,6 +744,8 @@ void pbtools_encoder_write_repeated_double(
 {
     WRITE_REPEATED_SCALAR_VALUE_TYPE(double);
 }
+
+#endif
 
 static void write_repeated_bool_item(
     struct pbtools_encoder_t *self_p,
@@ -778,6 +786,8 @@ static void pbtools_uint64_init(struct pbtools_uint64_t *self_p)
     self_p->value = 0;
 }
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 static void pbtools_float_init(struct pbtools_float_t *self_p)
 {
     self_p->value = 0;
@@ -787,6 +797,8 @@ static void pbtools_double_init(struct pbtools_double_t *self_p)
 {
     self_p->value = 0;
 }
+
+#endif
 
 static void pbtools_bool_init(struct pbtools_bool_t *self_p)
 {
@@ -1093,6 +1105,8 @@ int64_t pbtools_decoder_read_sfixed64(struct pbtools_decoder_t *self_p,
     return ((int64_t)pbtools_decoder_read_fixed64(self_p, wire_type));
 }
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 float pbtools_decoder_read_float(struct pbtools_decoder_t *self_p,
                                  int wire_type)
 {
@@ -1116,6 +1130,8 @@ double pbtools_decoder_read_double(struct pbtools_decoder_t *self_p,
 
     return (value);
 }
+
+#endif
 
 bool pbtools_decoder_read_bool(struct pbtools_decoder_t *self_p,
                                int wire_type)
@@ -1505,6 +1521,8 @@ void pbtools_decoder_finalize_repeated_sfixed64(
     pbtools_decoder_finalize_repeated_int64(self_p, repeated_p);
 }
 
+#if PBTOOLS_CONFIG_FLOAT == 1
+
 int pbtools_alloc_repeated_float(struct pbtools_message_base_t *self_p,
                                  int length,
                                  struct pbtools_repeated_float_t *repeated_p)
@@ -1572,6 +1590,8 @@ void pbtools_decoder_finalize_repeated_double(
         self_p,
         (struct pbtools_repeated_scalar_value_type_t *)repeated_p);
 }
+
+#endif
 
 int pbtools_alloc_repeated_bool(struct pbtools_message_base_t *self_p,
                                 int length,

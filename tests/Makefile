@@ -35,6 +35,12 @@ CFLAGS ?= \
 	-Wpedantic
 
 all:
+	gcc \
+	    -D PBTOOLS_CONFIG_FLOAT=0 \
+	    -I ../pbtools/c_source \
+	    -c \
+	    ../pbtools/c_source/pbtools.c \
+	    -o no-float.o
 	gcc -O2 -g narwhal.c -c -o narwhal.o
 	gcc -O2 -g -I../pbtools/c_source main.c -c -o main.o
 	gcc \
