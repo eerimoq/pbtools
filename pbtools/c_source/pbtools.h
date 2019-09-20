@@ -53,27 +53,17 @@ struct pbtools_heap_t {
     int pos;
 };
 
-struct pbtools_message_base_t {
+struct pbtools_encoder_t {
+    uint8_t *buf_p;
+    int size;
+    int pos;
+};
+
+struct pbtools_decoder_t {
+    const uint8_t *buf_p;
+    int size;
+    int pos;
     struct pbtools_heap_t *heap_p;
-    struct pbtools_message_base_t *next_p;
-};
-
-struct pbtools_repeated_message_t {
-    int length;
-    struct pbtools_message_base_t **items_pp;
-    struct pbtools_message_base_t *head_p;
-    struct pbtools_message_base_t *tail_p;
-};
-
-struct pbtools_scalar_value_type_base_t {
-    struct pbtools_scalar_value_type_base_t *next_p;
-};
-
-struct pbtools_repeated_scalar_value_type_t {
-    int length;
-    struct pbtools_scalar_value_type_base_t **items_pp;
-    struct pbtools_scalar_value_type_base_t *head_p;
-    struct pbtools_scalar_value_type_base_t *tail_p;
 };
 
 struct pbtools_int32_t {
@@ -120,6 +110,15 @@ struct pbtools_bytes_t {
     struct pbtools_bytes_t *next_p;
     uint8_t *buf_p;
     size_t size;
+};
+
+struct pbtools_scalar_value_type_base_t {
+    struct pbtools_scalar_value_type_base_t *next_p;
+};
+
+struct pbtools_message_base_t {
+    struct pbtools_heap_t *heap_p;
+    struct pbtools_message_base_t *next_p;
 };
 
 struct pbtools_repeated_int32_t {
@@ -185,17 +184,18 @@ struct pbtools_repeated_bytes_t {
     struct pbtools_bytes_t *tail_p;
 };
 
-struct pbtools_encoder_t {
-    uint8_t *buf_p;
-    int size;
-    int pos;
+struct pbtools_repeated_scalar_value_type_t {
+    int length;
+    struct pbtools_scalar_value_type_base_t **items_pp;
+    struct pbtools_scalar_value_type_base_t *head_p;
+    struct pbtools_scalar_value_type_base_t *tail_p;
 };
 
-struct pbtools_decoder_t {
-    const uint8_t *buf_p;
-    int size;
-    int pos;
-    struct pbtools_heap_t *heap_p;
+struct pbtools_repeated_message_t {
+    int length;
+    struct pbtools_message_base_t **items_pp;
+    struct pbtools_message_base_t *head_p;
+    struct pbtools_message_base_t *tail_p;
 };
 
 typedef void (*pbtools_message_init_t)(void *self_p,

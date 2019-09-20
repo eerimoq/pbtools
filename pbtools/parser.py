@@ -640,7 +640,7 @@ def find_file(filename, import_paths):
     filepath = os.path.abspath(filepath)
 
     if not os.path.exists(filepath):
-        raise Exception(f"'{filename}' not found in import path.")
+        raise Error(f"'{filename}' not found in import path.")
 
     return filepath
 

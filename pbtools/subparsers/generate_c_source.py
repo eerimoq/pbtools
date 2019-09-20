@@ -13,8 +13,7 @@ def _do_generate_c_source(args):
     for filename in args.infiles:
         parsed = parse_file(filename, args.import_path)
         basename = os.path.basename(filename)
-        name = os.path.splitext(basename)[0]
-        name = camel_to_snake_case(name)
+        name = camel_to_snake_case(os.path.splitext(basename)[0])
 
         filename_h = f'{name}.h'
         filename_c = f'{name}.c'

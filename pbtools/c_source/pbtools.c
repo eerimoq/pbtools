@@ -64,8 +64,8 @@ typedef void (*repeated_scalar_value_type_read_t)(
 
 typedef void (*scalar_value_type_init_t)(void *self_p);
 
-static void decoder_abort(struct pbtools_decoder_t *self_p,
-                          int error);
+static void *decoder_heap_alloc(struct pbtools_decoder_t *self_p,
+                                size_t size);
 
 static uint64_t decoder_read_length_delimited(struct pbtools_decoder_t *self_p,
                                               int wire_type);
@@ -100,20 +100,6 @@ static void *heap_alloc(struct pbtools_heap_t *self_p,
         self_p->pos += (int)size;
     } else {
         buf_p = NULL;
-    }
-
-    return (buf_p);
-}
-
-static void *decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                size_t size)
-{
-    void *buf_p;
-
-    buf_p = heap_alloc(self_p->heap_p, size);
-
-    if (buf_p == NULL) {
-        decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
     }
 
     return (buf_p);
@@ -239,9 +225,32 @@ void pbtools_encoder_write_sint32(struct pbtools_encoder_t *self_p,
     pbtools_encoder_write_sint64(self_p, field_number, value);
 }
 
-void pbtools_encoder_write_sint64(struct pbtools_encoder_t *self_p,
-                                  int field_number,
-                                  int64_t value)
+static uint32_t sint32_encode(int32_t value)
+{
+    uint32_t data;
+
+    if (value < 0) {
+        data = ~((uint32_t)value << 1);
+    } else {
+        data = ((uint32_t)value << 1);
+    }
+
+    return (data);
+}
+
+static int32_t sint32_decode(uint64_t value)
+{
+    if (value & 0x1) {
+        value >>= 1;
+        value = ~value;
+    } else {
+        value >>= 1;
+    }
+
+    return ((int32_t)value);
+}
+
+static uint64_t sint64_encode(int64_t value)
 {
     uint64_t data;
 
@@ -251,7 +260,26 @@ void pbtools_encoder_write_sint64(struct pbtools_encoder_t *self_p,
         data = ((uint64_t)value << 1);
     }
 
-    pbtools_encoder_write_uint64(self_p, field_number, data);
+    return (data);
+}
+
+static int64_t sint64_decode(uint64_t value)
+{
+    if (value & 0x1) {
+        value >>= 1;
+        value = ~value;
+    } else {
+        value >>= 1;
+    }
+
+    return ((int64_t)value);
+}
+
+void pbtools_encoder_write_sint64(struct pbtools_encoder_t *self_p,
+                                  int field_number,
+                                  int64_t value)
+{
+    pbtools_encoder_write_uint64(self_p, field_number, sint64_encode(value));
 }
 
 void pbtools_encoder_write_uint32(struct pbtools_encoder_t *self_p,
@@ -551,18 +579,9 @@ static void write_repeated_sint32_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    int32_t value;
-    uint32_t data;
-
-    value = ((struct pbtools_int32_t *)item_p)->value;
-
-    if (value < 0) {
-        data = ~((uint32_t)value << 1);
-    } else {
-        data = ((uint32_t)value << 1);
-    }
-
-    encoder_write_varint(self_p, data);
+    encoder_write_varint(
+        self_p,
+        sint32_encode(((struct pbtools_int32_t *)item_p)->value));
 }
 
 void pbtools_encoder_write_repeated_sint32(
@@ -577,18 +596,9 @@ static void write_repeated_sint64_item(
     struct pbtools_encoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    int64_t value;
-    uint64_t data;
-
-    value = ((struct pbtools_int64_t *)item_p)->value;
-
-    if (value < 0) {
-        data = ~((uint64_t)value << 1);
-    } else {
-        data = ((uint64_t)value << 1);
-    }
-
-    encoder_write_varint(self_p, data);
+    encoder_write_varint(
+        self_p,
+        sint64_encode(((struct pbtools_int64_t *)item_p)->value));
 }
 
 void pbtools_encoder_write_repeated_sint64(
@@ -851,6 +861,20 @@ static void decoder_abort(struct pbtools_decoder_t *self_p,
     }
 }
 
+static void *decoder_heap_alloc(struct pbtools_decoder_t *self_p,
+                                size_t size)
+{
+    void *buf_p;
+
+    buf_p = heap_alloc(self_p->heap_p, size);
+
+    if (buf_p == NULL) {
+        decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
+    }
+
+    return (buf_p);
+}
+
 bool pbtools_decoder_available(struct pbtools_decoder_t *self_p)
 {
     return (self_p->pos < self_p->size);
@@ -989,19 +1013,8 @@ int32_t pbtools_decoder_read_sint32(struct pbtools_decoder_t *self_p,
 int64_t pbtools_decoder_read_sint64(struct pbtools_decoder_t *self_p,
                                     int wire_type)
 {
-    uint64_t value;
-
-    value = read_varint_check_wire_type_varint(self_p,
-                                               wire_type);
-
-    if (value & 0x1) {
-        value >>= 1;
-        value = ~value;
-    } else {
-        value >>= 1;
-    }
-
-    return ((int64_t)value);
+    return (sint64_decode(read_varint_check_wire_type_varint(self_p,
+                                                             wire_type)));
 }
 
 uint32_t pbtools_decoder_read_uint32(struct pbtools_decoder_t *self_p,
@@ -1323,18 +1336,8 @@ static void read_repeated_sint32_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    uint64_t value;
-
-    value = decoder_read_varint(self_p);
-
-    if (value & 0x1) {
-        value >>= 1;
-        value = ~value;
-    } else {
-        value >>= 1;
-    }
-
-    ((struct pbtools_int32_t *)item_p)->value = (int32_t)value;
+    ((struct pbtools_int32_t *)item_p)->value = sint32_decode(
+        decoder_read_varint(self_p));
 }
 
 void pbtools_decoder_read_repeated_sint32(
@@ -1363,18 +1366,8 @@ static void read_repeated_sint64_item(
     struct pbtools_decoder_t *self_p,
     struct pbtools_scalar_value_type_base_t *item_p)
 {
-    uint64_t value;
-
-    value = decoder_read_varint(self_p);
-
-    if (value & 0x1) {
-        value >>= 1;
-        value = ~value;
-    } else {
-        value >>= 1;
-    }
-
-    ((struct pbtools_int64_t *)item_p)->value = (int64_t)value;
+    ((struct pbtools_int64_t *)item_p)->value = sint64_decode(
+        decoder_read_varint(self_p));
 }
 
 void pbtools_decoder_read_repeated_sint64(
