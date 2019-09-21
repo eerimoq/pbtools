@@ -112,7 +112,7 @@ We'll use the generated types and functions below.
        const uint8_t *encoded_p,
        size_t size);
 
-Encode and decode the Foo-message in ``main.c``.
+Encode and decode the Foo-message in `main.c`_.
 
 .. code-block:: c
 
@@ -209,6 +209,8 @@ generated files.
 .. _hello_world.h: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.h
 
 .. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.c
+
+.. _main.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/main.c
 
 .. _hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world
 
