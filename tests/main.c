@@ -3159,6 +3159,32 @@ TEST(importing_message_2)
     ASSERT_EQ(message_p->v2.v1.v1, true);
 }
 
+TEST(error_code_to_string)
+{
+    int i;
+    struct data_t {
+        int code;
+        char *string_p;
+    } datas[] = {
+        { 0, "Ok" },
+        { PBTOOLS_BAD_WIRE_TYPE, "Bad wire type" },
+        { -PBTOOLS_BAD_WIRE_TYPE, "Bad wire type" },
+        { PBTOOLS_OUT_OF_DATA, "Out of data" },
+        { PBTOOLS_OUT_OF_MEMORY, "Out of memory" },
+        { PBTOOLS_ENCODE_BUFFER_FULL, "Encode buffer full" },
+        { PBTOOLS_BAD_FIELD_NUMBER, "Bad field number" },
+        { PBTOOLS_VARINT_OVERFLOW, "Varint overflow" },
+        { PBTOOLS_SEEK_OVERFLOW, "Seek overflow" },
+        { PBTOOLS_LENGTH_DELIMITED_OVERFLOW, "Length delimited overflow" },
+        { 99999, "Unknown error" }
+    };
+
+    for (i = 0; i < membersof(datas); i++) {
+        ASSERT_EQ(pbtools_error_code_to_string(datas[i].code),
+                  datas[i].string_p);
+    }
+}
+
 int main(void)
 {
     return RUN_TESTS(
@@ -3254,6 +3280,7 @@ int main(void)
         no_package,
         importing_message,
         importing_message_same_package,
-        importing_message_2
+        importing_message_2,
+        error_code_to_string
     );
 }

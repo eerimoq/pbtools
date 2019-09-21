@@ -1977,3 +1977,57 @@ void pbtools_decoder_sub_message_decode(
     decode_inner(&decoder, message_p);
     decoder_seek(self_p, decoder_get_result(&decoder));
 }
+
+const char *pbtools_error_code_to_string(int code)
+{
+    const char *string_p;
+
+    if (code < 0) {
+        code *= -1;
+    }
+
+    switch (code) {
+
+    case 0:
+        string_p = "Ok";
+        break;
+
+    case PBTOOLS_BAD_WIRE_TYPE:
+        string_p = "Bad wire type";
+        break;
+
+    case PBTOOLS_OUT_OF_DATA:
+        string_p = "Out of data";
+        break;
+
+    case PBTOOLS_OUT_OF_MEMORY:
+        string_p = "Out of memory";
+        break;
+
+    case PBTOOLS_ENCODE_BUFFER_FULL:
+        string_p = "Encode buffer full";
+        break;
+
+    case PBTOOLS_BAD_FIELD_NUMBER:
+        string_p = "Bad field number";
+        break;
+
+    case PBTOOLS_VARINT_OVERFLOW:
+        string_p = "Varint overflow";
+        break;
+
+    case PBTOOLS_SEEK_OVERFLOW:
+        string_p = "Seek overflow";
+        break;
+
+    case PBTOOLS_LENGTH_DELIMITED_OVERFLOW:
+        string_p = "Length delimited overflow";
+        break;
+
+    default:
+        string_p = "Unknown error";
+        break;
+    }
+
+    return (string_p);
+}
