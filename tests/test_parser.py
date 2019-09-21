@@ -704,6 +704,9 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(str(cm.exception),
                          'Invalid syntax at line 3, column 1: ">>!<</*"')
 
+    def test_reserved(self):
+        pbtools.parse_file('tests/files/reserved.proto')
+
 
 if __name__ == '__main__':
     unittest.main()

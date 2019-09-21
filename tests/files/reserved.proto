@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package reserved;
+
+message Message {
+    int32 f1 = 1;
+    reserved 2;
+    bool f3 = 3;
+    reserved 5, 8 to 10;
+    int32 f11 = 11;
+    reserved "f12", "f13";
+    bool f15 = 15;
+}

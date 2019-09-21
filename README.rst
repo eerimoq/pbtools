@@ -15,11 +15,9 @@ Known limitations:
 
 - Recursive messages are not yet supported (probably never will be).
 
-- Options, services (gRPC) and maps are ignored.
+- Options, services (gRPC), reserved fields and maps are ignored.
 
 - The `C` type ``char`` must be 8 bits.
-
-- ``reserved`` is not yet supported.
 
 Project homepage: https://github.com/eerimoq/pbtools
 

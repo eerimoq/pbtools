@@ -130,7 +130,10 @@ class Parser(textparser.Parser):
         'option',
         'true',
         'false',
-        'map'
+        'map',
+        'reserved',
+        'max',
+        'to'
     ]
 
     def token_specs(self):
@@ -206,6 +209,13 @@ class Parser(textparser.Parser):
         map_field = Sequence('map', '<', ident, ',', message_type, '>',
                              ident, '=', 'INT', options, ';')
 
+        # Reserved.
+        field_number_range = Sequence('INT',
+                                      Optional(Sequence('to',
+                                                        choice('INT', 'max'))))
+        reserved = Sequence('reserved', choice(DelimitedList(field_number_range),
+                                               DelimitedList('STRING')))
+        
         # Message.
         field = Sequence(Optional('repeated'),
                          message_type, ident, '=', 'INT', options, ';')
@@ -218,6 +228,7 @@ class Parser(textparser.Parser):
                                                message,
                                                oneof,
                                                map_field,
+                                               reserved,
                                                empty_statement)),
                              '}')
 
@@ -233,7 +244,7 @@ class Parser(textparser.Parser):
                            '{',
                            ZeroOrMore(choice(option, rpc, empty_statement)),
                            '}')
-
+        
         # Proto3-file.
         top_level_def = choice(message, enum, service)
         syntax = Sequence('syntax', '=', 'PROTO3', ';')
@@ -382,7 +393,7 @@ class Message:
                 self.messages.append(Message(item, sub_namespace))
             elif kind == 'oneof':
                 self.oneofs.append(Oneof(item, sub_namespace))
-            elif kind in ['map', ';']:
+            elif kind in ['map', 'reserved', ';']:
                 pass
             else:
                 raise InternalError(kind)
