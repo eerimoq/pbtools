@@ -13,11 +13,7 @@ Google Protocol Buffers tools in Python 3.6+.
 
 Known limitations:
 
-- Recursive messages are not yet supported (probably never will be).
-
 - Options, services (gRPC), reserved fields and maps are ignored.
-
-- The `C` type ``char`` must be 8 bits.
 
 Project homepage: https://github.com/eerimoq/pbtools
 
@@ -42,6 +38,12 @@ The C source code is designed with the following in mind:
 - Fast encoding and decoding.
 
 - Small memory footprint.
+
+Known limitations:
+
+- Recursive messages are not yet supported (probably never will be).
+
+- The `C` type ``char`` must be 8 bits.
 
 Memory management
 -----------------
