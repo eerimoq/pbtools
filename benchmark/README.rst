@@ -7,27 +7,32 @@ Core(TM) i7-4510U CPU @ 2.00GHz.
 Usability
 ---------
 
-pbtools:
+pbtools
+^^^^^^^
 
 Easy to use.
 
-nanopb:
+nanopb
+^^^^^^
 
 Repeated, bytes, strings, oneofs and submessages are hard to use,
 otherwise easy.
 
-google:
+google
+^^^^^^
 
 Easy to use.
 
-protobuf-c:
+protobuf-c
+^^^^^^^^^^
 
 Fairly easy to use, but could use an allocator when building messages.
 
 Executable size
 ---------------
 
-pbtools:
+pbtools
+^^^^^^^
 
 .. code-block::
 
@@ -44,7 +49,8 @@ pbtools:
       text    data     bss     dec     hex filename
      44908     664       8   45580    b20c main-speed-lto
 
-nanopb:
+nanopb
+^^^^^^
 
 .. code-block::
 
@@ -61,7 +67,8 @@ nanopb:
       text    data     bss     dec     hex filename
      36574    1088      32   37694    933e main-speed-lto
 
-google (C++ with libprotoc 3.6.1 as shared library):
+google (C++ with libprotoc 3.6.1 as shared library)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -72,7 +79,8 @@ google (C++ with libprotoc 3.6.1 as shared library):
       text    data     bss     dec     hex filename
      77538    3032     664   81234   13d52 main-speed
 
-protobuf-c (libprotobuf-c statically linked):
+protobuf-c (libprotobuf-c statically linked)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block::
 
