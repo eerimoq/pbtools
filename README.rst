@@ -43,7 +43,7 @@ Known limitations:
 
 - Recursive messages are not yet supported (probably never will be).
 
-- The `C` type ``char`` must be 8 bits.
+- ``char`` must be 8 bits.
 
 Memory management
 -----------------
