@@ -10,6 +10,7 @@ from textparser import Optional
 from textparser import Forward
 from textparser import Tag
 from textparser import DelimitedList
+from textparser import ParseError
 from .errors import Error
 
 
@@ -51,6 +52,65 @@ def camel_to_snake_case(value):
     value = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', value).lower()
 
     return value
+
+
+def format_parse_error(string, offset):
+    return str(ParseError(string, offset))
+
+
+def ignore_comments(string):
+    """Ignore comments in given string by replacing them with spaces. This
+    reduces the parsing time by roughly a factor of two.
+
+    """
+
+    comments = [
+        (mo.start(), mo.group(0))
+        for mo in re.finditer(r'(/\*|\*/|//|\n)', string)
+    ]
+
+    comments.sort()
+
+    in_single_line_comment = False
+    in_multi_line_comment = False
+    start_offset = 0
+    non_comment_offset = 0
+    chunks = []
+
+    for offset, kind in comments:
+        if in_single_line_comment:
+            if kind == '\n':
+                in_single_line_comment = False
+                chunks.append(' ' * (offset - start_offset))
+                non_comment_offset = offset
+        elif in_multi_line_comment:
+            if kind == '/*':
+                raise Error(format_parse_error(string, start_offset))
+            elif kind == '*/':
+                in_multi_line_comment = False
+                offset += 2
+                chunks.append(' ' * (offset - start_offset))
+                non_comment_offset = offset
+        elif kind == '//':
+            in_single_line_comment = True
+            start_offset = offset
+            chunks.append(string[non_comment_offset:start_offset])
+        elif kind == '/*':
+            in_multi_line_comment = True
+            start_offset = offset
+            chunks.append(string[non_comment_offset:start_offset])
+
+    if in_single_line_comment:
+        offset = len(string)
+        chunks.append(' ' * (offset - start_offset))
+        non_comment_offset = offset
+
+    if in_multi_line_comment:
+        raise Error(format_parse_error(string, start_offset))
+
+    chunks.append(string[non_comment_offset:])
+
+    return ''.join(chunks)
 
 
 class Parser(textparser.Parser):
@@ -400,7 +460,7 @@ class ImportedProto:
         self.abspath = find_file(self.path, import_paths)
 
         with open(self.abspath) as fin:
-            tree = Parser().parse(fin.read())
+            tree = Parser().parse(ignore_comments(fin.read()))
 
         self.package = load_package(tree)
         self.enums = [
@@ -650,6 +710,6 @@ def parse_file(filename, import_paths=None):
         import_paths = []
 
     with open(filename, 'r') as fin:
-        return Proto(Parser().parse(fin.read()),
+        return Proto(Parser().parse(ignore_comments(fin.read())),
                      find_file(filename, import_paths),
                      import_paths)

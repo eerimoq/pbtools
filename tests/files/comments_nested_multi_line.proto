@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+/*
+package comments_nested_multi_line;
+
+message Message {
+    int32 value = /*1*/;
+}
+*/
+message Message2 {
+    int32 value = 16;
+}

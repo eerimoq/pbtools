@@ -19,7 +19,7 @@ Known limitations:
 
 - The `C` type ``char`` must be 8 bits.
 
-- Only single line comments are currently supported.
+- ``reserved`` is not yet supported.
 
 Project homepage: https://github.com/eerimoq/pbtools
 

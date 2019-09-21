@@ -685,6 +685,25 @@ class ParserTest(unittest.TestCase):
 
         self.assertEqual(str(cm.exception), "'MissingType' is not defined.")
 
+    def test_comments(self):
+        # Ok.
+        parsed = pbtools.parse_file('tests/files/comments.proto')
+        self.assertEqual(len(parsed.messages), 1)
+
+        # Missing multi line end.
+        with self.assertRaises(pbtools.Error) as cm:
+            pbtools.parse_file('tests/files/comments_missing_multi_line_end.proto')
+
+        self.assertEqual(str(cm.exception),
+                         'Invalid syntax at line 5, column 1: ">>!<</*"')
+
+        # Nested multi line comments are not allowed.
+        with self.assertRaises(pbtools.Error) as cm:
+            pbtools.parse_file('tests/files/comments_nested_multi_line.proto')
+
+        self.assertEqual(str(cm.exception),
+                         'Invalid syntax at line 3, column 1: ">>!<</*"')
+
 
 if __name__ == '__main__':
     unittest.main()
