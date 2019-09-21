@@ -182,7 +182,7 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(len(parsed.services), 1)
 
         service = parsed.services[0]
-        self.assertEqual(len(service.rpcs), 2)
+        self.assertEqual(len(service.rpcs), 6)
 
         rpc = service.rpcs[0]
         self.assertEqual(rpc.name, 'Foo')
@@ -197,6 +197,13 @@ class ParserTest(unittest.TestCase):
         self.assertFalse(rpc.request_stream)
         self.assertEqual(rpc.response_type, 'Response')
         self.assertFalse(rpc.response_stream)
+
+        rpc = service.rpcs[4]
+        self.assertEqual(rpc.name, 'Fam')
+        self.assertEqual(rpc.request_type, 'Request')
+        self.assertTrue(rpc.request_stream)
+        self.assertEqual(rpc.response_type, 'Response')
+        self.assertTrue(rpc.response_stream)
 
     def test_oneof(self):
         parsed = pbtools.parse_file('tests/files/oneof.proto')

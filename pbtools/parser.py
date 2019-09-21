@@ -215,7 +215,7 @@ class Parser(textparser.Parser):
                                                         choice('INT', 'max'))))
         reserved = Sequence('reserved', choice(DelimitedList(field_number_range),
                                                DelimitedList('STRING')))
-        
+
         # Message.
         field = Sequence(Optional('repeated'),
                          message_type, ident, '=', 'INT', options, ';')
@@ -233,18 +233,22 @@ class Parser(textparser.Parser):
                              '}')
 
         # Service.
+        rpc_name = ident
         rpc = Sequence('rpc',
-                       ident,
+                       rpc_name,
                        '(', Optional('stream'), message_type, ')',
                        'returns',
                        '(', Optional('stream'), message_type, ')',
-                       ';')
+                       choice(Sequence('{',
+                                       ZeroOrMore(option),
+                                       '}'),
+                              ';'))
         service = Sequence('service',
                            ident,
                            '{',
                            ZeroOrMore(choice(option, rpc, empty_statement)),
                            '}')
-        
+
         # Proto3-file.
         top_level_def = choice(message, enum, service)
         syntax = Sequence('syntax', '=', 'PROTO3', ';')
@@ -444,9 +448,9 @@ class Rpc:
     def __init__(self, tokens):
         self.name = tokens[1]
         self.request_type = tokens[4][1][0]
-        self.request_stream = False
+        self.request_stream = bool(tokens[3])
         self.response_type = tokens[9][1][0]
-        self.response_stream = False
+        self.response_stream = bool(tokens[8])
 
 
 class Service:
@@ -460,6 +464,8 @@ class Service:
 
             if kind == 'rpc':
                 self.rpcs.append(Rpc(item))
+            elif kind == ';':
+                pass
             else:
                 raise InternalError(kind)
 
