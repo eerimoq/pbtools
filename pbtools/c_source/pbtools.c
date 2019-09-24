@@ -25,6 +25,7 @@
  */
 
 #include <limits.h>
+#include <stdalign.h>
 #include "pbtools.h"
 
 #define ALLOC_REPEATED_SCALAR_VALUE_TYPE(type)                          \
@@ -61,7 +62,8 @@ typedef void (*repeated_scalar_value_type_read_t)(
 typedef void (*scalar_value_type_init_t)(void *self_p);
 
 static void *decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                size_t size);
+                                size_t size,
+                                size_t alignemnt);
 
 static uint64_t decoder_read_length_delimited(struct pbtools_decoder_t *self_p,
                                               int wire_type);
@@ -84,21 +86,38 @@ static struct pbtools_heap_t *heap_new(void *buf_p,
 }
 
 static void *heap_alloc(struct pbtools_heap_t *self_p,
-                        size_t size)
+                        size_t size,
+                        size_t alignment)
 {
-    void *buf_p;
+    uintptr_t addr;
     int left;
+    size_t rest;
+    size_t pad;
 
     left = (self_p->size - self_p->pos);
 
     if ((int)size <= left) {
-        buf_p = &self_p->buf_p[self_p->pos];
-        self_p->pos += (int)size;
+        addr = (uintptr_t)&self_p->buf_p[self_p->pos];
+        rest = (addr & (alignment - 1));
+
+        if (rest == 0) {
+            self_p->pos += (int)size;
+        } else {
+            pad = (alignment - rest);
+            size += pad;
+
+            if ((int)size <= left) {
+                addr += pad;
+                self_p->pos += (int)size;
+            } else {
+                addr = (uintptr_t)NULL;
+            }
+        }
     } else {
-        buf_p = NULL;
+        addr = (uintptr_t)NULL;
     }
 
-    return (buf_p);
+    return ((void *)addr);
 }
 
 static void encoder_init(struct pbtools_encoder_t *self_p,
@@ -439,25 +458,25 @@ static int alloc_repeated_scalar_value_type(
     scalar_value_type_init_t item_init)
 {
     int i;
-    char *items_p;
+    struct pbtools_scalar_value_type_base_t *item_p;
 
     repeated_p->items_pp = heap_alloc(self_p->heap_p,
-                                      sizeof(items_p) * (size_t)length);
+                                      sizeof(item_p) * (size_t)length,
+                                      alignof(item_p));
 
     if (repeated_p->items_pp == NULL) {
         return (-PBTOOLS_OUT_OF_MEMORY);
     }
 
-    items_p = heap_alloc(self_p->heap_p, item_size * (size_t)length);
-
-    if (items_p == NULL) {
-        return (-PBTOOLS_OUT_OF_MEMORY);
-    }
-
     for (i = 0; i < length; i++) {
-        item_init(items_p);
-        repeated_p->items_pp[i] = (struct pbtools_scalar_value_type_base_t *)items_p;
-        items_p += item_size;
+        item_p = heap_alloc(self_p->heap_p, item_size, alignof(*item_p));
+
+        if (item_p == NULL) {
+            return (-PBTOOLS_OUT_OF_MEMORY);
+        }
+
+        item_init(item_p);
+        repeated_p->items_pp[i] = item_p;
     }
 
     repeated_p->items_pp[length - 1]->next_p = NULL;
@@ -521,7 +540,7 @@ static void read_repeated_scalar_value_type(
     pos = self_p->pos;
 
     while ((size_t)self_p->pos < ((size_t)pos + size)) {
-        item_p = decoder_heap_alloc(self_p, item_size);
+        item_p = decoder_heap_alloc(self_p, item_size, alignof(*item_p));
 
         if (item_p == NULL) {
             return;
@@ -870,11 +889,12 @@ static void decoder_abort(struct pbtools_decoder_t *self_p,
 }
 
 static void *decoder_heap_alloc(struct pbtools_decoder_t *self_p,
-                                size_t size)
+                                size_t size,
+                                size_t alignment)
 {
     void *buf_p;
 
-    buf_p = heap_alloc(self_p->heap_p, size);
+    buf_p = heap_alloc(self_p->heap_p, size, alignment);
 
     if (buf_p == NULL) {
         decoder_abort(self_p, PBTOOLS_OUT_OF_MEMORY);
@@ -1152,7 +1172,9 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
     uint64_t size;
 
     size = decoder_read_length_delimited(self_p, wire_type);
-    *value_pp = decoder_heap_alloc(self_p, size + 1);
+    *value_pp = decoder_heap_alloc(self_p,
+                                   size + 1,
+                                   alignof(**value_pp));
 
     if (*value_pp == NULL) {
         return;
@@ -1170,7 +1192,9 @@ void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
 
     size = decoder_read_length_delimited(self_p, wire_type);
     bytes_p->size = size;
-    bytes_p->buf_p = decoder_heap_alloc(self_p, bytes_p->size);
+    bytes_p->buf_p = decoder_heap_alloc(self_p,
+                                        bytes_p->size,
+                                        alignof(*bytes_p->buf_p));
 
     if (bytes_p->buf_p == NULL) {
         return;
@@ -1196,7 +1220,8 @@ static void decoder_finalize_repeated_scalar_value_type(
     if (repeated_p->length > 0) {
         repeated_p->items_pp = decoder_heap_alloc(
             self_p,
-            sizeof(item_p) * (size_t)repeated_p->length);
+            sizeof(item_p) * (size_t)repeated_p->length,
+            alignof(item_p));
 
         if (repeated_p->items_pp == NULL) {
             return;
@@ -1639,7 +1664,7 @@ void pbtools_decoder_read_repeated_string(
 {
     struct pbtools_string_t *item_p;
 
-    item_p = decoder_heap_alloc(self_p, sizeof(*item_p));
+    item_p = decoder_heap_alloc(self_p, sizeof(*item_p), alignof(*item_p));
 
     if (item_p == NULL) {
         return;
@@ -1680,7 +1705,7 @@ void pbtools_decoder_read_repeated_bytes(
 {
     struct pbtools_bytes_t *item_p;
 
-    item_p = decoder_heap_alloc(self_p, sizeof(*item_p));
+    item_p = decoder_heap_alloc(self_p, sizeof(*item_p), alignof(*item_p));
 
     if (item_p == NULL) {
         return;
@@ -1792,7 +1817,9 @@ void *pbtools_message_new(
         return (NULL);
     }
 
-    self_p = heap_alloc(heap_p, message_size);
+    self_p = heap_alloc(heap_p,
+                        message_size,
+                        alignof(struct pbtools_message_base_t));
 
     if (self_p != NULL) {
         message_init(self_p, heap_p, NULL);
@@ -1842,13 +1869,14 @@ int pbtools_alloc_repeated(
 
     repeated_p->items_pp = heap_alloc(
         heap_p,
-        sizeof(item_p) * (size_t)length);
+        sizeof(item_p) * (size_t)length,
+        alignof(item_p));
 
     if (repeated_p->items_pp != NULL) {
         next_item_p = NULL;
 
         for (i = length - 1; i >= 0; i--) {
-            item_p = heap_alloc(heap_p, item_size);
+            item_p = heap_alloc(heap_p, item_size, alignof(*item_p));
 
             if (item_p == NULL) {
                 return (-1);
@@ -1897,7 +1925,7 @@ void pbtools_decode_repeated_inner(
     struct pbtools_decoder_t decoder;
     struct pbtools_message_base_t *item_p;
 
-    item_p = decoder_heap_alloc(decoder_p, item_size);
+    item_p = decoder_heap_alloc(decoder_p, item_size, alignof(*item_p));
 
     if (item_p == NULL) {
         return;
@@ -1933,7 +1961,8 @@ void pbtools_finalize_repeated_inner(
 
     repeated_p->items_pp = decoder_heap_alloc(
         decoder_p,
-        sizeof(item_p) * (size_t)repeated_p->length);
+        sizeof(item_p) * (size_t)repeated_p->length,
+        alignof(item_p));
 
     if (repeated_p->items_pp == NULL) {
         return;

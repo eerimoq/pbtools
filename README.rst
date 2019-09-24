@@ -7,7 +7,7 @@ About
 
 Google Protocol Buffers tools in Python 3.6+.
 
-- `C` source code generator.
+- `C` source code generator (C11 and later).
 
 - Only supports proto3.
 
