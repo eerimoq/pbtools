@@ -4,6 +4,19 @@ About
 Benchmark of protobuf libraries using gcc 8.3.0 on an Intel(R)
 Core(TM) i7-4510U CPU @ 2.00GHz.
 
+Libraries in this benchmark:
+
+- `FlatBuffers`_, an efficient cross platform serialization library
+  for C++.
+
+- `Protocol Buffers for C++`_, the official Google implementation.
+
+- `Nanopb`_, protocol buffers with small code size.
+
+- `pbtools`_, this library.
+
+- `protobuf-c`_, Protocol Buffers implementation in C.
+
 Usability
 ---------
 
@@ -235,3 +248,13 @@ flatbuffers
    $ size main-speed
       text    data     bss     dec     hex filename
      41042     728       8   41778    a332 main-speed
+
+.. _FlatBuffers: https://google.github.io/flatbuffers/
+
+.. _Protocol Buffers for C++: https://developers.google.com/protocol-buffers/docs/cpptutorial
+
+.. _Nanopb: https://jpa.kapsi.fi/nanopb/
+
+.. _pbtools: https://github.com/eerimoq/pbtools
+
+.. _protobuf-c: https://github.com/protobuf-c/protobuf-c
