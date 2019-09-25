@@ -1,0 +1,6 @@
+# Encoding time -O3 [ms]
+
+pbtools     1097
+protobuf-c  1892
+google      2231
+nanopb      8480

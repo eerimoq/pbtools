@@ -7,26 +7,50 @@ Core(TM) i7-4510U CPU @ 2.00GHz.
 Usability
 ---------
 
-pbtools
-^^^^^^^
++------------+---------------------------------------------------------+
+| Library    | Comment                                                 |
++============+=========================================================+
+| pbtools    | Easy to use.                                            |
++------------+---------------------------------------------------------+
+| nanopb     | Repeated, bytes, strings, oneofs and submessages are    |
+|            | hard to use, otherwise easy.                            |
++------------+---------------------------------------------------------+
+| google     | Easy to use.                                            |
++------------+---------------------------------------------------------+
+| protobuf-c | Fairly easy to use, but could use an allocator when     |
+|            | building messages.                                      |
++------------+---------------------------------------------------------+
 
-Easy to use.
+Executable size
+---------------
 
-nanopb
-^^^^^^
+Text segment size in bytes. Lower is better.
 
-Repeated, bytes, strings, oneofs and submessages are hard to use,
-otherwise easy.
+pbtools: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 32132
+nanopb : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 26928
 
-google
-^^^^^^
+See `Executable size` in the `Details` section below for information
+about `google` and `protobuf-c`.
 
-Easy to use.
+Execution time
+--------------
 
-protobuf-c
-^^^^^^^^^^
+Encoding times in milliseconds. Lower is better.
 
-Fairly easy to use, but could use an allocator when building messages.
+pbtools   : ▇▇▇▇▇▇ 1097
+protobuf-c: ▇▇▇▇▇▇▇▇▇▇▇ 1892
+google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇ 2231
+nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 8480
+
+Decoding times in milliseconds. Lower is better.
+
+pbtools   : ▇▇▇▇▇▇▇▇ 1002
+google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 1997
+protobuf-c: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2508
+nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 6133
+
+Details
+=======
 
 Executable size
 ---------------
