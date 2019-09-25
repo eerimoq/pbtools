@@ -23,8 +23,8 @@ Usability
 | flatbuffers | Easy to use.                                            |
 +-------------+---------------------------------------------------------+
 
-Execution time
---------------
+Encoding time
+-------------
 
 Encoding time in milliseconds per library. Lower is better.
 
@@ -36,6 +36,9 @@ Encoding time in milliseconds per library. Lower is better.
    pbtools    : ▇▇▇▇▇▇ 1097
    protobuf-c : ▇▇▇▇▇▇▇▇▇▇▇ 1892
 
+Decoding time
+-------------
+   
 Decoding time in milliseconds per library. Lower is better.
 
 .. code-block:: text
@@ -68,8 +71,8 @@ about `google` and `protobuf-c`.
 Details
 =======
 
-Execution time
---------------
+Encoding time
+-------------
 
 Encoding ``Message`` and ``Message3`` 2,000,000 times each for each
 library and optimization combination.
@@ -109,6 +112,9 @@ library and optimization combination.
 +-------------+--------------+--------------------+
 | nanopb      |    -Os -flto |             13.191 |
 +-------------+--------------+--------------------+
+
+Decoding time
+-------------
 
 Decoding ``Message`` and ``Message3`` 2,000,000 times each for each
 library and optimization combination.
