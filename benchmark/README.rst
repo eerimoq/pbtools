@@ -61,9 +61,9 @@ Decoding time in milliseconds per library. Lower is better.
    protobuf-c : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2508
 
 *NOTE 1: `flatbuffers` decodes fields when useed by the application,
- while other libraries decodes everything before any field can be
- used. The `flatbuffers` benchmark only uses one field, while other
- libraries decodes all fields but does not use any.
+while other libraries decodes everything before any field can be
+used. The `flatbuffers` benchmark only uses one field, while other
+libraries decodes all fields but does not use any.
 
 Details
 =======
