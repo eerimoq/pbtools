@@ -77,17 +77,17 @@ pbtools
 .. code-block::
 
    $ size main-size
-   $    text    data     bss     dec     hex filename
-   $   13972     632       8   14612    3914 main-size
+      text    data     bss     dec     hex filename
+     13972     632       8   14612    3914 main-size
    $ size main-size-lto
-   $    text    data     bss     dec     hex filename
-   $   11596     632       8   12236    2fcc main-size-lto
+      text    data     bss     dec     hex filename
+     11596     632       8   12236    2fcc main-size-lto
    $ size main-speed
-   $    text    data     bss     dec     hex filename
-   $   32148     656       8   32812    802c main-speed
+      text    data     bss     dec     hex filename
+     32148     656       8   32812    802c main-speed
    $ size main-speed-lto
-   $    text    data     bss     dec     hex filename
-   $   66636     656       8   67300   106e4 main-speed-lto
+      text    data     bss     dec     hex filename
+     66636     656       8   67300   106e4 main-speed-lto
 
 nanopb
 ^^^^^^
@@ -142,10 +142,10 @@ flatbuffers
 
 .. code-block::
 
-   size main-size
+   $ size main-size
       text    data     bss     dec     hex filename
      13510     816       8   14334    37fe main-size
-   size main-speed
+   $ size main-speed
       text    data     bss     dec     hex filename
      35049     728       8   35785    8bc9 main-speed
 
