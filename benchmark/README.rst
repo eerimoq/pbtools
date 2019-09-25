@@ -10,17 +10,17 @@ Usability
 +-------------+---------------------------------------------------------+
 | Library     | Comment                                                 |
 +=============+=========================================================+
-| pbtools     | Easy to use.                                            |
+| flatbuffers | Easy to use.                                            |
++-------------+---------------------------------------------------------+
+| google      | Easy to use.                                            |
 +-------------+---------------------------------------------------------+
 | nanopb      | Repeated, bytes, strings, oneofs and submessages are    |
 |             | hard to use, otherwise easy.                            |
 +-------------+---------------------------------------------------------+
-| google      | Easy to use.                                            |
+| pbtools     | Easy to use.                                            |
 +-------------+---------------------------------------------------------+
 | protobuf-c  | Fairly easy to use, but could use an allocator when     |
 |             | building messages.                                      |
-+-------------+---------------------------------------------------------+
-| flatbuffers | Easy to use.                                            |
 +-------------+---------------------------------------------------------+
 
 Encoding time
@@ -38,7 +38,7 @@ Encoding time in milliseconds per library. Lower is better.
 
 Decoding time
 -------------
-   
+
 Decoding time in milliseconds per library. Lower is better.
 
 .. code-block:: text
