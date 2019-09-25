@@ -26,8 +26,10 @@ Executable size
 
 Text segment size in bytes. Lower is better.
 
-pbtools: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 32132
-nanopb : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 26928
+.. code-block:: text
+
+   pbtools: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 32132
+   nanopb : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 26928
 
 See `Executable size` in the `Details` section below for information
 about `google` and `protobuf-c`.
@@ -37,17 +39,21 @@ Execution time
 
 Encoding times in milliseconds. Lower is better.
 
-pbtools   : ▇▇▇▇▇▇ 1097
-protobuf-c: ▇▇▇▇▇▇▇▇▇▇▇ 1892
-google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇ 2231
-nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 8480
+.. code-block:: text
+
+   pbtools   : ▇▇▇▇▇▇ 1097
+   protobuf-c: ▇▇▇▇▇▇▇▇▇▇▇ 1892
+   google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇ 2231
+   nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 8480
 
 Decoding times in milliseconds. Lower is better.
 
-pbtools   : ▇▇▇▇▇▇▇▇ 1002
-google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 1997
-protobuf-c: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2508
-nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 6133
+.. code-block:: text
+
+   pbtools   : ▇▇▇▇▇▇▇▇ 1002
+   google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 1997
+   protobuf-c: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2508
+   nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 6133
 
 Details
 =======
