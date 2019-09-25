@@ -37,7 +37,7 @@ about `google` and `protobuf-c`.
 Execution time
 --------------
 
-Encoding times in milliseconds. Lower is better.
+Encoding time in milliseconds per library. Lower is better.
 
 .. code-block:: text
 
@@ -46,7 +46,7 @@ Encoding times in milliseconds. Lower is better.
    google    : ▇▇▇▇▇▇▇▇▇▇▇▇▇ 2231
    nanopb    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 8480
 
-Decoding times in milliseconds. Lower is better.
+Decoding time in milliseconds per library. Lower is better.
 
 .. code-block:: text
 
