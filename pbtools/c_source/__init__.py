@@ -330,7 +330,7 @@ void {oneof.full_name_snake_case}_encode(
 
 DECODE_MEMBER_FMT = '''\
         case {field.field_number}:
-            self_p->{field.name_snake_case} = \
+            self_p->{field.name} = \
 pbtools_decoder_read_{field.full_type_snake_case}(decoder_p, wire_type);
             break;
 '''
@@ -338,14 +338,14 @@ pbtools_decoder_read_{field.full_type_snake_case}(decoder_p, wire_type);
 DECODE_MEMBER_BYTES_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_bytes(\
-decoder_p, wire_type, &self_p->{field.name_snake_case});
+decoder_p, wire_type, &self_p->{field.name});
             break;
 '''
 
 DECODE_MEMBER_STRING_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_string(\
-decoder_p, wire_type, &self_p->{field.name_snake_case}_p);
+decoder_p, wire_type, &self_p->{field.name}_p);
             break;
 '''
 
@@ -354,7 +354,7 @@ DECODE_REPEATED_MEMBER_FMT = '''\
             pbtools_decoder_read_repeated_{field.full_type_snake_case}(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name_snake_case});
+                &self_p->{field.name});
             break;
 '''
 
@@ -363,7 +363,7 @@ DECODE_REPEATED_ENUM_FMT = '''\
             pbtools_decoder_read_repeated_int32(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name_snake_case});
+                &self_p->{field.name});
             break;
 '''
 
@@ -372,7 +372,7 @@ DECODE_REPEATED_MESSAGE_MEMBER_FMT = '''\
             {field.full_type_snake_case}_decode_repeated_inner(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name_snake_case});
+                &self_p->{field.name});
             break;
 '''
 
@@ -381,14 +381,14 @@ DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name_snake_case}.base,
+                &self_p->{field.name}.base,
                 (pbtools_message_decode_inner_t){field.full_type_snake_case}_decode_inner);
             break;
 '''
 
 DECODE_ENUM_FMT = '''\
         case {field.field_number}:
-            self_p->{field.name_snake_case} = pbtools_decoder_read_enum(\
+            self_p->{field.name} = pbtools_decoder_read_enum(\
 decoder_p, wire_type);
             break;
 '''
