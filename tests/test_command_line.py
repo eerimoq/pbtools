@@ -53,7 +53,8 @@ class CommandLineTest(unittest.TestCase):
             'string',
             'tags',
             'uint32',
-            'uint64'
+            'uint64',
+            'field_names'
         ]
 
         for spec in specs:

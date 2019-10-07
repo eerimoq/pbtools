@@ -34,6 +34,7 @@
 #include "files/c_source/ordering.h"
 #include "files/c_source/no_package_importing.h"
 #include "files/c_source/enum_user.h"
+#include "files/c_source/field_names.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 

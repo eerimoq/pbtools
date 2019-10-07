@@ -192,7 +192,7 @@ void {message.full_name_snake_case}_finalize_repeated_inner(
 '''
 
 INIT_ONEOF_FMT = '''\
-void {oneof.full_name_snake_case}_{field.name}_init(
+void {oneof.full_name_snake_case}_{field.name_snake_case}_init(
     struct {message.full_name_snake_case}_t *self_p);
 '''
 
@@ -236,34 +236,35 @@ void {name}_decode_inner(
 
 ENCODE_MEMBER_FMT = '''\
     pbtools_encoder_write_{field.full_type_snake_case}(\
-encoder_p, {field.field_number}, {ref}self_p->{field.name});
+encoder_p, {field.field_number}, {ref}self_p->{field.name_snake_case});
 '''
 
 ENCODE_STRING_MEMBER_FMT = '''\
     pbtools_encoder_write_string(\
-encoder_p, {field.field_number}, {ref}self_p->{field.name}_p);
+encoder_p, {field.field_number}, {ref}self_p->{field.name_snake_case}_p);
 '''
 
 ENCODE_REPEATED_MEMBER_FMT = '''\
     pbtools_encoder_write_repeated_{field.full_type_snake_case}(\
-encoder_p, {field.field_number}, &self_p->{field.name});
+encoder_p, {field.field_number}, &self_p->{field.name_snake_case});
 '''
 
 ENCODE_REPEATED_ENUM_FMT = '''\
     pbtools_encoder_write_repeated_int32(\
-encoder_p, {field.field_number}, &self_p->{field.name});
+encoder_p, {field.field_number}, &self_p->{field.name_snake_case});
 '''
 
 ENCODE_SUB_MESSAGE_MEMBER_FMT = '''\
     pbtools_encoder_sub_message_encode(
         encoder_p,
         {field.field_number},
-        &self_p->{field.name}.base,
+        &self_p->{field.name_snake_case}.base,
         (pbtools_message_encode_inner_t){field.full_type_snake_case}_encode_inner);
 '''
 
 ENCODE_ENUM_FMT = '''\
-    pbtools_encoder_write_enum(encoder_p, {field.field_number}, self_p->{field.name});
+    pbtools_encoder_write_enum(encoder_p, {field.field_number}, \
+self_p->{field.name_snake_case});
 '''
 
 ENCODE_ONEOF_MEMBER_FMT = '''\
@@ -271,39 +272,39 @@ ENCODE_ONEOF_MEMBER_FMT = '''\
 '''
 
 ENCODE_ONEOF_CHOICE_FMT = '''\
-    case {oneof.full_name_snake_case}_choice_{field.name}_e:
+    case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
         pbtools_encoder_write_{field.full_type_snake_case}(
             encoder_p,
             {field.field_number},
-            {ref}self_p->value.{field.name});
+            {ref}self_p->value.{field.name_snake_case});
         break;
 '''
 
 ENCODE_ONEOF_STRING_MEMBER_FMT = '''\
-    case {oneof.full_name_snake_case}_choice_{field.name}_e:
+    case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
         pbtools_encoder_write_string(
             encoder_p,
             {field.field_number},
-            {ref}self_p->value.{field.name}_p);
+            {ref}self_p->value.{field.name_snake_case}_p);
         break;
 '''
 
 ENCODE_ONEOF_SUB_MESSAGE_MEMBER_FMT = '''\
-    case {oneof.full_name_snake_case}_choice_{field.name}_e:
+    case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
         pbtools_encoder_sub_message_encode(
             encoder_p,
             {field.field_number},
-            &self_p->value.{field.name}.base,
+            &self_p->value.{field.name_snake_case}.base,
             (pbtools_message_encode_inner_t){field.full_type_snake_case}_encode_inner);
         break;
 '''
 
 ENCODE_ONEOF_ENUM_FMT = '''\
-    case {oneof.full_name_snake_case}_choice_{field.name}_e:
+    case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
         pbtools_encoder_write_enum(
             encoder_p,
             {field.field_number},
-            self_p->value.{field.name});
+            self_p->value.{field.name_snake_case});
         break;
 '''
 
@@ -311,7 +312,7 @@ ENCODE_REPEATED_MESSAGE_MEMBER_FMT = '''\
     {field.full_type_snake_case}_encode_repeated_inner(
         encoder_p,
         {field.field_number},
-        &self_p->{field.name});
+        &self_p->{field.name_snake_case});
 '''
 
 ENCODE_ONEOF_FMT = '''\
@@ -330,7 +331,7 @@ void {oneof.full_name_snake_case}_encode(
 
 DECODE_MEMBER_FMT = '''\
         case {field.field_number}:
-            self_p->{field.name} = \
+            self_p->{field.name_snake_case} = \
 pbtools_decoder_read_{field.full_type_snake_case}(decoder_p, wire_type);
             break;
 '''
@@ -338,14 +339,14 @@ pbtools_decoder_read_{field.full_type_snake_case}(decoder_p, wire_type);
 DECODE_MEMBER_BYTES_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_bytes(\
-decoder_p, wire_type, &self_p->{field.name});
+decoder_p, wire_type, &self_p->{field.name_snake_case});
             break;
 '''
 
 DECODE_MEMBER_STRING_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_string(\
-decoder_p, wire_type, &self_p->{field.name}_p);
+decoder_p, wire_type, &self_p->{field.name_snake_case}_p);
             break;
 '''
 
@@ -354,7 +355,7 @@ DECODE_REPEATED_MEMBER_FMT = '''\
             pbtools_decoder_read_repeated_{field.full_type_snake_case}(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name});
+                &self_p->{field.name_snake_case});
             break;
 '''
 
@@ -363,7 +364,7 @@ DECODE_REPEATED_ENUM_FMT = '''\
             pbtools_decoder_read_repeated_int32(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name});
+                &self_p->{field.name_snake_case});
             break;
 '''
 
@@ -372,7 +373,7 @@ DECODE_REPEATED_MESSAGE_MEMBER_FMT = '''\
             {field.full_type_snake_case}_decode_repeated_inner(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name});
+                &self_p->{field.name_snake_case});
             break;
 '''
 
@@ -381,21 +382,21 @@ DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name}.base,
+                &self_p->{field.name_snake_case}.base,
                 (pbtools_message_decode_inner_t){field.full_type_snake_case}_decode_inner);
             break;
 '''
 
 DECODE_ENUM_FMT = '''\
         case {field.field_number}:
-            self_p->{field.name} = pbtools_decoder_read_enum(\
+            self_p->{field.name_snake_case} = pbtools_decoder_read_enum(\
 decoder_p, wire_type);
             break;
 '''
 
 DECODE_ONEOF_FMT = '''\
         case {field.field_number}:
-            {oneof.full_name_snake_case}_{field.name}_decode(
+            {oneof.full_name_snake_case}_{field.name_snake_case}_decode(
                 decoder_p,
                 wire_type,
                 self_p);
@@ -405,17 +406,19 @@ DECODE_ONEOF_FMT = '''\
 DECODE_ONEOF_MEMBER_BYTES_FMT = '''\
     pbtools_decoder_read_bytes(decoder_p,
                                wire_type,
-                               &self_p->{oneof.name}.value.{field.name_snake_case});
+                               &self_p->{oneof.name_snake_case}.value.\
+{field.name_snake_case});
 '''
 
 DECODE_ONEOF_MEMBER_STRING_FMT = '''\
     pbtools_decoder_read_string(decoder_p,
                                 wire_type,
-                                &self_p->{oneof.name}.value.{field.name_snake_case}_p);
+                                &self_p->{oneof.name_snake_case}.value.\
+{field.name_snake_case}_p);
 '''
 
 DECODE_ONEOF_MEMBER_FMT = '''\
-    self_p->{oneof.name}.value.{field.name_snake_case} = \
+    self_p->{oneof.name_snake_case}.value.{field.name_snake_case} = \
 pbtools_decoder_read_{field.full_type_snake_case}(
         decoder_p,
         wire_type);
@@ -425,32 +428,34 @@ DECODE_ONEOF_SUB_MESSAGE_MEMBER_FMT = '''\
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        &self_p->{oneof.name}.value.{field.name_snake_case}.base,
+        &self_p->{oneof.name_snake_case}.value.{field.name_snake_case}.base,
         (pbtools_message_decode_inner_t){field.full_type_snake_case}_decode_inner);
 '''
 
 DECODE_ONEOF_ENUM_FMT = '''\
-    self_p->{oneof.name}.value.{field.name_snake_case} = pbtools_decoder_read_enum(
+    self_p->{oneof.name_snake_case}.value.{field.name_snake_case} = \
+pbtools_decoder_read_enum(
         decoder_p,
         wire_type);
 '''
 
 INIT_ONEOF_FIELD_FMT = '''\
-void {oneof.full_name_snake_case}_{field.name}_init(
+void {oneof.full_name_snake_case}_{field.name_snake_case}_init(
     struct {message.full_name_snake_case}_t *self_p)
 {{
-    self_p->{oneof.name}.choice = {oneof.full_name_snake_case}_choice_{field.name}_e;
+    self_p->{oneof.name_snake_case}.choice = \
+{oneof.full_name_snake_case}_choice_{field.name_snake_case}_e;
 {init}
 }}
 '''
 
 DECODE_ONEOF_FIELD_FMT = '''\
-static void {oneof.full_name_snake_case}_{field.name}_decode(
+static void {oneof.full_name_snake_case}_{field.name_snake_case}_decode(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct {message.full_name_snake_case}_t *self_p)
 {{
-    {oneof.full_name_snake_case}_{field.name}_init(self_p);
+    {oneof.full_name_snake_case}_{field.name_snake_case}_init(self_p);
 {decode}\
 }}
 '''
@@ -496,36 +501,36 @@ int {message.full_name_snake_case}_decode(
 '''
 
 REPEATED_DEFINITION_FMT = '''\
-int {message.full_name_snake_case}_{field.name}_alloc(
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     struct {message.full_name_snake_case}_t *self_p,
     int length)
 {{
     return (pbtools_alloc_repeated_{field.full_type_snake_case}(
                 &self_p->base,
                 length,
-                &self_p->{field.name}));
+                &self_p->{field.name_snake_case}));
 }}
 '''
 
 REPEATED_ENUM_DEFINITION_FMT = '''\
-int {message.full_name_snake_case}_{field.name}_alloc(
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     struct {message.full_name_snake_case}_t *self_p,
     int length)
 {{
     return (pbtools_alloc_repeated_int32(
                 &self_p->base,
                 length,
-                &self_p->{field.name}));
+                &self_p->{field.name_snake_case}));
 }}
 '''
 
 REPEATED_MESSAGE_DEFINITION_ALLOC_FMT = '''\
-int {message.full_name_snake_case}_{field.name}_alloc(
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     struct {message.full_name_snake_case}_t *self_p,
     int length)
 {{
     return (pbtools_alloc_repeated(
-                (struct pbtools_repeated_message_t *)&self_p->{field.name},
+                (struct pbtools_repeated_message_t *)&self_p->{field.name_snake_case},
                 length,
                 self_p->base.heap_p,
                 sizeof(struct {field.full_type_snake_case}_t),
@@ -573,19 +578,19 @@ void {message.full_name_snake_case}_finalize_repeated_inner(
 REPEATED_FINALIZER_FMT = '''\
     pbtools_decoder_finalize_repeated_{field.full_type_snake_case}(
         decoder_p,
-        &self_p->{field.name});\
+        &self_p->{field.name_snake_case});\
 '''
 
 REPEATED_ENUM_FINALIZER_FMT = '''\
     pbtools_decoder_finalize_repeated_int32(
         decoder_p,
-        &self_p->{field.name});\
+        &self_p->{field.name_snake_case});\
 '''
 
 REPEATED_MESSAGE_FINALIZER_FMT = '''\
     {field.full_type_snake_case}_finalize_repeated_inner(
         decoder_p,
-        &self_p->{field.name});\
+        &self_p->{field.name_snake_case});\
 '''
 
 
@@ -607,7 +612,7 @@ class Generator:
     def package(self):
         return self.parsed.package
 
-    def generate_struct_member_fmt(self, type, name, type_kind):
+    def generate_struct_member_fmt(self, type, name_snake_case, type_kind):
         if type in ['int32', 'int64', 'uint32', 'uint64']:
             type = f'{type}_t '
         elif type in ['sint32', 'sint64']:
@@ -622,7 +627,7 @@ class Generator:
             type = f'struct pbtools_bytes_t '
         elif type == 'string':
             type = f'char *'
-            name = f'{name}_p'
+            name_snake_case = f'{name_snake_case}_p'
         elif type_kind == 'enum':
             type = f'enum {type}_e '
         elif type_kind == 'message':
@@ -630,9 +635,12 @@ class Generator:
         else:
             type += ' '
 
-        return f'    {type}{name};'
+        return f'    {type}{name_snake_case};'
 
-    def generate_repeated_struct_member_fmt(self, type, name, type_kind):
+    def generate_repeated_struct_member_fmt(self,
+                                            type,
+                                            name_snake_case,
+                                            type_kind):
         if type in SCALAR_VALUE_TYPES:
             if type in ['sint32', 'sint64']:
                 type = type[1:]
@@ -647,7 +655,7 @@ class Generator:
         else:
             type = f'struct {type}_repeated_t'
 
-        return f'    {type} {name};'
+        return f'    {type} {name_snake_case};'
 
     def generate_struct_members(self, message):
         members = []
@@ -656,20 +664,20 @@ class Generator:
             if field.repeated:
                 member = self.generate_repeated_struct_member_fmt(
                     field.full_type_snake_case,
-                    field.name,
+                    field.name_snake_case,
                     field.type_kind)
             else:
                 member = self.generate_struct_member_fmt(
                     field.full_type_snake_case,
-                    field.name,
+                    field.name_snake_case,
                     field.type_kind)
 
             members.append(member)
 
         for oneof in message.oneofs:
-            type = f'{message.full_name_snake_case}_{oneof.name}_oneof_t'
+            type = f'{message.full_name_snake_case}_{oneof.name_snake_case}_oneof_t'
             members.append(
-                f'    struct {type} {oneof.name};')
+                f'    struct {type} {oneof.name_snake_case};')
 
         members = '\n'.join(members)
 
@@ -700,7 +708,7 @@ class Generator:
         for field in oneof.fields:
             member = self.generate_struct_member_fmt(
                 field.full_type_snake_case,
-                field.name,
+                field.name_snake_case,
                 field.type_kind)
             members.append(f'    {member}')
 
@@ -836,7 +844,7 @@ class Generator:
         for oneof in message.oneofs:
             members.append(
                 ENCODE_ONEOF_MEMBER_FMT.format(name=oneof.full_name_snake_case,
-                                               field_name=oneof.name))
+                                               field_name=oneof.name_snake_case))
 
         if not members:
             members = [
@@ -881,7 +889,7 @@ class Generator:
         members = []
 
         for field in message.fields:
-            name = field.name
+            name = field.name_snake_case
 
             if field.repeated:
                 member = f'    self_p->{name}.length = 0;'
@@ -900,7 +908,7 @@ class Generator:
             members.append(member)
 
         for oneof in message.oneofs:
-            members.append(f'    self_p->{oneof.name}.choice = 0;')
+            members.append(f'    self_p->{oneof.name_snake_case}.choice = 0;')
 
         return '\n'.join(members)
 
@@ -956,21 +964,22 @@ class Generator:
                                         oneof,
                                         definitions):
         for field in oneof.fields:
-            name = field.name
+            name = field.name_snake_case
 
             if field.type == 'bytes':
-                init = f'    pbtools_bytes_init(&self_p->{oneof.name}.value.{name});'
+                init = (f'    pbtools_bytes_init('
+                        f'&self_p->{oneof.name_snake_case}.value.{name});')
             elif field.type == 'string':
-                init = f'    self_p->{oneof.name}.value.{name}_p = "";'
+                init = f'    self_p->{oneof.name_snake_case}.value.{name}_p = "";'
             elif field.type_kind == 'scalar-value-type':
-                init = f'    self_p->{oneof.name}.value.{name} = 0;'
+                init = f'    self_p->{oneof.name_snake_case}.value.{name} = 0;'
             elif field.type_kind == 'message':
                 init = (f'    {field.full_type_snake_case}_init(\n'
-                        f'        &self_p->{oneof.name}.value.{name},\n'
+                        f'        &self_p->{oneof.name_snake_case}.value.{name},\n'
                         f'        self_p->base.heap_p,\n'
                         f'        NULL);')
             else:
-                init = f'    self_p->{oneof.name}.value.{name} = 0;'
+                init = f'    self_p->{oneof.name_snake_case}.value.{name} = 0;'
 
             definitions.append(
                 INIT_ONEOF_FIELD_FMT.format(message=message,

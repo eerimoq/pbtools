@@ -365,6 +365,10 @@ class Oneof:
     def full_name_snake_case(self):
         return camel_to_snake_case(self.full_name)
 
+    @property
+    def name_snake_case(self):
+        return camel_to_snake_case(self.name)
+
 
 class MessageField(Field):
 

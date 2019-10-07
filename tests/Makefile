@@ -83,6 +83,7 @@ all:
 	    files/c_source/no_package_imported.c \
 	    files/c_source/enum_user.c \
 	    files/c_source/enum_provider.c \
+	    files/c_source/field_names.c \
 	    main.o
 	./a.out
 

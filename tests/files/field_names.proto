@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package field_names;
+
+enum Enum {
+    A = 0;
+    B = 1;
+}
+
+message Message {
+    bool MyValue = 1;
+};
+
+message MessageCamelCase {
+    int32 myInt32 = 1;
+    int64 myInt64 = 2;
+    sint32 mySint32 = 3;
+    sint64 mySint64 = 4;
+    uint32 myUint32 = 5;
+    uint64 myUint64 = 6;
+    fixed32 myFixed32 = 7;
+    fixed64 myFixed64 = 8;
+    sfixed32 mySfixed32 = 9;
+    sfixed64 mySfixed64 = 10;
+    float myFloat = 11;
+    double myDouble = 12;
+    bool myBool = 13;
+    string myString = 14;
+    bytes myBytes = 15;
+    Enum myEnum = 16;
+    Message myMessage = 17;
+}
+
+message MessagePascalCase {
+    int32 MyInt32 = 1;
+    int64 MyInt64 = 2;
+    sint32 MySint32 = 3;
+    sint64 MySint64 = 4;
+    uint32 MyUint32 = 5;
+    uint64 MyUint64 = 6;
+    fixed32 MyFixed32 = 7;
+    fixed64 MyFixed64 = 8;
+    sfixed32 MySfixed32 = 9;
+    sfixed64 MySfixed64 = 10;
+    float MyFloat = 11;
+    double MyDouble = 12;
+    bool MyBool = 13;
+    string MyString = 14;
+    bytes MyBytes = 15;
+    Enum MyEnum = 16;
+    Message MyMessage = 17;
+}
+
+message RepeatedMessageCamelCase {
+    repeated int32 myInt32 = 1;
+    repeated int64 myInt64 = 2;
+    repeated sint32 mySint32 = 3;
+    repeated sint64 mySint64 = 4;
+    repeated uint32 myUint32 = 5;
+    repeated uint64 myUint64 = 6;
+    repeated fixed32 myFixed32 = 7;
+    repeated fixed64 myFixed64 = 8;
+    repeated sfixed32 mySfixed32 = 9;
+    repeated sfixed64 mySfixed64 = 10;
+    repeated float myFloat = 11;
+    repeated double myDouble = 12;
+    repeated bool myBool = 13;
+    repeated string myString = 14;
+    repeated bytes myBytes = 15;
+    repeated Enum myEnum = 16;
+    repeated Message myMessage = 17;
+}
+
+message RepeatedMessagePascalCase {
+    repeated int32 MyInt32 = 1;
+    repeated int64 MyInt64 = 2;
+    repeated sint32 MySint32 = 3;
+    repeated sint64 MySint64 = 4;
+    repeated uint32 MyUint32 = 5;
+    repeated uint64 MyUint64 = 6;
+    repeated fixed32 MyFixed32 = 7;
+    repeated fixed64 MyFixed64 = 8;
+    repeated sfixed32 MySfixed32 = 9;
+    repeated sfixed64 MySfixed64 = 10;
+    repeated float MyFloat = 11;
+    repeated double MyDouble = 12;
+    repeated bool MyBool = 13;
+    repeated string MyString = 14;
+    repeated bytes MyBytes = 15;
+    repeated Enum MyEnum = 16;
+    repeated Message MyMessage = 17;
+}
+
+message MessageOneOf {
+    oneof OneOf {
+        MessageCamelCase camelCaseMessage = 1;
+        MessagePascalCase PascalCaseMessage = 2;
+        RepeatedMessageCamelCase camelCaseMessageRepeated = 3;
+        RepeatedMessagePascalCase PascalCaseMessageRepeated = 4;
+        int32 myInt32 = 5;
+        string myString = 6;
+        bytes myBytes = 7;
+    };
+}
