@@ -5,7 +5,7 @@
 About
 =====
 
-Google `Protocol Buffers`_ tools in Python 3.6+.
+`Google Protocol Buffers`_ tools in Python 3.6+.
 
 - `C` source code generator (C11 and later).
 
@@ -200,7 +200,7 @@ generated files.
 .. |codecov| image:: https://codecov.io/gh/eerimoq/pbtools/branch/master/graph/badge.svg
 .. _codecov: https://codecov.io/gh/eerimoq/pbtools
 
-.. _Protocol Buffers: https://developers.google.com/protocol-buffers
+.. _Google Protocol Buffers: https://developers.google.com/protocol-buffers
 
 .. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.h
 
