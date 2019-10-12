@@ -9,7 +9,7 @@ About
 
 - `C` source code generator.
 
-- `proto3` language parser.
+- `proto3`_ language parser.
 
 Known limitations:
 
@@ -201,6 +201,8 @@ generated files.
 .. _codecov: https://codecov.io/gh/eerimoq/pbtools
 
 .. _Google Protocol Buffers: https://developers.google.com/protocol-buffers
+
+.. _proto3: https://developers.google.com/protocol-buffers/docs/proto3
 
 .. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.h
 
