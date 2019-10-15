@@ -380,6 +380,9 @@ class MessageField(Field):
 
 
 class Message:
+    """A message.
+
+    """
 
     def __init__(self, tokens, namespace):
         self.name = tokens[1]
@@ -499,36 +502,56 @@ class ImportedProto:
 
 
 class Proto:
+    """A proto3-file. :func:`~pbtools.parse_file()` returns an instance of
+    this class.
+
+    """
 
     def __init__(self, tree, abspath, import_paths):
         self.abspath = abspath
-        self.package = load_package(tree)
+        self._package = load_package(tree)
         self.imports = load_imports(tree, import_paths)
         namespace = self.namespace_base()
         self.options = load_options(tree)
-        self.messages = load_messages(tree, namespace)
+        self._messages = load_messages(tree, namespace)
         self.services = load_services(tree)
         self.enums = load_enums(tree, namespace)
         self.messages_stack = []
         self.resolve_messages_fields_types()
         self.resolve_messages_fields_type_kinds()
-        self.messages = self.sort_messages_by_usage(self.messages)
+        self._messages = self.sort_messages_by_usage(self._messages)
+
+    @property
+    def package(self):
+        """Package name, or ``None`` if missing.
+
+        """
+
+        return self._package
+
+    @property
+    def messages(self):
+        """A list of all messages.
+
+        """
+
+        return self._messages
 
     @property
     def type_names(self):
         type_names = [enum.name for enum in self.enums]
-        type_names += [message.name for message in self.messages]
+        type_names += [message.name for message in self._messages]
 
         return type_names
 
     def namespace_base(self):
-        if self.package is None:
+        if self._package is None:
             return []
         else:
-            return [self.package]
+            return [self._package]
 
     def resolve_messages_fields_types(self):
-        for message in self.messages:
+        for message in self._messages:
             self.resolve_message_fields_types(message)
 
     def resolve_message_fields_types(self, message):
@@ -559,18 +582,18 @@ class Proto:
         for message in reversed(self.messages_stack):
             if field.type in message.type_names:
                 namespace = message.namespace + [message.name]
-                package = self.package
+                package = self._package
                 break
         else:
             if field.type in self.type_names:
                 namespace = self.namespace_base()
-                package = self.package
+                package = self._package
             else:
                 for imported in self.imports:
-                    if imported.package == self.package:
+                    if imported.package == self._package:
                         if field.type in imported.type_names:
                             namespace = self.namespace_base()
-                            package = self.package
+                            package = self._package
                             break
                 else:
                     namespace = []
@@ -580,7 +603,7 @@ class Proto:
         field.package = package
 
     def resolve_messages_fields_type_kinds(self):
-        for message in self.messages:
+        for message in self._messages:
             self.resolve_message_fields_type_kinds(message)
 
     def resolve_message_fields_type_kinds(self, message):
@@ -614,11 +637,11 @@ class Proto:
                 elif field.type in imported.messages:
                     return False
 
-        if field.package == self.package:
+        if field.package == self._package:
             offset = len(self.namespace_base())
             type = self.lookup_type(field.namespace[offset:] + [field.type],
                                     self.enums,
-                                    self.messages)
+                                    self._messages)
 
             return isinstance(type, Enum)
 
@@ -727,6 +750,14 @@ def find_file(filename, import_paths):
 
 
 def parse_file(filename, import_paths=None):
+    """Parse given proto3-file `filename` and its imports. Returns a
+    :class:`~pbtools.parser.Proto` object.
+
+    `import_paths` is a list of paths where to search for imported
+    files.
+
+    """
+
     if import_paths is None:
         import_paths = []
 

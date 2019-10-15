@@ -10,3 +10,14 @@ Google protocol buffers tools
 =============================
 
 .. include:: ../README.rst
+
+Functions and classes
+=====================
+
+.. autofunction:: pbtools.parse_file
+
+.. autoclass:: pbtools.parser.Proto
+    :members:
+
+.. autoclass:: pbtools.parser.Message
+    :members:
