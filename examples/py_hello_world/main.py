@@ -3,8 +3,11 @@ import hello_world
 # Encode.
 foo = hello_world.Foo()
 foo.bar = 78
-encoded = foo.to_bytes()
+encoded = foo.encode()
+print(f'Successfully encoded Foo into {len(encoded)} bytes.')
 
 # Decode.
 foo = hello_world.Foo()
-foo.from_bytes(encoded)
+foo.decode(encoded)
+print(f'Successfully decoded {len(encoded)} bytes into Foo.')
+print(f'Foo.bar: {foo.bar}')

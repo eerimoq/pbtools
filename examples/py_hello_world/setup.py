@@ -8,5 +8,11 @@ from setuptools import Extension
 setup(name='hello_world',
       packages=find_packages(),
       ext_modules=[
-          Extension(name="hello_world", sources=["hello_world/hello_world.c"])
+          Extension(name="hello_world",
+                    sources=[
+                        "hello_world/hello_world.c",
+                        "hello_world/pbtools_py.c",
+                        "hello_world/c/hello_world.c",
+                        "hello_world/c/pbtools.c"
+                    ])
       ])
