@@ -510,12 +510,12 @@ class Proto:
     def __init__(self, tree, abspath, import_paths):
         self.abspath = abspath
         self._package = load_package(tree)
-        self.imports = load_imports(tree, import_paths)
+        self._imports = load_imports(tree, import_paths)
         namespace = self.namespace_base()
-        self.options = load_options(tree)
+        self._options = load_options(tree)
         self._messages = load_messages(tree, namespace)
-        self.services = load_services(tree)
-        self.enums = load_enums(tree, namespace)
+        self._services = load_services(tree)
+        self._enums = load_enums(tree, namespace)
         self.messages_stack = []
         self.resolve_messages_fields_types()
         self.resolve_messages_fields_type_kinds()
@@ -530,6 +530,30 @@ class Proto:
         return self._package
 
     @property
+    def imports(self):
+        """A list of all imports.
+
+        """
+
+        return self._imports
+
+    @property
+    def options(self):
+        """A list of all options.
+
+        """
+
+        return self._options
+
+    @property
+    def services(self):
+        """A list of all services.
+
+        """
+
+        return self._services
+
+    @property
     def messages(self):
         """A list of all messages.
 
@@ -538,8 +562,16 @@ class Proto:
         return self._messages
 
     @property
+    def enums(self):
+        """A list of all enums.
+
+        """
+
+        return self._enums
+
+    @property
     def type_names(self):
-        type_names = [enum.name for enum in self.enums]
+        type_names = [enum.name for enum in self._enums]
         type_names += [message.name for message in self._messages]
 
         return type_names
@@ -589,7 +621,7 @@ class Proto:
                 namespace = self.namespace_base()
                 package = self._package
             else:
-                for imported in self.imports:
+                for imported in self._imports:
                     if imported.package == self._package:
                         if field.type in imported.type_names:
                             namespace = self.namespace_base()
@@ -630,7 +662,7 @@ class Proto:
             field.type_kind = 'message'
 
     def is_field_enum(self, field):
-        for imported in self.imports:
+        for imported in self._imports:
             if field.package == imported.package:
                 if field.type in imported.enums:
                     return True
@@ -640,7 +672,7 @@ class Proto:
         if field.package == self._package:
             offset = len(self.namespace_base())
             type = self.lookup_type(field.namespace[offset:] + [field.type],
-                                    self.enums,
+                                    self._enums,
                                     self._messages)
 
             return isinstance(type, Enum)
