@@ -2,7 +2,7 @@ import os
 import shutil
 
 from ..parser import parse_file
-from ..c_source import camel_to_snake_case
+from ..parser import camel_to_snake_case
 from ..c_source import generate
 
 

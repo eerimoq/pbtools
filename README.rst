@@ -9,6 +9,8 @@ About
 
 - `C` source code generator.
 
+- `Python 3` C extension source code generator.
+
 - `proto3`_ language parser.
 
 Known limitations:
@@ -60,6 +62,15 @@ Benchmark
 
 See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
 
+Python C extension source code design
+=====================================
+
+A Python C extension wrapper around generated C source code.
+
+Known limitations:
+
+- Same as for the C source code.
+
 Example usage
 =============
 
@@ -82,7 +93,7 @@ Generate C source code from the proto-file.
 
 .. code-block:: text
 
-   $ pbtools generate_c_source examples/hello_world/hello_world.proto
+   $ pbtools generate_c_source examples/c/hello_world/hello_world.proto
    Successfully generated hello_world.h and hello_world.c.
    Successfully created pbtools.h and pbtools.c.
 
@@ -171,7 +182,56 @@ Build and run the program.
    Successfully decoded 2 bytes into Foo.
    Foo.bar: 78
 
-See `hello_world`_ for all files used in this example.
+See `c/hello_world`_ for all files used in this example.
+
+Python source code
+------------------
+
+Generate Python C extension source code from the proto-file.
+
+.. code-block:: text
+
+   $ pbtools generate_python_source examples/python/hello_world/hello_world.proto
+   Successfully generated hello_world/.
+
+   Run 'cd hello_world && python3 setup.py build --build-platlib .. &&
+   cd ..' to build it.
+
+Compile the generated code. This creates a shared object file that can
+be imported by Python scripts.
+
+.. code-block:: text
+
+   $ cd hello_world
+   $ python3 setup.py build --build-platlib ..
+   $ cd ..
+
+Encode and decode the Foo-message in `main.py`_.
+
+.. code-block:: python
+
+   import json
+   import hello_world
+
+   # Encode.
+   encoded = hello_world.foo_encode({'bar': 78})
+   print(f'Successfully encoded Foo into {len(encoded)} bytes.')
+
+   # Decode.
+   decoded = hello_world.foo_decode(encoded)
+   print(f'Successfully decoded {len(encoded)} bytes.')
+   print(f"Foo.bar: {decoded['bar']}")
+
+Run the script.
+
+.. code-block:: text
+
+   $ python3 main.py
+   Successfully encoded Foo into 2 bytes.
+   Successfully decoded 2 bytes into Foo.
+   Foo.bar: 78
+
+See `python/hello_world`_ for all files used in this example.
 
 Command line tool
 -----------------
@@ -191,6 +251,11 @@ proto-file.
 See `address_book.h`_ and `address_book.c`_ for the contents of the
 generated files.
 
+Ideas
+=====
+
+- Python data classes.
+
 .. |buildstatus| image:: https://travis-ci.org/eerimoq/pbtools.svg?branch=master
 .. _buildstatus: https://travis-ci.org/eerimoq/pbtools
 
@@ -204,18 +269,22 @@ generated files.
 
 .. _proto3: https://developers.google.com/protocol-buffers/docs/proto3
 
-.. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.h
+.. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/c/address_book/generated/address_book.h
 
-.. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.c
+.. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/address_book/generated/address_book.c
 
-.. _hello_world.proto: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/hello_world.proto
+.. _hello_world.proto: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/hello_world.proto
 
-.. _hello_world.h: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.h
+.. _hello_world.h: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/generated/hello_world.h
 
-.. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.c
+.. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/generated/hello_world.c
 
-.. _main.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/main.c
+.. _main.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/main.c
 
-.. _hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world
+.. _c/hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world
+
+.. _main.py: https://github.com/eerimoq/pbtools/blob/master/examples/python/hello_world/main.py
+
+.. _python/hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/python/hello_world
 
 .. _benchmark: https://github.com/eerimoq/pbtools/blob/master/benchmark

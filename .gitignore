@@ -75,3 +75,4 @@ main
 *.gcno
 tests/crash-*
 tests/main_fuzzer*
+/address_book
