@@ -92,7 +92,9 @@ static PyObject *address_book_person_phone_number_get(
         break;
     }
 
-    PyDict_SetItemString(decoded_p, "type", value_p);
+    if (value_p != NULL) {
+        PyDict_SetItemString(decoded_p, "type", value_p);
+    }
 
     return (decoded_p);
 }
