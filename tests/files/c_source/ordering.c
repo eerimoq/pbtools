@@ -41,7 +41,7 @@ void ordering_bar_fie_init(
     struct ordering_bar_fie_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
     self_p->v2 = 0;
 }
@@ -119,7 +119,7 @@ void ordering_bar_gom_init(
     struct ordering_bar_gom_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     ordering_bar_fie_init(&self_p->v1, heap_p, NULL);
 }
 
@@ -199,7 +199,7 @@ void ordering_bar_init(
     struct ordering_bar_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
     ordering_bar_fie_init(&self_p->fie, heap_p, NULL);
     self_p->fum = 0;
@@ -341,7 +341,7 @@ void ordering_foo_init(
     struct ordering_foo_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     ordering_bar_init(&self_p->bar, heap_p, NULL);
     self_p->fam = 0;
 }

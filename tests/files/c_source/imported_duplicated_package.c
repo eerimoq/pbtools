@@ -41,7 +41,7 @@ void imported_imported2_message_init(
     struct imported_imported2_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
 }
 
@@ -149,7 +149,7 @@ void imported_imported_duplicated_package_message_init(
     struct imported_imported_duplicated_package_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
 }
 

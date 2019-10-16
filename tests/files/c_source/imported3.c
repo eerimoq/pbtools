@@ -41,7 +41,7 @@ void bar_imported2_message_init(
     struct bar_imported2_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
 }
 
@@ -149,7 +149,7 @@ void bar_imported3_message_init(
     struct bar_imported3_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
 }
 
@@ -257,7 +257,7 @@ void bar_imported4_message_init(
     struct bar_imported4_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     bar_imported3_message_init(&self_p->v1, heap_p, NULL);
     foo_bar_imported3_message_init(&self_p->v2, heap_p, NULL);
 }

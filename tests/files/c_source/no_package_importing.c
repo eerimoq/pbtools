@@ -41,7 +41,7 @@ void npi_message2_init(
     struct npi_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     no_package_imported_message_init(&self_p->v3, heap_p, NULL);
 }
 

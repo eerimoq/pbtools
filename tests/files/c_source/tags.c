@@ -41,7 +41,7 @@ void tags_message1_init(
     struct tags_message1_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -149,7 +149,7 @@ void tags_message2_init(
     struct tags_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -257,7 +257,7 @@ void tags_message3_init(
     struct tags_message3_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -365,7 +365,7 @@ void tags_message4_init(
     struct tags_message4_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -473,7 +473,7 @@ void tags_message5_init(
     struct tags_message5_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -581,7 +581,7 @@ void tags_message6_init(
     struct tags_message6_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 

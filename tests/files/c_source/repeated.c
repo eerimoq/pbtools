@@ -41,7 +41,7 @@ void repeated_message_init(
     struct repeated_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->int32s.length = 0;
     self_p->messages.length = 0;
     self_p->strings.length = 0;
@@ -237,7 +237,7 @@ void repeated_message_scalar_value_types_init(
     struct repeated_message_scalar_value_types_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->int32s.length = 0;
     self_p->int64s.length = 0;
     self_p->sint32s.length = 0;
@@ -670,7 +670,7 @@ void repeated_message_scalar_value_types_packed_init(
     struct repeated_message_scalar_value_types_packed_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->int32s.length = 0;
     self_p->int64s.length = 0;
     self_p->sint32s.length = 0;
@@ -1103,7 +1103,7 @@ void repeated_message_scalar_value_types_not_packed_init(
     struct repeated_message_scalar_value_types_not_packed_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->int32s.length = 0;
     self_p->int64s.length = 0;
     self_p->sint32s.length = 0;
@@ -1536,7 +1536,7 @@ void repeated_foo_init(
     struct repeated_foo_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->messages.length = 0;
     self_p->enums.length = 0;
 }
@@ -1688,7 +1688,7 @@ void repeated_bar_fie_init(
     struct repeated_bar_fie_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->inner_foos.length = 0;
 }
 
@@ -1782,7 +1782,7 @@ void repeated_bar_init(
     struct repeated_bar_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->foos.length = 0;
     self_p->fies.length = 0;
 }

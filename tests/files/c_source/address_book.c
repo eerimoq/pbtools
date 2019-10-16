@@ -41,7 +41,7 @@ void address_book_person_phone_number_init(
     struct address_book_person_phone_number_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->number_p = "";
     self_p->type = 0;
 }
@@ -119,7 +119,7 @@ void address_book_person_init(
     struct address_book_person_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->name_p = "";
     self_p->id = 0;
     self_p->email_p = "";
@@ -267,7 +267,7 @@ void address_book_address_book_init(
     struct address_book_address_book_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->people.length = 0;
 }
 

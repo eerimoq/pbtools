@@ -41,7 +41,7 @@ void benchmark_sub_message_init(
     struct benchmark_sub_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field1 = 0;
     self_p->field2 = 0;
     self_p->field3 = 0;
@@ -233,7 +233,7 @@ void benchmark_message1_init(
     struct benchmark_message1_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field80 = 0;
     self_p->field81 = 0;
     self_p->field2 = 0;
@@ -486,7 +486,7 @@ void benchmark_message2_init(
     struct benchmark_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field1 = 0;
     self_p->field2 = 0;
     self_p->field3 = 0;
@@ -624,7 +624,7 @@ void benchmark_message3_sub_message_init(
     struct benchmark_message3_sub_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field28 = 0;
     self_p->field2 = 0;
     self_p->field12 = 0;
@@ -720,7 +720,7 @@ void benchmark_message3_init(
     struct benchmark_message3_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field13.length = 0;
 }
 
@@ -954,7 +954,7 @@ void benchmark_message_init(
     struct benchmark_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->oneof.choice = 0;
 }
 

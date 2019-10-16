@@ -41,7 +41,7 @@ void message_foo_init(
     struct message_foo_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
 
 }
 
@@ -149,7 +149,7 @@ void message_bar_init(
     struct message_bar_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->fie = 0;
 }
 
@@ -257,7 +257,7 @@ void message_message_fie_foo_init(
     struct message_message_fie_foo_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
     message_bar_init(&self_p->bar, heap_p, NULL);
 }
@@ -343,7 +343,7 @@ void message_message_fie_init(
     struct message_message_fie_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     message_message_fie_foo_init(&self_p->foo, heap_p, NULL);
 }
 
@@ -423,7 +423,7 @@ void message_message_init(
     struct message_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->foo = 0;
     message_bar_init(&self_p->bar, heap_p, NULL);
     message_message_fie_init(&self_p->fie, heap_p, NULL);
@@ -559,7 +559,7 @@ void message_unused_inner_types_unused_message_init(
     struct message_unused_inner_types_unused_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
 }
 
@@ -631,7 +631,7 @@ void message_unused_inner_types_init(
     struct message_unused_inner_types_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v2 = 0;
 }
 

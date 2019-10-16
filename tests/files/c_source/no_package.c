@@ -41,7 +41,7 @@ void m0_m1_init(
     struct m0_m1_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
 }
 
@@ -113,7 +113,7 @@ void m0_init(
     struct m0_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     m0_m1_init(&self_p->v1, heap_p, NULL);
     self_p->v2.length = 0;
     self_p->v3 = 0;

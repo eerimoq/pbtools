@@ -41,7 +41,7 @@ void enum_message_init(
     struct enum_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -149,7 +149,7 @@ void enum_message2_init(
     struct enum_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->outer = 0;
     self_p->inner = 0;
 }
@@ -263,7 +263,7 @@ void enum_limits_init(
     struct enum_limits_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 

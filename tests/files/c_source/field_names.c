@@ -41,7 +41,7 @@ void field_names_message_init(
     struct field_names_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->my_value = 0;
 }
 
@@ -149,7 +149,7 @@ void field_names_message_camel_case_init(
     struct field_names_message_camel_case_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->my_int32 = 0;
     self_p->my_int64 = 0;
     self_p->my_sint32 = 0;
@@ -361,7 +361,7 @@ void field_names_message_pascal_case_init(
     struct field_names_message_pascal_case_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->my_int32 = 0;
     self_p->my_int64 = 0;
     self_p->my_sint32 = 0;
@@ -573,7 +573,7 @@ void field_names_repeated_message_camel_case_init(
     struct field_names_repeated_message_camel_case_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->my_int32.length = 0;
     self_p->my_int64.length = 0;
     self_p->my_sint32.length = 0;
@@ -1055,7 +1055,7 @@ void field_names_repeated_message_pascal_case_init(
     struct field_names_repeated_message_pascal_case_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->my_int32.length = 0;
     self_p->my_int64.length = 0;
     self_p->my_sint32.length = 0;
@@ -1747,7 +1747,7 @@ void field_names_message_one_of_init(
     struct field_names_message_one_of_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->one_of.choice = 0;
 }
 

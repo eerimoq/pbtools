@@ -102,7 +102,7 @@ void oneof_message_init(
     struct oneof_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value.choice = 0;
 }
 
@@ -410,7 +410,7 @@ void oneof_message2_foo_init(
     struct oneof_message2_foo_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->bar = 0;
 }
 
@@ -482,7 +482,7 @@ void oneof_message2_init(
     struct oneof_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->oneof1.choice = 0;
     self_p->oneof2.choice = 0;
 }
@@ -733,7 +733,7 @@ void oneof_message3_foo_init(
     struct oneof_message3_foo_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->inner_oneof.choice = 0;
 }
 
@@ -815,7 +815,7 @@ void oneof_message3_bar_init(
     struct oneof_message3_bar_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->foo.length = 0;
 }
 
@@ -909,7 +909,7 @@ void oneof_message3_init(
     struct oneof_message3_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->oneof1.choice = 0;
 }
 

@@ -41,7 +41,7 @@ void int32_message_init(
     struct int32_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 
@@ -149,7 +149,7 @@ void int32_message2_init(
     struct int32_message2_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
 }
 

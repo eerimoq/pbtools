@@ -41,7 +41,7 @@ void imported2_foo_bar_imported2_message_init(
     struct imported2_foo_bar_imported2_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     imported_imported_duplicated_package_message_init(&self_p->v1, heap_p, NULL);
 }
 
@@ -157,7 +157,7 @@ void imported2_foo_bar_imported3_message_imported2_message_init(
     struct imported2_foo_bar_imported3_message_imported2_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     imported_imported_duplicated_package_message_init(&self_p->v1, heap_p, NULL);
 }
 
@@ -237,7 +237,7 @@ void imported2_foo_bar_imported3_message_init(
     struct imported2_foo_bar_imported3_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     imported_imported_duplicated_package_message_init(&self_p->v1, heap_p, NULL);
     imported2_foo_bar_imported3_message_imported2_message_init(&self_p->v2, heap_p, NULL);
     bar_imported2_message_init(&self_p->v3, heap_p, NULL);

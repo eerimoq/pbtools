@@ -41,7 +41,7 @@ void bytes_message_init(
     struct bytes_message_t *next_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = &next_p->base;
+    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     pbtools_bytes_init(&self_p->value);
 }
 
