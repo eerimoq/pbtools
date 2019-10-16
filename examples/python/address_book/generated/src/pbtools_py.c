@@ -182,7 +182,7 @@ void pbtools_py_set_repeated(void *message_p,
                              const char *key_p)
 {
     int res;
-    int i;
+    Py_ssize_t i;
     Py_ssize_t size;
     PyObject *value_p;
 
@@ -214,7 +214,7 @@ void pbtools_py_get_repeated(void *message_p,
                              const char *key_p)
 {
     PyObject *list_p;
-    size_t i;
+    int i;
 
     list_p = PyList_New(repeated_p->length);
 
