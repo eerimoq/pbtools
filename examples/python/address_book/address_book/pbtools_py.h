@@ -54,4 +54,6 @@ PyObject *pbtools_py_getint32(int32_t value);
 
 int pbtools_py_setint32(int32_t *dst_p, PyObject *value_p);
 
+int pbtools_py_setstring(const char **dst_pp, PyObject *value_p);
+
 #endif

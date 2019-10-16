@@ -1,13 +1,11 @@
 import hello_world
 
+
 # Encode.
-foo = hello_world.Foo()
-foo.bar = 78
-encoded = foo.encode()
+encoded = hello_world.foo_encode({'bar': 78})
 print(f'Successfully encoded Foo into {len(encoded)} bytes.')
 
 # Decode.
-foo = hello_world.Foo()
-foo.decode(encoded)
-print(f'Successfully decoded {len(encoded)} bytes into Foo.')
-print(f'Foo.bar: {foo.bar}')
+decoded = hello_world.foo_decode(encoded)
+print(f'Successfully decoded {len(encoded)} bytes.')
+print(decoded)

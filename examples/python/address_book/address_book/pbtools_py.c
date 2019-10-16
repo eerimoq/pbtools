@@ -102,12 +102,6 @@ int pbtools_py_setint32(int32_t *dst_p, PyObject *value_p)
 {
     long value;
 
-    if (value_p == NULL) {
-        PyErr_SetString(PyExc_TypeError, "Cannot delete the last attribute");
-
-        return (-1);
-    }
-
     value = PyLong_AsLong(value_p);
 
     if ((value == -1) && PyErr_Occurred()) {
@@ -121,6 +115,17 @@ int pbtools_py_setint32(int32_t *dst_p, PyObject *value_p)
     }
 
     *dst_p = value;
+
+    return (0);
+}
+
+int pbtools_py_setstring(const char **dst_pp, PyObject *value_p)
+{
+    *dst_pp = PyUnicode_AsUTF8(value_p);
+
+    if (*dst_pp == NULL) {
+        return (-1);
+    }
 
     return (0);
 }
