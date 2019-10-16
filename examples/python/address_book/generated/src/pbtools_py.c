@@ -24,7 +24,6 @@
  * SOFTWARE.
  */
 
-#include <dbg.h>
 #include "pbtools_py.h"
 
 int pbtools_py_init(pbtools_py_new_t new,
