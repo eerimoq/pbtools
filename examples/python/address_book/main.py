@@ -1,8 +1,9 @@
+import json
 import address_book
 
 
 # Encode the message.
-encoded = address_book.address_book_encode({
+decoded = {
     'people': [
         {
             'name': "Kalle Kula",
@@ -20,10 +21,11 @@ encoded = address_book.address_book_encode({
             ]
         }
     ]
-})
+}
+encoded = address_book.address_book_encode(decoded)
 print(f'Successfully encoded AddressBook into {len(encoded)} bytes.')
 
 # Decode the message.
 decoded = address_book.address_book_decode(encoded)
 print(f'Successfully decoded {len(encoded)} bytes.')
-print(decoded)
+print(json.dumps(decoded, indent=4))

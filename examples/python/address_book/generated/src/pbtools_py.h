@@ -28,6 +28,7 @@
 #define PBTOOLS_PY_H
 
 #include <Python.h>
+#include "c/pbtools.h"
 
 typedef void *(*pbtools_py_new_t)(void *workspace_p, size_t size);
 typedef int (*pbtools_py_encode_t)(void *message_p,
@@ -36,6 +37,9 @@ typedef int (*pbtools_py_encode_t)(void *message_p,
 typedef int (*pbtools_py_decode_t)(void *message_p,
                                    uint8_t *encoded_p,
                                    size_t size);
+typedef int (*pbtools_py_alloc_t)(void *message_p, size_t size);
+typedef void (*pbtools_py_set_t)(void *message_p, PyObject *decoded_p);
+typedef PyObject *(*pbtools_py_get_t)(void *message_p);
 
 int pbtools_py_init(pbtools_py_new_t new,
                     void **message_pp,
@@ -44,16 +48,40 @@ int pbtools_py_init(pbtools_py_new_t new,
 
 PyObject *pbtools_py_encode(pbtools_py_encode_t encode,
                             void *message_p,
+                            void *workspace_p,
                             size_t size);
 
 int pbtools_py_decode(pbtools_py_decode_t decode,
                       void *message_p,
                       PyObject *bytes_p);
 
-PyObject *pbtools_py_getint32(int32_t value);
+void pbtools_py_set_string(char **dst_pp,
+                           PyObject *decoded_p,
+                           const char *key_p);
 
-int pbtools_py_setint32(int32_t *dst_p, PyObject *value_p);
+void pbtools_py_get_string(char *src_p,
+                           PyObject *decoded_p,
+                           const char *key_p);
 
-int pbtools_py_setstring(const char **dst_pp, PyObject *value_p);
+void pbtools_py_set_int32(int32_t *dst_p,
+                          PyObject *decoded_p,
+                          const char *key_p);
+
+void pbtools_py_get_int32(int32_t src,
+                          PyObject *decoded_p,
+                          const char *key_p);
+
+void pbtools_py_set_repeated(void *message_p,
+                             pbtools_py_alloc_t alloc,
+                             pbtools_py_set_t set,
+                             struct pbtools_repeated_message_t *repeated_p,
+                             PyObject *decoded_p,
+                             const char *key_p);
+
+void pbtools_py_get_repeated(void *message_p,
+                             pbtools_py_get_t get,
+                             struct pbtools_repeated_message_t *repeated_p,
+                             PyObject *decoded_p,
+                             const char *key_p);
 
 #endif
