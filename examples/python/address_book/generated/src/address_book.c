@@ -37,16 +37,23 @@ static void address_book_person_phone_number_set(
     PyObject *decoded_p)
 {
     PyObject *value_p;
+    const char *string_p;
 
     pbtools_py_set_string(&message_p->number_p, decoded_p, "number");
     value_p = PyDict_GetItemString(decoded_p, "type");
 
     if (value_p != NULL) {
-        if (PyUnicode_CompareWithASCIIString(value_p, "MOBILE") == 0) {
+        string_p = PyUnicode_AsUTF8(value_p);
+
+        if (string_p == NULL) {
+            return;
+        }
+
+        if (strcmp(string_p, "MOBILE") == 0) {
             message_p->type = address_book_person_phone_type_mobile_e;
-        } else if (PyUnicode_CompareWithASCIIString(value_p, "HOME") == 0) {
+        } else if (strcmp(string_p, "HOME") == 0) {
             message_p->type = address_book_person_phone_type_home_e;
-        } else if (PyUnicode_CompareWithASCIIString(value_p, "WORK") == 0) {
+        } else if (strcmp(string_p, "WORK") == 0) {
             message_p->type = address_book_person_phone_type_work_e;
         }
     }
@@ -213,7 +220,7 @@ static PyObject *m_address_book_addess_book_encode(PyObject *module_p,
                                                    PyObject *decoded_p)
 {
     (void)module_p;
- 
+
     int res;
     struct address_book_address_book_t *message_p;
     void *workspace_p;
