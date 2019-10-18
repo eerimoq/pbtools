@@ -205,13 +205,18 @@ static PyObject *m_address_book_person_decode(PyObject *module_p,
     decoded_p = address_book_person_get(message_p);
 
     if (PyErr_Occurred()) {
-        goto out1;
+        goto out2;
     }
 
     PyMem_Free(workspace_p);
 
     return (decoded_p);
 
+ out2:
+    if (decoded_p != NULL) {
+        Py_DECREF(decoded_p);
+    }
+    
  out1:
     PyMem_Free(workspace_p);
 
@@ -301,12 +306,15 @@ static PyObject *m_address_book_addess_book_decode(PyObject *module_p,
         "people");
 
     if (PyErr_Occurred()) {
-        goto out1;
+        goto out2;
     }
 
     PyMem_Free(workspace_p);
 
     return (decoded_p);
+
+ out2:
+    Py_DECREF(decoded_p);
 
  out1:
     PyMem_Free(workspace_p);

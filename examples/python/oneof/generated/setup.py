@@ -10,9 +10,9 @@ setup(name='oneof',
       ext_modules=[
           Extension(name="oneof",
                     sources=[
-                        "oneof/oneof.c",
-                        "oneof/pbtools_py.c",
-                        "oneof/c/oneof.c",
-                        "oneof/c/pbtools.c"
+                        "src/oneof.c",
+                        "src/pbtools_py.c",
+                        "src/c/oneof.c",
+                        "src/c/pbtools.c"
                     ])
       ])

@@ -22,6 +22,7 @@ decoded = {
         }
     ]
 }
+print(json.dumps(decoded, indent=4))
 encoded = address_book.address_book_encode(decoded)
 print(f'Successfully encoded AddressBook into {len(encoded)} bytes.')
 

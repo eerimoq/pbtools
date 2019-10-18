@@ -191,6 +191,11 @@ proto-file.
 See `address_book.h`_ and `address_book.c`_ for the contents of the
 generated files.
 
+Ideas
+=====
+
+- Python data classes.
+  
 .. |buildstatus| image:: https://travis-ci.org/eerimoq/pbtools.svg?branch=master
 .. _buildstatus: https://travis-ci.org/eerimoq/pbtools
 

@@ -10,9 +10,9 @@ setup(name='hello_world',
       ext_modules=[
           Extension(name="hello_world",
                     sources=[
-                        "hello_world/hello_world.c",
-                        "hello_world/pbtools_py.c",
-                        "hello_world/c/hello_world.c",
-                        "hello_world/c/pbtools.c"
+                        "src/hello_world.c",
+                        "src/pbtools_py.c",
+                        "src/c/hello_world.c",
+                        "src/c/pbtools.c"
                     ])
       ])

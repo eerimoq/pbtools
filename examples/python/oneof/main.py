@@ -2,7 +2,9 @@ import oneof
 
 
 # Encode.
-encoded = oneof.foo_encode({'oneof': ('fie', 789)})
+decoded = {'oneof': ('fie', 789)}
+print(decoded)
+encoded = oneof.foo_encode(decoded)
 print("Successfully encoded foo into {len(encoded)} bytes.")
 
 # Decode.
