@@ -139,108 +139,10 @@ static PyObject *address_book_person_get(
     return (decoded_p);
 }
 
-static PyObject *m_address_book_person_encode(PyObject *module_p,
-                                              PyObject *decoded_p)
+static void address_book_address_book_set(
+    struct address_book_address_book_t *message_p,
+    PyObject *decoded_p)
 {
-    (void)module_p;
-
-    int res;
-    struct address_book_person_t *message_p;
-    void *workspace_p;
-
-    res = pbtools_py_init((pbtools_py_new_t)address_book_person_new,
-                          (void **)&message_p,
-                          &workspace_p,
-                          512);
-
-    if (res != 0) {
-        return (NULL);
-    }
-
-    address_book_person_set(message_p, decoded_p);
-
-    if (PyErr_Occurred()) {
-        goto out1;
-    }
-
-    return (pbtools_py_encode(
-                (pbtools_py_encode_t)address_book_person_encode,
-                message_p,
-                workspace_p,
-                512));
-
- out1:
-    PyMem_Free(workspace_p);
-
-    return (NULL);
-}
-
-static PyObject *m_address_book_person_decode(PyObject *module_p,
-                                              PyObject *bytes_p)
-{
-    (void)module_p;
-
-    int res;
-    struct address_book_person_t *message_p;
-    void *workspace_p;
-    PyObject *decoded_p;
-
-    res = pbtools_py_init((pbtools_py_new_t)address_book_person_new,
-                          (void **)&message_p,
-                          &workspace_p,
-                          512);
-
-    if (res != 0) {
-        return (NULL);
-    }
-
-    res = pbtools_py_decode((pbtools_py_decode_t)address_book_person_decode,
-                            message_p,
-                            bytes_p);
-
-    if (res < 0) {
-        goto out1;
-    }
-
-    decoded_p = address_book_person_get(message_p);
-
-    if (PyErr_Occurred()) {
-        goto out2;
-    }
-
-    PyMem_Free(workspace_p);
-
-    return (decoded_p);
-
- out2:
-    if (decoded_p != NULL) {
-        Py_DECREF(decoded_p);
-    }
-    
- out1:
-    PyMem_Free(workspace_p);
-
-    return (NULL);
-}
-
-static PyObject *m_address_book_addess_book_encode(PyObject *module_p,
-                                                   PyObject *decoded_p)
-{
-    (void)module_p;
-
-    int res;
-    struct address_book_address_book_t *message_p;
-    void *workspace_p;
-
-    res = pbtools_py_init((pbtools_py_new_t)address_book_address_book_new,
-                          (void **)&message_p,
-                          &workspace_p,
-                          512);
-
-    if (res != 0) {
-        return (NULL);
-    }
-
     pbtools_py_set_repeated(
         message_p,
         (pbtools_py_alloc_t)address_book_address_book_people_alloc,
@@ -248,54 +150,17 @@ static PyObject *m_address_book_addess_book_encode(PyObject *module_p,
         (struct pbtools_repeated_message_t *)&message_p->people,
         decoded_p,
         "people");
-
-    if (PyErr_Occurred()) {
-        goto out1;
-    }
-
-    return (pbtools_py_encode(
-                (pbtools_py_encode_t)address_book_address_book_encode,
-                message_p,
-                workspace_p,
-                512));
-
- out1:
-    PyMem_Free(workspace_p);
-
-    return (NULL);
 }
 
-static PyObject *m_address_book_addess_book_decode(PyObject *module_p,
-                                                   PyObject *bytes_p)
+static PyObject *address_book_address_book_get(
+    struct address_book_address_book_t *message_p)
 {
-    (void)module_p;
-
-    int res;
-    struct address_book_address_book_t *message_p;
-    void *workspace_p;
     PyObject *decoded_p;
-
-    res = pbtools_py_init((pbtools_py_new_t)address_book_address_book_new,
-                          (void **)&message_p,
-                          &workspace_p,
-                          512);
-
-    if (res != 0) {
-        return (NULL);
-    }
-
-    res = pbtools_py_decode((pbtools_py_decode_t)address_book_address_book_decode,
-                            message_p,
-                            bytes_p);
-
-    if (res < 0) {
-        goto out1;
-    }
 
     decoded_p = PyDict_New();
 
     if (decoded_p == NULL) {
-        goto out1;
+        return (NULL);
     }
 
     pbtools_py_get_repeated(
@@ -305,32 +170,70 @@ static PyObject *m_address_book_addess_book_decode(PyObject *module_p,
         decoded_p,
         "people");
 
-    if (PyErr_Occurred()) {
-        goto out2;
-    }
-
-    PyMem_Free(workspace_p);
-
     return (decoded_p);
+}
 
- out2:
-    Py_DECREF(decoded_p);
+static PyObject *m_address_book_person_encode(PyObject *module_p,
+                                              PyObject *decoded_p)
+{
+    (void)module_p;
 
- out1:
-    PyMem_Free(workspace_p);
+    return (pbtools_py_encode(
+                decoded_p,
+                (pbtools_py_new_t)address_book_person_new,
+                (pbtools_py_set_t)address_book_person_set,
+                (pbtools_py_encode_t)address_book_person_encode,
+                512));
+}
 
-    return (NULL);
+static PyObject *m_address_book_person_decode(PyObject *module_p,
+                                              PyObject *encoded_p)
+{
+    (void)module_p;
+
+    return (pbtools_py_decode(
+                encoded_p,
+                (pbtools_py_new_t)address_book_person_new,
+                (pbtools_py_decode_t)address_book_person_decode,
+                (pbtools_py_get_t)address_book_person_get,
+                512));
+}
+
+static PyObject *m_address_book_address_book_encode(PyObject *module_p,
+                                                   PyObject *decoded_p)
+{
+    (void)module_p;
+
+    return (pbtools_py_encode(
+                decoded_p,
+                (pbtools_py_new_t)address_book_address_book_new,
+                (pbtools_py_set_t)address_book_address_book_set,
+                (pbtools_py_encode_t)address_book_address_book_encode,
+                512));
+}
+
+static PyObject *m_address_book_address_book_decode(PyObject *module_p,
+                                                   PyObject *encoded_p)
+{
+    (void)module_p;
+
+    return (pbtools_py_decode(
+                encoded_p,
+                (pbtools_py_new_t)address_book_address_book_new,
+                (pbtools_py_decode_t)address_book_address_book_decode,
+                (pbtools_py_get_t)address_book_address_book_get,
+                512));
 }
 
 static PyMethodDef methods[] = {
     {
         "address_book_encode",
-        (PyCFunction)m_address_book_addess_book_encode,
+        (PyCFunction)m_address_book_address_book_encode,
         METH_O
     },
     {
         "address_book_decode",
-        (PyCFunction)m_address_book_addess_book_decode,
+        (PyCFunction)m_address_book_address_book_decode,
         METH_O
     },
     {

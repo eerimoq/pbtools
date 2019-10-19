@@ -15,6 +15,7 @@ script:
   - make -C examples/c/oneof
   - make -C examples/python/hello_world
   - make -C examples/python/address_book
+  - make -C examples/python/oneof
   - make -C benchmark ITERATIONS=1
 
 after_success:

@@ -61,9 +61,13 @@ void pbtools_py_get_string(char *src_p,
                            PyObject *decoded_p,
                            const char *key_p);
 
+void pbtools_py_set_int32_value(int32_t *dst_p, PyObject *decoded_p);
+
 void pbtools_py_set_int32(int32_t *dst_p,
                           PyObject *decoded_p,
                           const char *key_p);
+
+PyObject *pbtools_py_get_int32_value(int32_t src);
 
 void pbtools_py_get_int32(int32_t src,
                           PyObject *decoded_p,
@@ -81,5 +85,10 @@ void pbtools_py_get_repeated(void *message_p,
                              struct pbtools_repeated_message_t *repeated_p,
                              PyObject *decoded_p,
                              const char *key_p);
+
+void pbtools_py_get_oneof(PyObject *decoded_p,
+                          const char *key_p,
+                          const char *choice_p,
+                          PyObject *value_p);
 
 #endif

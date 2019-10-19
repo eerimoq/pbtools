@@ -209,30 +209,41 @@ void pbtools_py_get_string(char *src_p,
     }
 }
 
+void pbtools_py_set_int32_value(int32_t *dst_p, PyObject *decoded_p)
+{
+    long value;
+
+    value = PyLong_AsLong(decoded_p);
+
+    if ((value == -1) && PyErr_Occurred()) {
+        return;
+    }
+
+    if ((value < -0x80000000L) || (value > 0x7fffffffL)) {
+        PyErr_SetString(PyExc_ValueError, "int32 out of range");
+
+        return;
+    }
+
+    *dst_p = value;
+}
+
 void pbtools_py_set_int32(int32_t *dst_p,
                           PyObject *decoded_p,
                           const char *key_p)
 {
     PyObject *value_p;
-    long value;
 
     value_p = PyDict_GetItemString(decoded_p, key_p);
 
     if (value_p != NULL) {
-        value = PyLong_AsLong(value_p);
-
-        if ((value == -1) && PyErr_Occurred()) {
-            return;
-        }
-
-        if ((value < -0x80000000L) || (value > 0x7fffffffL)) {
-            PyErr_SetString(PyExc_ValueError, "int32 out of range");
-
-            return;
-        }
-
-        *dst_p = value;
+        pbtools_py_set_int32_value(dst_p, value_p);
     }
+}
+
+PyObject *pbtools_py_get_int32_value(int32_t src)
+{
+    return (PyLong_FromLong(src));
 }
 
 void pbtools_py_get_int32(int32_t src,
@@ -301,4 +312,24 @@ void pbtools_py_get_repeated(void *message_p,
     }
 
     PyDict_SetItemString(decoded_p, key_p, list_p);
+}
+
+void pbtools_py_get_oneof(PyObject *decoded_p,
+                          const char *key_p,
+                          const char *choice_p,
+                          PyObject *value_p)
+{
+    PyObject *oneof_p;
+
+    if (choice_p != NULL) {
+        oneof_p = PyTuple_New(2);
+
+        if (oneof_p == NULL) {
+            return;
+        }
+
+        PyTuple_SET_ITEM(oneof_p, 0, PyUnicode_FromString(choice_p));
+        PyTuple_SET_ITEM(oneof_p, 1, value_p);
+        PyDict_SetItemString(decoded_p, key_p, oneof_p);
+    }
 }

@@ -26,10 +26,10 @@
 
 #include "pbtools_py.h"
 
-int pbtools_py_init(pbtools_py_new_t new,
-                    void **message_pp,
-                    void **workspace_pp,
-                    size_t workspace_size)
+static int message_init(pbtools_py_new_t new,
+                        void **message_pp,
+                        void **workspace_pp,
+                        size_t workspace_size)
 {
     *workspace_pp = PyMem_Malloc(workspace_size);
 
@@ -51,35 +51,35 @@ int pbtools_py_init(pbtools_py_new_t new,
     return (-1);
 }
 
-PyObject *pbtools_py_encode(pbtools_py_encode_t encode,
-                            void *message_p,
-                            void *workspace_p,
-                            size_t size)
+static PyObject *message_encode(pbtools_py_encode_t encode,
+                                void *message_p,
+                                void *workspace_p,
+                                size_t size)
 {
     int res;
-    void *encoded_p;
-    PyObject *bytes_p;
+    void *buf_p;
+    PyObject *encoded_p;
 
-    encoded_p = PyMem_Malloc(size);
+    buf_p = PyMem_Malloc(size);
 
-    if (encoded_p == NULL) {
+    if (buf_p == NULL) {
         goto out1;
     }
 
-    res = encode(message_p, encoded_p, size);
+    res = encode(message_p, buf_p, size);
 
     if (res < 0) {
         goto out2;
     }
 
-    bytes_p = PyBytes_FromStringAndSize(encoded_p, res);
-    PyMem_Free(encoded_p);
+    encoded_p = PyBytes_FromStringAndSize(buf_p, res);
+    PyMem_Free(buf_p);
     PyMem_Free(workspace_p);
 
-    return (bytes_p);
+    return (encoded_p);
 
  out2:
-    PyMem_Free(encoded_p);
+    PyMem_Free(buf_p);
 
  out1:
     PyMem_Free(workspace_p);
@@ -87,21 +87,95 @@ PyObject *pbtools_py_encode(pbtools_py_encode_t encode,
     return (NULL);
 }
 
-int pbtools_py_decode(pbtools_py_decode_t decode,
-                      void *message_p,
-                      PyObject *bytes_p)
+static int message_decode(pbtools_py_decode_t decode,
+                          void *message_p,
+                          PyObject *encoded_p)
 {
     int res;
     Py_ssize_t size;
-    char *encoded_p;
+    char *buf_p;
 
-    res = PyBytes_AsStringAndSize(bytes_p, &encoded_p, &size);
+    res = PyBytes_AsStringAndSize(encoded_p, &buf_p, &size);
 
     if (res == -1) {
-        return (-1);
+        return (res);
     }
 
-    return (decode(message_p, (uint8_t *)encoded_p, size));
+    return (decode(message_p, (uint8_t *)buf_p, size));
+}
+
+PyObject *pbtools_py_encode(PyObject *decoded_p,
+                            pbtools_py_new_t new,
+                            pbtools_py_set_t set,
+                            pbtools_py_encode_t encode,
+                            size_t size)
+{
+    int res;
+    struct address_book_address_book_t *message_p;
+    void *workspace_p;
+
+    res = message_init(new, (void **)&message_p, &workspace_p, size);
+
+    if (res != 0) {
+        return (NULL);
+    }
+
+    set(message_p, decoded_p);
+
+    if (PyErr_Occurred()) {
+        goto out1;
+    }
+
+    return (message_encode(encode, message_p, workspace_p, size));
+
+ out1:
+    PyMem_Free(workspace_p);
+
+    return (NULL);
+}
+
+PyObject *pbtools_py_decode(PyObject *encoded_p,
+                            pbtools_py_new_t new,
+                            pbtools_py_decode_t decode,
+                            pbtools_py_get_t get,
+                            size_t size)
+{
+    int res;
+    struct address_book_address_book_t *message_p;
+    void *workspace_p;
+    PyObject *decoded_p;
+
+    res = message_init(new, (void **)&message_p, &workspace_p, size);
+
+    if (res != 0) {
+        return (NULL);
+    }
+
+    res = message_decode(decode, message_p, encoded_p);
+
+    if (res < 0) {
+        goto out1;
+    }
+
+    decoded_p = get(message_p);
+
+    if (PyErr_Occurred()) {
+        goto out2;
+    }
+
+    PyMem_Free(workspace_p);
+
+    return (decoded_p);
+
+ out2:
+    if (decoded_p != NULL) {
+        Py_DECREF(decoded_p);
+    }
+
+ out1:
+    PyMem_Free(workspace_p);
+
+    return (NULL);
 }
 
 void pbtools_py_set_string(char **dst_pp,

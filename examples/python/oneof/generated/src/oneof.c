@@ -29,20 +29,46 @@
  */
 
 #include <Python.h>
+#include "c/oneof.h"
 #include "pbtools_py.h"
-#include "c/hello_world.h"
 
-static void hello_world_foo_set(
-    struct hello_world_foo_t *message_p,
+static void oneof_foo_set(
+    struct oneof_foo_t *message_p,
     PyObject *decoded_p)
 {
-    pbtools_py_set_int32(&message_p->bar, decoded_p, "bar");
+    PyObject *value_p;
+    PyObject *choice_p;
+    const char *string_p;
+
+    value_p = PyDict_GetItemString(decoded_p, "oneof");
+
+    if (value_p != NULL) {
+        if (PyTuple_Size(value_p) != 2) {
+            return;
+        }
+
+        choice_p = PyTuple_GET_ITEM(value_p, 0);
+        value_p = PyTuple_GET_ITEM(value_p, 1);
+        string_p = PyUnicode_AsUTF8(choice_p);
+
+        if (string_p == NULL) {
+            return;
+        }
+
+        if (strcmp(string_p, "fie") == 0) {
+            message_p->bar.choice = oneof_foo_bar_choice_fie_e;
+            pbtools_py_set_int32_value(&message_p->bar.value.fie, value_p);
+        } else if (strcmp(string_p, "fum") == 0) {
+        }
+    }
 }
 
-static PyObject *hello_world_foo_get(
-    struct hello_world_foo_t *message_p)
+static PyObject *oneof_foo_get(
+    struct oneof_foo_t *message_p)
 {
     PyObject *decoded_p;
+    const char *choice_p;
+    PyObject *value_p;
 
     decoded_p = PyDict_New();
 
@@ -50,46 +76,64 @@ static PyObject *hello_world_foo_get(
         return (NULL);
     }
 
-    pbtools_py_get_int32(message_p->bar, decoded_p, "bar");
+    switch (message_p->bar.choice) {
+
+    case oneof_foo_bar_choice_fie_e:
+        choice_p = "fie";
+        value_p = pbtools_py_get_int32_value(message_p->bar.value.fie);
+        break;
+
+    case oneof_foo_bar_choice_fum_e:
+        choice_p = NULL;
+        value_p = NULL;
+        break;
+
+    default:
+        choice_p = NULL;
+        value_p = NULL;
+        break;
+    }
+
+    pbtools_py_get_oneof(decoded_p, "bar", choice_p, value_p);
 
     return (decoded_p);
 }
 
-static PyObject *m_hello_world_foo_encode(PyObject *module_p,
-                                          PyObject *decoded_p)
+static PyObject *m_oneof_foo_encode(PyObject *module_p,
+                                    PyObject *decoded_p)
 {
     (void)module_p;
 
     return (pbtools_py_encode(
                 decoded_p,
-                (pbtools_py_new_t)hello_world_foo_new,
-                (pbtools_py_set_t)hello_world_foo_set,
-                (pbtools_py_encode_t)hello_world_foo_encode,
+                (pbtools_py_new_t)oneof_foo_new,
+                (pbtools_py_set_t)oneof_foo_set,
+                (pbtools_py_encode_t)oneof_foo_encode,
                 512));
 }
 
-static PyObject *m_hello_world_foo_decode(PyObject *module_p,
-                                          PyObject *encoded_p)
+static PyObject *m_oneof_foo_decode(PyObject *module_p,
+                                    PyObject *encoded_p)
 {
     (void)module_p;
 
     return (pbtools_py_decode(
                 encoded_p,
-                (pbtools_py_new_t)hello_world_foo_new,
-                (pbtools_py_decode_t)hello_world_foo_decode,
-                (pbtools_py_get_t)hello_world_foo_get,
+                (pbtools_py_new_t)oneof_foo_new,
+                (pbtools_py_decode_t)oneof_foo_decode,
+                (pbtools_py_get_t)oneof_foo_get,
                 512));
 }
 
 static PyMethodDef methods[] = {
     {
         "foo_encode",
-        (PyCFunction)m_hello_world_foo_encode,
+        (PyCFunction)m_oneof_foo_encode,
         METH_O
     },
     {
         "foo_decode",
-        (PyCFunction)m_hello_world_foo_decode,
+        (PyCFunction)m_oneof_foo_decode,
         METH_O
     },
     { NULL }
@@ -97,13 +141,13 @@ static PyMethodDef methods[] = {
 
 static PyModuleDef module = {
     PyModuleDef_HEAD_INIT,
-    .m_name = "hello_world",
+    .m_name = "oneof",
     .m_doc = NULL,
     .m_size = -1,
     .m_methods = methods
 };
 
-PyMODINIT_FUNC PyInit_hello_world(void)
+PyMODINIT_FUNC PyInit_oneof(void)
 {
     PyObject *module_p;
 

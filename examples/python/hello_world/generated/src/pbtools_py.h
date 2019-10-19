@@ -41,19 +41,17 @@ typedef int (*pbtools_py_alloc_t)(void *message_p, size_t size);
 typedef void (*pbtools_py_set_t)(void *message_p, PyObject *decoded_p);
 typedef PyObject *(*pbtools_py_get_t)(void *message_p);
 
-int pbtools_py_init(pbtools_py_new_t new,
-                    void **message_pp,
-                    void **workspace_pp,
-                    size_t workspace_size);
-
-PyObject *pbtools_py_encode(pbtools_py_encode_t encode,
-                            void *message_p,
-                            void *workspace_p,
+PyObject *pbtools_py_encode(PyObject *decoded_p,
+                            pbtools_py_new_t new,
+                            pbtools_py_set_t set,
+                            pbtools_py_encode_t encode,
                             size_t size);
 
-int pbtools_py_decode(pbtools_py_decode_t decode,
-                      void *message_p,
-                      PyObject *bytes_p);
+PyObject *pbtools_py_decode(PyObject *encoded_p,
+                            pbtools_py_new_t new,
+                            pbtools_py_decode_t decode,
+                            pbtools_py_get_t get,
+                            size_t size);
 
 void pbtools_py_set_string(char **dst_pp,
                            PyObject *decoded_p,
