@@ -197,7 +197,8 @@ Generate Python C extension source code from the proto-file.
    Run 'cd hello_world && python3 setup.py build --build-platlib .. &&
    cd ..' to build it.
 
-Compile the generated code.
+Compile the generated code. This creates a shared object file that can
+be imported by Python scripts.
 
 .. code-block:: text
 

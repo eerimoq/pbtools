@@ -1,10 +1,3 @@
-import os
-
-from ..parser import SCALAR_VALUE_TYPES
-from ..parser import camel_to_snake_case
-
-
-SOURCE_FMT = '''\
 /**
  * The MIT License (MIT)
  *
@@ -36,54 +29,30 @@ SOURCE_FMT = '''\
  */
 
 #include <Python.h>
-#include "c/{name}.h"
+#include "c/address_book.h"
 #include "pbtools_py.h"
 
-static PyMethodDef methods[] = {{
-{methods}\
-    {{ NULL }}
-}};
+static PyMethodDef methods[] = {
+    { NULL }
+};
 
-static PyModuleDef module = {{
+static PyModuleDef module = {
     PyModuleDef_HEAD_INIT,
-    .m_name = "{name}",
+    .m_name = "address_book",
     .m_doc = NULL,
     .m_size = -1,
     .m_methods = methods
-}};
+};
 
-PyMODINIT_FUNC PyInit_{name}(void)
-{{
+PyMODINIT_FUNC PyInit_address_book(void)
+{
     PyObject *module_p;
 
     module_p = PyModule_Create(&module);
 
-    if (module_p == NULL) {{
+    if (module_p == NULL) {
         return (NULL);
-    }}
+    }
 
     return (module_p);
-}}
-'''
-
-
-class Generator:
-
-    def __init__(self, namespace, parsed):
-        if parsed.package is not None:
-            namespace = camel_to_snake_case(parsed.package)
-
-        self.namespace = namespace
-        self.parsed = parsed
-
-    def generate(self):
-        return SOURCE_FMT.format(name=self.namespace,
-                                 methods='')
-
-
-def generate(name, parsed):
-    """Generate Python source code from given parsed proto-file.
-
-    """
-
-    return Generator(name, parsed).generate()
+}
