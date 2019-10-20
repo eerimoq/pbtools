@@ -1,6 +1,5 @@
 all:
-	cd generated && python3 setup.py build
-	cp generated/build/lib.*/*.so .
+	cd generated && python3 setup.py build --build-platlib ..
 	python3 main.py
 
 clean:

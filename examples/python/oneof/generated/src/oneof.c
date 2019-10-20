@@ -42,24 +42,26 @@ static void oneof_foo_set(
 
     value_p = PyDict_GetItemString(decoded_p, "oneof");
 
-    if (value_p != NULL) {
-        if (PyTuple_Size(value_p) != 2) {
-            return;
-        }
+    if (value_p == NULL) {
+        return;
+    }
 
-        choice_p = PyTuple_GET_ITEM(value_p, 0);
-        value_p = PyTuple_GET_ITEM(value_p, 1);
-        string_p = PyUnicode_AsUTF8(choice_p);
+    if (PyTuple_Size(value_p) != 2) {
+        return;
+    }
 
-        if (string_p == NULL) {
-            return;
-        }
+    choice_p = PyTuple_GET_ITEM(value_p, 0);
+    value_p = PyTuple_GET_ITEM(value_p, 1);
+    string_p = PyUnicode_AsUTF8(choice_p);
 
-        if (strcmp(string_p, "fie") == 0) {
-            message_p->bar.choice = oneof_foo_bar_choice_fie_e;
-            pbtools_py_set_int32_value(&message_p->bar.value.fie, value_p);
-        } else if (strcmp(string_p, "fum") == 0) {
-        }
+    if (string_p == NULL) {
+        return;
+    }
+
+    if (strcmp(string_p, "fie") == 0) {
+        message_p->bar.choice = oneof_foo_bar_choice_fie_e;
+        pbtools_py_set_int32_value(&message_p->bar.value.fie, value_p);
+    } else if (strcmp(string_p, "fum") == 0) {
     }
 }
 
