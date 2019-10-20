@@ -9,6 +9,8 @@ About
 
 - `C` source code generator.
 
+- `Python 3` C extension source code generator.
+
 - `proto3`_ language parser.
 
 Known limitations:
@@ -59,6 +61,15 @@ Benchmark
 ---------
 
 See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
+
+Python C extension source code design
+=====================================
+
+A Python C extension wrapper around generated C source code.
+
+Known limitations:
+
+- Same as for the C source code.
 
 Example usage
 =============
@@ -185,7 +196,14 @@ Generate Python C extension source code from the proto-file.
 
    Run 'cd hello_world && python3 setup.py build --build-platlib .. &&
    cd ..' to build it.
-   $ cd hello_world && python3 setup.py build --build-platlib .. && cd ..
+
+Compile the generated code.
+
+.. code-block:: text
+
+   $ cd hello_world
+   $ python3 setup.py build --build-platlib ..
+   $ cd ..
 
 Encode and decode the Foo-message in `main.py`_.
 
@@ -250,9 +268,9 @@ Ideas
 
 .. _proto3: https://developers.google.com/protocol-buffers/docs/proto3
 
-.. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.h
+.. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/c/address_book/generated/address_book.h
 
-.. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.c
+.. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/address_book/generated/address_book.c
 
 .. _hello_world.proto: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/hello_world.proto
 
