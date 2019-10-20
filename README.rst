@@ -9,7 +9,7 @@ About
 
 - `C` source code generator.
 
-- `Python 3` C extension source code generator.
+- `Python 3` C extension source code generator (under construction).
 
 - `proto3`_ language parser.
 
@@ -64,6 +64,9 @@ See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
 
 Python C extension source code design
 =====================================
+
+NOTE: The Python source code generator is under construction and is
+not yet usable!
 
 A Python C extension wrapper around generated C source code.
 
