@@ -201,6 +201,7 @@ Encode and decode the Foo-message in `main.py`_.
    # Decode.
    decoded = hello_world.foo_decode(encoded)
    print(f'Successfully decoded {len(encoded)} bytes.')
+   print(f"Foo.bar: {decoded['bar']}")
 
 Run the script.
 
