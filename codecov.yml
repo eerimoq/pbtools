@@ -1,3 +1,3 @@
 ignore:
   - "tests/main.c"
-  - "tests/narwhal.c"
+  - "tests/nala.c"

@@ -41,12 +41,12 @@ all:
 	    -c \
 	    ../pbtools/c_source/pbtools.c \
 	    -o no-float.o
-	gcc -O2 -g narwhal.c -c -o narwhal.o
+	gcc -O2 -g nala.c -c -o nala.o
 	gcc -O2 -g -I../pbtools/c_source main.c -c -o main.o
 	gcc \
 	    $(CFLAGS) \
 	    -I../pbtools/c_source \
-	    narwhal.o \
+	    nala.o \
 	    ../pbtools/c_source/pbtools.c \
 	    files/c_source/int32.c \
 	    files/c_source/int64.c \
