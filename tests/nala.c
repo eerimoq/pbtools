@@ -133,7 +133,7 @@ void nala_subprocess_result_free(struct nala_subprocess_result_t *self_p);
  * This file is part of the traceback project.
  */
 
-#define NALA_TRACEBACK_VERSION "0.1.0"
+#define NALA_TRACEBACK_VERSION "0.2.0"
 
 /**
  * Print a traceback.
@@ -468,43 +468,53 @@ static void print_location_context(const char *filename_p, size_t line_number)
     fclose(file_p);
 }
 
-static void print_test_results(struct nala_test_t *test_p,
-                               float elapsed_time_ms)
+static const char *test_result(struct nala_test_t *test_p)
+{
+    const char *result_p;
+
+    if (test_p->exit_code == 0) {
+        result_p = COLOR_BOLD(GREEN, "PASSED");
+    } else {
+        result_p = COLOR_BOLD(RED, "FAILED");
+    }
+
+    return (result_p);
+}
+
+static void print_test_result(struct nala_test_t *test_p)
+{
+    printf("%s %s (" COLOR_BOLD(YELLOW, "%.02f ms") ")",
+           test_result(test_p),
+           test_p->name_p,
+           test_p->elapsed_time_ms);
+
+    if (test_p->signal_number != -1) {
+        printf(" (signal: %d)", test_p->signal_number);
+    }
+
+    printf("\n");
+    fflush(stdout);
+}
+
+static void print_summary(struct nala_test_t *test_p,
+                          float elapsed_time_ms)
 {
     int total;
     int passed;
     int failed;
-    const char *result_p;
 
     total = 0;
     passed = 0;
     failed = 0;
 
-    printf("\nTest results:\n\n");
-    fflush(stdout);
-
     while (test_p != NULL) {
         total++;
 
         if (test_p->exit_code == 0) {
-            result_p = COLOR_BOLD(GREEN, "PASSED");
             passed++;
         } else {
-            result_p = COLOR_BOLD(RED, "FAILED");
             failed++;
         }
-
-        printf("  %s %s (" COLOR_BOLD(YELLOW, "%.02f ms") ")",
-               result_p,
-               test_p->name_p,
-               test_p->elapsed_time_ms);
-
-        if (test_p->signal_number != -1) {
-            printf(" (signal: %d)", test_p->signal_number);
-        }
-
-        printf("\n");
-        fflush(stdout);
 
         test_p = test_p->next_p;
     }
@@ -589,12 +599,13 @@ static int run_tests(struct nala_test_t *tests_p)
             print_signal_failure(test_p);
         }
 
+        print_test_result(test_p);
         test_p = test_p->next_p;
     }
 
     gettimeofday(&end_time, NULL);
     timersub(&end_time, &start_time, &elapsed_time);
-    print_test_results(tests_p, timeval_to_ms(&elapsed_time));
+    print_summary(tests_p, timeval_to_ms(&elapsed_time));
 
     return (res);
 }
@@ -1257,6 +1268,7 @@ void nala_subprocess_result_free(struct nala_subprocess_result_t *self_p)
  */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <execinfo.h>
 // #include "traceback.h"
 
@@ -1264,6 +1276,11 @@ void nala_subprocess_result_free(struct nala_subprocess_result_t *self_p)
 #include <unistd.h>
 
 #define DEPTH_MAX 100
+
+static void *fixaddr(void *address_p)
+{
+    return ((void *)(((uintptr_t)address_p) - 1));
+}
 
 void nala_traceback_print(const char *prefix_p)
 {
@@ -1274,6 +1291,10 @@ void nala_traceback_print(const char *prefix_p)
     ssize_t size;
     int res;
     int i;
+
+    if (prefix_p == NULL) {
+        prefix_p = "";
+    }
 
     depth = backtrace(&addresses[0], DEPTH_MAX);
 
@@ -1297,7 +1318,7 @@ void nala_traceback_print(const char *prefix_p)
                  sizeof(command),
                  "addr2line -f -p -e %s %p",
                  &exe[0],
-                 addresses[i]);
+                 fixaddr(addresses[i]));
         command[sizeof(command) - 1] = '\0';
 
         res = system(&command[0]);
