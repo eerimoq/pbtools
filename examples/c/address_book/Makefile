@@ -14,5 +14,5 @@ generate:
 	rm -rf generated
 	mkdir -p generated
 	cd generated && \
-	    env PYTHONPATH=../../.. \
+	    env PYTHONPATH=../../../.. \
 		python3 -m pbtools generate_c_source ../address_book.proto
