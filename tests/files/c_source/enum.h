@@ -31,6 +31,10 @@
 #ifndef ENUM_H
 #define ENUM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -248,5 +252,9 @@ void enum_limits_decode_repeated_inner(
 void enum_limits_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct enum_limits_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

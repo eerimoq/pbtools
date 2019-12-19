@@ -27,6 +27,10 @@
 #ifndef PBTOOLS_H
 #define PBTOOLS_H
 
+#ifdef __cplusplus
+extern "C" {{
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
@@ -688,5 +692,9 @@ void pbtools_decoder_sub_message_decode(
     pbtools_message_decode_inner_t decode_inner);
 
 const char *pbtools_error_code_to_string(int code);
+
+#ifdef __cplusplus
+}}
+#endif
 
 #endif

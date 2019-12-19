@@ -31,6 +31,10 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -417,5 +421,9 @@ void message_unused_inner_types_unused_message_decode_repeated_inner(
 void message_unused_inner_types_unused_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct message_unused_inner_types_unused_message_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

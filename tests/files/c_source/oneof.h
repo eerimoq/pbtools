@@ -31,6 +31,10 @@
 #ifndef ONEOF_H
 #define ONEOF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -488,5 +492,9 @@ void oneof_message3_bar_decode_repeated_inner(
 void oneof_message3_bar_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message3_bar_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

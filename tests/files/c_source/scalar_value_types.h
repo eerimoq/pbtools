@@ -31,6 +31,10 @@
 #ifndef SCALAR_VALUE_TYPES_H
 #define SCALAR_VALUE_TYPES_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -108,5 +112,9 @@ void scalar_value_types_message_decode_repeated_inner(
 void scalar_value_types_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct scalar_value_types_message_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

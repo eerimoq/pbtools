@@ -31,6 +31,10 @@
 #ifndef IMPORTING_H
 #define IMPORTING_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 #include "imported.h"
 #include "imported_duplicated_package.h"
@@ -220,5 +224,9 @@ void importing_message3_decode_repeated_inner(
 void importing_message3_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct importing_message3_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

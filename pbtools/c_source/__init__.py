@@ -38,6 +38,10 @@ HEADER_FMT = '''\
 #ifndef {include_guard}
 #define {include_guard}
 
+#ifdef __cplusplus
+extern "C" {{
+#endif
+
 #include "pbtools.h"
 {includes}\
 
@@ -46,6 +50,10 @@ HEADER_FMT = '''\
 /* Internal functions. Do not use! */
 
 {internal_declarations}
+#ifdef __cplusplus
+}}
+#endif
+
 #endif
 '''
 

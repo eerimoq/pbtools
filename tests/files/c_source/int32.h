@@ -31,6 +31,10 @@
 #ifndef INT32_H
 #define INT32_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -154,5 +158,9 @@ void int32_message2_decode_repeated_inner(
 void int32_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct int32_message2_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

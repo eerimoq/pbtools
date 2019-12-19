@@ -31,6 +31,10 @@
 #ifndef NO_PACKAGE_H
 #define NO_PACKAGE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -150,5 +154,9 @@ void m0_m1_decode_repeated_inner(
 void m0_m1_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct m0_m1_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

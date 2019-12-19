@@ -31,6 +31,10 @@
 #ifndef NO_PACKAGE_IMPORTING_H
 #define NO_PACKAGE_IMPORTING_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 #include "no_package_imported.h"
 
@@ -95,5 +99,9 @@ void npi_message2_decode_repeated_inner(
 void npi_message2_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct npi_message2_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -31,6 +31,10 @@
 #ifndef SFIXED64_H
 #define SFIXED64_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -94,5 +98,9 @@ void sfixed64_message_decode_repeated_inner(
 void sfixed64_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct sfixed64_message_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

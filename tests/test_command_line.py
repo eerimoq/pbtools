@@ -15,6 +15,10 @@ class CommandLineTest(unittest.TestCase):
 
     maxDiff = None
 
+    def assert_files_equal(self, actual, expected):
+        # open(actual, 'w').write(open(expected, 'r').read())
+        self.assertEqual(read_file(actual), read_file(expected))
+
     def test_command_line_generate_c_source(self):
         specs = [
             'address_book',
@@ -89,9 +93,8 @@ class CommandLineTest(unittest.TestCase):
                 pbtools._main()
 
             for filename in [filename_h, filename_c]:
-                self.assertEqual(
-                    read_file(f'tests/files/c_source/{filename}'),
-                    read_file(filename))
+                self.assert_files_equal(f'tests/files/c_source/{filename}',
+                                        filename)
 
     def test_command_line_generate_c_source_multiple_input_files(self):
         argv = [
@@ -116,9 +119,8 @@ class CommandLineTest(unittest.TestCase):
             pbtools._main()
 
         for filename in filenames:
-            self.assertEqual(
-                read_file(f'tests/files/c_source/{filename}'),
-                read_file(filename))
+            self.assert_files_equal(f'tests/files/c_source/{filename}',
+                                    filename)
 
     def test_command_line_generate_c_source_pbtools_h_c(self):
         argv = [
@@ -144,14 +146,12 @@ class CommandLineTest(unittest.TestCase):
             pbtools._main()
 
         for filename in filenames:
-            self.assertEqual(
-                read_file(f'tests/files/c_source/{filename}'),
-                read_file(filename))
+            self.assert_files_equal(filename,
+                                    f'tests/files/c_source/{filename}')
 
         for filename in pbtools_filenames:
-            self.assertEqual(
-                read_file(f'pbtools/c_source/{filename}'),
-                read_file(filename))
+            self.assert_files_equal(filename,
+                                    f'pbtools/c_source/{filename}')
 
     def test_command_line_generate_python_source(self):
         specs = [
@@ -190,9 +190,8 @@ class CommandLineTest(unittest.TestCase):
             ]
 
             for path in paths:
-                self.assertEqual(
-                    read_file(f'tests/files/python_source/{path}'),
-                    read_file(path))
+                self.assert_files_equal(path,
+                                        f'tests/files/python_source/{path}')
 
 
 if __name__ == '__main__':

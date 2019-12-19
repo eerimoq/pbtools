@@ -31,6 +31,10 @@
 #ifndef ADDRESS_BOOK_H
 #define ADDRESS_BOOK_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -217,5 +221,9 @@ void address_book_address_book_decode_repeated_inner(
 void address_book_address_book_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct address_book_address_book_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

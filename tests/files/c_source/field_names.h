@@ -31,6 +31,10 @@
 #ifndef FIELD_NAMES_H
 #define FIELD_NAMES_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -653,5 +657,9 @@ void field_names_message_one_of_decode_repeated_inner(
 void field_names_message_one_of_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct field_names_message_one_of_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

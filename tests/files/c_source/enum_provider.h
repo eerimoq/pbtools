@@ -31,6 +31,10 @@
 #ifndef ENUM_PROVIDER_H
 #define ENUM_PROVIDER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -44,5 +48,9 @@ enum pkg_enum_e {
 
 /* Internal functions. Do not use! */
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

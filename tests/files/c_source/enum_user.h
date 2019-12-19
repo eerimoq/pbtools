@@ -31,6 +31,10 @@
 #ifndef ENUM_USER_H
 #define ENUM_USER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 #include "enum_provider.h"
 
@@ -95,5 +99,9 @@ void pkg_message_decode_repeated_inner(
 void pkg_message_finalize_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct pkg_message_repeated_t *repeated_p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
