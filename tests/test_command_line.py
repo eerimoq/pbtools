@@ -153,46 +153,6 @@ class CommandLineTest(unittest.TestCase):
             self.assert_files_equal(filename,
                                     f'pbtools/c_source/{filename}')
 
-    def test_command_line_generate_python_source(self):
-        specs = [
-            'address_book'
-        ]
-
-        for spec in specs:
-            if isinstance(spec, tuple):
-                proto = f'tests/files/{spec[0]}.proto'
-                options = []
-
-                for include_path in spec[1]:
-                    options += ['-I', f'tests/files/{include_path}']
-
-                spec = os.path.basename(spec[0])
-            else:
-                proto = f'tests/files/{spec}.proto'
-                options = []
-
-            argv = [
-                'pbtools',
-                'generate_python_source',
-                *options,
-                proto
-            ]
-
-            if os.path.exists(spec):
-                shutil.rmtree(spec)
-
-            with patch('sys.argv', argv):
-                pbtools._main()
-
-            paths = [
-                f'{spec}/setup.py',
-                f'{spec}/src/{spec}.c'
-            ]
-
-            for path in paths:
-                self.assert_files_equal(path,
-                                        f'tests/files/python_source/{path}')
-
 
 if __name__ == '__main__':
     unittest.main()

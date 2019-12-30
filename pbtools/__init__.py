@@ -27,10 +27,8 @@ def _main():
     # Import when used for less dependencies. For example, curses is
     # not part of all Python builds.
     from .subparsers import generate_c_source
-    from .subparsers import generate_python_source
 
     generate_c_source.add_subparser(subparsers)
-    generate_python_source.add_subparser(subparsers)
 
     args = parser.parse_args()
 
