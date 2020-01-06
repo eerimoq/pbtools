@@ -1,4 +1,5 @@
 |buildstatus|_
+|appveyor|_
 |coverage|_
 |codecov|_
 
@@ -193,6 +194,9 @@ generated files.
 
 .. |buildstatus| image:: https://travis-ci.org/eerimoq/pbtools.svg?branch=master
 .. _buildstatus: https://travis-ci.org/eerimoq/pbtools
+
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/eerimoq/pbtools?svg=true
+.. _appveyor: https://ci.appveyor.com/project/eerimoq/pbtools/branch/master
 
 .. |coverage| image:: https://coveralls.io/repos/github/eerimoq/pbtools/badge.svg?branch=master
 .. _coverage: https://coveralls.io/github/eerimoq/pbtools
