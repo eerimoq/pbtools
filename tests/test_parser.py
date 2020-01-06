@@ -1,3 +1,4 @@
+import os
 import unittest
 
 import pbtools
@@ -9,8 +10,9 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/int32.proto')
 
         self.assertEqual(parsed.package, 'int32')
-        self.assertTrue(parsed.abspath.startswith('/'))
-        self.assertTrue(parsed.abspath.endswith('/tests/files/int32.proto'))
+        self.assertTrue(os.path.isabs(parsed.abspath))
+        self.assertTrue(
+            parsed.abspath.endswith(os.path.join('tests', 'files', 'int32.proto')))
         self.assertEqual(parsed.imports, [])
         self.assertEqual(parsed.options, [])
         self.assertEqual(len(parsed.messages), 2)
@@ -591,7 +593,7 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(imported.path, 'imported.proto')
         self.assertEqual(imported.package, 'imported')
         self.assertTrue(
-            imported.abspath.endswith('/tests/files/imported.proto'))
+            imported.abspath.endswith(os.path.join('tests', 'files', 'imported.proto')))
         self.assertEqual(imported.enums, ['ImportedEnum'])
         self.assertEqual(imported.messages, ['ImportedMessage'])
 
@@ -600,7 +602,7 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(imported.package, 'imported')
         self.assertTrue(
             imported.abspath.endswith(
-                '/tests/files/imports/imported_duplicated_package.proto'))
+                os.path.join('tests', 'files', 'imports', 'imported_duplicated_package.proto')))
         self.assertEqual(imported.enums, ['ImportedDuplicatedPackageEnum'])
         self.assertEqual(imported.messages,
                          ['Imported2Message', 'ImportedDuplicatedPackageMessage'])
@@ -609,7 +611,8 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(imported.path, 'imported2.proto')
         self.assertEqual(imported.package, 'imported2.foo.bar')
         self.assertTrue(
-            imported.abspath.endswith('/tests/files/imports/imported2.proto'))
+            imported.abspath.endswith(
+                os.path.join('tests', 'files', 'imports', 'imported2.proto')))
         self.assertEqual(imported.enums, ['Imported2Enum'])
         self.assertEqual(imported.messages,
                          ['Imported2Message', 'Imported3Message'])
