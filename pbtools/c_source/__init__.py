@@ -171,6 +171,11 @@ int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     int length);
 '''
 
+SUB_MESSAGE_ALLOC_DECLARATION_FMT = '''\
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
+    struct {message.full_name_snake_case}_t *self_p);
+'''
+
 MESSAGE_DECLARATIONS_FMT = '''\
 void {message.full_name_snake_case}_init(
     struct {message.full_name_snake_case}_t *self_p,
@@ -261,6 +266,14 @@ ENCODE_SUB_MESSAGE_MEMBER_FMT = '''\
         encoder_p,
         {field.field_number},
         &self_p->{field.name_snake_case}.base,
+        (pbtools_message_encode_inner_t){field.full_type_snake_case}_encode_inner);
+'''
+
+ENCODE_SUB_MESSAGE_MEMBER_POINTER_FMT = '''\
+    pbtools_encoder_sub_message_pointer_encode(
+        encoder_p,
+        {field.field_number},
+        (struct pbtools_message_base_t *)self_p->{field.name_snake_case}_p,
         (pbtools_message_encode_inner_t){field.full_type_snake_case}_encode_inner);
 '''
 
@@ -384,6 +397,18 @@ DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
                 decoder_p,
                 wire_type,
                 &self_p->{field.name_snake_case}.base,
+                (pbtools_message_decode_inner_t){field.full_type_snake_case}_decode_inner);
+            break;
+'''
+
+DECODE_SUB_MESSAGE_MEMBER_POINTER_FMT = '''\
+        case {field.field_number}:
+            pbtools_decoder_sub_message_pointer_decode(
+                decoder_p,
+                wire_type,
+                (struct pbtools_message_base_t **)&self_p->{field.name_snake_case}_p,
+                sizeof(struct {field.full_type_snake_case}_t),
+                (pbtools_message_init_t){field.full_type_snake_case}_init,
                 (pbtools_message_decode_inner_t){field.full_type_snake_case}_decode_inner);
             break;
 '''
@@ -513,6 +538,18 @@ int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
 }}
 '''
 
+SUB_MESSAGE_ALLOC_DEFINITION_FMT = '''\
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
+    struct {message.full_name_snake_case}_t *self_p)
+{{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->{field.name_snake_case}_p,
+                self_p->base.heap_p,
+                sizeof(struct {field.full_type_snake_case}_t),
+                (pbtools_message_init_t){field.full_type_snake_case}_init));
+}}
+'''
+
 REPEATED_ENUM_DEFINITION_FMT = '''\
 int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     struct {message.full_name_snake_case}_t *self_p,
@@ -592,13 +629,14 @@ REPEATED_MESSAGE_FINALIZER_FMT = '''\
 
 class Generator:
 
-    def __init__(self, namespace, parsed, header_name):
+    def __init__(self, namespace, parsed, header_name, sub_message_pointers):
         if parsed.package is not None:
             namespace = camel_to_snake_case(parsed.package)
 
         self.namespace = namespace
         self.parsed = parsed
         self.header_name = header_name
+        self.sub_message_pointers = sub_message_pointers
 
     @property
     def messages(self):
@@ -627,7 +665,11 @@ class Generator:
         elif type_kind == 'enum':
             type = f'enum {type}_e '
         elif type_kind == 'message':
-            type = f'struct {type}_t '
+            if self.sub_message_pointers:
+                type = f'struct {type}_t *'
+                name_snake_case = f'{name_snake_case}_p'
+            else:
+                type = f'struct {type}_t '
         else:
             type += ' '
 
@@ -773,9 +815,20 @@ class Generator:
         return '\n'.join(declarations)
 
     def generate_message_declarations(self, message, declarations, public):
-        for field in message.repeated_fields:
-            declarations.append(
-                REPEATED_DECLARATION_FMT.format(message=message, field=field))
+        if self.sub_message_pointers:
+            for field in message.fields:
+                if field.repeated:
+                    declarations.append(
+                        REPEATED_DECLARATION_FMT.format(message=message, field=field))
+                elif field.type_kind == 'message' and self.sub_message_pointers:
+                    declarations.append(
+                        SUB_MESSAGE_ALLOC_DECLARATION_FMT.format(message=message,
+                                                                 field=field))
+        else:
+            for field in message.repeated_fields:
+                declarations.append(
+                    REPEATED_DECLARATION_FMT.format(message=message, field=field))
+
 
         for sub_message in message.messages:
             self.generate_message_declarations(sub_message,
@@ -827,7 +880,10 @@ class Generator:
                     else:
                         fmt = ENCODE_REPEATED_MESSAGE_MEMBER_FMT
                 elif field.type_kind == 'message':
-                    fmt = ENCODE_SUB_MESSAGE_MEMBER_FMT
+                    if self.sub_message_pointers:
+                        fmt = ENCODE_SUB_MESSAGE_MEMBER_POINTER_FMT
+                    else:
+                        fmt = ENCODE_SUB_MESSAGE_MEMBER_FMT
                 else:
                     fmt = ENCODE_ENUM_FMT
 
@@ -867,7 +923,10 @@ class Generator:
             elif field.type_kind == 'scalar-value-type':
                 fmt = DECODE_MEMBER_FMT
             elif field.type_kind == 'message':
-                fmt = DECODE_SUB_MESSAGE_MEMBER_FMT
+                if self.sub_message_pointers:
+                    fmt = DECODE_SUB_MESSAGE_MEMBER_POINTER_FMT
+                else:
+                    fmt = DECODE_SUB_MESSAGE_MEMBER_FMT
             else:
                 fmt = DECODE_ENUM_FMT
 
@@ -895,8 +954,11 @@ class Generator:
             elif field.type_kind == 'scalar-value-type':
                 member = f'    self_p->{name} = 0;'
             elif field.type_kind == 'message':
-                member = (f'    {field.full_type_snake_case}_init(&self_p->{name}, '
-                          f'heap_p);')
+                if self.sub_message_pointers:
+                    member = f'    self_p->{name}_p = NULL;'
+                else:
+                    member = (f'    {field.full_type_snake_case}_init(&self_p->{name}, '
+                              f'heap_p);')
             else:
                 member = f'    self_p->{name} = 0;'
 
@@ -923,6 +985,25 @@ class Generator:
         members.append(REPEATED_MESSAGE_DEFINITION_FMT.format(message=message))
 
         return '\n'.join(members)
+
+    def generate_sub_message_definitions(self, message):
+        allocs = []
+
+        for field in message.fields:
+            if field.repeated:
+                continue
+
+            if field.type_kind != 'message':
+                continue
+
+            if not self.sub_message_pointers:
+                continue
+
+            allocs.append(
+                SUB_MESSAGE_ALLOC_DEFINITION_FMT.format(message=message,
+                                                        field=field))
+
+        return '\n'.join(allocs)
 
     def generate_repeated_finalizers(self, message):
         finalizers = []
@@ -1085,6 +1166,11 @@ class Generator:
                 members_init=self.generate_message_members_init(message),
                 finalizers=self.generate_repeated_finalizers(message)))
 
+        sub_messages = self.generate_sub_message_definitions(message)
+
+        if sub_messages:
+            definitions.append(sub_messages)
+
         repeated = self.generate_repeated_definitions(message)
 
         if repeated:
@@ -1123,15 +1209,19 @@ class Generator:
         return header, source
 
 
-def generate(namespace, parsed, header_name):
+def generate(namespace, parsed, header_name, sub_message_pointers):
     """Generate C source code from given parsed proto-file.
 
     """
 
-    return Generator(namespace, parsed, header_name).generate()
+    return Generator(namespace, parsed, header_name, sub_message_pointers).generate()
 
 
-def generate_files(import_path, output_directory, infiles):
+def generate_files(import_path,
+                   output_directory,
+                   namespace,
+                   sub_message_pointers,
+                   infiles):
     """Generate C source code from proto-file(s).
 
     """
@@ -1141,10 +1231,13 @@ def generate_files(import_path, output_directory, infiles):
         basename = os.path.basename(filename)
         name = camel_to_snake_case(os.path.splitext(basename)[0])
 
+        if namespace:
+            name = f'{namespace}_{name}'
+
         filename_h = f'{name}.h'
         filename_c = f'{name}.c'
 
-        header, source = generate(name, parsed, filename_h)
+        header, source = generate(name, parsed, filename_h, sub_message_pointers)
         filename_h = os.path.join(output_directory, filename_h)
         filename_c = os.path.join(output_directory, filename_c)
 

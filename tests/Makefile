@@ -73,6 +73,7 @@ all:
 	    files/c_source/scalar_value_types.c \
 	    files/c_source/benchmark.c \
 	    files/c_source/message.c \
+	    files/c_source/sub_message_pointers_message.c \
 	    files/c_source/no_package.c \
 	    files/c_source/ordering.c \
 	    files/c_source/importing.c \

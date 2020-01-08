@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package sub_message_pointers_message;
+
+message Foo {
+};
+
+message Bar {
+    int32 fie = 333;
+};
+
+message Message {
+    enum Foo {
+        A = 0;
+        B = 1;
+    }
+    message Fie {
+        message Foo {
+            bool value = 5;
+            Bar bar = 1;
+        }
+        Foo foo = 1;
+    }
+    Foo foo = 1;
+    Bar bar = 832;
+    Fie fie = 4;
+};
+
+message UnusedInnerTypes {
+    enum UnusedEnum {
+        A = 0;
+    }
+    message UnusedMessage {
+        bool v1 = 1;
+    }
+    bool v2 = 1;
+};

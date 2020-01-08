@@ -37,6 +37,7 @@
 #include "files/c_source/field_names.h"
 #include "files/c_source/map.h"
 #include "files/c_source/add_and_remove_fields.h"
+#include "files/c_source/sub_message_pointers_message.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -3060,8 +3061,8 @@ TEST(message)
     size = message_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 13);
     ASSERT_MEMORY_EQ(&encoded[0],
-                  "\x08\x01\x22\x09\x0a\x07\x28\x01\x0a\x03\xe8\x14\x08",
-                  13);
+                     "\x08\x01\x22\x09\x0a\x07\x28\x01\x0a\x03\xe8\x14\x08",
+                     13);
 
     message_p = message_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
@@ -3070,6 +3071,47 @@ TEST(message)
     ASSERT_EQ(message_p->foo, message_message_foo_b_e);
     ASSERT_EQ(message_p->fie.foo.value, true);
     ASSERT_EQ(message_p->fie.foo.bar.fie, 8);
+}
+
+TEST(sub_message_pointers_message)
+{
+    int size;
+    struct sub_message_pointers_message_message_t *message_p;
+    uint8_t encoded[256];
+    uint8_t workspace[1024];
+
+    message_p = sub_message_pointers_message_message_new(&workspace[0],
+                                                         sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->foo = sub_message_pointers_message_message_foo_b_e;
+    ASSERT_EQ(sub_message_pointers_message_message_fie_alloc(message_p),
+              0);
+    ASSERT_EQ(sub_message_pointers_message_message_fie_foo_alloc(message_p->fie_p),
+              0);
+    message_p->fie_p->foo_p->value = true;
+    ASSERT_EQ(sub_message_pointers_message_message_fie_foo_bar_alloc(
+                  message_p->fie_p->foo_p), 0);
+    message_p->fie_p->foo_p->bar_p->fie = 8;
+
+    size = sub_message_pointers_message_message_encode(message_p,
+                                                       &encoded[0],
+                                                       sizeof(encoded));
+    ASSERT_EQ(size, 13);
+    ASSERT_MEMORY_EQ(&encoded[0],
+                  "\x08\x01\x22\x09\x0a\x07\x28\x01\x0a\x03\xe8\x14\x08",
+                  13);
+
+    message_p = sub_message_pointers_message_message_new(&workspace[0],
+                                                         sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = sub_message_pointers_message_message_decode(message_p, &encoded[0], 13);
+    ASSERT_EQ(size, 13);
+    ASSERT_EQ(message_p->foo, message_message_foo_b_e);
+    ASSERT_NE(message_p->fie_p, NULL);
+    ASSERT_NE(message_p->fie_p->foo_p, NULL);
+    ASSERT_EQ(message_p->fie_p->foo_p->value, true);
+    ASSERT_NE(message_p->fie_p->foo_p->bar_p, NULL);
+    ASSERT_EQ(message_p->fie_p->foo_p->bar_p->fie, 8);
 }
 
 TEST(message_does_not_fit_in_workspace)

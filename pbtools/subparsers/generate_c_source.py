@@ -5,7 +5,11 @@ from ..c_source import generate_files
 
 
 def _do_generate_c_source(args):
-    generate_files(args.import_path, args.output_directory, args.infiles)
+    generate_files(args.import_path,
+                   args.output_directory,
+                   args.namespace,
+                   args.sub_message_pointers,
+                   args.infiles)
 
 
 def add_subparser(subparsers):
@@ -21,6 +25,14 @@ def add_subparser(subparsers):
         '-o', '--output-directory',
         default='.',
         help='Output directory (default: %(default)s).')
+    subparser.add_argument(
+        '--namespace',
+        help='Generated code namespace.')
+    subparser.add_argument(
+        '--sub-message-pointers',
+        action='store_true',
+        help=('Make sub-messages pointers to enable sub-message presence detection '
+              'and support for recursive messages.'))
     subparser.add_argument(
         'infiles',
         nargs='+',

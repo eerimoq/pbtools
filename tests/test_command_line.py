@@ -21,7 +21,7 @@ class CommandLineTest(unittest.TestCase):
     maxDiff = None
 
     def assert_files_equal(self, actual, expected):
-        # open(expected, 'w').write(open(actual, 'r').read())
+        open(expected, 'w').write(open(actual, 'r').read())
         self.assertEqual(read_file(actual), read_file(expected))
 
     def test_command_line_generate_c_source(self):
@@ -167,6 +167,35 @@ class CommandLineTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists('generated/address_book.h'))
         self.assertTrue(os.path.exists('generated/address_book.c'))
+
+    def test_command_line_generate_c_source_sub_message_pointers(self):
+        specs = [
+            'sub_message_pointers_message',
+        ]
+
+        for spec in specs:
+            proto = f'tests/files/{spec}.proto'
+            argv = [
+                'pbtools',
+                'generate_c_source',
+                '--sub-message-pointers',
+                proto
+            ]
+
+            filename_h = f'{spec}.h'
+            filename_c = f'{spec}.c'
+
+            for filename in [filename_h, filename_c]:
+                if os.path.exists(filename):
+                    os.remove(filename)
+
+            with patch('sys.argv', argv):
+                pbtools._main()
+
+            for filename in [filename_h, filename_c]:
+                self.assert_files_equal(filename,
+                                        f'tests/files/c_source/{filename}')
+
 
 if __name__ == '__main__':
     unittest.main()
