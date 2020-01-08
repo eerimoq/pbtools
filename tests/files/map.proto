@@ -2,8 +2,33 @@ syntax = "proto3";
 
 package map;
 
+message Value {
+    bool v1 = 1;
+}
+
 message Message {
-    map<int32, bool> map1 = 1;
-    map<int32, Message> map2 = 2;
-    map<int32, .foo.Message> map3 = 3;
+    map<string, bool> map1 = 1;
+    map<int32, Value> map2 = 2;
+    map<int32, .map.Value> map3 = 3;
+}
+
+message Message2 {
+    message Map1 {
+        string key = 1;
+        bool value = 2;
+    };
+
+    message Map2 {
+        int32 key = 1;
+        Value value = 2;
+    };
+
+    message Map3 {
+        int32 key = 1;
+        .map.Value value = 2;
+    };
+
+    repeated Map1 map1 = 1;
+    repeated Map2 map2 = 2;
+    repeated Map3 map3 = 3;
 }

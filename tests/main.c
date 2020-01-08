@@ -35,6 +35,7 @@
 #include "files/c_source/no_package_importing.h"
 #include "files/c_source/enum_user.h"
 #include "files/c_source/field_names.h"
+#include "files/c_source/map.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -3184,4 +3185,107 @@ TEST(error_code_to_string)
         ASSERT_EQ(pbtools_error_code_to_string(datas[i].code),
                   datas[i].string_p);
     }
+}
+
+/* ToDo: Generate code for map<>. */
+#if 0
+
+TEST(map_message_encode_decode)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct map_message_t *message_p;
+
+    message_p = map_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+
+    /* Add two items to map1. */
+    ASSERT_EQ(map_message_map1_alloc(message_p, 2), 0);
+    message_p->map1.items_pp[0]->key_p = "1";
+    message_p->map1.items_pp[0]->value = true;
+    message_p->map1.items_pp[1]->key_p = "4";
+    message_p->map1.items_pp[1]->value = false;
+
+    /* Add one items to map2. */
+    ASSERT_EQ(map_message_map2_alloc(message_p, 1), 0);
+    message_p->map2.items_pp[0]->key = 100;
+    message_p->map2.items_pp[0]->value.v1 = true;
+
+    /* Encode the message. */
+    size = map_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 20);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x05\x0a\x01\x31\x10\x01\x0a\x03\x0a\x01\x34\x12\x06\x08\x64"
+                  "\x12\x02\x08\x01",
+                  size);
+
+    /* Decode the message. */
+    message_p = map_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = map_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 20);
+
+    /* Check the decoded map1. */
+    ASSERT_EQ(message_p->map1.length, 2);
+    ASSERT_EQ(message_p->map1.items_pp[0]->key_p, "1");
+    ASSERT_EQ(message_p->map1.items_pp[0]->value, true);
+    ASSERT_EQ(message_p->map1.items_pp[1]->key_p, "4");
+    ASSERT_EQ(message_p->map1.items_pp[1]->value, false);
+
+    /* Check the decoded map2. */
+    ASSERT_EQ(message_p->map2.length, 1);
+    ASSERT_EQ(message_p->map2.items_pp[0]->key, 100);
+    ASSERT_EQ(message_p->map2.items_pp[0]->value.v1, true);
+}
+
+#endif
+
+TEST(map_message2_encode_decode)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct map_message2_t *message_p;
+
+    message_p = map_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+
+    /* Add two items to map1. */
+    ASSERT_EQ(map_message2_map1_alloc(message_p, 2), 0);
+    message_p->map1.items_pp[0]->key_p = "1";
+    message_p->map1.items_pp[0]->value = true;
+    message_p->map1.items_pp[1]->key_p = "4";
+    message_p->map1.items_pp[1]->value = false;
+
+    /* Add one items to map2. */
+    ASSERT_EQ(map_message2_map2_alloc(message_p, 1), 0);
+    message_p->map2.items_pp[0]->key = 100;
+    message_p->map2.items_pp[0]->value.v1 = true;
+
+    /* Encode the message. */
+    size = map_message2_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 20);
+    ASSERT_MEMORY(&encoded[0],
+                  "\x0a\x05\x0a\x01\x31\x10\x01\x0a\x03\x0a\x01\x34\x12\x06\x08\x64"
+                  "\x12\x02\x08\x01",
+                  size);
+
+    /* Decode the message. */
+    message_p = map_message2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = map_message2_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 20);
+
+    /* Check the decoded map1. */
+    ASSERT_EQ(message_p->map1.length, 2);
+    ASSERT_EQ(message_p->map1.items_pp[0]->key_p, "1");
+    ASSERT_EQ(message_p->map1.items_pp[0]->value, true);
+    ASSERT_EQ(message_p->map1.items_pp[1]->key_p, "4");
+    ASSERT_EQ(message_p->map1.items_pp[1]->value, false);
+
+    /* Check the decoded map2. */
+    ASSERT_EQ(message_p->map2.length, 1);
+    ASSERT_EQ(message_p->map2.items_pp[0]->key, 100);
+    ASSERT_EQ(message_p->map2.items_pp[0]->value.v1, true);
 }

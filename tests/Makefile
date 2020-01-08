@@ -84,6 +84,7 @@ all:
 	    files/c_source/enum_user.c \
 	    files/c_source/enum_provider.c \
 	    files/c_source/field_names.c \
+	    files/c_source/map.c \
 	    main.o
 	./a.out
 
