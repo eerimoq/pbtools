@@ -14,7 +14,7 @@ About
 
 Known limitations:
 
-- Options, services (gRPC), reserved fields and maps are ignored.
+- Options, services (gRPC) and reserved fields are ignored.
 
 Project homepage: https://github.com/eerimoq/pbtools
 

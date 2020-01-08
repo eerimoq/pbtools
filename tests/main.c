@@ -3187,9 +3187,6 @@ TEST(error_code_to_string)
     }
 }
 
-/* ToDo: Generate code for map<>. */
-#if 0
-
 TEST(map_message_encode_decode)
 {
     uint8_t encoded[128];
@@ -3238,8 +3235,6 @@ TEST(map_message_encode_decode)
     ASSERT_EQ(message_p->map2.items_pp[0]->key, 100);
     ASSERT_EQ(message_p->map2.items_pp[0]->value.v1, true);
 }
-
-#endif
 
 TEST(map_message2_encode_decode)
 {

@@ -372,11 +372,16 @@ class Oneof:
 
 class MessageField(Field):
 
-    def __init__(self, tokens):
-        super().__init__(load_message_type(tokens[1]),
-                         tokens[2],
-                         int(tokens[4]))
-        self.repeated = bool(tokens[0])
+    def __init__(self, type, name, field_number, repeated):
+        super().__init__(type, name, field_number)
+        self.repeated = repeated
+
+    @classmethod
+    def from_field_tokens(cls, tokens):
+        return cls(load_message_type(tokens[1]),
+                   tokens[2],
+                   int(tokens[4]),
+                   bool(tokens[0]))
 
 
 class Message:
@@ -390,6 +395,7 @@ class Message:
         self.enums = []
         self.messages = []
         self.oneofs = []
+        self.maps = []
         self.namespace = namespace
 
         for item in tokens[3]:
@@ -397,17 +403,35 @@ class Message:
             sub_namespace = namespace + [self.name]
 
             if kind == 'field':
-                self.fields.append(MessageField(item[1]))
+                self.fields.append(MessageField.from_field_tokens(item[1]))
             elif kind == 'enum':
                 self.enums.append(Enum(item, sub_namespace))
             elif kind == 'message':
                 self.messages.append(Message(item, sub_namespace))
             elif kind == 'oneof':
                 self.oneofs.append(Oneof(item, sub_namespace))
-            elif kind in ['map', 'reserved', ';']:
+            elif kind == 'map':
+                self._load_map_field(item, sub_namespace)
+            elif kind in ['reserved', ';']:
                 pass
             else:
                 raise InternalError(kind)
+
+    def _load_map_field(self, tokens, sub_namespace):
+        key_type = tokens[2]
+        value_type = load_message_type(tokens[4])[-1]
+        name = tokens[6]
+        field_number = int(tokens[8])
+        map_type = f'PbtoolsMap{name.title()}'
+        map_message_tokens = [
+            'message',
+            map_type, '{', [
+                ('field', [[], [[], [key_type]], 'key', '=', '1', [], ';']),
+                ('field', [[], [[], [value_type]], 'value', '=', '2', [], ';'])
+            ], '}'
+        ]
+        self.messages.append(Message(map_message_tokens, sub_namespace))
+        self.fields.append(MessageField([map_type], name, field_number, True))
 
     @property
     def repeated_fields(self):
