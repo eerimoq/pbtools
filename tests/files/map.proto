@@ -12,6 +12,7 @@ message Message {
     map<int32, .map.Value> map3 = 3;
 }
 
+// Same as the maps above, but in the wire format.
 message Message2 {
     message Map1 {
         string key = 1;
