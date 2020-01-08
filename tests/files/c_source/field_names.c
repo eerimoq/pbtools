@@ -154,7 +154,7 @@ void field_names_message_camel_case_init(
     self_p->my_string_p = "";
     pbtools_bytes_init(&self_p->my_bytes);
     self_p->my_enum = 0;
-    field_names_message_init(&self_p->my_message, heap_p);
+    self_p->my_message_p = NULL;
 }
 
 void field_names_message_camel_case_encode_inner(
@@ -164,7 +164,7 @@ void field_names_message_camel_case_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         17,
-        &self_p->my_message.base,
+        (struct pbtools_message_base_t *)self_p->my_message_p,
         (pbtools_message_encode_inner_t)field_names_message_encode_inner);
     pbtools_encoder_write_enum(encoder_p, 16, self_p->my_enum);
     pbtools_encoder_write_bytes(encoder_p, 15, &self_p->my_bytes);
@@ -261,7 +261,9 @@ void field_names_message_camel_case_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->my_message.base,
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init,
                 (pbtools_message_decode_inner_t)field_names_message_decode_inner);
             break;
 
@@ -270,6 +272,16 @@ void field_names_message_camel_case_decode_inner(
             break;
         }
     }
+}
+
+int field_names_message_camel_case_my_message_alloc(
+    struct field_names_message_camel_case_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init));
 }
 
 void field_names_message_camel_case_encode_repeated_inner(
@@ -356,7 +368,7 @@ void field_names_message_pascal_case_init(
     self_p->my_string_p = "";
     pbtools_bytes_init(&self_p->my_bytes);
     self_p->my_enum = 0;
-    field_names_message_init(&self_p->my_message, heap_p);
+    self_p->my_message_p = NULL;
 }
 
 void field_names_message_pascal_case_encode_inner(
@@ -366,7 +378,7 @@ void field_names_message_pascal_case_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         17,
-        &self_p->my_message.base,
+        (struct pbtools_message_base_t *)self_p->my_message_p,
         (pbtools_message_encode_inner_t)field_names_message_encode_inner);
     pbtools_encoder_write_enum(encoder_p, 16, self_p->my_enum);
     pbtools_encoder_write_bytes(encoder_p, 15, &self_p->my_bytes);
@@ -463,7 +475,9 @@ void field_names_message_pascal_case_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->my_message.base,
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init,
                 (pbtools_message_decode_inner_t)field_names_message_decode_inner);
             break;
 
@@ -472,6 +486,16 @@ void field_names_message_pascal_case_decode_inner(
             break;
         }
     }
+}
+
+int field_names_message_pascal_case_my_message_alloc(
+    struct field_names_message_pascal_case_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init));
 }
 
 void field_names_message_pascal_case_encode_repeated_inner(

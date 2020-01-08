@@ -47,17 +47,7 @@ The C source code is designed with the following in mind:
 
 Known limitations:
 
-- Recursive messages are not supported.
-
-- Submessage presence detection isn't implemented.
-
 - ``char`` must be 8 bits.
-
-Support for recursive messages and submessage presence detection has
-been implemented on the branch
-``submessage-presence-and-recursive-messages``. However, it makes the
-generated code slightly harder to use, so it has not been merged to
-the master branch yet.
 
 Memory management
 -----------------

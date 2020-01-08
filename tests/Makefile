@@ -68,10 +68,8 @@ all:
 	    files/c_source/enum.c \
 	    files/c_source/address_book.c \
 	    files/c_source/tags.c \
-	    files/c_source/oneof.c \
 	    files/c_source/repeated.c \
 	    files/c_source/scalar_value_types.c \
-	    files/c_source/benchmark.c \
 	    files/c_source/message.c \
 	    files/c_source/no_package.c \
 	    files/c_source/ordering.c \
@@ -85,7 +83,6 @@ all:
 	    files/c_source/no_package_imported.c \
 	    files/c_source/enum_user.c \
 	    files/c_source/enum_provider.c \
-	    files/c_source/field_names.c \
 	    files/c_source/map.c \
 	    files/c_source/add_and_remove_fields.c \
 	    main.o

@@ -57,8 +57,11 @@ struct imported_imported_message_repeated_t {
 struct imported_imported_message_t {
     struct pbtools_message_base_t base;
     bool v1;
-    struct imported_imported_duplicated_package_message_t v2;
+    struct imported_imported_duplicated_package_message_t *v2_p;
 };
+
+int imported_imported_message_v2_alloc(
+    struct imported_imported_message_t *self_p);
 
 /**
  * Encoding and decoding of imported.ImportedMessage.

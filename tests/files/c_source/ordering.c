@@ -108,7 +108,7 @@ void ordering_bar_gom_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    ordering_bar_fie_init(&self_p->v1, heap_p);
+    self_p->v1_p = NULL;
 }
 
 void ordering_bar_gom_encode_inner(
@@ -118,7 +118,7 @@ void ordering_bar_gom_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         1,
-        &self_p->v1.base,
+        (struct pbtools_message_base_t *)self_p->v1_p,
         (pbtools_message_encode_inner_t)ordering_bar_fie_encode_inner);
 }
 
@@ -135,7 +135,9 @@ void ordering_bar_gom_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->v1.base,
+                (struct pbtools_message_base_t **)&self_p->v1_p,
+                sizeof(struct ordering_bar_fie_t),
+                (pbtools_message_init_t)ordering_bar_fie_init,
                 (pbtools_message_decode_inner_t)ordering_bar_fie_decode_inner);
             break;
 
@@ -144,6 +146,16 @@ void ordering_bar_gom_decode_inner(
             break;
         }
     }
+}
+
+int ordering_bar_gom_v1_alloc(
+    struct ordering_bar_gom_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->v1_p,
+                self_p->base.heap_p,
+                sizeof(struct ordering_bar_fie_t),
+                (pbtools_message_init_t)ordering_bar_fie_init));
 }
 
 void ordering_bar_gom_encode_repeated_inner(
@@ -179,9 +191,9 @@ void ordering_bar_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->value = 0;
-    ordering_bar_fie_init(&self_p->fie, heap_p);
+    self_p->fie_p = NULL;
     self_p->fum = 0;
-    ordering_bar_gom_init(&self_p->gom, heap_p);
+    self_p->gom_p = NULL;
 }
 
 void ordering_bar_encode_inner(
@@ -191,13 +203,13 @@ void ordering_bar_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         4,
-        &self_p->gom.base,
+        (struct pbtools_message_base_t *)self_p->gom_p,
         (pbtools_message_encode_inner_t)ordering_bar_gom_encode_inner);
     pbtools_encoder_write_enum(encoder_p, 3, self_p->fum);
     pbtools_encoder_sub_message_encode(
         encoder_p,
         2,
-        &self_p->fie.base,
+        (struct pbtools_message_base_t *)self_p->fie_p,
         (pbtools_message_encode_inner_t)ordering_bar_fie_encode_inner);
     pbtools_encoder_write_bool(encoder_p, 1, self_p->value);
 }
@@ -219,7 +231,9 @@ void ordering_bar_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->fie.base,
+                (struct pbtools_message_base_t **)&self_p->fie_p,
+                sizeof(struct ordering_bar_fie_t),
+                (pbtools_message_init_t)ordering_bar_fie_init,
                 (pbtools_message_decode_inner_t)ordering_bar_fie_decode_inner);
             break;
 
@@ -231,7 +245,9 @@ void ordering_bar_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->gom.base,
+                (struct pbtools_message_base_t **)&self_p->gom_p,
+                sizeof(struct ordering_bar_gom_t),
+                (pbtools_message_init_t)ordering_bar_gom_init,
                 (pbtools_message_decode_inner_t)ordering_bar_gom_decode_inner);
             break;
 
@@ -240,6 +256,26 @@ void ordering_bar_decode_inner(
             break;
         }
     }
+}
+
+int ordering_bar_fie_alloc(
+    struct ordering_bar_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->fie_p,
+                self_p->base.heap_p,
+                sizeof(struct ordering_bar_fie_t),
+                (pbtools_message_init_t)ordering_bar_fie_init));
+}
+
+int ordering_bar_gom_alloc(
+    struct ordering_bar_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->gom_p,
+                self_p->base.heap_p,
+                sizeof(struct ordering_bar_gom_t),
+                (pbtools_message_init_t)ordering_bar_gom_init));
 }
 
 void ordering_bar_encode_repeated_inner(
@@ -310,7 +346,7 @@ void ordering_foo_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    ordering_bar_init(&self_p->bar, heap_p);
+    self_p->bar_p = NULL;
     self_p->fam = 0;
 }
 
@@ -322,7 +358,7 @@ void ordering_foo_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         1,
-        &self_p->bar.base,
+        (struct pbtools_message_base_t *)self_p->bar_p,
         (pbtools_message_encode_inner_t)ordering_bar_encode_inner);
 }
 
@@ -339,7 +375,9 @@ void ordering_foo_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->bar.base,
+                (struct pbtools_message_base_t **)&self_p->bar_p,
+                sizeof(struct ordering_bar_t),
+                (pbtools_message_init_t)ordering_bar_init,
                 (pbtools_message_decode_inner_t)ordering_bar_decode_inner);
             break;
 
@@ -352,6 +390,16 @@ void ordering_foo_decode_inner(
             break;
         }
     }
+}
+
+int ordering_foo_bar_alloc(
+    struct ordering_foo_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->bar_p,
+                self_p->base.heap_p,
+                sizeof(struct ordering_bar_t),
+                (pbtools_message_init_t)ordering_bar_init));
 }
 
 void ordering_foo_encode_repeated_inner(

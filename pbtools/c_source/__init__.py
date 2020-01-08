@@ -171,6 +171,11 @@ int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     int length);
 '''
 
+SUB_MESSAGE_ALLOC_DECLARATION_FMT = '''\
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
+    struct {message.full_name_snake_case}_t *self_p);
+'''
+
 MESSAGE_DECLARATIONS_FMT = '''\
 void {message.full_name_snake_case}_init(
     struct {message.full_name_snake_case}_t *self_p,
@@ -260,7 +265,7 @@ ENCODE_SUB_MESSAGE_MEMBER_FMT = '''\
     pbtools_encoder_sub_message_encode(
         encoder_p,
         {field.field_number},
-        &self_p->{field.name_snake_case}.base,
+        (struct pbtools_message_base_t *)self_p->{field.name_snake_case}_p,
         (pbtools_message_encode_inner_t){field.full_type_snake_case}_encode_inner);
 '''
 
@@ -383,7 +388,9 @@ DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->{field.name_snake_case}.base,
+                (struct pbtools_message_base_t **)&self_p->{field.name_snake_case}_p,
+                sizeof(struct {field.full_type_snake_case}_t),
+                (pbtools_message_init_t){field.full_type_snake_case}_init,
                 (pbtools_message_decode_inner_t){field.full_type_snake_case}_decode_inner);
             break;
 '''
@@ -513,6 +520,18 @@ int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
 }}
 '''
 
+SUB_MESSAGE_ALLOC_DEFINITION_FMT = '''\
+int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
+    struct {message.full_name_snake_case}_t *self_p)
+{{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->{field.name_snake_case}_p,
+                self_p->base.heap_p,
+                sizeof(struct {field.full_type_snake_case}_t),
+                (pbtools_message_init_t){field.full_type_snake_case}_init));
+}}
+'''
+
 REPEATED_ENUM_DEFINITION_FMT = '''\
 int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
     struct {message.full_name_snake_case}_t *self_p,
@@ -627,7 +646,8 @@ class Generator:
         elif type_kind == 'enum':
             type = f'enum {type}_e '
         elif type_kind == 'message':
-            type = f'struct {type}_t '
+            type = f'struct {type}_t *'
+            name_snake_case = f'{name_snake_case}_p'
         else:
             type += ' '
 
@@ -773,9 +793,15 @@ class Generator:
         return '\n'.join(declarations)
 
     def generate_message_declarations(self, message, declarations, public):
-        for field in message.repeated_fields:
-            declarations.append(
-                REPEATED_DECLARATION_FMT.format(message=message, field=field))
+        for field in message.fields:
+            if field.repeated:
+                declarations.append(
+                    REPEATED_DECLARATION_FMT.format(message=message, field=field))
+            elif field.type_kind == 'message':
+                declarations.append(
+                    SUB_MESSAGE_ALLOC_DECLARATION_FMT.format(message=message,
+                                                             field=field))
+
 
         for sub_message in message.messages:
             self.generate_message_declarations(sub_message,
@@ -895,8 +921,7 @@ class Generator:
             elif field.type_kind == 'scalar-value-type':
                 member = f'    self_p->{name} = 0;'
             elif field.type_kind == 'message':
-                member = (f'    {field.full_type_snake_case}_init(&self_p->{name}, '
-                          f'heap_p);')
+                member = f'    self_p->{name}_p = NULL;'
             else:
                 member = f'    self_p->{name} = 0;'
 
@@ -923,6 +948,19 @@ class Generator:
         members.append(REPEATED_MESSAGE_DEFINITION_FMT.format(message=message))
 
         return '\n'.join(members)
+
+    def generate_sub_message_definitions(self, message):
+        allocs = []
+
+        for field in message.fields:
+            if field.repeated or field.type_kind != 'message':
+                continue
+
+            allocs.append(
+                SUB_MESSAGE_ALLOC_DEFINITION_FMT.format(message=message,
+                                                        field=field))
+
+        return '\n'.join(allocs)
 
     def generate_repeated_finalizers(self, message):
         finalizers = []
@@ -1084,6 +1122,11 @@ class Generator:
                 repeated_infos=self.generate_repeated_infos(message),
                 members_init=self.generate_message_members_init(message),
                 finalizers=self.generate_repeated_finalizers(message)))
+
+        sub_messages = self.generate_sub_message_definitions(message)
+
+        if sub_messages:
+            definitions.append(sub_messages)
 
         repeated = self.generate_repeated_definitions(message)
 

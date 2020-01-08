@@ -236,7 +236,7 @@ void benchmark_message1_init(
     self_p->field23 = 0;
     self_p->field24 = 0;
     self_p->field25 = 0;
-    benchmark_sub_message_init(&self_p->field15, heap_p);
+    self_p->field15_p = NULL;
     self_p->field78 = 0;
     self_p->field67 = 0;
     self_p->field68 = 0;
@@ -258,7 +258,7 @@ void benchmark_message1_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         15,
-        &self_p->field15.base,
+        (struct pbtools_message_base_t *)self_p->field15_p,
         (pbtools_message_encode_inner_t)benchmark_sub_message_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 25, self_p->field25);
     pbtools_encoder_write_bool(encoder_p, 24, self_p->field24);
@@ -351,7 +351,9 @@ void benchmark_message1_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->field15.base,
+                (struct pbtools_message_base_t **)&self_p->field15_p,
+                sizeof(struct benchmark_sub_message_t),
+                (pbtools_message_init_t)benchmark_sub_message_init,
                 (pbtools_message_decode_inner_t)benchmark_sub_message_decode_inner);
             break;
 
@@ -389,6 +391,16 @@ void benchmark_message1_decode_inner(
         decoder_p,
         &repeated_info_field4,
         &self_p->field4);
+}
+
+int benchmark_message1_field15_alloc(
+    struct benchmark_message1_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->field15_p,
+                self_p->base.heap_p,
+                sizeof(struct benchmark_sub_message_t),
+                (pbtools_message_init_t)benchmark_sub_message_init));
 }
 
 int benchmark_message1_field4_alloc(

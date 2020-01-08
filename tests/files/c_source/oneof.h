@@ -107,7 +107,7 @@ enum oneof_message2_oneof1_choice_e {
 struct oneof_message2_oneof1_oneof_t {
     enum oneof_message2_oneof1_choice_e choice;
     union {
-        struct oneof_message2_foo_t v4;
+        struct oneof_message2_foo_t *v4_p;
         struct pbtools_bytes_t v5;
         enum oneof_enum_e v6;
     } value;
@@ -130,8 +130,8 @@ struct oneof_message2_oneof2_oneof_t {
     enum oneof_message2_oneof2_choice_e choice;
     union {
         bool v1;
-        struct oneof_message2_foo_t v2;
-        struct oneof_message_t v3;
+        struct oneof_message2_foo_t *v2_p;
+        struct oneof_message_t *v3_p;
     } value;
 };
 
@@ -209,7 +209,7 @@ enum oneof_message3_oneof1_choice_e {
 struct oneof_message3_oneof1_oneof_t {
     enum oneof_message3_oneof1_choice_e choice;
     union {
-        struct oneof_message3_bar_t v1;
+        struct oneof_message3_bar_t *v1_p;
     } value;
 };
 

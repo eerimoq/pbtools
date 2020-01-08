@@ -68,10 +68,13 @@ struct m0_repeated_t {
 
 struct m0_t {
     struct pbtools_message_base_t base;
-    struct m0_m1_t v1;
+    struct m0_m1_t *v1_p;
     struct m0_m1_repeated_t v2;
     enum m0_e1_e v3;
 };
+
+int m0_v1_alloc(
+    struct m0_t *self_p);
 
 int m0_v2_alloc(
     struct m0_t *self_p,

@@ -99,7 +99,7 @@ struct benchmark_message1_t {
     int32_t field23;
     bool field24;
     int32_t field25;
-    struct benchmark_sub_message_t field15;
+    struct benchmark_sub_message_t *field15_p;
     bool field78;
     int32_t field67;
     int32_t field68;
@@ -172,9 +172,9 @@ enum benchmark_message_oneof_choice_e {
 struct benchmark_message_oneof_oneof_t {
     enum benchmark_message_oneof_choice_e choice;
     union {
-        struct benchmark_message1_t message1;
-        struct benchmark_message2_t message2;
-        struct benchmark_message3_t message3;
+        struct benchmark_message1_t *message1_p;
+        struct benchmark_message2_t *message2_p;
+        struct benchmark_message3_t *message3_p;
     } value;
 };
 
@@ -212,6 +212,9 @@ int benchmark_sub_message_decode(
 int benchmark_message1_field4_alloc(
     struct benchmark_message1_t *self_p,
     int length);
+
+int benchmark_message1_field15_alloc(
+    struct benchmark_message1_t *self_p);
 
 /**
  * Encoding and decoding of benchmark.Message1.

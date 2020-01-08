@@ -102,7 +102,7 @@ void m0_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    m0_m1_init(&self_p->v1, heap_p);
+    self_p->v1_p = NULL;
     self_p->v2.length = 0;
     self_p->v3 = 0;
 }
@@ -119,7 +119,7 @@ void m0_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         1,
-        &self_p->v1.base,
+        (struct pbtools_message_base_t *)self_p->v1_p,
         (pbtools_message_encode_inner_t)m0_m1_encode_inner);
 }
 
@@ -139,7 +139,9 @@ void m0_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->v1.base,
+                (struct pbtools_message_base_t **)&self_p->v1_p,
+                sizeof(struct m0_m1_t),
+                (pbtools_message_init_t)m0_m1_init,
                 (pbtools_message_decode_inner_t)m0_m1_decode_inner);
             break;
 
@@ -163,6 +165,16 @@ void m0_decode_inner(
         decoder_p,
         &repeated_info_v2,
         &self_p->v2);
+}
+
+int m0_v1_alloc(
+    struct m0_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->v1_p,
+                self_p->base.heap_p,
+                sizeof(struct m0_m1_t),
+                (pbtools_message_init_t)m0_m1_init));
 }
 
 int m0_v2_alloc(
