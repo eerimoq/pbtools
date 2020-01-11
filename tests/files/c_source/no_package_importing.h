@@ -43,9 +43,7 @@ extern "C" {
  */
 struct npi_message2_repeated_t {
     int length;
-    struct npi_message2_t **items_pp;
-    struct npi_message2_t *head_p;
-    struct npi_message2_t *tail_p;
+    struct npi_message2_t *items_p;
 };
 
 struct npi_message2_t {
@@ -75,8 +73,7 @@ int npi_message2_decode(
 
 void npi_message2_init(
     struct npi_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct npi_message2_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void npi_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -92,11 +89,7 @@ void npi_message2_encode_repeated_inner(
     struct npi_message2_repeated_t *repeated_p);
 
 void npi_message2_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct npi_message2_repeated_t *repeated_p);
-
-void npi_message2_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct npi_message2_repeated_t *repeated_p);
 

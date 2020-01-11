@@ -42,9 +42,7 @@ extern "C" {
  */
 struct sfixed32_message_repeated_t {
     int length;
-    struct sfixed32_message_t **items_pp;
-    struct sfixed32_message_t *head_p;
-    struct sfixed32_message_t *tail_p;
+    struct sfixed32_message_t *items_p;
 };
 
 struct sfixed32_message_t {
@@ -74,8 +72,7 @@ int sfixed32_message_decode(
 
 void sfixed32_message_init(
     struct sfixed32_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct sfixed32_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void sfixed32_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -91,11 +88,7 @@ void sfixed32_message_encode_repeated_inner(
     struct sfixed32_message_repeated_t *repeated_p);
 
 void sfixed32_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct sfixed32_message_repeated_t *repeated_p);
-
-void sfixed32_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct sfixed32_message_repeated_t *repeated_p);
 

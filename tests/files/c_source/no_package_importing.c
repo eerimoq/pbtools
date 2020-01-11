@@ -37,12 +37,10 @@
 
 void npi_message2_init(
     struct npi_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct npi_message2_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
-    no_package_imported_message_init(&self_p->v3, heap_p, NULL);
+    no_package_imported_message_init(&self_p->v3, heap_p);
 }
 
 void npi_message2_encode_inner(
@@ -89,30 +87,22 @@ void npi_message2_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct npi_message2_t),
         (pbtools_message_encode_inner_t)npi_message2_encode_inner);
 }
 
 void npi_message2_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct npi_message2_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct npi_message2_t),
         (pbtools_message_init_t)npi_message2_init,
         (pbtools_message_decode_inner_t)npi_message2_decode_inner);
-}
-
-void npi_message2_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct npi_message2_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct npi_message2_t *

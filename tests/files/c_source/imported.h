@@ -51,9 +51,7 @@ enum imported_imported_enum_e {
  */
 struct imported_imported_message_repeated_t {
     int length;
-    struct imported_imported_message_t **items_pp;
-    struct imported_imported_message_t *head_p;
-    struct imported_imported_message_t *tail_p;
+    struct imported_imported_message_t *items_p;
 };
 
 struct imported_imported_message_t {
@@ -84,8 +82,7 @@ int imported_imported_message_decode(
 
 void imported_imported_message_init(
     struct imported_imported_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct imported_imported_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void imported_imported_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -101,11 +98,7 @@ void imported_imported_message_encode_repeated_inner(
     struct imported_imported_message_repeated_t *repeated_p);
 
 void imported_imported_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct imported_imported_message_repeated_t *repeated_p);
-
-void imported_imported_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct imported_imported_message_repeated_t *repeated_p);
 

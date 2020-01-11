@@ -31,6 +31,10 @@
 #ifndef ONEOF_H
 #define ONEOF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -58,9 +62,7 @@ struct oneof_foo_bar_oneof_t {
  */
 struct oneof_foo_repeated_t {
     int length;
-    struct oneof_foo_t **items_pp;
-    struct oneof_foo_t *head_p;
-    struct oneof_foo_t *tail_p;
+    struct oneof_foo_t *items_p;
 };
 
 struct oneof_foo_t {
@@ -96,8 +98,7 @@ int oneof_foo_decode(
 
 void oneof_foo_init(
     struct oneof_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_foo_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -113,12 +114,12 @@ void oneof_foo_encode_repeated_inner(
     struct oneof_foo_repeated_t *repeated_p);
 
 void oneof_foo_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct oneof_foo_repeated_t *repeated_p);
 
-void oneof_foo_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct oneof_foo_repeated_t *repeated_p);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -42,9 +42,7 @@ extern "C" {
  */
 struct service_request_repeated_t {
     int length;
-    struct service_request_t **items_pp;
-    struct service_request_t *head_p;
-    struct service_request_t *tail_p;
+    struct service_request_t *items_p;
 };
 
 struct service_request_t {
@@ -57,9 +55,7 @@ struct service_request_t {
  */
 struct service_response_repeated_t {
     int length;
-    struct service_response_t **items_pp;
-    struct service_response_t *head_p;
-    struct service_response_t *tail_p;
+    struct service_response_t *items_p;
 };
 
 struct service_response_t {
@@ -107,8 +103,7 @@ int service_response_decode(
 
 void service_request_init(
     struct service_request_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct service_request_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void service_request_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -124,18 +119,13 @@ void service_request_encode_repeated_inner(
     struct service_request_repeated_t *repeated_p);
 
 void service_request_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct service_request_repeated_t *repeated_p);
-
-void service_request_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct service_request_repeated_t *repeated_p);
 
 void service_response_init(
     struct service_response_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct service_response_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void service_response_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -151,11 +141,7 @@ void service_response_encode_repeated_inner(
     struct service_response_repeated_t *repeated_p);
 
 void service_response_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct service_response_repeated_t *repeated_p);
-
-void service_response_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct service_response_repeated_t *repeated_p);
 

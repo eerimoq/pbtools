@@ -98,11 +98,9 @@ static void oneof_foo_bar_fum_decode(
 
 void oneof_foo_init(
     struct oneof_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_foo_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->bar.choice = 0;
 }
 
@@ -152,30 +150,22 @@ void oneof_foo_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct oneof_foo_t),
         (pbtools_message_encode_inner_t)oneof_foo_encode_inner);
 }
 
 void oneof_foo_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct oneof_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_foo_t),
         (pbtools_message_init_t)oneof_foo_init,
         (pbtools_message_decode_inner_t)oneof_foo_decode_inner);
-}
-
-void oneof_foo_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct oneof_foo_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct oneof_foo_t *

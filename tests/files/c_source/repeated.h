@@ -50,9 +50,7 @@ enum repeated_enum_e {
  */
 struct repeated_message_repeated_t {
     int length;
-    struct repeated_message_t **items_pp;
-    struct repeated_message_t *head_p;
-    struct repeated_message_t *tail_p;
+    struct repeated_message_t *items_p;
 };
 
 struct repeated_message_t {
@@ -68,9 +66,7 @@ struct repeated_message_t {
  */
 struct repeated_message_scalar_value_types_repeated_t {
     int length;
-    struct repeated_message_scalar_value_types_t **items_pp;
-    struct repeated_message_scalar_value_types_t *head_p;
-    struct repeated_message_scalar_value_types_t *tail_p;
+    struct repeated_message_scalar_value_types_t *items_p;
 };
 
 struct repeated_message_scalar_value_types_t {
@@ -97,9 +93,7 @@ struct repeated_message_scalar_value_types_t {
  */
 struct repeated_message_scalar_value_types_packed_repeated_t {
     int length;
-    struct repeated_message_scalar_value_types_packed_t **items_pp;
-    struct repeated_message_scalar_value_types_packed_t *head_p;
-    struct repeated_message_scalar_value_types_packed_t *tail_p;
+    struct repeated_message_scalar_value_types_packed_t *items_p;
 };
 
 struct repeated_message_scalar_value_types_packed_t {
@@ -126,9 +120,7 @@ struct repeated_message_scalar_value_types_packed_t {
  */
 struct repeated_message_scalar_value_types_not_packed_repeated_t {
     int length;
-    struct repeated_message_scalar_value_types_not_packed_t **items_pp;
-    struct repeated_message_scalar_value_types_not_packed_t *head_p;
-    struct repeated_message_scalar_value_types_not_packed_t *tail_p;
+    struct repeated_message_scalar_value_types_not_packed_t *items_p;
 };
 
 struct repeated_message_scalar_value_types_not_packed_t {
@@ -155,9 +147,7 @@ struct repeated_message_scalar_value_types_not_packed_t {
  */
 struct repeated_foo_repeated_t {
     int length;
-    struct repeated_foo_t **items_pp;
-    struct repeated_foo_t *head_p;
-    struct repeated_foo_t *tail_p;
+    struct repeated_foo_t *items_p;
 };
 
 struct repeated_foo_t {
@@ -171,9 +161,7 @@ struct repeated_foo_t {
  */
 struct repeated_bar_fie_repeated_t {
     int length;
-    struct repeated_bar_fie_t **items_pp;
-    struct repeated_bar_fie_t *head_p;
-    struct repeated_bar_fie_t *tail_p;
+    struct repeated_bar_fie_t *items_p;
 };
 
 struct repeated_bar_fie_t {
@@ -186,9 +174,7 @@ struct repeated_bar_fie_t {
  */
 struct repeated_bar_repeated_t {
     int length;
-    struct repeated_bar_t **items_pp;
-    struct repeated_bar_t *head_p;
-    struct repeated_bar_t *tail_p;
+    struct repeated_bar_t *items_p;
 };
 
 struct repeated_bar_t {
@@ -525,8 +511,7 @@ int repeated_bar_decode(
 
 void repeated_message_init(
     struct repeated_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -542,18 +527,13 @@ void repeated_message_encode_repeated_inner(
     struct repeated_message_repeated_t *repeated_p);
 
 void repeated_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_message_repeated_t *repeated_p);
-
-void repeated_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_init(
     struct repeated_message_scalar_value_types_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_message_scalar_value_types_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_message_scalar_value_types_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -569,18 +549,13 @@ void repeated_message_scalar_value_types_encode_repeated_inner(
     struct repeated_message_scalar_value_types_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_message_scalar_value_types_repeated_t *repeated_p);
-
-void repeated_message_scalar_value_types_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_scalar_value_types_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_packed_init(
     struct repeated_message_scalar_value_types_packed_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_message_scalar_value_types_packed_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_message_scalar_value_types_packed_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -596,18 +571,13 @@ void repeated_message_scalar_value_types_packed_encode_repeated_inner(
     struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_packed_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
-
-void repeated_message_scalar_value_types_packed_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_not_packed_init(
     struct repeated_message_scalar_value_types_not_packed_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_message_scalar_value_types_not_packed_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_message_scalar_value_types_not_packed_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -623,18 +593,13 @@ void repeated_message_scalar_value_types_not_packed_encode_repeated_inner(
     struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_not_packed_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
-
-void repeated_message_scalar_value_types_not_packed_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
 
 void repeated_foo_init(
     struct repeated_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_foo_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -650,18 +615,13 @@ void repeated_foo_encode_repeated_inner(
     struct repeated_foo_repeated_t *repeated_p);
 
 void repeated_foo_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_foo_repeated_t *repeated_p);
-
-void repeated_foo_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_foo_repeated_t *repeated_p);
 
 void repeated_bar_init(
     struct repeated_bar_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_bar_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_bar_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -677,18 +637,13 @@ void repeated_bar_encode_repeated_inner(
     struct repeated_bar_repeated_t *repeated_p);
 
 void repeated_bar_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_bar_repeated_t *repeated_p);
-
-void repeated_bar_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_bar_repeated_t *repeated_p);
 
 void repeated_bar_fie_init(
     struct repeated_bar_fie_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct repeated_bar_fie_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void repeated_bar_fie_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -704,11 +659,7 @@ void repeated_bar_fie_encode_repeated_inner(
     struct repeated_bar_fie_repeated_t *repeated_p);
 
 void repeated_bar_fie_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct repeated_bar_fie_repeated_t *repeated_p);
-
-void repeated_bar_fie_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct repeated_bar_fie_repeated_t *repeated_p);
 

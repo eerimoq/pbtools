@@ -70,9 +70,7 @@ struct oneof_message_value_oneof_t {
  */
 struct oneof_message_repeated_t {
     int length;
-    struct oneof_message_t **items_pp;
-    struct oneof_message_t *head_p;
-    struct oneof_message_t *tail_p;
+    struct oneof_message_t *items_p;
 };
 
 struct oneof_message_t {
@@ -85,9 +83,7 @@ struct oneof_message_t {
  */
 struct oneof_message2_foo_repeated_t {
     int length;
-    struct oneof_message2_foo_t **items_pp;
-    struct oneof_message2_foo_t *head_p;
-    struct oneof_message2_foo_t *tail_p;
+    struct oneof_message2_foo_t *items_p;
 };
 
 struct oneof_message2_foo_t {
@@ -144,9 +140,7 @@ struct oneof_message2_oneof2_oneof_t {
  */
 struct oneof_message2_repeated_t {
     int length;
-    struct oneof_message2_t **items_pp;
-    struct oneof_message2_t *head_p;
-    struct oneof_message2_t *tail_p;
+    struct oneof_message2_t *items_p;
 };
 
 struct oneof_message2_t {
@@ -180,9 +174,7 @@ struct oneof_message3_foo_inner_oneof_oneof_t {
  */
 struct oneof_message3_foo_repeated_t {
     int length;
-    struct oneof_message3_foo_t **items_pp;
-    struct oneof_message3_foo_t *head_p;
-    struct oneof_message3_foo_t *tail_p;
+    struct oneof_message3_foo_t *items_p;
 };
 
 struct oneof_message3_foo_t {
@@ -195,9 +187,7 @@ struct oneof_message3_foo_t {
  */
 struct oneof_message3_bar_repeated_t {
     int length;
-    struct oneof_message3_bar_t **items_pp;
-    struct oneof_message3_bar_t *head_p;
-    struct oneof_message3_bar_t *tail_p;
+    struct oneof_message3_bar_t *items_p;
 };
 
 struct oneof_message3_bar_t {
@@ -228,9 +218,7 @@ struct oneof_message3_oneof1_oneof_t {
  */
 struct oneof_message3_repeated_t {
     int length;
-    struct oneof_message3_t **items_pp;
-    struct oneof_message3_t *head_p;
-    struct oneof_message3_t *tail_p;
+    struct oneof_message3_t *items_p;
 };
 
 struct oneof_message3_t {
@@ -333,8 +321,7 @@ int oneof_message3_decode(
 
 void oneof_message_init(
     struct oneof_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -350,18 +337,13 @@ void oneof_message_encode_repeated_inner(
     struct oneof_message_repeated_t *repeated_p);
 
 void oneof_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_message_repeated_t *repeated_p);
-
-void oneof_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message_repeated_t *repeated_p);
 
 void oneof_message2_init(
     struct oneof_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_message2_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -377,18 +359,13 @@ void oneof_message2_encode_repeated_inner(
     struct oneof_message2_repeated_t *repeated_p);
 
 void oneof_message2_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_message2_repeated_t *repeated_p);
-
-void oneof_message2_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message2_repeated_t *repeated_p);
 
 void oneof_message2_foo_init(
     struct oneof_message2_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_message2_foo_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_message2_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -404,18 +381,13 @@ void oneof_message2_foo_encode_repeated_inner(
     struct oneof_message2_foo_repeated_t *repeated_p);
 
 void oneof_message2_foo_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_message2_foo_repeated_t *repeated_p);
-
-void oneof_message2_foo_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message2_foo_repeated_t *repeated_p);
 
 void oneof_message3_init(
     struct oneof_message3_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_message3_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_message3_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -431,18 +403,13 @@ void oneof_message3_encode_repeated_inner(
     struct oneof_message3_repeated_t *repeated_p);
 
 void oneof_message3_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_message3_repeated_t *repeated_p);
-
-void oneof_message3_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message3_repeated_t *repeated_p);
 
 void oneof_message3_foo_init(
     struct oneof_message3_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_message3_foo_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_message3_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -458,18 +425,13 @@ void oneof_message3_foo_encode_repeated_inner(
     struct oneof_message3_foo_repeated_t *repeated_p);
 
 void oneof_message3_foo_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_message3_foo_repeated_t *repeated_p);
-
-void oneof_message3_foo_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message3_foo_repeated_t *repeated_p);
 
 void oneof_message3_bar_init(
     struct oneof_message3_bar_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct oneof_message3_bar_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void oneof_message3_bar_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -485,11 +447,7 @@ void oneof_message3_bar_encode_repeated_inner(
     struct oneof_message3_bar_repeated_t *repeated_p);
 
 void oneof_message3_bar_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct oneof_message3_bar_repeated_t *repeated_p);
-
-void oneof_message3_bar_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct oneof_message3_bar_repeated_t *repeated_p);
 

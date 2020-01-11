@@ -23,7 +23,7 @@ int main(int argc, const char *argv[])
 
     /* Add one person to the address book. */
     assert(address_book_address_book_people_alloc(address_book_p, 1) == 0);
-    person_p = address_book_p->people.items_pp[0];
+    person_p = &address_book_p->people.items_p[0];
     person_p->name_p = "Kalle Kula";
     person_p->id = 56;
     person_p->email_p = "kalle.kula@foobar.com";
@@ -32,12 +32,12 @@ int main(int argc, const char *argv[])
     assert(address_book_person_phones_alloc(person_p, 2) == 0);
 
     /* Home. */
-    phone_number_p = person_p->phones.items_pp[0];
+    phone_number_p = &person_p->phones.items_p[0];
     phone_number_p->number_p = "+46701232345";
     phone_number_p->type = address_book_person_phone_type_home_e;
 
     /* Work. */
-    phone_number_p = person_p->phones.items_pp[1];
+    phone_number_p = &person_p->phones.items_p[1];
     phone_number_p->number_p = "+46999999999";
     phone_number_p->type = address_book_person_phone_type_work_e;
 
@@ -66,7 +66,7 @@ int main(int argc, const char *argv[])
     assert(address_book_p->people.length == 1);
 
     /* Check the decoded person. */
-    person_p = address_book_p->people.items_pp[0];
+    person_p = &address_book_p->people.items_p[0];
     assert(person_p != NULL);
     assert(strcmp(person_p->name_p, "Kalle Kula") == 0);
     assert(person_p->id == 56);
@@ -74,12 +74,12 @@ int main(int argc, const char *argv[])
     assert(person_p->phones.length == 2);
 
     /* Check home phone number. */
-    phone_number_p = person_p->phones.items_pp[0];
+    phone_number_p = &person_p->phones.items_p[0];
     assert(strcmp(phone_number_p->number_p, "+46701232345") == 0);
     assert(phone_number_p->type == address_book_person_phone_type_home_e);
 
     /* Check work phone number. */
-    phone_number_p = person_p->phones.items_pp[1];
+    phone_number_p = &person_p->phones.items_p[1];
     assert(strcmp(phone_number_p->number_p, "+46999999999") == 0);
     assert(phone_number_p->type == address_book_person_phone_type_work_e);
 

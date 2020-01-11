@@ -37,11 +37,9 @@
 
 void benchmark_sub_message_init(
     struct benchmark_sub_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmark_sub_message_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field1 = 0;
     self_p->field2 = 0;
     self_p->field3 = 0;
@@ -165,30 +163,22 @@ void benchmark_sub_message_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmark_sub_message_t),
         (pbtools_message_encode_inner_t)benchmark_sub_message_encode_inner);
 }
 
 void benchmark_sub_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct benchmark_sub_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct benchmark_sub_message_t),
         (pbtools_message_init_t)benchmark_sub_message_init,
         (pbtools_message_decode_inner_t)benchmark_sub_message_decode_inner);
-}
-
-void benchmark_sub_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmark_sub_message_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmark_sub_message_t *
@@ -229,11 +219,9 @@ int benchmark_sub_message_decode(
 
 void benchmark_message1_init(
     struct benchmark_message1_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmark_message1_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field80 = 0;
     self_p->field81 = 0;
     self_p->field2 = 0;
@@ -248,7 +236,7 @@ void benchmark_message1_init(
     self_p->field23 = 0;
     self_p->field24 = 0;
     self_p->field25 = 0;
-    benchmark_sub_message_init(&self_p->field15, heap_p, NULL);
+    benchmark_sub_message_init(&self_p->field15, heap_p);
     self_p->field78 = 0;
     self_p->field67 = 0;
     self_p->field68 = 0;
@@ -293,6 +281,9 @@ void benchmark_message1_decode_inner(
     struct benchmark_message1_t *self_p)
 {
     int wire_type;
+    struct pbtools_repeated_info_t repeated_info_field4;
+
+    pbtools_repeated_info_init(&repeated_info_field4, 4, decoder_p);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -326,10 +317,10 @@ void benchmark_message1_decode_inner(
             break;
 
         case 4:
-            pbtools_decoder_read_repeated_string(
+            pbtools_repeated_info_decode_string(
+                &repeated_info_field4,
                 decoder_p,
-                wire_type,
-                &self_p->field4);
+                wire_type);
             break;
 
         case 59:
@@ -394,8 +385,9 @@ void benchmark_message1_decode_inner(
         }
     }
 
-    pbtools_decoder_finalize_repeated_string(
+    pbtools_decoder_decode_repeated_string(
         decoder_p,
+        &repeated_info_field4,
         &self_p->field4);
 }
 
@@ -418,30 +410,22 @@ void benchmark_message1_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmark_message1_t),
         (pbtools_message_encode_inner_t)benchmark_message1_encode_inner);
 }
 
 void benchmark_message1_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct benchmark_message1_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct benchmark_message1_t),
         (pbtools_message_init_t)benchmark_message1_init,
         (pbtools_message_decode_inner_t)benchmark_message1_decode_inner);
-}
-
-void benchmark_message1_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmark_message1_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmark_message1_t *
@@ -482,11 +466,9 @@ int benchmark_message1_decode(
 
 void benchmark_message2_init(
     struct benchmark_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmark_message2_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field1 = 0;
     self_p->field2 = 0;
     self_p->field3 = 0;
@@ -556,30 +538,22 @@ void benchmark_message2_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmark_message2_t),
         (pbtools_message_encode_inner_t)benchmark_message2_encode_inner);
 }
 
 void benchmark_message2_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct benchmark_message2_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct benchmark_message2_t),
         (pbtools_message_init_t)benchmark_message2_init,
         (pbtools_message_decode_inner_t)benchmark_message2_decode_inner);
-}
-
-void benchmark_message2_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmark_message2_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmark_message2_t *
@@ -620,11 +594,9 @@ int benchmark_message2_decode(
 
 void benchmark_message3_sub_message_init(
     struct benchmark_message3_sub_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmark_message3_sub_message_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field28 = 0;
     self_p->field2 = 0;
     self_p->field12 = 0;
@@ -688,39 +660,29 @@ void benchmark_message3_sub_message_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmark_message3_sub_message_t),
         (pbtools_message_encode_inner_t)benchmark_message3_sub_message_encode_inner);
 }
 
 void benchmark_message3_sub_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct benchmark_message3_sub_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct benchmark_message3_sub_message_t),
         (pbtools_message_init_t)benchmark_message3_sub_message_init,
         (pbtools_message_decode_inner_t)benchmark_message3_sub_message_decode_inner);
 }
 
-void benchmark_message3_sub_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmark_message3_sub_message_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
-}
-
 void benchmark_message3_init(
     struct benchmark_message3_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmark_message3_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->field13.length = 0;
 }
 
@@ -739,15 +701,17 @@ void benchmark_message3_decode_inner(
     struct benchmark_message3_t *self_p)
 {
     int wire_type;
+    struct pbtools_repeated_info_t repeated_info_field13;
+
+    pbtools_repeated_info_init(&repeated_info_field13, 13, decoder_p);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 13:
-            benchmark_message3_sub_message_decode_repeated_inner(
-                decoder_p,
-                wire_type,
-                &self_p->field13);
+            pbtools_repeated_info_decode(&repeated_info_field13,
+                                         decoder_p,
+                                         wire_type);
             break;
 
         default:
@@ -756,7 +720,8 @@ void benchmark_message3_decode_inner(
         }
     }
 
-    benchmark_message3_sub_message_finalize_repeated_inner(
+    benchmark_message3_sub_message_decode_repeated_inner(
+        &repeated_info_field13,
         decoder_p,
         &self_p->field13);
 }
@@ -782,30 +747,22 @@ void benchmark_message3_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmark_message3_t),
         (pbtools_message_encode_inner_t)benchmark_message3_encode_inner);
 }
 
 void benchmark_message3_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct benchmark_message3_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct benchmark_message3_t),
         (pbtools_message_init_t)benchmark_message3_init,
         (pbtools_message_decode_inner_t)benchmark_message3_decode_inner);
-}
-
-void benchmark_message3_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmark_message3_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmark_message3_t *
@@ -850,8 +807,7 @@ void benchmark_message_oneof_message1_init(
     self_p->oneof.choice = benchmark_message_oneof_choice_message1_e;
     benchmark_message1_init(
         &self_p->oneof.value.message1,
-        self_p->base.heap_p,
-        NULL);
+        self_p->base.heap_p);
 }
 
 void benchmark_message_oneof_message2_init(
@@ -860,8 +816,7 @@ void benchmark_message_oneof_message2_init(
     self_p->oneof.choice = benchmark_message_oneof_choice_message2_e;
     benchmark_message2_init(
         &self_p->oneof.value.message2,
-        self_p->base.heap_p,
-        NULL);
+        self_p->base.heap_p);
 }
 
 void benchmark_message_oneof_message3_init(
@@ -870,8 +825,7 @@ void benchmark_message_oneof_message3_init(
     self_p->oneof.choice = benchmark_message_oneof_choice_message3_e;
     benchmark_message3_init(
         &self_p->oneof.value.message3,
-        self_p->base.heap_p,
-        NULL);
+        self_p->base.heap_p);
 }
 
 void benchmark_message_oneof_encode(
@@ -950,11 +904,9 @@ static void benchmark_message_oneof_message3_decode(
 
 void benchmark_message_init(
     struct benchmark_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct benchmark_message_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->oneof.choice = 0;
 }
 
@@ -1011,30 +963,22 @@ void benchmark_message_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct benchmark_message_t),
         (pbtools_message_encode_inner_t)benchmark_message_encode_inner);
 }
 
 void benchmark_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct benchmark_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct benchmark_message_t),
         (pbtools_message_init_t)benchmark_message_init,
         (pbtools_message_decode_inner_t)benchmark_message_decode_inner);
-}
-
-void benchmark_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct benchmark_message_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct benchmark_message_t *

@@ -42,9 +42,7 @@ extern "C" {
  */
 struct int64_message_repeated_t {
     int length;
-    struct int64_message_t **items_pp;
-    struct int64_message_t *head_p;
-    struct int64_message_t *tail_p;
+    struct int64_message_t *items_p;
 };
 
 struct int64_message_t {
@@ -74,8 +72,7 @@ int int64_message_decode(
 
 void int64_message_init(
     struct int64_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct int64_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void int64_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -91,11 +88,7 @@ void int64_message_encode_repeated_inner(
     struct int64_message_repeated_t *repeated_p);
 
 void int64_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct int64_message_repeated_t *repeated_p);
-
-void int64_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct int64_message_repeated_t *repeated_p);
 

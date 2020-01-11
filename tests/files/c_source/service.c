@@ -37,11 +37,9 @@
 
 void service_request_init(
     struct service_request_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct service_request_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value_p = "";
 }
 
@@ -81,30 +79,22 @@ void service_request_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct service_request_t),
         (pbtools_message_encode_inner_t)service_request_encode_inner);
 }
 
 void service_request_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct service_request_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct service_request_t),
         (pbtools_message_init_t)service_request_init,
         (pbtools_message_decode_inner_t)service_request_decode_inner);
-}
-
-void service_request_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct service_request_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct service_request_t *
@@ -145,11 +135,9 @@ int service_request_decode(
 
 void service_response_init(
     struct service_response_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct service_response_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value_p = "";
 }
 
@@ -189,30 +177,22 @@ void service_response_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct service_response_t),
         (pbtools_message_encode_inner_t)service_response_encode_inner);
 }
 
 void service_response_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct service_response_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct service_response_t),
         (pbtools_message_init_t)service_response_init,
         (pbtools_message_decode_inner_t)service_response_decode_inner);
-}
-
-void service_response_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct service_response_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct service_response_t *

@@ -37,12 +37,10 @@
 
 void imported2_foo_bar_imported2_message_init(
     struct imported2_foo_bar_imported2_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct imported2_foo_bar_imported2_message_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
-    imported_imported_duplicated_package_message_init(&self_p->v1, heap_p, NULL);
+    imported_imported_duplicated_package_message_init(&self_p->v1, heap_p);
 }
 
 void imported2_foo_bar_imported2_message_encode_inner(
@@ -89,30 +87,22 @@ void imported2_foo_bar_imported2_message_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct imported2_foo_bar_imported2_message_t),
         (pbtools_message_encode_inner_t)imported2_foo_bar_imported2_message_encode_inner);
 }
 
 void imported2_foo_bar_imported2_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct imported2_foo_bar_imported2_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported2_foo_bar_imported2_message_t),
         (pbtools_message_init_t)imported2_foo_bar_imported2_message_init,
         (pbtools_message_decode_inner_t)imported2_foo_bar_imported2_message_decode_inner);
-}
-
-void imported2_foo_bar_imported2_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct imported2_foo_bar_imported2_message_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct imported2_foo_bar_imported2_message_t *
@@ -153,12 +143,10 @@ int imported2_foo_bar_imported2_message_decode(
 
 void imported2_foo_bar_imported3_message_imported2_message_init(
     struct imported2_foo_bar_imported3_message_imported2_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct imported2_foo_bar_imported3_message_imported2_message_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
-    imported_imported_duplicated_package_message_init(&self_p->v1, heap_p, NULL);
+    imported_imported_duplicated_package_message_init(&self_p->v1, heap_p);
 }
 
 void imported2_foo_bar_imported3_message_imported2_message_encode_inner(
@@ -205,45 +193,35 @@ void imported2_foo_bar_imported3_message_imported2_message_encode_repeated_inner
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct imported2_foo_bar_imported3_message_imported2_message_t),
         (pbtools_message_encode_inner_t)imported2_foo_bar_imported3_message_imported2_message_encode_inner);
 }
 
 void imported2_foo_bar_imported3_message_imported2_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct imported2_foo_bar_imported3_message_imported2_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported2_foo_bar_imported3_message_imported2_message_t),
         (pbtools_message_init_t)imported2_foo_bar_imported3_message_imported2_message_init,
         (pbtools_message_decode_inner_t)imported2_foo_bar_imported3_message_imported2_message_decode_inner);
 }
 
-void imported2_foo_bar_imported3_message_imported2_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct imported2_foo_bar_imported3_message_imported2_message_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
-}
-
 void imported2_foo_bar_imported3_message_init(
     struct imported2_foo_bar_imported3_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct imported2_foo_bar_imported3_message_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
-    imported_imported_duplicated_package_message_init(&self_p->v1, heap_p, NULL);
-    imported2_foo_bar_imported3_message_imported2_message_init(&self_p->v2, heap_p, NULL);
-    bar_imported2_message_init(&self_p->v3, heap_p, NULL);
-    foo_bar_imported2_message_init(&self_p->v4, heap_p, NULL);
-    imported2_foo_bar_imported2_message_init(&self_p->v5, heap_p, NULL);
-    imported_imported2_message_init(&self_p->v6, heap_p, NULL);
+    imported_imported_duplicated_package_message_init(&self_p->v1, heap_p);
+    imported2_foo_bar_imported3_message_imported2_message_init(&self_p->v2, heap_p);
+    bar_imported2_message_init(&self_p->v3, heap_p);
+    foo_bar_imported2_message_init(&self_p->v4, heap_p);
+    imported2_foo_bar_imported2_message_init(&self_p->v5, heap_p);
+    imported_imported2_message_init(&self_p->v6, heap_p);
     self_p->v7.length = 0;
     self_p->v9.length = 0;
     self_p->v8.length = 0;
@@ -307,6 +285,15 @@ void imported2_foo_bar_imported3_message_decode_inner(
     struct imported2_foo_bar_imported3_message_t *self_p)
 {
     int wire_type;
+    struct pbtools_repeated_info_t repeated_info_v7;
+    struct pbtools_repeated_info_t repeated_info_v9;
+    struct pbtools_repeated_info_t repeated_info_v8;
+    struct pbtools_repeated_info_t repeated_info_v10;
+
+    pbtools_repeated_info_init(&repeated_info_v7, 7, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_v9, 9, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_v8, 8, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_v10, 10, decoder_p);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -360,31 +347,27 @@ void imported2_foo_bar_imported3_message_decode_inner(
             break;
 
         case 7:
-            bar_imported3_message_decode_repeated_inner(
-                decoder_p,
-                wire_type,
-                &self_p->v7);
+            pbtools_repeated_info_decode(&repeated_info_v7,
+                                         decoder_p,
+                                         wire_type);
             break;
 
         case 9:
-            foo_bar_imported3_message_decode_repeated_inner(
-                decoder_p,
-                wire_type,
-                &self_p->v9);
+            pbtools_repeated_info_decode(&repeated_info_v9,
+                                         decoder_p,
+                                         wire_type);
             break;
 
         case 8:
-            bar_imported3_message_decode_repeated_inner(
-                decoder_p,
-                wire_type,
-                &self_p->v8);
+            pbtools_repeated_info_decode(&repeated_info_v8,
+                                         decoder_p,
+                                         wire_type);
             break;
 
         case 10:
-            foo_bar_imported3_message_decode_repeated_inner(
-                decoder_p,
-                wire_type,
-                &self_p->v10);
+            pbtools_repeated_info_decode(&repeated_info_v10,
+                                         decoder_p,
+                                         wire_type);
             break;
 
         default:
@@ -393,16 +376,20 @@ void imported2_foo_bar_imported3_message_decode_inner(
         }
     }
 
-    bar_imported3_message_finalize_repeated_inner(
+    bar_imported3_message_decode_repeated_inner(
+        &repeated_info_v7,
         decoder_p,
         &self_p->v7);
-    foo_bar_imported3_message_finalize_repeated_inner(
+    foo_bar_imported3_message_decode_repeated_inner(
+        &repeated_info_v9,
         decoder_p,
         &self_p->v9);
-    bar_imported3_message_finalize_repeated_inner(
+    bar_imported3_message_decode_repeated_inner(
+        &repeated_info_v8,
         decoder_p,
         &self_p->v8);
-    foo_bar_imported3_message_finalize_repeated_inner(
+    foo_bar_imported3_message_decode_repeated_inner(
+        &repeated_info_v10,
         decoder_p,
         &self_p->v10);
 }
@@ -464,30 +451,22 @@ void imported2_foo_bar_imported3_message_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct imported2_foo_bar_imported3_message_t),
         (pbtools_message_encode_inner_t)imported2_foo_bar_imported3_message_encode_inner);
 }
 
 void imported2_foo_bar_imported3_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct imported2_foo_bar_imported3_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported2_foo_bar_imported3_message_t),
         (pbtools_message_init_t)imported2_foo_bar_imported3_message_init,
         (pbtools_message_decode_inner_t)imported2_foo_bar_imported3_message_decode_inner);
-}
-
-void imported2_foo_bar_imported3_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct imported2_foo_bar_imported3_message_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct imported2_foo_bar_imported3_message_t *

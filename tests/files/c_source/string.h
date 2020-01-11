@@ -42,9 +42,7 @@ extern "C" {
  */
 struct string_message_repeated_t {
     int length;
-    struct string_message_t **items_pp;
-    struct string_message_t *head_p;
-    struct string_message_t *tail_p;
+    struct string_message_t *items_p;
 };
 
 struct string_message_t {
@@ -74,8 +72,7 @@ int string_message_decode(
 
 void string_message_init(
     struct string_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct string_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void string_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -91,11 +88,7 @@ void string_message_encode_repeated_inner(
     struct string_message_repeated_t *repeated_p);
 
 void string_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct string_message_repeated_t *repeated_p);
-
-void string_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct string_message_repeated_t *repeated_p);
 

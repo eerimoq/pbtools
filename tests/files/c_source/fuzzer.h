@@ -31,6 +31,10 @@
 #ifndef FUZZER_H
 #define FUZZER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -71,9 +75,7 @@ struct fuzzer_everything_nested_message_oneof_field_oneof_t {
  */
 struct fuzzer_everything_nested_message_repeated_t {
     int length;
-    struct fuzzer_everything_nested_message_t **items_pp;
-    struct fuzzer_everything_nested_message_t *head_p;
-    struct fuzzer_everything_nested_message_t *tail_p;
+    struct fuzzer_everything_nested_message_t *items_p;
 };
 
 struct fuzzer_everything_nested_message_t {
@@ -110,9 +112,7 @@ struct fuzzer_everything_oneof_field_oneof_t {
  */
 struct fuzzer_everything_repeated_t {
     int length;
-    struct fuzzer_everything_t **items_pp;
-    struct fuzzer_everything_t *head_p;
-    struct fuzzer_everything_t *tail_p;
+    struct fuzzer_everything_t *items_p;
 };
 
 struct fuzzer_everything_t {
@@ -283,8 +283,7 @@ int fuzzer_everything_decode(
 
 void fuzzer_everything_init(
     struct fuzzer_everything_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct fuzzer_everything_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void fuzzer_everything_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -300,18 +299,13 @@ void fuzzer_everything_encode_repeated_inner(
     struct fuzzer_everything_repeated_t *repeated_p);
 
 void fuzzer_everything_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct fuzzer_everything_repeated_t *repeated_p);
-
-void fuzzer_everything_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct fuzzer_everything_repeated_t *repeated_p);
 
 void fuzzer_everything_nested_message_init(
     struct fuzzer_everything_nested_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct fuzzer_everything_nested_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void fuzzer_everything_nested_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -327,12 +321,12 @@ void fuzzer_everything_nested_message_encode_repeated_inner(
     struct fuzzer_everything_nested_message_repeated_t *repeated_p);
 
 void fuzzer_everything_nested_message_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct fuzzer_everything_nested_message_repeated_t *repeated_p);
 
-void fuzzer_everything_nested_message_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct fuzzer_everything_nested_message_repeated_t *repeated_p);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

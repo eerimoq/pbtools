@@ -45,9 +45,7 @@ extern "C" {
  */
 struct importing_message_repeated_t {
     int length;
-    struct importing_message_t **items_pp;
-    struct importing_message_t *head_p;
-    struct importing_message_t *tail_p;
+    struct importing_message_t *items_p;
 };
 
 struct importing_message_t {
@@ -61,9 +59,7 @@ struct importing_message_t {
  */
 struct importing_message2_repeated_t {
     int length;
-    struct importing_message2_t **items_pp;
-    struct importing_message2_t *head_p;
-    struct importing_message2_t *tail_p;
+    struct importing_message2_t *items_p;
 };
 
 struct importing_message2_t {
@@ -77,9 +73,7 @@ struct importing_message2_t {
  */
 struct importing_message3_repeated_t {
     int length;
-    struct importing_message3_t **items_pp;
-    struct importing_message3_t *head_p;
-    struct importing_message3_t *tail_p;
+    struct importing_message3_t *items_p;
 };
 
 struct importing_message3_t {
@@ -146,8 +140,7 @@ int importing_message3_decode(
 
 void importing_message_init(
     struct importing_message_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct importing_message_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void importing_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -163,18 +156,13 @@ void importing_message_encode_repeated_inner(
     struct importing_message_repeated_t *repeated_p);
 
 void importing_message_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct importing_message_repeated_t *repeated_p);
-
-void importing_message_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct importing_message_repeated_t *repeated_p);
 
 void importing_message2_init(
     struct importing_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct importing_message2_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void importing_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -190,18 +178,13 @@ void importing_message2_encode_repeated_inner(
     struct importing_message2_repeated_t *repeated_p);
 
 void importing_message2_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct importing_message2_repeated_t *repeated_p);
-
-void importing_message2_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct importing_message2_repeated_t *repeated_p);
 
 void importing_message3_init(
     struct importing_message3_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct importing_message3_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void importing_message3_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -217,11 +200,7 @@ void importing_message3_encode_repeated_inner(
     struct importing_message3_repeated_t *repeated_p);
 
 void importing_message3_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct importing_message3_repeated_t *repeated_p);
-
-void importing_message3_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct importing_message3_repeated_t *repeated_p);
 

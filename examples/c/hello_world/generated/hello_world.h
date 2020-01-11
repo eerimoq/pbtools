@@ -31,6 +31,10 @@
 #ifndef HELLO_WORLD_H
 #define HELLO_WORLD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "pbtools.h"
 
 /**
@@ -38,9 +42,7 @@
  */
 struct hello_world_foo_repeated_t {
     int length;
-    struct hello_world_foo_t **items_pp;
-    struct hello_world_foo_t *head_p;
-    struct hello_world_foo_t *tail_p;
+    struct hello_world_foo_t *items_p;
 };
 
 struct hello_world_foo_t {
@@ -70,8 +72,7 @@ int hello_world_foo_decode(
 
 void hello_world_foo_init(
     struct hello_world_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct hello_world_foo_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void hello_world_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -87,12 +88,12 @@ void hello_world_foo_encode_repeated_inner(
     struct hello_world_foo_repeated_t *repeated_p);
 
 void hello_world_foo_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct hello_world_foo_repeated_t *repeated_p);
 
-void hello_world_foo_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct hello_world_foo_repeated_t *repeated_p);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

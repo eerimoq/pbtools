@@ -13,9 +13,9 @@ static void fill_message_message1(struct benchmark_message_t *message_p)
     message_p->oneof.value.message1.field6 = 5000;
     message_p->oneof.value.message1.field22 = 5;
     benchmark_message1_field4_alloc(&message_p->oneof.value.message1, 3);
-    message_p->oneof.value.message1.field4.items_pp[0]->value_p = "The first string";
-    message_p->oneof.value.message1.field4.items_pp[1]->value_p = "The second string";
-    message_p->oneof.value.message1.field4.items_pp[2]->value_p = "The third string";
+    message_p->oneof.value.message1.field4.items_pp[0] = "The first string";
+    message_p->oneof.value.message1.field4.items_pp[1] = "The second string";
+    message_p->oneof.value.message1.field4.items_pp[2] = "The third string";
     message_p->oneof.value.message1.field15.field1 = 0;
     message_p->oneof.value.message1.field15.field3 = 9999;
     message_p->oneof.value.message1.field15.field15_p = (
@@ -78,22 +78,22 @@ static void fill_message3(struct benchmark_message3_t *message_p)
 {
     benchmark_message3_field13_alloc(message_p, 5);
 
-    message_p->field13.items_pp[0]->field28 = 7777777;
-    message_p->field13.items_pp[0]->field2 = -3949833;
-    message_p->field13.items_pp[0]->field12 = 1;
-    message_p->field13.items_pp[0]->field19_p = "123";
+    message_p->field13.items_p[0].field28 = 7777777;
+    message_p->field13.items_p[0].field2 = -3949833;
+    message_p->field13.items_p[0].field12 = 1;
+    message_p->field13.items_p[0].field19_p = "123";
 
-    message_p->field13.items_pp[2]->field28 = 1;
-    message_p->field13.items_pp[2]->field2 = 2;
-    message_p->field13.items_pp[2]->field12 = 3;
+    message_p->field13.items_p[2].field28 = 1;
+    message_p->field13.items_p[2].field2 = 2;
+    message_p->field13.items_p[2].field12 = 3;
 
-    message_p->field13.items_pp[3]->field28 = 7777777;
-    message_p->field13.items_pp[3]->field2 = -3949833;
-    message_p->field13.items_pp[3]->field12 = 1;
-    message_p->field13.items_pp[3]->field19_p = "123088410dhihf9q8hfqouwhfoquwh";
+    message_p->field13.items_p[3].field28 = 7777777;
+    message_p->field13.items_p[3].field2 = -3949833;
+    message_p->field13.items_p[3].field12 = 1;
+    message_p->field13.items_p[3].field19_p = "123088410dhihf9q8hfqouwhfoquwh";
 
-    message_p->field13.items_pp[4]->field28 = 4493;
-    message_p->field13.items_pp[4]->field2 = 393211234353453ll;
+    message_p->field13.items_p[4].field28 = 4493;
+    message_p->field13.items_p[4].field2 = 393211234353453ll;
 }
 
 static void encode_message3(int iterations)

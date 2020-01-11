@@ -37,11 +37,9 @@
 
 void ordering_bar_fie_init(
     struct ordering_bar_fie_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_bar_fie_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->v1 = 0;
     self_p->v2 = 0;
 }
@@ -87,40 +85,30 @@ void ordering_bar_fie_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct ordering_bar_fie_t),
         (pbtools_message_encode_inner_t)ordering_bar_fie_encode_inner);
 }
 
 void ordering_bar_fie_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct ordering_bar_fie_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_bar_fie_t),
         (pbtools_message_init_t)ordering_bar_fie_init,
         (pbtools_message_decode_inner_t)ordering_bar_fie_decode_inner);
 }
 
-void ordering_bar_fie_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct ordering_bar_fie_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
-}
-
 void ordering_bar_gom_init(
     struct ordering_bar_gom_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_bar_gom_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
-    ordering_bar_fie_init(&self_p->v1, heap_p, NULL);
+    ordering_bar_fie_init(&self_p->v1, heap_p);
 }
 
 void ordering_bar_gom_encode_inner(
@@ -167,43 +155,33 @@ void ordering_bar_gom_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct ordering_bar_gom_t),
         (pbtools_message_encode_inner_t)ordering_bar_gom_encode_inner);
 }
 
 void ordering_bar_gom_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct ordering_bar_gom_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_bar_gom_t),
         (pbtools_message_init_t)ordering_bar_gom_init,
         (pbtools_message_decode_inner_t)ordering_bar_gom_decode_inner);
 }
 
-void ordering_bar_gom_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct ordering_bar_gom_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
-}
-
 void ordering_bar_init(
     struct ordering_bar_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_bar_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
     self_p->value = 0;
-    ordering_bar_fie_init(&self_p->fie, heap_p, NULL);
+    ordering_bar_fie_init(&self_p->fie, heap_p);
     self_p->fum = 0;
-    ordering_bar_gom_init(&self_p->gom, heap_p, NULL);
+    ordering_bar_gom_init(&self_p->gom, heap_p);
 }
 
 void ordering_bar_encode_inner(
@@ -273,30 +251,22 @@ void ordering_bar_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct ordering_bar_t),
         (pbtools_message_encode_inner_t)ordering_bar_encode_inner);
 }
 
 void ordering_bar_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct ordering_bar_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_bar_t),
         (pbtools_message_init_t)ordering_bar_init,
         (pbtools_message_decode_inner_t)ordering_bar_decode_inner);
-}
-
-void ordering_bar_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct ordering_bar_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct ordering_bar_t *
@@ -337,12 +307,10 @@ int ordering_bar_decode(
 
 void ordering_foo_init(
     struct ordering_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_foo_t *next_p)
+    struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->base.next_p = (struct pbtools_message_base_t *)next_p;
-    ordering_bar_init(&self_p->bar, heap_p, NULL);
+    ordering_bar_init(&self_p->bar, heap_p);
     self_p->fam = 0;
 }
 
@@ -395,30 +363,22 @@ void ordering_foo_encode_repeated_inner(
         encoder_p,
         field_number,
         (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct ordering_foo_t),
         (pbtools_message_encode_inner_t)ordering_foo_encode_inner);
 }
 
 void ordering_foo_decode_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
-    int wire_type,
     struct ordering_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
+        repeated_info_p,
         decoder_p,
-        wire_type,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_foo_t),
         (pbtools_message_init_t)ordering_foo_init,
         (pbtools_message_decode_inner_t)ordering_foo_decode_inner);
-}
-
-void ordering_foo_finalize_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    struct ordering_foo_repeated_t *repeated_p)
-{
-    pbtools_finalize_repeated_inner(
-        decoder_p,
-        (struct pbtools_repeated_message_t *)repeated_p);
 }
 
 struct ordering_foo_t *

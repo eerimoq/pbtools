@@ -56,9 +56,7 @@ enum ordering_bar_fum_e {
  */
 struct ordering_bar_fie_repeated_t {
     int length;
-    struct ordering_bar_fie_t **items_pp;
-    struct ordering_bar_fie_t *head_p;
-    struct ordering_bar_fie_t *tail_p;
+    struct ordering_bar_fie_t *items_p;
 };
 
 struct ordering_bar_fie_t {
@@ -72,9 +70,7 @@ struct ordering_bar_fie_t {
  */
 struct ordering_bar_gom_repeated_t {
     int length;
-    struct ordering_bar_gom_t **items_pp;
-    struct ordering_bar_gom_t *head_p;
-    struct ordering_bar_gom_t *tail_p;
+    struct ordering_bar_gom_t *items_p;
 };
 
 struct ordering_bar_gom_t {
@@ -87,9 +83,7 @@ struct ordering_bar_gom_t {
  */
 struct ordering_bar_repeated_t {
     int length;
-    struct ordering_bar_t **items_pp;
-    struct ordering_bar_t *head_p;
-    struct ordering_bar_t *tail_p;
+    struct ordering_bar_t *items_p;
 };
 
 struct ordering_bar_t {
@@ -105,9 +99,7 @@ struct ordering_bar_t {
  */
 struct ordering_foo_repeated_t {
     int length;
-    struct ordering_foo_t **items_pp;
-    struct ordering_foo_t *head_p;
-    struct ordering_foo_t *tail_p;
+    struct ordering_foo_t *items_p;
 };
 
 struct ordering_foo_t {
@@ -156,8 +148,7 @@ int ordering_foo_decode(
 
 void ordering_bar_init(
     struct ordering_bar_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_bar_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void ordering_bar_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -173,18 +164,13 @@ void ordering_bar_encode_repeated_inner(
     struct ordering_bar_repeated_t *repeated_p);
 
 void ordering_bar_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct ordering_bar_repeated_t *repeated_p);
-
-void ordering_bar_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct ordering_bar_repeated_t *repeated_p);
 
 void ordering_bar_fie_init(
     struct ordering_bar_fie_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_bar_fie_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void ordering_bar_fie_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -200,18 +186,13 @@ void ordering_bar_fie_encode_repeated_inner(
     struct ordering_bar_fie_repeated_t *repeated_p);
 
 void ordering_bar_fie_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct ordering_bar_fie_repeated_t *repeated_p);
-
-void ordering_bar_fie_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct ordering_bar_fie_repeated_t *repeated_p);
 
 void ordering_bar_gom_init(
     struct ordering_bar_gom_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_bar_gom_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void ordering_bar_gom_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -227,18 +208,13 @@ void ordering_bar_gom_encode_repeated_inner(
     struct ordering_bar_gom_repeated_t *repeated_p);
 
 void ordering_bar_gom_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct ordering_bar_gom_repeated_t *repeated_p);
-
-void ordering_bar_gom_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct ordering_bar_gom_repeated_t *repeated_p);
 
 void ordering_foo_init(
     struct ordering_foo_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct ordering_foo_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void ordering_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -254,11 +230,7 @@ void ordering_foo_encode_repeated_inner(
     struct ordering_foo_repeated_t *repeated_p);
 
 void ordering_foo_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct ordering_foo_repeated_t *repeated_p);
-
-void ordering_foo_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct ordering_foo_repeated_t *repeated_p);
 

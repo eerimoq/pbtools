@@ -42,9 +42,7 @@ extern "C" {
  */
 struct tags_message1_repeated_t {
     int length;
-    struct tags_message1_t **items_pp;
-    struct tags_message1_t *head_p;
-    struct tags_message1_t *tail_p;
+    struct tags_message1_t *items_p;
 };
 
 struct tags_message1_t {
@@ -57,9 +55,7 @@ struct tags_message1_t {
  */
 struct tags_message2_repeated_t {
     int length;
-    struct tags_message2_t **items_pp;
-    struct tags_message2_t *head_p;
-    struct tags_message2_t *tail_p;
+    struct tags_message2_t *items_p;
 };
 
 struct tags_message2_t {
@@ -72,9 +68,7 @@ struct tags_message2_t {
  */
 struct tags_message3_repeated_t {
     int length;
-    struct tags_message3_t **items_pp;
-    struct tags_message3_t *head_p;
-    struct tags_message3_t *tail_p;
+    struct tags_message3_t *items_p;
 };
 
 struct tags_message3_t {
@@ -87,9 +81,7 @@ struct tags_message3_t {
  */
 struct tags_message4_repeated_t {
     int length;
-    struct tags_message4_t **items_pp;
-    struct tags_message4_t *head_p;
-    struct tags_message4_t *tail_p;
+    struct tags_message4_t *items_p;
 };
 
 struct tags_message4_t {
@@ -102,9 +94,7 @@ struct tags_message4_t {
  */
 struct tags_message5_repeated_t {
     int length;
-    struct tags_message5_t **items_pp;
-    struct tags_message5_t *head_p;
-    struct tags_message5_t *tail_p;
+    struct tags_message5_t *items_p;
 };
 
 struct tags_message5_t {
@@ -117,9 +107,7 @@ struct tags_message5_t {
  */
 struct tags_message6_repeated_t {
     int length;
-    struct tags_message6_t **items_pp;
-    struct tags_message6_t *head_p;
-    struct tags_message6_t *tail_p;
+    struct tags_message6_t *items_p;
 };
 
 struct tags_message6_t {
@@ -239,8 +227,7 @@ int tags_message6_decode(
 
 void tags_message1_init(
     struct tags_message1_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct tags_message1_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void tags_message1_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -256,18 +243,13 @@ void tags_message1_encode_repeated_inner(
     struct tags_message1_repeated_t *repeated_p);
 
 void tags_message1_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct tags_message1_repeated_t *repeated_p);
-
-void tags_message1_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct tags_message1_repeated_t *repeated_p);
 
 void tags_message2_init(
     struct tags_message2_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct tags_message2_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void tags_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -283,18 +265,13 @@ void tags_message2_encode_repeated_inner(
     struct tags_message2_repeated_t *repeated_p);
 
 void tags_message2_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct tags_message2_repeated_t *repeated_p);
-
-void tags_message2_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct tags_message2_repeated_t *repeated_p);
 
 void tags_message3_init(
     struct tags_message3_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct tags_message3_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void tags_message3_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -310,18 +287,13 @@ void tags_message3_encode_repeated_inner(
     struct tags_message3_repeated_t *repeated_p);
 
 void tags_message3_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct tags_message3_repeated_t *repeated_p);
-
-void tags_message3_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct tags_message3_repeated_t *repeated_p);
 
 void tags_message4_init(
     struct tags_message4_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct tags_message4_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void tags_message4_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -337,18 +309,13 @@ void tags_message4_encode_repeated_inner(
     struct tags_message4_repeated_t *repeated_p);
 
 void tags_message4_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct tags_message4_repeated_t *repeated_p);
-
-void tags_message4_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct tags_message4_repeated_t *repeated_p);
 
 void tags_message5_init(
     struct tags_message5_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct tags_message5_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void tags_message5_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -364,18 +331,13 @@ void tags_message5_encode_repeated_inner(
     struct tags_message5_repeated_t *repeated_p);
 
 void tags_message5_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct tags_message5_repeated_t *repeated_p);
-
-void tags_message5_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct tags_message5_repeated_t *repeated_p);
 
 void tags_message6_init(
     struct tags_message6_t *self_p,
-    struct pbtools_heap_t *heap_p,
-    struct tags_message6_t *next_p);
+    struct pbtools_heap_t *heap_p);
 
 void tags_message6_encode_inner(
     struct pbtools_encoder_t *encoder_p,
@@ -391,11 +353,7 @@ void tags_message6_encode_repeated_inner(
     struct tags_message6_repeated_t *repeated_p);
 
 void tags_message6_decode_repeated_inner(
-    struct pbtools_decoder_t *decoder_p,
-    int wire_type,
-    struct tags_message6_repeated_t *repeated_p);
-
-void tags_message6_finalize_repeated_inner(
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
     struct tags_message6_repeated_t *repeated_p);
 
