@@ -59,7 +59,8 @@ class CommandLineTest(unittest.TestCase):
             'tags',
             'uint32',
             'uint64',
-            'field_names'
+            'field_names',
+            'add_and_remove_fields'
         ]
 
         for spec in specs:

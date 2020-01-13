@@ -87,6 +87,7 @@ all:
 	    files/c_source/enum_provider.c \
 	    files/c_source/field_names.c \
 	    files/c_source/map.c \
+	    files/c_source/add_and_remove_fields.c \
 	    main.o
 	./a.out
 

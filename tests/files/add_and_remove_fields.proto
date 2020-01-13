@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package add_and_remove_fields;
+
+// First version.
+message Version1 {
+    int32 v1 = 1;
+}
+
+// v2 and v3 added.
+message Version2 {
+    int32 v1 = 1;
+    int32 v2 = 2;
+    int32 v3 = 3;
+}
+
+// v1 and v2 removed, v4 added.
+message Version3 {
+    int32 v3 = 3;
+    int32 v4 = 4;
+}

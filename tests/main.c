@@ -36,6 +36,7 @@
 #include "files/c_source/enum_user.h"
 #include "files/c_source/field_names.h"
 #include "files/c_source/map.h"
+#include "files/c_source/add_and_remove_fields.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -3283,4 +3284,121 @@ TEST(map_message2_encode_decode)
     ASSERT_EQ(message_p->map2.length, 1);
     ASSERT_EQ(message_p->map2.items_p[0].key, 100);
     ASSERT_EQ(message_p->map2.items_p[0].value.v1, true);
+}
+
+TEST(add_and_remove_fields_version1)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct add_and_remove_fields_version1_t *message_p;
+
+    /* Encode. */
+    message_p = add_and_remove_fields_version1_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v1 = 5;
+    size = add_and_remove_fields_version1_encode(message_p,
+                                                 &encoded[0],
+                                                 sizeof(encoded));
+    ASSERT_EQ(size, 2);
+    ASSERT_MEMORY(&encoded[0], "\x08\x05", size);
+
+    /* Decode Version2 as Version1. */
+    message_p = add_and_remove_fields_version1_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = add_and_remove_fields_version1_decode(message_p,
+                                                 "\x08\x05\x10\x06\x18\x07",
+                                                 6);
+    ASSERT_EQ(size, 6);
+    ASSERT_EQ(message_p->v1, 5);
+
+    /* Decode Version3 as Version1. */
+    message_p = add_and_remove_fields_version1_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = add_and_remove_fields_version1_decode(message_p,
+                                                 "\x18\x07\x20\x08",
+                                                 4);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->v1, 0);
+}
+
+TEST(add_and_remove_fields_version2)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct add_and_remove_fields_version2_t *message_p;
+
+    /* Encode. */
+    message_p = add_and_remove_fields_version2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v1 = 5;
+    message_p->v2 = 6;
+    message_p->v3 = 7;
+    size = add_and_remove_fields_version2_encode(message_p,
+                                                 &encoded[0],
+                                                 sizeof(encoded));
+    ASSERT_EQ(size, 6);
+    ASSERT_MEMORY(&encoded[0], "\x08\x05\x10\x06\x18\x07", size);
+
+    /* Decode Version1 as Version2. */
+    message_p = add_and_remove_fields_version2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = add_and_remove_fields_version2_decode(message_p,
+                                                 "\x08\x05",
+                                                 2);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->v1, 5);
+    ASSERT_EQ(message_p->v2, 0);
+    ASSERT_EQ(message_p->v3, 0);
+
+    /* Decode Version3 as Version2. */
+    message_p = add_and_remove_fields_version2_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = add_and_remove_fields_version2_decode(message_p,
+                                                 "\x18\x07\x20\x08",
+                                                 4);
+    ASSERT_EQ(size, 4);
+    ASSERT_EQ(message_p->v1, 0);
+    ASSERT_EQ(message_p->v2, 0);
+    ASSERT_EQ(message_p->v3, 7);
+}
+
+TEST(add_and_remove_fields_version3)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct add_and_remove_fields_version3_t *message_p;
+
+    /* Encode. */
+    message_p = add_and_remove_fields_version3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v3 = 7;
+    message_p->v4 = 8;
+    size = add_and_remove_fields_version3_encode(message_p,
+                                                 &encoded[0],
+                                                 sizeof(encoded));
+    ASSERT_EQ(size, 4);
+    ASSERT_MEMORY(&encoded[0], "\x18\x07\x20\x08", size);
+
+    /* Decode Version1 as Version3. */
+    message_p = add_and_remove_fields_version3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = add_and_remove_fields_version3_decode(message_p,
+                                                 "\x08\x05",
+                                                 2);
+    ASSERT_EQ(size, 2);
+    ASSERT_EQ(message_p->v3, 0);
+    ASSERT_EQ(message_p->v4, 0);
+
+    /* Decode Version2 as Version3. */
+    message_p = add_and_remove_fields_version3_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = add_and_remove_fields_version3_decode(message_p,
+                                                 "\x08\x05\x10\x06\x18\x07",
+                                                 6);
+    ASSERT_EQ(size, 6);
+    ASSERT_EQ(message_p->v3, 7);
+    ASSERT_EQ(message_p->v4, 0);
 }
