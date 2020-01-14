@@ -28,9 +28,9 @@
 #include <stdalign.h>
 #include "pbtools.h"
 
-typedef void (*repeated_item_setter_t)(void *items_p,
-                                       int index,
-                                       uint64_t value);
+typedef void (*repeated_item_read_t)(struct pbtools_decoder_t *self_p,
+                                     void *items_p,
+                                     int index);
 
 typedef void (*repeated_item_write_t)(struct pbtools_encoder_t *self_p,
                                       int index,
@@ -437,74 +437,28 @@ void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
     }
 }
 
-static void repeated_int32_item_setter(int32_t *items_p,
-                                       int index,
-                                       uint64_t value)
+static void encoder_write_repeated(struct pbtools_encoder_t *self_p,
+                                   int field_number,
+                                   struct pbtools_repeated_message_t *repeated_p,
+                                   repeated_item_write_t item_write)
 {
-    items_p[index] = (int32_t)(int64_t)value;
-}
+    int i;
+    int pos;
 
-static void repeated_int64_item_setter(int64_t *items_p,
-                                       int index,
-                                       uint64_t value)
-{
-    items_p[index] = (int64_t)value;
-}
+    if (repeated_p->length == 0) {
+        return;
+    }
 
-static void repeated_sint32_item_setter(int32_t *items_p,
-                                        int index,
-                                        uint64_t value)
-{
-    items_p[index] = sint32_decode(value);
-}
+    pos = self_p->pos;
 
+    for (i = repeated_p->length - 1; i >= 0; i--) {
+        item_write(self_p, i, repeated_p->items_p);
+    }
 
-static void repeated_sint64_item_setter(int64_t *items_p,
-                                        int index,
-                                        uint64_t value)
-{
-    items_p[index] = sint64_decode(value);
-}
-
-static void repeated_uint32_item_setter(uint32_t *items_p,
-                                        int index,
-                                        uint64_t value)
-{
-    items_p[index] = (uint32_t)value;
-}
-
-static void repeated_uint64_item_setter(uint64_t *items_p,
-                                        int index,
-                                        uint64_t value)
-{
-    items_p[index] = value;
-}
-
-static void repeated_bool_item_setter(bool *items_p,
-                                      int index,
-                                      uint64_t value)
-{
-    items_p[index] = (bool)value;
-}
-
-static void repeated_float_item_setter(float *items_p,
-                                       int index,
-                                       uint64_t value)
-{
-    uint32_t data;
-
-    data = (uint32_t)value;
-    memcpy(&items_p[index], &data, sizeof(data));
-}
-
-static void repeated_double_item_setter(double *items_p,
-                                        int index,
-                                        uint64_t value)
-{
-    uint64_t data;
-
-    data = (uint64_t)value;
-    memcpy(&items_p[index], &data, sizeof(data));
+    encoder_write_tagged_varint(self_p,
+                                field_number,
+                                PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
+                                (uint64_t)(pos - self_p->pos));
 }
 
 static void write_repeated_int32(struct pbtools_encoder_t *self_p,
@@ -592,30 +546,6 @@ static void write_repeated_bool(struct pbtools_encoder_t *self_p,
     } else {
         encoder_write_varint(self_p, 0);
     }
-}
-
-static void encoder_write_repeated(struct pbtools_encoder_t *self_p,
-                                   int field_number,
-                                   struct pbtools_repeated_message_t *repeated_p,
-                                   repeated_item_write_t item_write)
-{
-    int i;
-    int pos;
-
-    if (repeated_p->length == 0) {
-        return;
-    }
-
-    pos = self_p->pos;
-
-    for (i = repeated_p->length - 1; i >= 0; i--) {
-        item_write(self_p, i, repeated_p->items_p);
-    }
-
-    encoder_write_tagged_varint(self_p,
-                                field_number,
-                                PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                (uint64_t)(pos - self_p->pos));
 }
 
 void pbtools_encoder_write_repeated_int32(
@@ -1247,121 +1177,73 @@ static void repeated_info_decode_length_delimited(
     self_p->length++;
 }
 
-static int decoder_read_repeated_varint(struct pbtools_decoder_t *self_p,
-                                        int wire_type,
-                                        void *items_p,
-                                        repeated_item_setter_t item_setter)
+static int decoder_read_repeated(struct pbtools_decoder_t *self_p,
+                                 int wire_type,
+                                 void *items_p,
+                                 repeated_item_read_t item_read,
+                                 int item_wire_type)
 {
     int size;
     struct pbtools_decoder_t decoder;
-    int i;
+    int pos;
 
-    i = 0;
+    pos = 0;
 
     /* Accept both packed and not packed. */
-    switch (wire_type) {
-
-    case PBTOOLS_WIRE_TYPE_VARINT:
-        item_setter(items_p, i, decoder_read_varint(self_p));
-        i++;
-        break;
-
-    case PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED:
+    if (wire_type == item_wire_type) {
+        item_read(self_p, items_p, pos);
+        pos++;
+    } else if (wire_type == PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         size = (int)decoder_read_length_delimited(self_p, wire_type);
         decoder_init_slice(&decoder, self_p, size);
 
         while (pbtools_decoder_available(&decoder)) {
-            item_setter(items_p, i, decoder_read_varint(&decoder));
-            i++;
+            item_read(&decoder, items_p, pos);
+            pos++;
         }
 
         decoder_seek(self_p, decoder_get_result(&decoder));
-        break;
-
-    default:
+    } else {
         decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
-        break;
     }
 
-    return (i);
+    return (pos);
+}
+
+static int decoder_read_repeated_varint(struct pbtools_decoder_t *self_p,
+                                        int wire_type,
+                                        void *items_p,
+                                        repeated_item_read_t item_read)
+{
+    return (decoder_read_repeated(self_p,
+                                  wire_type,
+                                  items_p,
+                                  item_read,
+                                  PBTOOLS_WIRE_TYPE_VARINT));
 }
 
 static int decoder_read_repeated_32_bit(struct pbtools_decoder_t *self_p,
                                         int wire_type,
                                         void *items_p,
-                                        repeated_item_setter_t item_setter)
+                                        repeated_item_read_t item_read)
 {
-    int size;
-    struct pbtools_decoder_t decoder;
-    int i;
-
-    i = 0;
-
-    /* Accept both packed and not packed. */
-    switch (wire_type) {
-
-    case PBTOOLS_WIRE_TYPE_32_BIT:
-        item_setter(items_p, i, decoder_read_32_bit_value(self_p));
-        i++;
-        break;
-
-    case PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED:
-        size = (int)decoder_read_length_delimited(self_p, wire_type);
-        decoder_init_slice(&decoder, self_p, size);
-
-        while (pbtools_decoder_available(&decoder)) {
-            item_setter(items_p, i, decoder_read_32_bit_value(&decoder));
-            i++;
-        }
-
-        decoder_seek(self_p, decoder_get_result(&decoder));
-        break;
-
-    default:
-        decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
-        break;
-    }
-
-    return (i);
+    return (decoder_read_repeated(self_p,
+                                  wire_type,
+                                  items_p,
+                                  item_read,
+                                  PBTOOLS_WIRE_TYPE_32_BIT));
 }
 
 static int decoder_read_repeated_64_bit(struct pbtools_decoder_t *self_p,
                                         int wire_type,
                                         void *items_p,
-                                        repeated_item_setter_t item_setter)
+                                        repeated_item_read_t item_read)
 {
-    int size;
-    struct pbtools_decoder_t decoder;
-    int i;
-
-    i = 0;
-
-    /* Accept both packed and not packed. */
-    switch (wire_type) {
-
-    case PBTOOLS_WIRE_TYPE_64_BIT:
-        item_setter(items_p, i, decoder_read_64_bit_value(self_p));
-        i++;
-        break;
-
-    case PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED:
-        size = (int)decoder_read_length_delimited(self_p, wire_type);
-        decoder_init_slice(&decoder, self_p, size);
-
-        while (pbtools_decoder_available(&decoder)) {
-            item_setter(items_p, i, decoder_read_64_bit_value(&decoder));
-            i++;
-        }
-
-        decoder_seek(self_p, decoder_get_result(&decoder));
-        break;
-
-    default:
-        decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
-        break;
-    }
-
-    return (i);
+    return (decoder_read_repeated(self_p,
+                                  wire_type,
+                                  items_p,
+                                  item_read,
+                                  PBTOOLS_WIRE_TYPE_64_BIT));
 }
 
 static int calloc_repeated(struct pbtools_message_base_t *self_p,
@@ -1424,10 +1306,10 @@ static int alloc_repeated_uint64(struct pbtools_message_base_t *self_p,
 }
 
 static bool are_more_items_to_decode(struct pbtools_repeated_info_t *repeated_info_p,
-                                     int i)
+                                     int pos)
 {
     return (pbtools_decoder_available(&repeated_info_p->decoder)
-            && (i < repeated_info_p->length));
+            && (pos < repeated_info_p->length));
 }
 
 int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
@@ -1435,72 +1317,6 @@ int pbtools_alloc_repeated_int32(struct pbtools_message_base_t *self_p,
                                  struct pbtools_repeated_int32_t *repeated_p)
 {
     return (alloc_repeated_int32(self_p, length, repeated_p));
-}
-
-static int decoder_read_repeated_int32(struct pbtools_decoder_t *self_p,
-                                       int wire_type,
-                                       int32_t *items_p)
-{
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_int32_item_setter));
-}
-
-static int decoder_read_repeated_uint32(struct pbtools_decoder_t *self_p,
-                                        int wire_type,
-                                        uint32_t *items_p)
-{
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_uint32_item_setter));
-}
-
-static int decoder_read_repeated_uint64(struct pbtools_decoder_t *self_p,
-                                        int wire_type,
-                                        uint64_t *items_p)
-{
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_uint64_item_setter));
-}
-
-static int decoder_read_repeated_int64(struct pbtools_decoder_t *self_p,
-                                       int wire_type,
-                                       int64_t *items_p)
-{
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_int64_item_setter));
-}
-
-static int decoder_read_repeated_sint32(struct pbtools_decoder_t *self_p,
-                                        int wire_type,
-                                        int32_t *items_p)
-{
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_sint32_item_setter));
-}
-
-static int decoder_read_repeated_sint64(struct pbtools_decoder_t *self_p,
-                                        int wire_type,
-                                        int64_t *items_p)
-{
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_sint64_item_setter));
 }
 
 void pbtools_repeated_info_decode_int32(struct pbtools_repeated_info_t *self_p,
@@ -1520,7 +1336,7 @@ static void decoder_decode_repeated(
     int res;
     int wire_type;
     int tag;
-    int i;
+    int pos;
 
     repeated_p->items_p = decoder_heap_alloc(
         self_p,
@@ -1532,16 +1348,16 @@ static void decoder_decode_repeated(
     }
 
     repeated_p->length = repeated_info_p->length;
-    i = 0;
+    pos = 0;
 
-    while (are_more_items_to_decode(repeated_info_p, i)) {
+    while (are_more_items_to_decode(repeated_info_p, pos)) {
         tag = pbtools_decoder_read_tag(&repeated_info_p->decoder, &wire_type);
 
         if (tag == repeated_info_p->tag) {
-            i += read_repeated(&repeated_info_p->decoder,
-                               wire_type,
-                               repeated_p->items_p,
-                               i);
+            pos += read_repeated(&repeated_info_p->decoder,
+                                 wire_type,
+                                 repeated_p->items_p,
+                                 pos);
         } else {
             pbtools_decoder_skip_field(&repeated_info_p->decoder, wire_type);
         }
@@ -1554,81 +1370,102 @@ static void decoder_decode_repeated(
     }
 }
 
-static int decoder_read_repeated_fixed32(struct pbtools_decoder_t *self_p,
-                                         int wire_type,
-                                         uint32_t *items_p)
+static void read_repeated_int32_item(struct pbtools_decoder_t *self_p,
+                                     int32_t *items_p,
+                                     int index)
 {
-    return (decoder_read_repeated_32_bit(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_uint32_item_setter));
+    items_p[index] = (int32_t)(int64_t)decoder_read_varint(self_p);
 }
 
-static int decoder_read_repeated_fixed64(struct pbtools_decoder_t *self_p,
-                                         int wire_type,
-                                         uint64_t *items_p)
+static void read_repeated_int64_item(struct pbtools_decoder_t *self_p,
+                                     int64_t *items_p,
+                                     int index)
 {
-    return (decoder_read_repeated_64_bit(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_uint64_item_setter));
+    items_p[index] = (int64_t)decoder_read_varint(self_p);
 }
 
-static int decoder_read_repeated_sfixed32(struct pbtools_decoder_t *self_p,
-                                          int wire_type,
-                                          int32_t *items_p)
+static void read_repeated_sint32_item(struct pbtools_decoder_t *self_p,
+                                      int32_t *items_p,
+                                      int index)
 {
-    return (decoder_read_repeated_32_bit(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_int32_item_setter));
+    items_p[index] = sint32_decode(decoder_read_varint(self_p));
 }
 
-static int decoder_read_repeated_sfixed64(struct pbtools_decoder_t *self_p,
-                                          int wire_type,
-                                          int64_t *items_p)
+
+static void read_repeated_sint64_item(struct pbtools_decoder_t *self_p,
+                                      int64_t *items_p,
+                                      int index)
 {
-    return (decoder_read_repeated_64_bit(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_int64_item_setter));
+    items_p[index] = sint64_decode(decoder_read_varint(self_p));
 }
 
-static int decoder_read_repeated_float(struct pbtools_decoder_t *self_p,
-                                       int wire_type,
-                                       float *items_p)
+static void read_repeated_uint32_item(struct pbtools_decoder_t *self_p,
+                                      uint32_t *items_p,
+                                      int index)
 {
-    return (decoder_read_repeated_32_bit(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_float_item_setter));
+    items_p[index] = (uint32_t)decoder_read_varint(self_p);
 }
 
-static int decoder_read_repeated_double(struct pbtools_decoder_t *self_p,
-                                        int wire_type,
-                                        double *items_p)
+static void read_repeated_uint64_item(struct pbtools_decoder_t *self_p,
+                                      uint64_t *items_p,
+                                      int index)
 {
-    return (decoder_read_repeated_64_bit(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_double_item_setter));
+    items_p[index] = decoder_read_varint(self_p);
 }
 
-static int decoder_read_repeated_bool(struct pbtools_decoder_t *self_p,
-                                      int wire_type,
-                                      bool *items_p)
+static void read_repeated_fixed32_item(struct pbtools_decoder_t *self_p,
+                                       uint32_t *items_p,
+                                       int index)
 {
-    return (decoder_read_repeated_varint(
-                self_p,
-                wire_type,
-                items_p,
-                (repeated_item_setter_t)repeated_bool_item_setter));
+    items_p[index] = decoder_read_32_bit_value(self_p);
+}
+
+static void read_repeated_fixed64_item(struct pbtools_decoder_t *self_p,
+                                       uint64_t *items_p,
+                                       int index)
+{
+    items_p[index] = decoder_read_64_bit_value(self_p);
+}
+
+static void read_repeated_sfixed32_item(struct pbtools_decoder_t *self_p,
+                                        int32_t *items_p,
+                                        int index)
+{
+    items_p[index] = (int32_t)decoder_read_32_bit_value(self_p);
+}
+
+static void read_repeated_sfixed64_item(struct pbtools_decoder_t *self_p,
+                                        int64_t *items_p,
+                                        int index)
+{
+    items_p[index] = (int64_t)decoder_read_64_bit_value(self_p);
+}
+
+static void read_repeated_bool_item(struct pbtools_decoder_t *self_p,
+                                    bool *items_p,
+                                    int index)
+{
+    items_p[index] = (bool)decoder_read_varint(self_p);
+}
+
+static void read_repeated_float_item(struct pbtools_decoder_t *self_p,
+                                     float *items_p,
+                                     int index)
+{
+    uint32_t data;
+
+    data = (uint32_t)decoder_read_32_bit_value(self_p);
+    memcpy(&items_p[index], &data, sizeof(data));
+}
+
+static void read_repeated_double_item(struct pbtools_decoder_t *self_p,
+                                      double *items_p,
+                                      int index)
+{
+    uint64_t data;
+
+    data = (uint64_t)decoder_read_64_bit_value(self_p);
+    memcpy(&items_p[index], &data, sizeof(data));
 }
 
 static int read_repeated_int32(struct pbtools_decoder_t *self_p,
@@ -1636,7 +1473,11 @@ static int read_repeated_int32(struct pbtools_decoder_t *self_p,
                                int32_t *items_p,
                                int index)
 {
-    return (decoder_read_repeated_int32(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_int32_item));
 }
 
 static int read_repeated_int64(struct pbtools_decoder_t *self_p,
@@ -1644,7 +1485,11 @@ static int read_repeated_int64(struct pbtools_decoder_t *self_p,
                                int64_t *items_p,
                                int index)
 {
-    return (decoder_read_repeated_int64(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_int64_item));
 }
 
 static int read_repeated_uint32(struct pbtools_decoder_t *self_p,
@@ -1652,7 +1497,11 @@ static int read_repeated_uint32(struct pbtools_decoder_t *self_p,
                                 uint32_t *items_p,
                                 int index)
 {
-    return (decoder_read_repeated_uint32(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_uint32_item));
 }
 
 static int read_repeated_uint64(struct pbtools_decoder_t *self_p,
@@ -1660,7 +1509,11 @@ static int read_repeated_uint64(struct pbtools_decoder_t *self_p,
                                 uint64_t *items_p,
                                 int index)
 {
-    return (decoder_read_repeated_uint64(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_uint64_item));
 }
 
 static int read_repeated_sint32(struct pbtools_decoder_t *self_p,
@@ -1668,7 +1521,11 @@ static int read_repeated_sint32(struct pbtools_decoder_t *self_p,
                                 int32_t *items_p,
                                 int index)
 {
-    return (decoder_read_repeated_sint32(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_sint32_item));
 }
 
 static int read_repeated_sint64(struct pbtools_decoder_t *self_p,
@@ -1676,7 +1533,11 @@ static int read_repeated_sint64(struct pbtools_decoder_t *self_p,
                                 int64_t *items_p,
                                 int index)
 {
-    return (decoder_read_repeated_sint64(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_sint64_item));
 }
 
 static int read_repeated_fixed32(struct pbtools_decoder_t *self_p,
@@ -1684,7 +1545,11 @@ static int read_repeated_fixed32(struct pbtools_decoder_t *self_p,
                                  uint32_t *items_p,
                                  int index)
 {
-    return (decoder_read_repeated_fixed32(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_32_bit(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_fixed32_item));
 }
 
 static int read_repeated_fixed64(struct pbtools_decoder_t *self_p,
@@ -1692,7 +1557,11 @@ static int read_repeated_fixed64(struct pbtools_decoder_t *self_p,
                                  uint64_t *items_p,
                                  int index)
 {
-    return (decoder_read_repeated_fixed64(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_64_bit(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_fixed64_item));
 }
 
 static int read_repeated_sfixed32(struct pbtools_decoder_t *self_p,
@@ -1700,7 +1569,11 @@ static int read_repeated_sfixed32(struct pbtools_decoder_t *self_p,
                                   int32_t *items_p,
                                   int index)
 {
-    return (decoder_read_repeated_sfixed32(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_32_bit(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_sfixed32_item));
 }
 
 static int read_repeated_sfixed64(struct pbtools_decoder_t *self_p,
@@ -1708,7 +1581,11 @@ static int read_repeated_sfixed64(struct pbtools_decoder_t *self_p,
                                   int64_t *items_p,
                                   int index)
 {
-    return (decoder_read_repeated_sfixed64(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_64_bit(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_sfixed64_item));
 }
 
 static int read_repeated_float(struct pbtools_decoder_t *self_p,
@@ -1716,9 +1593,11 @@ static int read_repeated_float(struct pbtools_decoder_t *self_p,
                                float *items_p,
                                int index)
 {
-    return (decoder_read_repeated_float(self_p,
-                                        wire_type,
-                                        &items_p[index]));
+    return (decoder_read_repeated_32_bit(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_float_item));
 }
 
 static int read_repeated_double(struct pbtools_decoder_t *self_p,
@@ -1726,7 +1605,11 @@ static int read_repeated_double(struct pbtools_decoder_t *self_p,
                                 double *items_p,
                                 int index)
 {
-    return (decoder_read_repeated_double(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_64_bit(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_double_item));
 }
 
 static int read_repeated_bool(struct pbtools_decoder_t *self_p,
@@ -1734,7 +1617,11 @@ static int read_repeated_bool(struct pbtools_decoder_t *self_p,
                               bool *items_p,
                               int index)
 {
-    return (decoder_read_repeated_bool(self_p, wire_type, &items_p[index]));
+    return (decoder_read_repeated_varint(
+                self_p,
+                wire_type,
+                &items_p[index],
+                (repeated_item_read_t)read_repeated_bool_item));
 }
 
 static int read_repeated_string(struct pbtools_decoder_t *self_p,
@@ -2101,7 +1988,7 @@ int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
                                   int length,
                                   struct pbtools_repeated_string_t *repeated_p)
 {
-    int i;
+    int pos;
 
     repeated_p->items_pp = heap_alloc(self_p->heap_p,
                                       sizeof(*repeated_p->items_pp) * (size_t)length,
@@ -2111,8 +1998,8 @@ int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
         return (-1);
     }
 
-    for (i = 0; i < length; i++) {
-        repeated_p->items_pp[i] = "";
+    for (pos = 0; pos < length; pos++) {
+        repeated_p->items_pp[pos] = "";
     }
 
     repeated_p->length = length;
