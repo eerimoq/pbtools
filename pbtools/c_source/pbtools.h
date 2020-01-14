@@ -42,6 +42,11 @@ extern "C" {{
 #    define PBTOOLS_CONFIG_FLOAT                                1
 #endif
 
+/* Support for 64-bit numbers if 1, otherwise limit to 32-bit. */
+#ifndef PBTOOLS_CONFIG_64BIT
+#    define PBTOOLS_CONFIG_64BIT                                1
+#endif
+
 /* Errors. */
 #define PBTOOLS_BAD_WIRE_TYPE                                   1
 #define PBTOOLS_OUT_OF_DATA                                     2
