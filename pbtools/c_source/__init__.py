@@ -187,8 +187,8 @@ void {message.full_name_snake_case}_encode_repeated_inner(
     struct {message.full_name_snake_case}_repeated_t *repeated_p);
 
 void {message.full_name_snake_case}_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct {message.full_name_snake_case}_repeated_t *repeated_p);
 '''
 
@@ -551,13 +551,13 @@ void {message.full_name_snake_case}_encode_repeated_inner(
 }}
 
 void {message.full_name_snake_case}_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct {message.full_name_snake_case}_repeated_t *repeated_p)
 {{
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct {message.full_name_snake_case}_t),
         (pbtools_message_init_t){message.full_name_snake_case}_init,
@@ -581,8 +581,8 @@ REPEATED_ENUM_FINALIZER_FMT = '''\
 
 REPEATED_MESSAGE_FINALIZER_FMT = '''\
     {field.full_type_snake_case}_decode_repeated_inner(
-        &repeated_info_{field.name_snake_case},
         decoder_p,
+        &repeated_info_{field.name_snake_case},
         &self_p->{field.name_snake_case});\
 '''
 
@@ -951,8 +951,7 @@ class Generator:
             inits.append(
                 f'    pbtools_repeated_info_init('
                 f'&repeated_info_{field.name_snake_case}, '
-                f'{field.field_number}, '
-                f'decoder_p);')
+                f'{field.field_number});')
 
         if inits:
             inits = [''] + inits + ['']

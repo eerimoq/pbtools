@@ -184,8 +184,8 @@ void enum_message_encode_repeated_inner(
     struct enum_message_repeated_t *repeated_p);
 
 void enum_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct enum_message_repeated_t *repeated_p);
 
 void enum_message2_init(
@@ -206,8 +206,8 @@ void enum_message2_encode_repeated_inner(
     struct enum_message2_repeated_t *repeated_p);
 
 void enum_message2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct enum_message2_repeated_t *repeated_p);
 
 void enum_limits_init(
@@ -228,8 +228,8 @@ void enum_limits_encode_repeated_inner(
     struct enum_limits_repeated_t *repeated_p);
 
 void enum_limits_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct enum_limits_repeated_t *repeated_p);
 
 #ifdef __cplusplus

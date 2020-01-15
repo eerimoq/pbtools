@@ -119,8 +119,8 @@ void service_request_encode_repeated_inner(
     struct service_request_repeated_t *repeated_p);
 
 void service_request_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct service_request_repeated_t *repeated_p);
 
 void service_response_init(
@@ -141,8 +141,8 @@ void service_response_encode_repeated_inner(
     struct service_response_repeated_t *repeated_p);
 
 void service_response_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct service_response_repeated_t *repeated_p);
 
 #ifdef __cplusplus

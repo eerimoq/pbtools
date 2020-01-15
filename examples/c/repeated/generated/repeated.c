@@ -60,8 +60,8 @@ void coordinates_decode_inner(
     struct pbtools_repeated_info_t repeated_info_xs;
     struct pbtools_repeated_info_t repeated_info_ys;
 
-    pbtools_repeated_info_init(&repeated_info_xs, 1, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_ys, 2, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_xs, 1);
+    pbtools_repeated_info_init(&repeated_info_ys, 2);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -130,13 +130,13 @@ void coordinates_encode_repeated_inner(
 }
 
 void coordinates_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct coordinates_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct coordinates_t),
         (pbtools_message_init_t)coordinates_init,

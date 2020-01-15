@@ -502,8 +502,8 @@ void field_names_message_encode_repeated_inner(
     struct field_names_message_repeated_t *repeated_p);
 
 void field_names_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct field_names_message_repeated_t *repeated_p);
 
 void field_names_message_camel_case_init(
@@ -524,8 +524,8 @@ void field_names_message_camel_case_encode_repeated_inner(
     struct field_names_message_camel_case_repeated_t *repeated_p);
 
 void field_names_message_camel_case_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct field_names_message_camel_case_repeated_t *repeated_p);
 
 void field_names_message_pascal_case_init(
@@ -546,8 +546,8 @@ void field_names_message_pascal_case_encode_repeated_inner(
     struct field_names_message_pascal_case_repeated_t *repeated_p);
 
 void field_names_message_pascal_case_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct field_names_message_pascal_case_repeated_t *repeated_p);
 
 void field_names_repeated_message_camel_case_init(
@@ -568,8 +568,8 @@ void field_names_repeated_message_camel_case_encode_repeated_inner(
     struct field_names_repeated_message_camel_case_repeated_t *repeated_p);
 
 void field_names_repeated_message_camel_case_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct field_names_repeated_message_camel_case_repeated_t *repeated_p);
 
 void field_names_repeated_message_pascal_case_init(
@@ -590,8 +590,8 @@ void field_names_repeated_message_pascal_case_encode_repeated_inner(
     struct field_names_repeated_message_pascal_case_repeated_t *repeated_p);
 
 void field_names_repeated_message_pascal_case_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct field_names_repeated_message_pascal_case_repeated_t *repeated_p);
 
 void field_names_message_one_of_init(
@@ -612,8 +612,8 @@ void field_names_message_one_of_encode_repeated_inner(
     struct field_names_message_one_of_repeated_t *repeated_p);
 
 void field_names_message_one_of_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct field_names_message_one_of_repeated_t *repeated_p);
 
 #ifdef __cplusplus

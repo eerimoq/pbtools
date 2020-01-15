@@ -84,13 +84,13 @@ void service_request_encode_repeated_inner(
 }
 
 void service_request_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct service_request_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct service_request_t),
         (pbtools_message_init_t)service_request_init,
@@ -182,13 +182,13 @@ void service_response_encode_repeated_inner(
 }
 
 void service_response_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct service_response_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct service_response_t),
         (pbtools_message_init_t)service_response_init,

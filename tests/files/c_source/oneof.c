@@ -155,13 +155,13 @@ void oneof_message_encode_repeated_inner(
 }
 
 void oneof_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_message_t),
         (pbtools_message_init_t)oneof_message_init,
@@ -440,13 +440,13 @@ void oneof_message2_foo_encode_repeated_inner(
 }
 
 void oneof_message2_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message2_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_message2_foo_t),
         (pbtools_message_init_t)oneof_message2_foo_init,
@@ -542,13 +542,13 @@ void oneof_message2_encode_repeated_inner(
 }
 
 void oneof_message2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message2_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_message2_t),
         (pbtools_message_init_t)oneof_message2_init,
@@ -752,13 +752,13 @@ void oneof_message3_foo_encode_repeated_inner(
 }
 
 void oneof_message3_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message3_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_message3_foo_t),
         (pbtools_message_init_t)oneof_message3_foo_init,
@@ -790,7 +790,7 @@ void oneof_message3_bar_decode_inner(
     int wire_type;
     struct pbtools_repeated_info_t repeated_info_foo;
 
-    pbtools_repeated_info_init(&repeated_info_foo, 1, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_foo, 1);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -808,8 +808,8 @@ void oneof_message3_bar_decode_inner(
     }
 
     oneof_message3_foo_decode_repeated_inner(
-        &repeated_info_foo,
         decoder_p,
+        &repeated_info_foo,
         &self_p->foo);
 }
 
@@ -839,13 +839,13 @@ void oneof_message3_bar_encode_repeated_inner(
 }
 
 void oneof_message3_bar_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message3_bar_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_message3_bar_t),
         (pbtools_message_init_t)oneof_message3_bar_init,
@@ -904,13 +904,13 @@ void oneof_message3_encode_repeated_inner(
 }
 
 void oneof_message3_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message3_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_message3_t),
         (pbtools_message_init_t)oneof_message3_init,

@@ -153,8 +153,8 @@ void address_book_person_encode_repeated_inner(
     struct address_book_person_repeated_t *repeated_p);
 
 void address_book_person_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct address_book_person_repeated_t *repeated_p);
 
 void address_book_person_phone_number_init(
@@ -175,8 +175,8 @@ void address_book_person_phone_number_encode_repeated_inner(
     struct address_book_person_phone_number_repeated_t *repeated_p);
 
 void address_book_person_phone_number_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct address_book_person_phone_number_repeated_t *repeated_p);
 
 void address_book_address_book_init(
@@ -197,8 +197,8 @@ void address_book_address_book_encode_repeated_inner(
     struct address_book_address_book_repeated_t *repeated_p);
 
 void address_book_address_book_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct address_book_address_book_repeated_t *repeated_p);
 
 #ifdef __cplusplus

@@ -86,6 +86,7 @@ struct pbtools_repeated_info_t {
     struct pbtools_decoder_t decoder;
     int length;
     int tag;
+    int wire_type;
 };
 
 struct pbtools_bytes_t {
@@ -602,8 +603,8 @@ void pbtools_encode_repeated_inner(
     pbtools_message_encode_inner_t message_encode_inner);
 
 void pbtools_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_repeated_message_t *repeated_p,
     size_t item_size,
     pbtools_message_init_t message_init,
@@ -624,8 +625,7 @@ void pbtools_decoder_sub_message_decode(
 const char *pbtools_error_code_to_string(int code);
 
  void pbtools_repeated_info_init(struct pbtools_repeated_info_t *self_p,
-                                 int tag,
-                                 struct pbtools_decoder_t *decoder_p);
+                                 int tag);
 
 void pbtools_repeated_info_decode(struct pbtools_repeated_info_t *self_p,
                                   struct pbtools_decoder_t *decoder_p,

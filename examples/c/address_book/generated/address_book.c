@@ -90,13 +90,13 @@ void address_book_person_phone_number_encode_repeated_inner(
 }
 
 void address_book_person_phone_number_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct address_book_person_phone_number_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct address_book_person_phone_number_t),
         (pbtools_message_init_t)address_book_person_phone_number_init,
@@ -134,7 +134,7 @@ void address_book_person_decode_inner(
     int wire_type;
     struct pbtools_repeated_info_t repeated_info_phones;
 
-    pbtools_repeated_info_init(&repeated_info_phones, 4, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_phones, 4);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -164,8 +164,8 @@ void address_book_person_decode_inner(
     }
 
     address_book_person_phone_number_decode_repeated_inner(
-        &repeated_info_phones,
         decoder_p,
+        &repeated_info_phones,
         &self_p->phones);
 }
 
@@ -195,13 +195,13 @@ void address_book_person_encode_repeated_inner(
 }
 
 void address_book_person_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct address_book_person_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct address_book_person_t),
         (pbtools_message_init_t)address_book_person_init,
@@ -269,7 +269,7 @@ void address_book_address_book_decode_inner(
     int wire_type;
     struct pbtools_repeated_info_t repeated_info_people;
 
-    pbtools_repeated_info_init(&repeated_info_people, 1, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_people, 1);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -287,8 +287,8 @@ void address_book_address_book_decode_inner(
     }
 
     address_book_person_decode_repeated_inner(
-        &repeated_info_people,
         decoder_p,
+        &repeated_info_people,
         &self_p->people);
 }
 
@@ -318,13 +318,13 @@ void address_book_address_book_encode_repeated_inner(
 }
 
 void address_book_address_book_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct address_book_address_book_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct address_book_address_book_t),
         (pbtools_message_init_t)address_book_address_book_init,

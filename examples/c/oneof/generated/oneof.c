@@ -155,13 +155,13 @@ void oneof_foo_encode_repeated_inner(
 }
 
 void oneof_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct oneof_foo_t),
         (pbtools_message_init_t)oneof_foo_init,

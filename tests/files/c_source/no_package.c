@@ -84,13 +84,13 @@ void m0_m1_encode_repeated_inner(
 }
 
 void m0_m1_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct m0_m1_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct m0_m1_t),
         (pbtools_message_init_t)m0_m1_init,
@@ -130,7 +130,7 @@ void m0_decode_inner(
     int wire_type;
     struct pbtools_repeated_info_t repeated_info_v2;
 
-    pbtools_repeated_info_init(&repeated_info_v2, 2, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_v2, 2);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -160,8 +160,8 @@ void m0_decode_inner(
     }
 
     m0_m1_decode_repeated_inner(
-        &repeated_info_v2,
         decoder_p,
+        &repeated_info_v2,
         &self_p->v2);
 }
 
@@ -191,13 +191,13 @@ void m0_encode_repeated_inner(
 }
 
 void m0_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct m0_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct m0_t),
         (pbtools_message_init_t)m0_init,

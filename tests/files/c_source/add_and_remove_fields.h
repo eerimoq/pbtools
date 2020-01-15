@@ -153,8 +153,8 @@ void add_and_remove_fields_version1_encode_repeated_inner(
     struct add_and_remove_fields_version1_repeated_t *repeated_p);
 
 void add_and_remove_fields_version1_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct add_and_remove_fields_version1_repeated_t *repeated_p);
 
 void add_and_remove_fields_version2_init(
@@ -175,8 +175,8 @@ void add_and_remove_fields_version2_encode_repeated_inner(
     struct add_and_remove_fields_version2_repeated_t *repeated_p);
 
 void add_and_remove_fields_version2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct add_and_remove_fields_version2_repeated_t *repeated_p);
 
 void add_and_remove_fields_version3_init(
@@ -197,8 +197,8 @@ void add_and_remove_fields_version3_encode_repeated_inner(
     struct add_and_remove_fields_version3_repeated_t *repeated_p);
 
 void add_and_remove_fields_version3_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct add_and_remove_fields_version3_repeated_t *repeated_p);
 
 #ifdef __cplusplus

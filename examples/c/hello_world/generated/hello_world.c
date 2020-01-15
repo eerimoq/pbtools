@@ -84,13 +84,13 @@ void hello_world_foo_encode_repeated_inner(
 }
 
 void hello_world_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct hello_world_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct hello_world_foo_t),
         (pbtools_message_init_t)hello_world_foo_init,

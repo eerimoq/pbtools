@@ -115,8 +115,8 @@ void m0_encode_repeated_inner(
     struct m0_repeated_t *repeated_p);
 
 void m0_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct m0_repeated_t *repeated_p);
 
 void m0_m1_init(
@@ -137,8 +137,8 @@ void m0_m1_encode_repeated_inner(
     struct m0_m1_repeated_t *repeated_p);
 
 void m0_m1_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct m0_m1_repeated_t *repeated_p);
 
 #ifdef __cplusplus

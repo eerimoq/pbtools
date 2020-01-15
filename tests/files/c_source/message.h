@@ -237,8 +237,8 @@ void message_foo_encode_repeated_inner(
     struct message_foo_repeated_t *repeated_p);
 
 void message_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_foo_repeated_t *repeated_p);
 
 void message_bar_init(
@@ -259,8 +259,8 @@ void message_bar_encode_repeated_inner(
     struct message_bar_repeated_t *repeated_p);
 
 void message_bar_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_bar_repeated_t *repeated_p);
 
 void message_message_init(
@@ -281,8 +281,8 @@ void message_message_encode_repeated_inner(
     struct message_message_repeated_t *repeated_p);
 
 void message_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_message_repeated_t *repeated_p);
 
 void message_message_fie_init(
@@ -303,8 +303,8 @@ void message_message_fie_encode_repeated_inner(
     struct message_message_fie_repeated_t *repeated_p);
 
 void message_message_fie_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_message_fie_repeated_t *repeated_p);
 
 void message_message_fie_foo_init(
@@ -325,8 +325,8 @@ void message_message_fie_foo_encode_repeated_inner(
     struct message_message_fie_foo_repeated_t *repeated_p);
 
 void message_message_fie_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_message_fie_foo_repeated_t *repeated_p);
 
 void message_unused_inner_types_init(
@@ -347,8 +347,8 @@ void message_unused_inner_types_encode_repeated_inner(
     struct message_unused_inner_types_repeated_t *repeated_p);
 
 void message_unused_inner_types_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_unused_inner_types_repeated_t *repeated_p);
 
 void message_unused_inner_types_unused_message_init(
@@ -369,8 +369,8 @@ void message_unused_inner_types_unused_message_encode_repeated_inner(
     struct message_unused_inner_types_unused_message_repeated_t *repeated_p);
 
 void message_unused_inner_types_unused_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct message_unused_inner_types_unused_message_repeated_t *repeated_p);
 
 #ifdef __cplusplus

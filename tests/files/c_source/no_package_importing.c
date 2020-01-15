@@ -92,13 +92,13 @@ void npi_message2_encode_repeated_inner(
 }
 
 void npi_message2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct npi_message2_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct npi_message2_t),
         (pbtools_message_init_t)npi_message2_init,

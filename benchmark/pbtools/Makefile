@@ -24,4 +24,8 @@ all:
 	time ./main-speed-lto encode $(ITERATIONS)
 	time ./main-speed-lto decode $(ITERATIONS)
 
+generate:
+	env PYTHONPATH=../.. \
+	    python3 -m pbtools generate_c_source ../benchmark.proto
+
 include ../common.mk

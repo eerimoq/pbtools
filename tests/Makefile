@@ -91,6 +91,11 @@ all:
 	    main.o
 	./a.out
 
+fuzzer-generate:
+	cd files/c_source && \
+	    env PYTHONPATH=../../.. \
+	        python3 -m pbtools generate_c_source ../fuzzer.proto
+
 fuzzer:
 	$(FUZZER_CC) $(FUZZER_CFLAGS) $(FUZZER_C_SOURCES) -o $(FUZZER_EXE)
 	rm -f $(FUZZER_EXE).profraw

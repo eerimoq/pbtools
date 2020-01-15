@@ -66,3 +66,7 @@ release-to-pypi:
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
 	twine upload dist/*
+
+generate:
+	$(MAKE) -C examples/c generate
+	$(MAKE) -C benchmark/pbtools generate

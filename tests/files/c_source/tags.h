@@ -243,8 +243,8 @@ void tags_message1_encode_repeated_inner(
     struct tags_message1_repeated_t *repeated_p);
 
 void tags_message1_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct tags_message1_repeated_t *repeated_p);
 
 void tags_message2_init(
@@ -265,8 +265,8 @@ void tags_message2_encode_repeated_inner(
     struct tags_message2_repeated_t *repeated_p);
 
 void tags_message2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct tags_message2_repeated_t *repeated_p);
 
 void tags_message3_init(
@@ -287,8 +287,8 @@ void tags_message3_encode_repeated_inner(
     struct tags_message3_repeated_t *repeated_p);
 
 void tags_message3_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct tags_message3_repeated_t *repeated_p);
 
 void tags_message4_init(
@@ -309,8 +309,8 @@ void tags_message4_encode_repeated_inner(
     struct tags_message4_repeated_t *repeated_p);
 
 void tags_message4_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct tags_message4_repeated_t *repeated_p);
 
 void tags_message5_init(
@@ -331,8 +331,8 @@ void tags_message5_encode_repeated_inner(
     struct tags_message5_repeated_t *repeated_p);
 
 void tags_message5_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct tags_message5_repeated_t *repeated_p);
 
 void tags_message6_init(
@@ -353,8 +353,8 @@ void tags_message6_encode_repeated_inner(
     struct tags_message6_repeated_t *repeated_p);
 
 void tags_message6_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct tags_message6_repeated_t *repeated_p);
 
 #ifdef __cplusplus

@@ -92,13 +92,13 @@ void imported2_foo_bar_imported2_message_encode_repeated_inner(
 }
 
 void imported2_foo_bar_imported2_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct imported2_foo_bar_imported2_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported2_foo_bar_imported2_message_t),
         (pbtools_message_init_t)imported2_foo_bar_imported2_message_init,
@@ -198,13 +198,13 @@ void imported2_foo_bar_imported3_message_imported2_message_encode_repeated_inner
 }
 
 void imported2_foo_bar_imported3_message_imported2_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct imported2_foo_bar_imported3_message_imported2_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported2_foo_bar_imported3_message_imported2_message_t),
         (pbtools_message_init_t)imported2_foo_bar_imported3_message_imported2_message_init,
@@ -290,10 +290,10 @@ void imported2_foo_bar_imported3_message_decode_inner(
     struct pbtools_repeated_info_t repeated_info_v8;
     struct pbtools_repeated_info_t repeated_info_v10;
 
-    pbtools_repeated_info_init(&repeated_info_v7, 7, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_v9, 9, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_v8, 8, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_v10, 10, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_v7, 7);
+    pbtools_repeated_info_init(&repeated_info_v9, 9);
+    pbtools_repeated_info_init(&repeated_info_v8, 8);
+    pbtools_repeated_info_init(&repeated_info_v10, 10);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
@@ -377,20 +377,20 @@ void imported2_foo_bar_imported3_message_decode_inner(
     }
 
     bar_imported3_message_decode_repeated_inner(
-        &repeated_info_v7,
         decoder_p,
+        &repeated_info_v7,
         &self_p->v7);
     foo_bar_imported3_message_decode_repeated_inner(
-        &repeated_info_v9,
         decoder_p,
+        &repeated_info_v9,
         &self_p->v9);
     bar_imported3_message_decode_repeated_inner(
-        &repeated_info_v8,
         decoder_p,
+        &repeated_info_v8,
         &self_p->v8);
     foo_bar_imported3_message_decode_repeated_inner(
-        &repeated_info_v10,
         decoder_p,
+        &repeated_info_v10,
         &self_p->v10);
 }
 
@@ -456,13 +456,13 @@ void imported2_foo_bar_imported3_message_encode_repeated_inner(
 }
 
 void imported2_foo_bar_imported3_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct imported2_foo_bar_imported3_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported2_foo_bar_imported3_message_t),
         (pbtools_message_init_t)imported2_foo_bar_imported3_message_init,

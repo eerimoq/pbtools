@@ -337,8 +337,8 @@ void oneof_message_encode_repeated_inner(
     struct oneof_message_repeated_t *repeated_p);
 
 void oneof_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message_repeated_t *repeated_p);
 
 void oneof_message2_init(
@@ -359,8 +359,8 @@ void oneof_message2_encode_repeated_inner(
     struct oneof_message2_repeated_t *repeated_p);
 
 void oneof_message2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message2_repeated_t *repeated_p);
 
 void oneof_message2_foo_init(
@@ -381,8 +381,8 @@ void oneof_message2_foo_encode_repeated_inner(
     struct oneof_message2_foo_repeated_t *repeated_p);
 
 void oneof_message2_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message2_foo_repeated_t *repeated_p);
 
 void oneof_message3_init(
@@ -403,8 +403,8 @@ void oneof_message3_encode_repeated_inner(
     struct oneof_message3_repeated_t *repeated_p);
 
 void oneof_message3_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message3_repeated_t *repeated_p);
 
 void oneof_message3_foo_init(
@@ -425,8 +425,8 @@ void oneof_message3_foo_encode_repeated_inner(
     struct oneof_message3_foo_repeated_t *repeated_p);
 
 void oneof_message3_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message3_foo_repeated_t *repeated_p);
 
 void oneof_message3_bar_init(
@@ -447,8 +447,8 @@ void oneof_message3_bar_encode_repeated_inner(
     struct oneof_message3_bar_repeated_t *repeated_p);
 
 void oneof_message3_bar_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct oneof_message3_bar_repeated_t *repeated_p);
 
 #ifdef __cplusplus

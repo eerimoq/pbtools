@@ -119,8 +119,8 @@ void int32_message_encode_repeated_inner(
     struct int32_message_repeated_t *repeated_p);
 
 void int32_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct int32_message_repeated_t *repeated_p);
 
 void int32_message2_init(
@@ -141,8 +141,8 @@ void int32_message2_encode_repeated_inner(
     struct int32_message2_repeated_t *repeated_p);
 
 void int32_message2_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct int32_message2_repeated_t *repeated_p);
 
 #ifdef __cplusplus

@@ -127,8 +127,8 @@ void imported_imported2_message_encode_repeated_inner(
     struct imported_imported2_message_repeated_t *repeated_p);
 
 void imported_imported2_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct imported_imported2_message_repeated_t *repeated_p);
 
 void imported_imported_duplicated_package_message_init(
@@ -149,8 +149,8 @@ void imported_imported_duplicated_package_message_encode_repeated_inner(
     struct imported_imported_duplicated_package_message_repeated_t *repeated_p);
 
 void imported_imported_duplicated_package_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct imported_imported_duplicated_package_message_repeated_t *repeated_p);
 
 #ifdef __cplusplus

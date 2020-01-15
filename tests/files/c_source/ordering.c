@@ -90,13 +90,13 @@ void ordering_bar_fie_encode_repeated_inner(
 }
 
 void ordering_bar_fie_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct ordering_bar_fie_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_bar_fie_t),
         (pbtools_message_init_t)ordering_bar_fie_init,
@@ -160,13 +160,13 @@ void ordering_bar_gom_encode_repeated_inner(
 }
 
 void ordering_bar_gom_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct ordering_bar_gom_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_bar_gom_t),
         (pbtools_message_init_t)ordering_bar_gom_init,
@@ -256,13 +256,13 @@ void ordering_bar_encode_repeated_inner(
 }
 
 void ordering_bar_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct ordering_bar_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_bar_t),
         (pbtools_message_init_t)ordering_bar_init,
@@ -368,13 +368,13 @@ void ordering_foo_encode_repeated_inner(
 }
 
 void ordering_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct ordering_foo_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct ordering_foo_t),
         (pbtools_message_init_t)ordering_foo_init,

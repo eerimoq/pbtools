@@ -88,8 +88,8 @@ void fixed32_message_encode_repeated_inner(
     struct fixed32_message_repeated_t *repeated_p);
 
 void fixed32_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct fixed32_message_repeated_t *repeated_p);
 
 #ifdef __cplusplus

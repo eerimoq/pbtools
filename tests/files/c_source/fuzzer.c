@@ -451,26 +451,26 @@ void fuzzer_everything_decode_inner(
     struct pbtools_repeated_info_t repeated_info_repeated_cord;
     struct pbtools_repeated_info_t repeated_info_repeated_lazy_message;
 
-    pbtools_repeated_info_init(&repeated_info_repeated_int32, 3100, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_int64, 3200, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_uint32, 3300, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_uint64, 3400, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_sint32, 3500, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_sint64, 3600, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_fixed32, 3700, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_fixed64, 3800, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_sfixed32, 3900, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_sfixed64, 4000, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_float, 4100, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_double, 4200, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_bool, 4300, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_string, 4400, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_bytes, 4500, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_nested_message, 48, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_nested_enum, 51, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_string_piece, 54, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_cord, 55, decoder_p);
-    pbtools_repeated_info_init(&repeated_info_repeated_lazy_message, 57, decoder_p);
+    pbtools_repeated_info_init(&repeated_info_repeated_int32, 3100);
+    pbtools_repeated_info_init(&repeated_info_repeated_int64, 3200);
+    pbtools_repeated_info_init(&repeated_info_repeated_uint32, 3300);
+    pbtools_repeated_info_init(&repeated_info_repeated_uint64, 3400);
+    pbtools_repeated_info_init(&repeated_info_repeated_sint32, 3500);
+    pbtools_repeated_info_init(&repeated_info_repeated_sint64, 3600);
+    pbtools_repeated_info_init(&repeated_info_repeated_fixed32, 3700);
+    pbtools_repeated_info_init(&repeated_info_repeated_fixed64, 3800);
+    pbtools_repeated_info_init(&repeated_info_repeated_sfixed32, 3900);
+    pbtools_repeated_info_init(&repeated_info_repeated_sfixed64, 4000);
+    pbtools_repeated_info_init(&repeated_info_repeated_float, 4100);
+    pbtools_repeated_info_init(&repeated_info_repeated_double, 4200);
+    pbtools_repeated_info_init(&repeated_info_repeated_bool, 4300);
+    pbtools_repeated_info_init(&repeated_info_repeated_string, 4400);
+    pbtools_repeated_info_init(&repeated_info_repeated_bytes, 4500);
+    pbtools_repeated_info_init(&repeated_info_repeated_nested_message, 48);
+    pbtools_repeated_info_init(&repeated_info_repeated_nested_enum, 51);
+    pbtools_repeated_info_init(&repeated_info_repeated_string_piece, 54);
+    pbtools_repeated_info_init(&repeated_info_repeated_cord, 55);
+    pbtools_repeated_info_init(&repeated_info_repeated_lazy_message, 57);
 
     while (pbtools_decoder_available(decoder_p)) {
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {

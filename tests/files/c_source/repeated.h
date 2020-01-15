@@ -527,8 +527,8 @@ void repeated_message_encode_repeated_inner(
     struct repeated_message_repeated_t *repeated_p);
 
 void repeated_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_message_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_init(
@@ -549,8 +549,8 @@ void repeated_message_scalar_value_types_encode_repeated_inner(
     struct repeated_message_scalar_value_types_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_message_scalar_value_types_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_packed_init(
@@ -571,8 +571,8 @@ void repeated_message_scalar_value_types_packed_encode_repeated_inner(
     struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_packed_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_message_scalar_value_types_packed_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_not_packed_init(
@@ -593,8 +593,8 @@ void repeated_message_scalar_value_types_not_packed_encode_repeated_inner(
     struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
 
 void repeated_message_scalar_value_types_not_packed_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_message_scalar_value_types_not_packed_repeated_t *repeated_p);
 
 void repeated_foo_init(
@@ -615,8 +615,8 @@ void repeated_foo_encode_repeated_inner(
     struct repeated_foo_repeated_t *repeated_p);
 
 void repeated_foo_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_foo_repeated_t *repeated_p);
 
 void repeated_bar_init(
@@ -637,8 +637,8 @@ void repeated_bar_encode_repeated_inner(
     struct repeated_bar_repeated_t *repeated_p);
 
 void repeated_bar_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_bar_repeated_t *repeated_p);
 
 void repeated_bar_fie_init(
@@ -659,8 +659,8 @@ void repeated_bar_fie_encode_repeated_inner(
     struct repeated_bar_fie_repeated_t *repeated_p);
 
 void repeated_bar_fie_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct repeated_bar_fie_repeated_t *repeated_p);
 
 #ifdef __cplusplus

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define NALA_VERSION "0.71.0"
+#define NALA_VERSION "0.73.0"
 
 #define TEST(name)                                      \
     static void name(void);                             \
@@ -232,10 +232,10 @@
         NALA_TEST_FAILURE(nala_format_memory("", left, right, size));   \
     }
 
-#define ASSERT(cond)                                    \
-    if (!(cond)) {                                      \
-        nala_reset_all_mocks();                         \
-        NALA_TEST_FAILURE(nala_format("assert\n"));     \
+#define ASSERT(cond)                                            \
+    if (!(cond)) {                                              \
+        nala_reset_all_mocks();                                 \
+        NALA_TEST_FAILURE(nala_format("false != true\n"));      \
     }
 
 #define FAIL()                                          \

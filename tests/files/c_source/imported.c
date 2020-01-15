@@ -98,13 +98,13 @@ void imported_imported_message_encode_repeated_inner(
 }
 
 void imported_imported_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct imported_imported_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct imported_imported_message_t),
         (pbtools_message_init_t)imported_imported_message_init,
