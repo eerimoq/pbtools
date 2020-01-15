@@ -70,3 +70,4 @@ release-to-pypi:
 generate:
 	$(MAKE) -C examples/c generate
 	$(MAKE) -C benchmark/pbtools generate
+	$(MAKE) -C tests fuzzer-generate

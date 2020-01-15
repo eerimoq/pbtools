@@ -303,13 +303,13 @@ void fuzzer_everything_nested_message_encode_repeated_inner(
 }
 
 void fuzzer_everything_nested_message_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct fuzzer_everything_nested_message_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct fuzzer_everything_nested_message_t),
         (pbtools_message_init_t)fuzzer_everything_nested_message_init,
@@ -796,8 +796,8 @@ void fuzzer_everything_decode_inner(
         &repeated_info_repeated_bytes,
         &self_p->repeated_bytes);
     fuzzer_everything_nested_message_decode_repeated_inner(
-        &repeated_info_repeated_nested_message,
         decoder_p,
+        &repeated_info_repeated_nested_message,
         &self_p->repeated_nested_message);
     pbtools_decoder_decode_repeated_int32(
         decoder_p,
@@ -812,8 +812,8 @@ void fuzzer_everything_decode_inner(
         &repeated_info_repeated_cord,
         &self_p->repeated_cord);
     fuzzer_everything_nested_message_decode_repeated_inner(
-        &repeated_info_repeated_lazy_message,
         decoder_p,
+        &repeated_info_repeated_lazy_message,
         &self_p->repeated_lazy_message);
 }
 
@@ -1035,13 +1035,13 @@ void fuzzer_everything_encode_repeated_inner(
 }
 
 void fuzzer_everything_decode_repeated_inner(
-    struct pbtools_repeated_info_t *repeated_info_p,
     struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
     struct fuzzer_everything_repeated_t *repeated_p)
 {
     pbtools_decode_repeated_inner(
-        repeated_info_p,
         decoder_p,
+        repeated_info_p,
         (struct pbtools_repeated_message_t *)repeated_p,
         sizeof(struct fuzzer_everything_t),
         (pbtools_message_init_t)fuzzer_everything_init,
