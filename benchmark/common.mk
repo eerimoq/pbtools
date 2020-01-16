@@ -7,6 +7,6 @@ CFLAGS = \
 	-Wl,--gc-sections
 
 OPT_SIZE = -Os
-OPT_SPEED = -O3
+OPT_SPEED = -O2
 
 ITERATIONS = 2000000

@@ -1,7 +1,7 @@
-# Decoding time -O3 [ms]
+# Decoding time -O2/-O3 [ms]
 
-pbtools      1002
+pbtools      1594
 google       1997
 protobuf-c   2508
-nanopb       6133
-flatbuffers  103
+nanopb       6433
+flatbuffers  100

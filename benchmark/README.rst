@@ -93,9 +93,9 @@ library and optimization combination.
 +-------------+--------------+--------------------+
 | Library     | Optimization | Exexution time [s] |
 +=============+==============+====================+
-| pbtools     |    -O3 -flto |              0.658 |
+| pbtools     |    -O2 -flto |              1.319 |
 +-------------+--------------+--------------------+
-| pbtools     |          -O3 |              1.118 |
+| pbtools     |          -O2 |              1.457 |
 +-------------+--------------+--------------------+
 | protobuf-c  |    -O3 -flto |              1.883 |
 +-------------+--------------+--------------------+
@@ -107,19 +107,19 @@ library and optimization combination.
 +-------------+--------------+--------------------+
 | google      |          -O3 |              2.231 |
 +-------------+--------------+--------------------+
-| flatbuffers |          -O3 |              2.554 |
+| flatbuffers |          -O2 |              2.506 |
 +-------------+--------------+--------------------+
-| pbtools     |    -Os -flto |              3.421 |
+| pbtools     |    -Os -flto |              3.275 |
 +-------------+--------------+--------------------+
-| pbtools     |          -Os |              3.470 |
+| pbtools     |          -Os |              3.398 |
 +-------------+--------------+--------------------+
 | google      |          -Os |              3.713 |
 +-------------+--------------+--------------------+
-| flatbuffers |          -Os |              5.638 |
+| flatbuffers |          -Os |              5.553 |
 +-------------+--------------+--------------------+
-| nanopb      |    -O3 -flto |              7.453 |
+| nanopb      |    -O2 -flto |              9.453 |
 +-------------+--------------+--------------------+
-| nanopb      |          -O3 |              8.480 |
+| nanopb      |          -O2 |              9.580 |
 +-------------+--------------+--------------------+
 | nanopb      |          -Os |             12.958 |
 +-------------+--------------+--------------------+
@@ -135,17 +135,17 @@ library and optimization combination.
 +-------------+--------------+--------------------+
 | Library     | Optimization | Exexution time [s] |
 +=============+==============+====================+
-| flatbuffers |          -O3 |              0.103 |
+| flatbuffers |          -O2 |              0.100 |
 +-------------+--------------+--------------------+
-| flatbuffers |          -Os |              0.553 |
+| flatbuffers |          -Os |              0.549 |
 +-------------+--------------+--------------------+
-| pbtools     |    -O3 -flto |              0.681 |
+| pbtools     |    -O2 -flto |              1.239 |
 +-------------+--------------+--------------------+
-| pbtools     |          -O3 |              1.069 |
+| pbtools     |    -Os -flto |              1.416 |
 +-------------+--------------+--------------------+
-| pbtools     |    -Os -flto |              1.270 |
+| pbtools     |          -O2 |              1.594 |
 +-------------+--------------+--------------------+
-| pbtools     |          -Os |              1.576 |
+| pbtools     |          -Os |              1.749 |
 +-------------+--------------+--------------------+
 | google      |          -O3 |              1.997 |
 +-------------+--------------+--------------------+
@@ -159,9 +159,9 @@ library and optimization combination.
 +-------------+--------------+--------------------+
 | protobuf-c  |          -Os |              2.609 |
 +-------------+--------------+--------------------+
-| nanopb      |    -O3 -flto |              5.767 |
+| nanopb      |    -O2 -flto |              6.367 |
 +-------------+--------------+--------------------+
-| nanopb      |          -O3 |              6.133 |
+| nanopb      |          -O2 |              6.433 |
 +-------------+--------------+--------------------+
 | nanopb      |          -Os |              9.685 |
 +-------------+--------------+--------------------+
@@ -176,36 +176,36 @@ pbtools
 
 .. code-block::
 
-   $ size main-size
+   size main-size
       text    data     bss     dec     hex filename
-     13972     632       8   14612    3914 main-size
-   $ size main-size-lto
+     14188     632       8   14828    39ec main-size
+   size main-size-lto
       text    data     bss     dec     hex filename
-     11596     632       8   12236    2fcc main-size-lto
-   $ size main-speed
+     11732     632       8   12372    3054 main-size-lto
+   size main-speed
       text    data     bss     dec     hex filename
-     32148     656       8   32812    802c main-speed
-   $ size main-speed-lto
+     17484     656       8   18148    46e4 main-speed
+   size main-speed-lto
       text    data     bss     dec     hex filename
-     66636     656       8   67300   106e4 main-speed-lto
+     15308     656       8   15972    3e64 main-speed-lto
 
 nanopb
 ^^^^^^
 
 .. code-block::
 
-   $ size main-size
+   size main-size
       text    data     bss     dec     hex filename
      18036    1066      32   19134    4abe main-size
-   $ size main-size-lto
+   size main-size-lto
       text    data     bss     dec     hex filename
      17002    1050      32   18084    46a4 main-size-lto
-   $ size main-speed
+   size main-speed
       text    data     bss     dec     hex filename
-     26928    1082      32   28042    6d8a main-speed
-   $ size main-speed-lto
+     21256    1082      32   22370    5762 main-speed
+   size main-speed-lto
       text    data     bss     dec     hex filename
-     36574    1088      32   37694    933e main-speed-lto
+     20566    1066      32   21664    54a0 main-speed-lto
 
 google (C++ with libprotoc 3.6.1 as shared library)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -242,12 +242,12 @@ flatbuffers
 
 .. code-block::
 
-   $ size main-size
+   size main-size
       text    data     bss     dec     hex filename
      19838     816       8   20662    50b6 main-size
-   $ size main-speed
+   size main-speed
       text    data     bss     dec     hex filename
-     41042     728       8   41778    a332 main-speed
+     40017     728       8   40753    9f31 main-speed
 
 .. _FlatBuffers: https://google.github.io/flatbuffers/
 
