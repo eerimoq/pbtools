@@ -43,11 +43,11 @@ Encoding time in milliseconds per library. Lower is better.
 
 .. code-block:: text
 
-   flatbuffers: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2554
-   google     : ▇▇▇▇▇▇▇▇▇▇▇▇▇ 2231
-   nanopb     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 8480
-   pbtools    : ▇▇▇▇▇▇ 1097
-   protobuf-c : ▇▇▇▇▇▇▇▇▇▇▇ 1892
+   flatbuffers: ▇▇▇▇▇▇▇▇▇▇▇▇▇ 2506
+   google     : ▇▇▇▇▇▇▇▇▇▇▇ 2231
+   nanopb     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 9580
+   pbtools    : ▇▇▇▇▇▇▇ 1457
+   protobuf-c : ▇▇▇▇▇▇▇▇▇ 1892
 
 Decoding time
 -------------
@@ -56,11 +56,11 @@ Decoding time in milliseconds per library. Lower is better.
 
 .. code-block:: text
 
-   flatbuffers: ▏ 103
-   google     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 1997
-   nanopb     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 6133
-   pbtools    : ▇▇▇▇▇▇▇▇ 1002
-   protobuf-c : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2508
+   flatbuffers: ▏ 100
+   google     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 1997
+   nanopb     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 6433
+   pbtools    : ▇▇▇▇▇▇▇▇▇▇▇▇ 1594
+   protobuf-c : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 2508
 
 NOTE: `flatbuffers` decodes fields when used by the application, while
 other libraries decodes everything before any field can be used. The
@@ -74,12 +74,15 @@ Text segment size in bytes. Lower is better.
 
 .. code-block:: text
 
-   flatbuffers: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 41042
-   nanopb     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 26928
-   pbtools    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 32132
+   flatbuffers: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 40017
+   nanopb     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 21256
+   pbtools    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 17484
 
 See `Executable size` in the `Details` section below for information
 about `google` and `protobuf-c`.
+
+NOTE: The `pbtools` executabe size probably grows faster than others
+as it generates functions instead of tables.
 
 Details
 =======
