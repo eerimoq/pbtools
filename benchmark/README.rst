@@ -28,7 +28,8 @@ Usability
 | google      | Easy to use.                                            |
 +-------------+---------------------------------------------------------+
 | nanopb      | Repeated, bytes, strings, oneofs and submessages are    |
-|             | hard to use, otherwise easy.                            |
+|             | hard to use by default, but easy if the max_size option |
+|             | is given. Otherwise easy.                               |
 +-------------+---------------------------------------------------------+
 | pbtools     | Easy to use.                                            |
 +-------------+---------------------------------------------------------+
