@@ -1202,21 +1202,21 @@ static int decoder_read_repeated(struct pbtools_decoder_t *self_p,
 {
     int size;
     struct pbtools_decoder_t decoder;
-    int pos;
+    int index;
 
-    pos = 0;
+    index = 0;
 
     /* Accept both packed and not packed. */
     if (wire_type == item_wire_type) {
-        item_read(self_p, items_p, pos);
-        pos++;
+        item_read(self_p, items_p, index);
+        index++;
     } else if (wire_type == PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED) {
         size = (int)decoder_read_length_delimited(self_p, wire_type);
         decoder_init_slice(&decoder, self_p, size);
 
         while (pbtools_decoder_available(&decoder)) {
-            item_read(&decoder, items_p, pos);
-            pos++;
+            item_read(&decoder, items_p, index);
+            index++;
         }
 
         decoder_seek(self_p, decoder_get_result(&decoder));
@@ -1224,7 +1224,7 @@ static int decoder_read_repeated(struct pbtools_decoder_t *self_p,
         decoder_abort(self_p, PBTOOLS_BAD_WIRE_TYPE);
     }
 
-    return (pos);
+    return (index);
 }
 
 static int decoder_read_repeated_varint(struct pbtools_decoder_t *self_p,
@@ -1340,7 +1340,7 @@ static void decoder_decode_repeated(
     int res;
     int wire_type;
     int tag;
-    int pos;
+    int index;
 
     if (repeated_info_p->length == 0) {
         return;
@@ -1356,19 +1356,19 @@ static void decoder_decode_repeated(
     }
 
     repeated_p->length = repeated_info_p->length;
-    pos = read_repeated(&repeated_info_p->decoder,
-                        repeated_info_p->wire_type,
-                        repeated_p->items_p,
-                        0);
+    index = read_repeated(&repeated_info_p->decoder,
+                          repeated_info_p->wire_type,
+                          repeated_p->items_p,
+                          0);
 
-    while (are_more_items_to_decode(repeated_info_p, pos)) {
+    while (are_more_items_to_decode(repeated_info_p, index)) {
         tag = pbtools_decoder_read_tag(&repeated_info_p->decoder, &wire_type);
 
         if (tag == repeated_info_p->tag) {
-            pos += read_repeated(&repeated_info_p->decoder,
-                                 wire_type,
-                                 repeated_p->items_p,
-                                 pos);
+            index += read_repeated(&repeated_info_p->decoder,
+                                   wire_type,
+                                   repeated_p->items_p,
+                                   index);
         } else {
             pbtools_decoder_skip_field(&repeated_info_p->decoder, wire_type);
         }
