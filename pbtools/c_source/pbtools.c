@@ -2126,7 +2126,7 @@ void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
         break;
 
     case PBTOOLS_WIRE_TYPE_64_BIT:
-        (void)pbtools_decoder_read_fixed64(self_p, PBTOOLS_WIRE_TYPE_64_BIT);
+        decoder_seek(self_p, 8);
         break;
 
     case PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED:
@@ -2135,7 +2135,7 @@ void pbtools_decoder_skip_field(struct pbtools_decoder_t *self_p,
         break;
 
     case PBTOOLS_WIRE_TYPE_32_BIT:
-        (void)pbtools_decoder_read_fixed32(self_p, PBTOOLS_WIRE_TYPE_32_BIT);
+        decoder_seek(self_p, 4);
         break;
 
     default:
@@ -2155,7 +2155,7 @@ void *pbtools_message_new(
     size_t message_size,
     pbtools_message_init_t message_init)
 {
-    void *self_p;
+    struct pbtools_message_base_t *self_p;
     struct pbtools_heap_t *heap_p;
 
     heap_p = heap_new(workspace_p, size);
@@ -2164,9 +2164,7 @@ void *pbtools_message_new(
         return (NULL);
     }
 
-    self_p = heap_alloc(heap_p,
-                        message_size,
-                        alignof(struct pbtools_message_base_t));
+    self_p = heap_alloc(heap_p, message_size, alignof(*self_p));
 
     if (self_p != NULL) {
         message_init(self_p, heap_p);
