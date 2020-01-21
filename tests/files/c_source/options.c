@@ -41,12 +41,16 @@ void options_message_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->value = 0;
+    self_p->value2 = 0;
+    self_p->value3 = 0;
 }
 
 void options_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct options_message_t *self_p)
 {
+    pbtools_encoder_write_bool(encoder_p, 3, self_p->value3);
+    pbtools_encoder_write_bool(encoder_p, 2, self_p->value2);
     pbtools_encoder_write_bool(encoder_p, 1, self_p->value);
 }
 
@@ -61,6 +65,14 @@ void options_message_decode_inner(
 
         case 1:
             self_p->value = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 2:
+            self_p->value2 = pbtools_decoder_read_bool(decoder_p, wire_type);
+            break;
+
+        case 3:
+            self_p->value3 = pbtools_decoder_read_bool(decoder_p, wire_type);
             break;
 
         default:

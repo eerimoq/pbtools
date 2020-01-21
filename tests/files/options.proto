@@ -7,4 +7,6 @@ option (bar).fie = true;
 
 message Message {
     bool value = 1 [deprecated=true];
+    bool value2 = 2 [(bar).fum = 5];
+    bool value3 = 3 [(bar).gam = 1, deprecated=true];
 }

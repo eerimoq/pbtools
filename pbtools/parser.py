@@ -168,11 +168,14 @@ class Parser(textparser.Parser):
         message_type = Sequence(Optional('.'), full_ident)
         constant = choice(Tag('bool', choice('true', 'false')),
                           Tag('ident', full_ident),
-                          Tag('string', 'STRING'))
-
+                          Tag('string', 'STRING'),
+                          Tag('integer', 'INT'))
+        option_name = Sequence(choice(ident,
+                                      Sequence('(', full_ident, ')')),
+                               ZeroOrMore(Sequence('.', ident)))
         options = Optional(Sequence('[',
-                                    OneOrMore(
-                                        Sequence(ident, '=', constant)),
+                                    DelimitedList(
+                                        Sequence(option_name, '=', constant)),
                                     ']'))
 
         # Import.
@@ -184,9 +187,6 @@ class Parser(textparser.Parser):
         package = Sequence('package', full_ident, ';')
 
         # Option.
-        option_name = Sequence(choice(ident,
-                                      Sequence('(', full_ident, ')')),
-                               ZeroOrMore(Sequence('.', ident)))
         option = Sequence('option', option_name, '=', constant, ';')
 
         # Enum.
@@ -304,6 +304,8 @@ class Option:
             value = (value == 'true')
         elif kind == 'ident':
             value = value[0]
+        elif kind == 'integer':
+            value = int(value[0])
 
         self.kind = kind
         self.value = value

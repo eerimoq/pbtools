@@ -48,6 +48,8 @@ struct options_message_repeated_t {
 struct options_message_t {
     struct pbtools_message_base_t base;
     bool value;
+    bool value2;
+    bool value3;
 };
 
 /**
