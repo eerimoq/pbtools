@@ -18,7 +18,7 @@ Known limitations:
 
 Project homepage: https://github.com/eerimoq/pbtools
 
-Documentation: http://pbtools.readthedocs.org/en/latest
+Documentation: https://pbtools.readthedocs.io
 
 Installation
 ============
