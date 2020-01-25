@@ -34,7 +34,7 @@ The C source code is designed with the following in mind:
 
 - Clean and easy to use API.
 
-- No dynamic memory usage.
+- No malloc/free. Uses a workspace/areana for memory allocations.
 
 - Fast encoding and decoding.
 
