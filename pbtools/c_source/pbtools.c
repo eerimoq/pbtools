@@ -1061,7 +1061,7 @@ void pbtools_decoder_read_string(struct pbtools_decoder_t *self_p,
     size = decoder_read_length_delimited(self_p, wire_type);
     *value_pp = decoder_heap_alloc(self_p,
                                    size + 1,
-                                   alignof(**value_pp));
+                                   alignof(char));
 
     if (*value_pp == NULL) {
         return;
@@ -1081,7 +1081,7 @@ void pbtools_decoder_read_bytes(struct pbtools_decoder_t *self_p,
     bytes_p->size = size;
     bytes_p->buf_p = decoder_heap_alloc(self_p,
                                         bytes_p->size,
-                                        alignof(*bytes_p->buf_p));
+                                        alignof(uint8_t));
 
     if (bytes_p->buf_p == NULL) {
         return;
@@ -2014,7 +2014,7 @@ int pbtools_alloc_repeated_string(struct pbtools_message_base_t *self_p,
 
     repeated_p->items_pp = heap_alloc(self_p->heap_p,
                                       sizeof(*repeated_p->items_pp) * (size_t)length,
-                                      alignof(*repeated_p->items_pp));
+                                      alignof(uint64_t));
 
     if (repeated_p->items_pp == NULL) {
         return (-1);
@@ -2164,7 +2164,9 @@ void *pbtools_message_new(
         return (NULL);
     }
 
-    self_p = heap_alloc(heap_p, message_size, alignof(*self_p));
+    self_p = heap_alloc(heap_p,
+                        message_size,
+                        alignof(struct pbtools_message_base_t));
 
     if (self_p != NULL) {
         message_init(self_p, heap_p);
@@ -2213,7 +2215,7 @@ int pbtools_alloc_repeated(
 
     repeated_p->items_p = heap_alloc(heap_p,
                                      item_size * (size_t)length,
-                                     alignof(*repeated_p->items_p));
+                                     alignof(uint64_t));
 
     if (repeated_p->items_p == NULL) {
         return (-1);
