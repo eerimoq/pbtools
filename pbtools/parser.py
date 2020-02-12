@@ -3,7 +3,6 @@ import re
 import textparser
 from textparser import Sequence
 from textparser import ZeroOrMore
-from textparser import OneOrMore
 from textparser import ZeroOrMoreDict
 from textparser import choice
 from textparser import Optional

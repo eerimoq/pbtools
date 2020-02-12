@@ -808,7 +808,6 @@ class Generator:
 
     def generate_message_encode_body(self, message):
         members = []
-        message_name = message.full_name_snake_case
 
         for field in reversed(message.fields):
             if field.type_kind == 'scalar-value-type':
@@ -1047,7 +1046,6 @@ class Generator:
     def generate_oneof_definitions(self,
                                    message,
                                    oneof,
-                                   declarations,
                                    definitions):
         self.generate_oneof_init_definitions(message, oneof, definitions)
         self.generate_oneof_encode_definitions(oneof, definitions)
@@ -1059,7 +1057,7 @@ class Generator:
                                      definitions,
                                      public):
         for oneof in message.oneofs:
-            self.generate_oneof_definitions(message, oneof, declarations, definitions)
+            self.generate_oneof_definitions(message, oneof, definitions)
 
         for sub_message in message.messages:
             self.generate_message_definitions(sub_message,
