@@ -16,6 +16,8 @@ Known limitations:
 
 - Options, services (gRPC) and reserved fields are ignored.
 
+- Public imports are not implemented.
+
 Project homepage: https://github.com/eerimoq/pbtools
 
 Documentation: https://pbtools.readthedocs.io
