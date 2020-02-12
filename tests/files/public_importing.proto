@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "public_imported.proto";
+
+package public_importing;
+
+// ToDo: Support for using public imports.
+// message Message {
+//     imported.ImportedEnum v1 = 1;
+//     imported.ImportedMessage v2 = 2;
+// }

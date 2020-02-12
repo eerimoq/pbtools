@@ -903,6 +903,13 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(oneof.fields[6].name, 'myBytes')
         self.assertEqual(oneof.fields[6].name_snake_case, 'my_bytes')
 
+    def test_public_import(self):
+        parsed = pbtools.parse_file('tests/files/public_importing.proto',
+                                    [
+                                        'tests/files',
+                                        'tests/files/imports'
+                                    ])
+
 
 if __name__ == '__main__':
     unittest.main()

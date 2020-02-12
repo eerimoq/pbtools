@@ -133,7 +133,9 @@ class Parser(textparser.Parser):
         'map',
         'reserved',
         'max',
-        'to'
+        'to',
+        'weak',
+        'public'
     ]
 
     def token_specs(self):
@@ -512,6 +514,7 @@ class ImportedProto:
         with open(self.abspath) as fin:
             tree = Parser().parse(ignore_comments(fin.read()))
 
+        # ToDo: Public imports should be found as well.
         self.package = load_package(tree)
         self.enums = [
             tokens[1]
