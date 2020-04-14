@@ -43,6 +43,8 @@ The C source code is designed with the following in mind:
 
 - Small memory footprint.
 
+- Thread safety.
+
 Known limitations:
 
 - Recursive messages are not supported.
