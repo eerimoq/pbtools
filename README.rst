@@ -2,6 +2,7 @@
 |appveyor|_
 |coverage|_
 |codecov|_
+|nala|_
 
 About
 =====
@@ -213,6 +214,9 @@ generated files.
 
 .. |codecov| image:: https://codecov.io/gh/eerimoq/pbtools/branch/master/graph/badge.svg
 .. _codecov: https://codecov.io/gh/eerimoq/pbtools
+
+.. |nala| image:: https://img.shields.io/badge/nala-test-blue.svg
+.. _nala: https://github.com/eerimoq/nala
 
 .. _Google Protocol Buffers: https://developers.google.com/protocol-buffers
 
