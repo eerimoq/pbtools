@@ -19,6 +19,8 @@ def _do_generate_c_source(args):
         filename_c = f'{name}.c'
 
         header, source = generate(name, parsed, filename_h)
+        filename_h = os.path.join(args.output_directory, filename_h)
+        filename_c = os.path.join(args.output_directory, filename_c)
 
         with open(filename_h, 'w') as fout:
             fout.write(header)
@@ -26,14 +28,10 @@ def _do_generate_c_source(args):
         with open(filename_c, 'w') as fout:
             fout.write(source)
 
-        print(f'Successfully generated {filename_h} and {filename_c}.')
-
     for filename in ['pbtools.h', 'pbtools.c']:
         shutil.copy(
             os.path.join(SCRIPT_DIR, f'../c_source/{filename}'),
-            '.')
-
-    print(f'Successfully created pbtools.h and pbtools.c.')
+            args.output_directory)
 
 
 def add_subparser(subparsers):
@@ -45,6 +43,10 @@ def add_subparser(subparsers):
         action='append',
         default=[],
         help='Path(s) where to search for imports.')
+    subparser.add_argument(
+        '-o', '--output-directory',
+        default='.',
+        help='Output directory (default: %(default)s).')
     subparser.add_argument(
         'infiles',
         nargs='+',

@@ -11,6 +11,11 @@ def read_file(filename):
         return fin.read()
 
 
+def remove_directory(name):
+    if os.path.exists(name):
+        shutil.rmtree(name)
+
+
 class CommandLineTest(unittest.TestCase):
 
     maxDiff = None
@@ -154,6 +159,22 @@ class CommandLineTest(unittest.TestCase):
             self.assert_files_equal(filename,
                                     f'pbtools/c_source/{filename}')
 
+    def test_command_line_generate_c_source_output_directory(self):
+        argv = [
+            'pbtools',
+            'generate_c_source',
+            '-o', 'generated',
+            'tests/files/address_book.proto'
+        ]
+
+        remove_directory('generated')
+        os.mkdir('generated')
+
+        with patch('sys.argv', argv):
+            pbtools._main()
+
+        self.assertTrue(os.path.exists('generated/address_book.h'))
+        self.assertTrue(os.path.exists('generated/address_book.c'))
 
 if __name__ == '__main__':
     unittest.main()
