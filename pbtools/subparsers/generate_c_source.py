@@ -1,37 +1,11 @@
 import os
-import shutil
 
-from ..parser import parse_file
 from ..parser import camel_to_snake_case
-from ..c_source import generate
-
-
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+from ..c_source import generate_files
 
 
 def _do_generate_c_source(args):
-    for filename in args.infiles:
-        parsed = parse_file(filename, args.import_path)
-        basename = os.path.basename(filename)
-        name = camel_to_snake_case(os.path.splitext(basename)[0])
-
-        filename_h = f'{name}.h'
-        filename_c = f'{name}.c'
-
-        header, source = generate(name, parsed, filename_h)
-        filename_h = os.path.join(args.output_directory, filename_h)
-        filename_c = os.path.join(args.output_directory, filename_c)
-
-        with open(filename_h, 'w') as fout:
-            fout.write(header)
-
-        with open(filename_c, 'w') as fout:
-            fout.write(source)
-
-    for filename in ['pbtools.h', 'pbtools.c']:
-        shutil.copy(
-            os.path.join(SCRIPT_DIR, f'../c_source/{filename}'),
-            args.output_directory)
+    generate_files(args.import_path, args.output_directory, args.infiles)
 
 
 def add_subparser(subparsers):

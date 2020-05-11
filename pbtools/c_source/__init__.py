@@ -1,8 +1,12 @@
 import os
+import shutil
 
 from ..parser import SCALAR_VALUE_TYPES
 from ..parser import camel_to_snake_case
+from ..parser import parse_file
 
+
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 HEADER_FMT = '''\
 /**
@@ -1126,3 +1130,30 @@ def generate(namespace, parsed, header_name):
     """
 
     return Generator(namespace, parsed, header_name).generate()
+
+
+def generate_files(import_path, output_directory, infiles):
+    """Generate C source code from proto-file(s).
+
+    """
+
+    for filename in infiles:
+        parsed = parse_file(filename, import_path)
+        basename = os.path.basename(filename)
+        name = camel_to_snake_case(os.path.splitext(basename)[0])
+
+        filename_h = f'{name}.h'
+        filename_c = f'{name}.c'
+
+        header, source = generate(name, parsed, filename_h)
+        filename_h = os.path.join(output_directory, filename_h)
+        filename_c = os.path.join(output_directory, filename_c)
+
+        with open(filename_h, 'w') as fout:
+            fout.write(header)
+
+        with open(filename_c, 'w') as fout:
+            fout.write(source)
+
+    for filename in ['pbtools.h', 'pbtools.c']:
+        shutil.copy(os.path.join(SCRIPT_DIR, filename), output_directory)
