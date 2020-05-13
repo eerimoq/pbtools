@@ -1647,7 +1647,7 @@ void field_names_message_one_of_one_of_encode(
     switch (self_p->choice) {
 
     case field_names_message_one_of_one_of_choice_camel_case_message_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             1,
             &self_p->value.camel_case_message.base,
@@ -1655,7 +1655,7 @@ void field_names_message_one_of_one_of_encode(
         break;
 
     case field_names_message_one_of_one_of_choice_pascal_case_message_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             2,
             &self_p->value.pascal_case_message.base,
@@ -1663,7 +1663,7 @@ void field_names_message_one_of_one_of_encode(
         break;
 
     case field_names_message_one_of_one_of_choice_camel_case_message_repeated_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             3,
             &self_p->value.camel_case_message_repeated.base,
@@ -1671,7 +1671,7 @@ void field_names_message_one_of_one_of_encode(
         break;
 
     case field_names_message_one_of_one_of_choice_pascal_case_message_repeated_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             4,
             &self_p->value.pascal_case_message_repeated.base,
@@ -1679,21 +1679,21 @@ void field_names_message_one_of_one_of_encode(
         break;
 
     case field_names_message_one_of_one_of_choice_my_int32_e:
-        pbtools_encoder_write_int32(
+        pbtools_encoder_write_int32_always(
             encoder_p,
             5,
             self_p->value.my_int32);
         break;
 
     case field_names_message_one_of_one_of_choice_my_string_e:
-        pbtools_encoder_write_string(
+        pbtools_encoder_write_string_always(
             encoder_p,
             6,
             self_p->value.my_string_p);
         break;
 
     case field_names_message_one_of_one_of_choice_my_bytes_e:
-        pbtools_encoder_write_bytes(
+        pbtools_encoder_write_bytes_always(
             encoder_p,
             7,
             &self_p->value.my_bytes);

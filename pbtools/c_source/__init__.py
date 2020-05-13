@@ -276,7 +276,7 @@ ENCODE_ONEOF_MEMBER_FMT = '''\
 
 ENCODE_ONEOF_CHOICE_FMT = '''\
     case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
-        pbtools_encoder_write_{field.full_type_snake_case}(
+        pbtools_encoder_write_{field.full_type_snake_case}_always(
             encoder_p,
             {field.field_number},
             {ref}self_p->value.{field.name_snake_case});
@@ -285,7 +285,7 @@ ENCODE_ONEOF_CHOICE_FMT = '''\
 
 ENCODE_ONEOF_STRING_MEMBER_FMT = '''\
     case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
-        pbtools_encoder_write_string(
+        pbtools_encoder_write_string_always(
             encoder_p,
             {field.field_number},
             {ref}self_p->value.{field.name_snake_case}_p);
@@ -294,7 +294,7 @@ ENCODE_ONEOF_STRING_MEMBER_FMT = '''\
 
 ENCODE_ONEOF_SUB_MESSAGE_MEMBER_FMT = '''\
     case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             {field.field_number},
             &self_p->value.{field.name_snake_case}.base,
@@ -304,7 +304,7 @@ ENCODE_ONEOF_SUB_MESSAGE_MEMBER_FMT = '''\
 
 ENCODE_ONEOF_ENUM_FMT = '''\
     case {oneof.full_name_snake_case}_choice_{field.name_snake_case}_e:
-        pbtools_encoder_write_enum(
+        pbtools_encoder_write_enum_always(
             encoder_p,
             {field.field_number},
             self_p->value.{field.name_snake_case});

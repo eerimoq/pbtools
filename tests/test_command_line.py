@@ -21,7 +21,7 @@ class CommandLineTest(unittest.TestCase):
     maxDiff = None
 
     def assert_files_equal(self, actual, expected):
-        # open(actual, 'w').write(open(expected, 'r').read())
+        # open(expected, 'w').write(open(actual, 'r').read())
         self.assertEqual(read_file(actual), read_file(expected))
 
     def test_command_line_generate_c_source(self):
@@ -99,8 +99,8 @@ class CommandLineTest(unittest.TestCase):
                 pbtools._main()
 
             for filename in [filename_h, filename_c]:
-                self.assert_files_equal(f'tests/files/c_source/{filename}',
-                                        filename)
+                self.assert_files_equal(filename,
+                                        f'tests/files/c_source/{filename}')
 
     def test_command_line_generate_c_source_multiple_input_files(self):
         argv = [
@@ -125,8 +125,8 @@ class CommandLineTest(unittest.TestCase):
             pbtools._main()
 
         for filename in filenames:
-            self.assert_files_equal(f'tests/files/c_source/{filename}',
-                                    filename)
+            self.assert_files_equal(filename,
+                                    f'tests/files/c_source/{filename}')
 
     def test_command_line_generate_c_source_pbtools_h_c(self):
         argv = [

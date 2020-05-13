@@ -231,6 +231,74 @@ void pbtools_encoder_write_bytes(struct pbtools_encoder_t *self_p,
                                  int field_number,
                                  struct pbtools_bytes_t *value_p);
 
+void pbtools_encoder_write_int32_always(struct pbtools_encoder_t *self_p,
+                                        int field_number,
+                                        int32_t value);
+
+void pbtools_encoder_write_int64_always(struct pbtools_encoder_t *self_p,
+                                        int field_number,
+                                        int64_t value);
+
+void pbtools_encoder_write_sint32_always(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         int32_t value);
+
+void pbtools_encoder_write_sint64_always(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         int64_t value);
+
+void pbtools_encoder_write_uint32_always(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         uint32_t value);
+
+void pbtools_encoder_write_uint64_always(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         uint64_t value);
+
+void pbtools_encoder_write_fixed32_always(struct pbtools_encoder_t *self_p,
+                                          int field_number,
+                                          uint32_t value);
+
+void pbtools_encoder_write_fixed64_always(struct pbtools_encoder_t *self_p,
+                                          int field_number,
+                                          uint64_t value);
+
+void pbtools_encoder_write_sfixed32_always(struct pbtools_encoder_t *self_p,
+                                           int field_number,
+                                           int32_t value);
+
+void pbtools_encoder_write_sfixed64_always(struct pbtools_encoder_t *self_p,
+                                           int field_number,
+                                           int64_t value);
+
+#if PBTOOLS_CONFIG_FLOAT == 1
+
+void pbtools_encoder_write_float_always(struct pbtools_encoder_t *self_p,
+                                        int field_number,
+                                        float value);
+
+void pbtools_encoder_write_double_always(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         double value);
+
+#endif
+
+void pbtools_encoder_write_bool_always(struct pbtools_encoder_t *self_p,
+                                       int field_number,
+                                       bool value);
+
+void pbtools_encoder_write_enum_always(struct pbtools_encoder_t *self_p,
+                                       int field_number,
+                                       int value);
+
+void pbtools_encoder_write_string_always(struct pbtools_encoder_t *self_p,
+                                         int field_number,
+                                         char *value_p);
+
+void pbtools_encoder_write_bytes_always(struct pbtools_encoder_t *self_p,
+                                        int field_number,
+                                        struct pbtools_bytes_t *value_p);
+
 void pbtools_encoder_write_repeated_int32(
     struct pbtools_encoder_t *self_p,
     int field_number,
@@ -611,6 +679,12 @@ void pbtools_decode_repeated_inner(
     pbtools_message_decode_inner_t message_decode_inner);
 
 void pbtools_encoder_sub_message_encode(
+    struct pbtools_encoder_t *self_p,
+    int field_number,
+    struct pbtools_message_base_t *message_p,
+    pbtools_message_encode_inner_t encode_inner);
+
+void pbtools_encoder_sub_message_encode_always(
     struct pbtools_encoder_t *self_p,
     int field_number,
     struct pbtools_message_base_t *message_p,

@@ -835,7 +835,7 @@ void benchmark_message_oneof_encode(
     switch (self_p->choice) {
 
     case benchmark_message_oneof_choice_message1_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             1,
             &self_p->value.message1.base,
@@ -843,7 +843,7 @@ void benchmark_message_oneof_encode(
         break;
 
     case benchmark_message_oneof_choice_message2_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             2,
             &self_p->value.message2.base,
@@ -851,7 +851,7 @@ void benchmark_message_oneof_encode(
         break;
 
     case benchmark_message_oneof_choice_message3_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             7,
             &self_p->value.message3.base,

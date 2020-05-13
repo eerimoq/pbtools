@@ -56,14 +56,14 @@ void oneof_message_value_encode(
     switch (self_p->choice) {
 
     case oneof_message_value_choice_v1_e:
-        pbtools_encoder_write_int32(
+        pbtools_encoder_write_int32_always(
             encoder_p,
             1,
             self_p->value.v1);
         break;
 
     case oneof_message_value_choice_v2_e:
-        pbtools_encoder_write_string(
+        pbtools_encoder_write_string_always(
             encoder_p,
             2,
             self_p->value.v2_p);
@@ -234,7 +234,7 @@ void oneof_message2_oneof1_encode(
     switch (self_p->choice) {
 
     case oneof_message2_oneof1_choice_v4_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             4,
             &self_p->value.v4.base,
@@ -242,14 +242,14 @@ void oneof_message2_oneof1_encode(
         break;
 
     case oneof_message2_oneof1_choice_v5_e:
-        pbtools_encoder_write_bytes(
+        pbtools_encoder_write_bytes_always(
             encoder_p,
             5,
             &self_p->value.v5);
         break;
 
     case oneof_message2_oneof1_choice_v6_e:
-        pbtools_encoder_write_enum(
+        pbtools_encoder_write_enum_always(
             encoder_p,
             6,
             self_p->value.v6);
@@ -327,14 +327,14 @@ void oneof_message2_oneof2_encode(
     switch (self_p->choice) {
 
     case oneof_message2_oneof2_choice_v1_e:
-        pbtools_encoder_write_bool(
+        pbtools_encoder_write_bool_always(
             encoder_p,
             1,
             self_p->value.v1);
         break;
 
     case oneof_message2_oneof2_choice_v2_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             2,
             &self_p->value.v2.base,
@@ -342,7 +342,7 @@ void oneof_message2_oneof2_encode(
         break;
 
     case oneof_message2_oneof2_choice_v3_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             3,
             &self_p->value.v3.base,
@@ -607,7 +607,7 @@ void oneof_message3_oneof1_encode(
     switch (self_p->choice) {
 
     case oneof_message3_oneof1_choice_v1_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             1,
             &self_p->value.v1.base,
@@ -653,14 +653,14 @@ void oneof_message3_foo_inner_oneof_encode(
     switch (self_p->choice) {
 
     case oneof_message3_foo_inner_oneof_choice_v1_e:
-        pbtools_encoder_write_bool(
+        pbtools_encoder_write_bool_always(
             encoder_p,
             1,
             self_p->value.v1);
         break;
 
     case oneof_message3_foo_inner_oneof_choice_v2_e:
-        pbtools_encoder_write_bytes(
+        pbtools_encoder_write_bytes_always(
             encoder_p,
             2,
             &self_p->value.v2);
