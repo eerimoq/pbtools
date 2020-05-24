@@ -353,7 +353,7 @@ class ParserTest(unittest.TestCase):
         parsed = pbtools.parse_file('tests/files/enum.proto')
 
         self.assertEqual(parsed.package, 'enum')
-        self.assertEqual(len(parsed.messages), 3)
+        self.assertEqual(len(parsed.messages), 4)
         self.assertEqual(len(parsed.enums), 1)
 
         enum = parsed.enums[0]
@@ -411,6 +411,24 @@ class ParserTest(unittest.TestCase):
         field = enum.fields[2]
         self.assertEqual(field.name, 'I')
         self.assertEqual(field.field_number, 2147483647)
+
+        # AllowAlias.
+        message = parsed.messages[3]
+        enum = message.enums[0]
+        self.assertEqual(enum.name, 'Enum')
+        self.assertEqual(len(enum.fields), 3)
+
+        field = enum.fields[0]
+        self.assertEqual(field.name, 'A')
+        self.assertEqual(field.field_number, 0)
+
+        field = enum.fields[1]
+        self.assertEqual(field.name, 'B')
+        self.assertEqual(field.field_number, 1)
+
+        field = enum.fields[2]
+        self.assertEqual(field.name, 'C')
+        self.assertEqual(field.field_number, 1)
 
     def test_options(self):
         parsed = pbtools.parse_file('tests/files/options.proto')

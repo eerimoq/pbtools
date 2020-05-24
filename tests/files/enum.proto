@@ -35,3 +35,14 @@ message Limits {
 
     Enum value = 1;
 }
+
+message AllowAlias {
+    enum Enum {
+        // Always allow aliases for now.
+        A = 0;
+        B = 1;
+        C = 1;
+    }
+
+    Enum value = 1;
+}

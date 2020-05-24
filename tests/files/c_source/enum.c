@@ -334,3 +334,101 @@ int enum_limits_decode(
                 size,
                 (pbtools_message_decode_inner_t)enum_limits_decode_inner));
 }
+
+void enum_allow_alias_init(
+    struct enum_allow_alias_t *self_p,
+    struct pbtools_heap_t *heap_p)
+{
+    self_p->base.heap_p = heap_p;
+    self_p->value = 0;
+}
+
+void enum_allow_alias_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct enum_allow_alias_t *self_p)
+{
+    pbtools_encoder_write_enum(encoder_p, 1, self_p->value);
+}
+
+void enum_allow_alias_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct enum_allow_alias_t *self_p)
+{
+    int wire_type;
+
+    while (pbtools_decoder_available(decoder_p)) {
+        switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
+
+        case 1:
+            self_p->value = pbtools_decoder_read_enum(decoder_p, wire_type);
+            break;
+
+        default:
+            pbtools_decoder_skip_field(decoder_p, wire_type);
+            break;
+        }
+    }
+}
+
+void enum_allow_alias_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct enum_allow_alias_repeated_t *repeated_p)
+{
+    pbtools_encode_repeated_inner(
+        encoder_p,
+        field_number,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct enum_allow_alias_t),
+        (pbtools_message_encode_inner_t)enum_allow_alias_encode_inner);
+}
+
+void enum_allow_alias_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
+    struct enum_allow_alias_repeated_t *repeated_p)
+{
+    pbtools_decode_repeated_inner(
+        decoder_p,
+        repeated_info_p,
+        (struct pbtools_repeated_message_t *)repeated_p,
+        sizeof(struct enum_allow_alias_t),
+        (pbtools_message_init_t)enum_allow_alias_init,
+        (pbtools_message_decode_inner_t)enum_allow_alias_decode_inner);
+}
+
+struct enum_allow_alias_t *
+enum_allow_alias_new(
+    void *workspace_p,
+    size_t size)
+{
+    return (pbtools_message_new(
+                workspace_p,
+                size,
+                sizeof(struct enum_allow_alias_t),
+                (pbtools_message_init_t)enum_allow_alias_init));
+}
+
+int enum_allow_alias_encode(
+    struct enum_allow_alias_t *self_p,
+    uint8_t *encoded_p,
+    size_t size)
+{
+    return (pbtools_message_encode(
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_encode_inner_t)enum_allow_alias_encode_inner));
+}
+
+int enum_allow_alias_decode(
+    struct enum_allow_alias_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size)
+{
+    return (pbtools_message_decode(
+                &self_p->base,
+                encoded_p,
+                size,
+                (pbtools_message_decode_inner_t)enum_allow_alias_decode_inner));
+}

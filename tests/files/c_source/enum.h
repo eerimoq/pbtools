@@ -111,6 +111,28 @@ struct enum_limits_t {
 };
 
 /**
+ * Enum enum.AllowAlias.Enum.
+ */
+enum enum_allow_alias_enum_e {
+    enum_allow_alias_enum_a_e = 0,
+    enum_allow_alias_enum_b_e = 1,
+    enum_allow_alias_enum_c_e = 1
+};
+
+/**
+ * Message enum.AllowAlias.
+ */
+struct enum_allow_alias_repeated_t {
+    int length;
+    struct enum_allow_alias_t *items_p;
+};
+
+struct enum_allow_alias_t {
+    struct pbtools_message_base_t base;
+    enum enum_allow_alias_enum_e value;
+};
+
+/**
  * Encoding and decoding of enum.Message.
  */
 struct enum_message_t *
@@ -161,6 +183,24 @@ int enum_limits_encode(
 
 int enum_limits_decode(
     struct enum_limits_t *self_p,
+    const uint8_t *encoded_p,
+    size_t size);
+
+/**
+ * Encoding and decoding of enum.AllowAlias.
+ */
+struct enum_allow_alias_t *
+enum_allow_alias_new(
+    void *workspace_p,
+    size_t size);
+
+int enum_allow_alias_encode(
+    struct enum_allow_alias_t *self_p,
+    uint8_t *encoded_p,
+    size_t size);
+
+int enum_allow_alias_decode(
+    struct enum_allow_alias_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
 
@@ -231,6 +271,28 @@ void enum_limits_decode_repeated_inner(
     struct pbtools_decoder_t *decoder_p,
     struct pbtools_repeated_info_t *repeated_info_p,
     struct enum_limits_repeated_t *repeated_p);
+
+void enum_allow_alias_init(
+    struct enum_allow_alias_t *self_p,
+    struct pbtools_heap_t *heap_p);
+
+void enum_allow_alias_encode_inner(
+    struct pbtools_encoder_t *encoder_p,
+    struct enum_allow_alias_t *self_p);
+
+void enum_allow_alias_decode_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct enum_allow_alias_t *self_p);
+
+void enum_allow_alias_encode_repeated_inner(
+    struct pbtools_encoder_t *encoder_p,
+    int field_number,
+    struct enum_allow_alias_repeated_t *repeated_p);
+
+void enum_allow_alias_decode_repeated_inner(
+    struct pbtools_decoder_t *decoder_p,
+    struct pbtools_repeated_info_t *repeated_info_p,
+    struct enum_allow_alias_repeated_t *repeated_p);
 
 #ifdef __cplusplus
 }
