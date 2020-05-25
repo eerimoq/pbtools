@@ -46,13 +46,13 @@ CFLAGS += -Wextra
 test:
 	$(MAKE) test-python
 	$(MAKE) test-c
-	$(MAKE) lib
 
 test-python:
 	python3 setup.py test
 
 test-c:
 	$(MAKE) -C tests
+	$(MAKE) -C lib
 
 test-c-avr:
 	avr-gcc $(CFLAGS) $(SRC)
