@@ -97,8 +97,6 @@ Generate C source code from the proto-file.
 .. code-block:: text
 
    $ pbtools generate_c_source examples/c/hello_world/hello_world.proto
-   Successfully generated hello_world.h and hello_world.c.
-   Successfully created pbtools.h and pbtools.c.
 
 See `hello_world.h`_ and `hello_world.c`_ for the contents of the
 generated files.
@@ -179,7 +177,7 @@ Build and run the program.
 
 .. code-block:: text
 
-   $ gcc main.c hello_world.c pbtools.c -o main
+   $ gcc -I lib/include main.c hello_world.c lib/src/pbtools.c -o main
    $ ./main
    Successfully encoded Foo into 2 bytes.
    Successfully decoded 2 bytes into Foo.
@@ -199,8 +197,6 @@ proto-file.
 .. code-block:: text
 
    $ pbtools generate_c_source examples/address_book/address_book.proto
-   Successfully generated address_book.h and address_book.c.
-   Successfully created pbtools.h and pbtools.c.
 
 See `address_book.h`_ and `address_book.c`_ for the contents of the
 generated files.

@@ -139,12 +139,8 @@ class CommandLineTest(unittest.TestCase):
             'int32.h',
             'int32.c'
         ]
-        pbtools_filenames = [
-            'pbtools.h',
-            'pbtools.c'
-        ]
 
-        for filename in filenames + pbtools_filenames:
+        for filename in filenames:
             if os.path.exists(filename):
                 os.remove(filename)
 
@@ -154,10 +150,6 @@ class CommandLineTest(unittest.TestCase):
         for filename in filenames:
             self.assert_files_equal(filename,
                                     f'tests/files/c_source/{filename}')
-
-        for filename in pbtools_filenames:
-            self.assert_files_equal(filename,
-                                    f'pbtools/c_source/{filename}')
 
     def test_command_line_generate_c_source_output_directory(self):
         argv = [

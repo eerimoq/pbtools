@@ -46,6 +46,7 @@ CFLAGS += -Wextra
 test:
 	$(MAKE) test-python
 	$(MAKE) test-c
+	$(MAKE) lib
 
 test-python:
 	python3 setup.py test

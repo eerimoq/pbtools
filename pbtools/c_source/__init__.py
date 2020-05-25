@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from ..parser import SCALAR_VALUE_TYPES
 from ..parser import camel_to_snake_case
@@ -1154,6 +1153,3 @@ def generate_files(import_path, output_directory, infiles):
 
         with open(filename_c, 'w') as fout:
             fout.write(source)
-
-    for filename in ['pbtools.h', 'pbtools.c']:
-        shutil.copy(os.path.join(SCRIPT_DIR, filename), output_directory)

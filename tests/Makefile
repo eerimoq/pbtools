@@ -2,12 +2,12 @@ FUZZER_CC ?= clang
 FUZZER_EXE = main_fuzzer
 FUZZER_C_SOURCES = \
 	main_fuzzer.c \
-	../pbtools/c_source/pbtools.c \
+	../lib/src/pbtools.c \
 	files/c_source/fuzzer.c
 FUZZER_CFLAGS = \
 	-fprofile-instr-generate \
 	-fcoverage-mapping \
-	-I../pbtools/c_source \
+	-I ../lib/include \
 	-g \
 	-fsanitize=address,fuzzer \
 	-fsanitize=signed-integer-overflow \
@@ -38,18 +38,18 @@ CFLAGS ?= \
 all:
 	gcc \
 	    -D PBTOOLS_CONFIG_FLOAT=0 \
-	    -I ../pbtools/c_source \
+	    -I ../lib/include \
 	    -c \
 	    -no-pie \
-	    ../pbtools/c_source/pbtools.c \
+	    ../lib/src/pbtools.c \
 	    -o no-float.o
 	gcc -O2 -no-pie -g nala.c -c -o nala.o
-	gcc -O2 -no-pie -g -I../pbtools/c_source main.c -c -o main.o
+	gcc -O2 -no-pie -g -I ../lib/include main.c -c -o main.o
 	gcc \
 	    $(CFLAGS) \
-	    -I../pbtools/c_source \
+	    -I ../lib/include \
 	    nala.o \
-	    ../pbtools/c_source/pbtools.c \
+	    ../lib/src/pbtools.c \
 	    files/c_source/int32.c \
 	    files/c_source/int64.c \
 	    files/c_source/sint32.c \
