@@ -37,7 +37,7 @@ The C source code is designed with the following in mind:
 
 - Clean and easy to use API.
 
-- No malloc/free. Uses a workspace/areana for memory allocations.
+- No malloc/free. Uses a workspace/arena for memory allocations.
 
 - Fast encoding and decoding.
 
@@ -54,7 +54,7 @@ Known limitations:
 - ``char`` must be 8 bits.
 
 Support for recursive messages and submessage presence detection has
-been implemented on branch
+been implemented on the branch
 ``submessage-presence-and-recursive-messages``. However, it makes the
 generated code slightly harder to use, so it has not been merged to
 the master branch yet.
