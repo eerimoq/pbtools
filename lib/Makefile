@@ -17,5 +17,5 @@ clean:
 	rm $(LIBRARY)
 
 $(LIBRARY):
-	$(CC) -Wall -O2 -Iinclude src/pbtools.c -c -o pbtools.o
+	$(CC) $(CFLAGS_EXTRA) -Wall -O2 -Iinclude src/pbtools.c -c -o pbtools.o
 	$(AR) cr $(LIBRARY) pbtools.o
