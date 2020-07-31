@@ -3107,6 +3107,7 @@ TEST(sub_message_pointers_message)
     size = sub_message_pointers_message_message_decode(message_p, &encoded[0], 13);
     ASSERT_EQ(size, 13);
     ASSERT_EQ(message_p->foo, message_message_foo_b_e);
+    ASSERT_EQ(message_p->bar_p, NULL);
     ASSERT_NE(message_p->fie_p, NULL);
     ASSERT_NE(message_p->fie_p->foo_p, NULL);
     ASSERT_EQ(message_p->fie_p->foo_p->value, true);

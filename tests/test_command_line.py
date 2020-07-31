@@ -21,7 +21,7 @@ class CommandLineTest(unittest.TestCase):
     maxDiff = None
 
     def assert_files_equal(self, actual, expected):
-        open(expected, 'w').write(open(actual, 'r').read())
+        # open(expected, 'w').write(open(actual, 'r').read())
         self.assertEqual(read_file(actual), read_file(expected))
 
     def test_command_line_generate_c_source(self):
@@ -170,7 +170,7 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source_sub_message_pointers(self):
         specs = [
-            'sub_message_pointers_message',
+            'sub_message_pointers_message'
         ]
 
         for spec in specs:
