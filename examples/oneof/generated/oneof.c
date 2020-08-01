@@ -56,14 +56,14 @@ void oneof_foo_bar_encode(
     switch (self_p->choice) {
 
     case oneof_foo_bar_choice_fie_e:
-        pbtools_encoder_write_int32(
+        pbtools_encoder_write_int32_always(
             encoder_p,
             1,
             self_p->value.fie);
         break;
 
     case oneof_foo_bar_choice_fum_e:
-        pbtools_encoder_write_bool(
+        pbtools_encoder_write_bool_always(
             encoder_p,
             2,
             self_p->value.fum);
