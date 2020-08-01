@@ -86,7 +86,7 @@ Generate C source code from the proto-file.
 
 .. code-block:: text
 
-   $ pbtools generate_c_source examples/c/hello_world/hello_world.proto
+   $ pbtools generate_c_source examples/hello_world/hello_world.proto
 
 See `hello_world.h`_ and `hello_world.c`_ for the contents of the
 generated files.
@@ -173,7 +173,7 @@ Build and run the program.
    Successfully decoded 2 bytes into Foo.
    Foo.bar: 78
 
-See `c/hello_world`_ for all files used in this example.
+See `examples/hello_world`_ for all files used in this example.
 
 Command line tool
 -----------------
@@ -210,18 +210,18 @@ generated files.
 
 .. _proto3: https://developers.google.com/protocol-buffers/docs/proto3
 
-.. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/c/address_book/generated/address_book.h
+.. _address_book.h: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.h
 
-.. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/address_book/generated/address_book.c
+.. _address_book.c: https://github.com/eerimoq/pbtools/blob/master/examples/address_book/generated/address_book.c
 
-.. _hello_world.proto: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/hello_world.proto
+.. _hello_world.proto: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/hello_world.proto
 
-.. _hello_world.h: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/generated/hello_world.h
+.. _hello_world.h: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.h
 
-.. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/generated/hello_world.c
+.. _hello_world.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/generated/hello_world.c
 
-.. _main.c: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world/main.c
+.. _main.c: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world/main.c
 
-.. _c/hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/c/hello_world
+.. _examples/hello_world: https://github.com/eerimoq/pbtools/blob/master/examples/hello_world
 
 .. _benchmark: https://github.com/eerimoq/pbtools/blob/master/benchmark
