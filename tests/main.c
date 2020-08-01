@@ -38,6 +38,7 @@
 #include "files/c_source/map.h"
 #include "files/c_source/add_and_remove_fields.h"
 #include "files/c_source/sub_message_pointers_message.h"
+#include "files/c_source/sub_message_pointers_repeated.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -2683,6 +2684,84 @@ TEST(repeated_bar)
     bar_p = repeated_bar_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(bar_p, NULL);
     size = repeated_bar_decode(bar_p, &encoded[0], size);
+    ASSERT_EQ(size, 16);
+
+    /* foos. */
+    ASSERT_EQ(bar_p->foos.length, 1);
+    foo_p = &bar_p->foos.items_p[0];
+
+    /* foos[0].messages. */
+    ASSERT_EQ(foo_p->messages.length, 1);
+    message_p = &foo_p->messages.items_p[0];
+
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_p->int32s.items_p[0], 3);
+
+    /* fies. */
+    ASSERT_EQ(bar_p->fies.length, 1);
+    fie_p = &bar_p->fies.items_p[0];
+
+    /* fies[0].inner_foos. */
+    ASSERT_EQ(fie_p->inner_foos.length, 1);
+    foo_p = &fie_p->inner_foos.items_p[0];
+
+    /* fies[0].inner_foos[0].messages. */
+    ASSERT_EQ(foo_p->messages.length, 1);
+    message_p = &foo_p->messages.items_p[0];
+
+    ASSERT_EQ(message_p->int32s.length, 1);
+    ASSERT_EQ(message_p->int32s.items_p[0], 1);
+}
+
+TEST(sub_message_pointers_repeated_bar)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct sub_message_pointers_repeated_bar_t *bar_p;
+    struct sub_message_pointers_repeated_foo_t *foo_p;
+    struct sub_message_pointers_repeated_bar_fie_t *fie_p;
+    struct sub_message_pointers_repeated_message_t *message_p;
+
+    bar_p = sub_message_pointers_repeated_bar_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(bar_p, NULL);
+
+    /* foos. */
+    ASSERT_EQ(sub_message_pointers_repeated_bar_foos_alloc(bar_p, 1), 0);
+    foo_p = &bar_p->foos.items_p[0];
+
+    /* foos[0].messages. */
+    ASSERT_EQ(sub_message_pointers_repeated_foo_messages_alloc(foo_p, 1), 0);
+    message_p = &foo_p->messages.items_p[0];
+
+    ASSERT_EQ(sub_message_pointers_repeated_message_int32s_alloc(message_p, 1), 0);
+    message_p->int32s.items_p[0] = 3;
+
+    /* fies. */
+    ASSERT_EQ(sub_message_pointers_repeated_bar_fies_alloc(bar_p, 1), 0);
+    fie_p = &bar_p->fies.items_p[0];
+
+    /* fies[0].inner_foos. */
+    ASSERT_EQ(sub_message_pointers_repeated_bar_fie_inner_foos_alloc(fie_p, 1), 0);
+    foo_p = &fie_p->inner_foos.items_p[0];
+
+    /* fies[0].inner_foos[0].messages. */
+    ASSERT_EQ(sub_message_pointers_repeated_foo_messages_alloc(foo_p, 1), 0);
+    message_p = &foo_p->messages.items_p[0];
+
+    ASSERT_EQ(sub_message_pointers_repeated_message_int32s_alloc(message_p, 1), 0);
+    message_p->int32s.items_p[0] = 1;
+
+    size = sub_message_pointers_repeated_bar_encode(bar_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 16);
+    ASSERT_MEMORY_EQ(
+        &encoded[0],
+        "\x0a\x05\x0a\x03\x0a\x01\x03\x12\x07\x0a\x05\x0a\x03\x0a\x01\x01",
+        size);
+
+    bar_p = sub_message_pointers_repeated_bar_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(bar_p, NULL);
+    size = sub_message_pointers_repeated_bar_decode(bar_p, &encoded[0], size);
     ASSERT_EQ(size, 16);
 
     /* foos. */

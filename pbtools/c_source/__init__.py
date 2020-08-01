@@ -1219,7 +1219,6 @@ def generate(namespace, parsed, header_name, sub_message_pointers):
 
 def generate_files(import_path,
                    output_directory,
-                   namespace,
                    sub_message_pointers,
                    infiles):
     """Generate C source code from proto-file(s).
@@ -1230,9 +1229,6 @@ def generate_files(import_path,
         parsed = parse_file(filename, import_path)
         basename = os.path.basename(filename)
         name = camel_to_snake_case(os.path.splitext(basename)[0])
-
-        if namespace:
-            name = f'{namespace}_{name}'
 
         filename_h = f'{name}.h'
         filename_c = f'{name}.c'

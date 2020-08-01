@@ -170,7 +170,8 @@ class CommandLineTest(unittest.TestCase):
 
     def test_command_line_generate_c_source_sub_message_pointers(self):
         specs = [
-            'sub_message_pointers_message'
+            'sub_message_pointers_message',
+            'sub_message_pointers_repeated'
         ]
 
         for spec in specs:
