@@ -1,19 +1,12 @@
 import os
 import unittest
 from unittest.mock import patch
-import shutil
 
 import pbtools
 
-
-def read_file(filename):
-    with open(filename, 'r') as fin:
-        return fin.read()
-
-
-def remove_directory(name):
-    if os.path.exists(name):
-        shutil.rmtree(name)
+from .utils import read_file
+from .utils import remove_directory
+from .utils import remove_files
 
 
 class CommandLineTest(unittest.TestCase):
@@ -91,9 +84,7 @@ class CommandLineTest(unittest.TestCase):
             filename_h = f'{spec}.h'
             filename_c = f'{spec}.c'
 
-            for filename in [filename_h, filename_c]:
-                if os.path.exists(filename):
-                    os.remove(filename)
+            remove_files([filename_h, filename_c])
 
             with patch('sys.argv', argv):
                 pbtools._main()
@@ -117,9 +108,7 @@ class CommandLineTest(unittest.TestCase):
             'int64.c'
         ]
 
-        for filename in filenames:
-            if os.path.exists(filename):
-                os.remove(filename)
+        remove_files(filenames)
 
         with patch('sys.argv', argv):
             pbtools._main()
@@ -140,9 +129,7 @@ class CommandLineTest(unittest.TestCase):
             'int32.c'
         ]
 
-        for filename in filenames:
-            if os.path.exists(filename):
-                os.remove(filename)
+        remove_files(filenames)
 
         with patch('sys.argv', argv):
             pbtools._main()
@@ -186,9 +173,7 @@ class CommandLineTest(unittest.TestCase):
             filename_h = f'{spec}.h'
             filename_c = f'{spec}.c'
 
-            for filename in [filename_h, filename_c]:
-                if os.path.exists(filename):
-                    os.remove(filename)
+            remove_files([filename_h, filename_c])
 
             with patch('sys.argv', argv):
                 pbtools._main()

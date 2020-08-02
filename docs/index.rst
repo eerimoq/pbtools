@@ -21,3 +21,5 @@ Functions and classes
 
 .. autoclass:: pbtools.parser.Message
     :members:
+
+.. autofunction:: pbtools.c_source.generate_files

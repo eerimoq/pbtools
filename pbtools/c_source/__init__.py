@@ -1217,16 +1217,16 @@ def generate(namespace, parsed, header_name, sub_message_pointers):
     return Generator(namespace, parsed, header_name, sub_message_pointers).generate()
 
 
-def generate_files(import_path,
-                   output_directory,
-                   sub_message_pointers,
-                   infiles):
+def generate_files(infiles,
+                   import_paths=None,
+                   output_directory='.',
+                   sub_message_pointers=False):
     """Generate C source code from proto-file(s).
 
     """
 
     for filename in infiles:
-        parsed = parse_file(filename, import_path)
+        parsed = parse_file(filename, import_paths)
         basename = os.path.basename(filename)
         name = camel_to_snake_case(os.path.splitext(basename)[0])
 

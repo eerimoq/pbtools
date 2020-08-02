@@ -5,10 +5,10 @@ from ..c_source import generate_files
 
 
 def _do_generate_c_source(args):
-    generate_files(args.import_path,
+    generate_files(args.infiles,
+                   args.import_path,
                    args.output_directory,
-                   args.sub_message_pointers,
-                   args.infiles)
+                   args.sub_message_pointers)
 
 
 def add_subparser(subparsers):
