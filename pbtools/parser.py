@@ -398,7 +398,6 @@ class Message:
         self.enums = []
         self.messages = []
         self.oneofs = []
-        self.maps = []
         self.namespace = namespace
 
         for item in tokens[3]:
@@ -414,13 +413,13 @@ class Message:
             elif kind == 'oneof':
                 self.oneofs.append(Oneof(item, sub_namespace))
             elif kind == 'map':
-                self._load_map_field(item, sub_namespace)
+                self._load_map(item, sub_namespace)
             elif kind in ['reserved', ';']:
                 pass
             else:
                 raise InternalError(kind)
 
-    def _load_map_field(self, tokens, sub_namespace):
+    def _load_map(self, tokens, sub_namespace):
         key_type = tokens[2]
         value_type = load_message_type(tokens[4])[-1]
         name = tokens[6]

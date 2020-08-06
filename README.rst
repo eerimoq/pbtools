@@ -19,6 +19,8 @@ Known limitations:
 
 - Public imports are not implemented.
 
+- Optional fields (added in protobuf 3.12) are not implemented.
+
 Project homepage: https://github.com/eerimoq/pbtools
 
 Documentation: https://pbtools.readthedocs.io
