@@ -704,6 +704,8 @@ class Generator:
                     field.full_type_snake_case,
                     field.name_snake_case,
                     field.type_kind)
+            elif field.optional:
+                raise NotImplementedError('Optional fields are not yet supported.')
             else:
                 member = self.generate_struct_member_fmt(
                     field.full_type_snake_case,

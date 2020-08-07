@@ -928,6 +928,21 @@ class ParserTest(unittest.TestCase):
                                         'tests/files/imports'
                                     ])
 
+    def test_optional_fields(self):
+        parsed = pbtools.parse_file('tests/files/optional_fields.proto')
+
+        message = parsed.messages[0]
+
+        field = message.fields[0]
+        self.assertEqual(field.type, 'int32')
+        self.assertEqual(field.name, 'v1')
+        self.assertTrue(field.optional)
+
+        field = message.fields[3]
+        self.assertEqual(field.type, 'int32')
+        self.assertEqual(field.name, 'v4')
+        self.assertFalse(field.optional)
+
 
 if __name__ == '__main__':
     unittest.main()

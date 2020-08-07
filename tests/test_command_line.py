@@ -182,6 +182,21 @@ class CommandLineTest(unittest.TestCase):
                 self.assert_files_equal(filename,
                                         f'tests/files/c_source/{filename}')
 
+    def test_command_line_generate_c_source_optional_not_yet_supported(self):
+        argv = [
+            'pbtools',
+            'generate_c_source',
+            '-o', 'generated',
+            'tests/files/optional_fields.proto'
+        ]
+
+        with patch('sys.argv', argv):
+            with self.assertRaises(SystemExit) as cm:
+                pbtools._main()
+
+            self.assertEqual(str(cm.exception),
+                             'error: Optional fields are not yet supported.')
+
 
 if __name__ == '__main__':
     unittest.main()

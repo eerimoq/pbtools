@@ -39,6 +39,7 @@
 #include "files/c_source/add_and_remove_fields.h"
 #include "files/c_source/sub_message_pointers_message.h"
 #include "files/c_source/sub_message_pointers_repeated.h"
+#include "files/c_source/optional_fields.h"
 
 #define membersof(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -3742,3 +3743,42 @@ TEST(add_and_remove_fields_version3)
     ASSERT_EQ(message_p->v3, 7);
     ASSERT_EQ(message_p->v4, 0);
 }
+
+#if 0
+
+TEST(optional_fields)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct optional_fields_message_t *message_p;
+
+    /* Encode. */
+    message_p = optional_fields_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v1.is_present = true;
+    message_p->v1.value = 7;
+    message_p->v3.is_present = true;
+    message_p->v3.value_p = "Hello!";
+    size = optional_fields_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 10);
+    ASSERT_MEMORY_EQ(&encoded[0],
+                     "\x08\x07\x1a\x06\x48\x65\x6c\x6c\x6f\x21",
+                     size);
+
+    /* Decode. */
+    message_p = optional_fields_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = optional_fields_message_decode(
+        message_p,
+        "\x08\x07\x1a\x06\x48\x65\x6c\x6c\x6f\x21",
+        10);
+    ASSERT_EQ(size, 10);
+    ASSERT_TRUE(message_p->v1.is_present);
+    ASSERT_EQ(message_p->v1.value, 7);
+    ASSERT_FALSE(message_p->v2.is_present);
+    ASSERT_TRUE(message_p->v3.is_present);
+    ASSERT_EQ(message_p->v3.value_p, "Hello!");
+}
+
+#endif

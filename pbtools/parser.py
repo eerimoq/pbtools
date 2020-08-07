@@ -134,7 +134,8 @@ class Parser(textparser.Parser):
         'max',
         'to',
         'weak',
-        'public'
+        'public',
+        'optional'
     ]
 
     def token_specs(self):
@@ -218,7 +219,7 @@ class Parser(textparser.Parser):
                                                DelimitedList('STRING')))
 
         # Message.
-        field = Sequence(Optional('repeated'),
+        field = Sequence(Optional(choice('repeated', 'optional')),
                          message_type, ident, '=', 'INT', options, ';')
         message = Forward()
         message <<= Sequence('message',
@@ -375,16 +376,25 @@ class Oneof:
 
 class MessageField(Field):
 
-    def __init__(self, type, name, field_number, repeated):
+    def __init__(self, type, name, field_number, repeated, optional):
         super().__init__(type, name, field_number)
         self.repeated = repeated
+        self.optional = optional
 
     @classmethod
     def from_field_tokens(cls, tokens):
+        if tokens[0]:
+            repeated = 'repeated' in tokens[0]
+            optional = 'optional' in tokens[0]
+        else:
+            repeated = False
+            optional = False
+
         return cls(load_message_type(tokens[1]),
                    tokens[2],
                    int(tokens[4]),
-                   bool(tokens[0]))
+                   repeated,
+                   optional)
 
 
 class Message:
@@ -433,7 +443,7 @@ class Message:
             ], '}'
         ]
         self.messages.append(Message(map_message_tokens, sub_namespace))
-        self.fields.append(MessageField([map_type], name, field_number, True))
+        self.fields.append(MessageField([map_type], name, field_number, True, False))
 
     @property
     def repeated_fields(self):

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package optional_fields;
+
+message Message {
+    optional int32 v1 = 1;
+    optional bool v2 = 2;
+    optional string v3 = 3;
+    int32 v4 = 4;
+}
