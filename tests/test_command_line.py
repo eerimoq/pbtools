@@ -44,6 +44,7 @@ class CommandLineTest(unittest.TestCase):
             'map',
             'no_package',
             'oneof',
+            'optional_fields',
             'options',
             'ordering',
             'repeated',

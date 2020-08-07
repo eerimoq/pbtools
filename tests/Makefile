@@ -77,6 +77,7 @@ all:
 	    files/c_source/sub_message_pointers_message.c \
 	    files/c_source/no_package.c \
 	    files/c_source/ordering.c \
+	    files/c_source/optional_fields.c \
 	    files/c_source/importing.c \
 	    files/c_source/imported.c \
 	    files/c_source/imported1.c \
