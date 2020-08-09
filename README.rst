@@ -170,7 +170,7 @@ The ``v3`` field is now a pointer.
        struct foo_bar_t *v3_p;
    };
 
-``v3`` now has to be allocated before encoding and checked if ``NULL``
+``v3`` has to be allocated before encoding and checked if ``NULL``
 after decoding.
 
 .. code-block:: c
