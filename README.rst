@@ -106,7 +106,7 @@ Message
 
 A message is a struct in C.
 
-For example, let's create a protocol specification as below.
+For example, let's create a protocol specification.
 
 .. code-block:: proto
 
@@ -198,7 +198,7 @@ Oneof
 
 A oneof is an enum (the choice) and a union in C.
 
-For example, let's create a protocol specification as below.
+For example, let's create a protocol specification.
 
 .. code-block:: proto
 
