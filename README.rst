@@ -61,6 +61,203 @@ encodings (if one want to do that). Scalar value type fields (ints,
 strings, bytes, etc.) can be modified, but the length of repeated
 fields can't.
 
+Scalar Value Types
+------------------
+
+Protobuf scalar value types are mapped to C types as shown in the
+table below.
+
++---------------+----------------------------------------+
+| Protubuf Type | C Type                                 |
++---------------+----------------------------------------+
+| double        | double                                 |
+| float         | float                                  |
+| int32         | int32_t                                |
+| int64         | int64_t                                |
+| uint32        | uint32_t                               |
+| uint64        | uint64_t                               |
+| sint32        | int32_t                                |
+| sint64        | int64_t                                |
+| fixed32       | int32_t                                |
+| fixed64       | int64_t                                |
+| sfixed32      | int32_t                                |
+| sfixed64      | int64_t                                |
+| bool          | bool                                   |
+| string        | char *                                 |
+| bytes         | struct { uint8_t *buf_p, size_t size } |
++---------------+----------------------------------------+
+
+Message
+-------
+
+A message is a struct in C.
+
+For example, let's create a protocol specification as below.
+
+.. code-block:: proto
+
+   syntax = "proto3";
+
+   package foo;
+
+   message Bar {
+       bool v1 = 1;
+   }
+
+   message Fie {
+       int32 v2 = 1;
+       Bar v3 = 2;
+   }
+
+One struct is generated per message.
+
+.. code-block:: c
+
+   struct foo_bar_t {
+       bool v1;
+   };
+
+   struct foo_fie_t {
+       int32_t v2;
+       struct foo_bar_t v3;
+   };
+
+The generated code can encode and decode messages.
+
+.. code-block:: c
+
+   struct foo_fie_t *fie_p;
+
+   /* Encode. */
+   fie_p = foo_fie_new(...);
+   fie_p->v2 = 5;
+   fie_p->v3.v1 = true;
+   foo_fie_encode(fie_p, ...);
+
+   /* Decode. */
+   fie_p = foo_fie_new(...);
+   foo_fie_decode(fie_p, ...);
+   printf("%d\n", fie_p->v2);
+   printf("%d\n", fie_p->v3.v1);
+
+Give ``--sub-message-pointers`` to enable sub-message presence
+detection and support for recursive message.
+
+The ``v3`` field is now a pointer.
+
+.. code-block:: c
+
+   struct foo_bar_t {
+       bool v1;
+   };
+
+   struct foo_fie_t {
+       int32_t v2;
+       struct foo_bar_t *v3_p;
+   };
+
+``v3`` now has to be allocated before encoding and checked if ``NULL``
+after decoding.
+
+.. code-block:: c
+
+   struct foo_fie_t *fie_p;
+
+   /* Encode. */
+   fie_p = foo_fie_new(...);
+   fie_p->v2 = 5;
+   foo_fie_v3_alloc(fie_p);
+   fie_p->v3_p->v1 = true;
+   foo_fie_encode(fie_p, ...);
+
+   /* Decode. */
+   fie_p = foo_fie_new(...);
+   foo_fie_decode(fie_p, ...);
+   printf("%d\n", fie_p->v2);
+
+   if (fie_p->v3_p != NULL) {
+       printf("%d\n", fie_p->v3_p->v1);
+   }
+
+Oneof
+-----
+
+A oneof is an enum (the choice) and a union in C.
+
+For example, let's create a protocol specification as below.
+
+.. code-block:: proto
+
+   syntax = "proto3";
+
+   package foo;
+
+   message Bar {
+       oneof fie {
+           int32 v1 = 1;
+           bool v2 = 2;
+       };
+   }
+
+One enum and one struct is generated per oneof.
+
+.. code-block:: c
+
+   enum foo_bar_fie_choice_e {
+       foo_bar_fie_choice_none_e = 0,
+       foo_bar_fie_choice_v1_e = 1,
+       foo_bar_fie_choice_v2_e = 2
+   };
+
+   struct foo_bar_fie_oneof_t {
+       enum foo_bar_fie_choice_e choice;
+       union {
+           int32_t v1;
+           bool v2;
+       } value;
+   };
+
+   struct foo_bar_t {
+       struct foo_bar_fie_oneof_t fie;
+   };
+
+The generated code can encode and decode messages. Call
+``_<field>_init()`` to select which oneof field to encode. Use the
+``choice`` member to check which oneof field was decoded (if any).
+
+.. code-block:: c
+
+   struct foo_bar_t *bar_p;
+
+   /* Encode with choice v1. */
+   bar_p = foo_bar_new(...);
+   foo_bar_fie_v1_init(bar_p);
+   bar_p->fie.value.v1 = -2;
+   foo_bar_encode(bar_p, ...);
+
+   /* Decode. */
+   bar_p = foo_bar_new(...);
+   foo_bar_decode(bar_p, ...);
+
+   switch (bar_p->fie.choice) {
+
+   case foo_bar_fie_choice_none_e:
+       printf("Not present.\n");
+       break;
+
+   case foo_bar_fie_choice_v1_e:
+       printf("%d\n", bar_p->fie.value.v1);
+       break;
+
+   case foo_bar_fie_choice_v2_e:
+       printf("%d\n", bar_p->fie.value.v2);
+       break;
+
+   default:
+       printf("Can not happen.\n");
+       break;
+   }
+
 Benchmark
 ---------
 
