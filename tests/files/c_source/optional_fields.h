@@ -60,6 +60,10 @@ struct optional_fields_message_t {
         char *value_p;
     } v3;
     int32_t v4;
+    struct {
+        bool is_present;
+        struct pbtools_bytes_t value;
+    } v5;
 };
 
 /**

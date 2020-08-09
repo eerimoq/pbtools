@@ -246,9 +246,23 @@ ENCODE_MEMBER_FMT = '''\
 encoder_p, {field.field_number}, {ref}self_p->{field.name_snake_case});
 '''
 
+ENCODE_OPTIONAL_MEMBER_FMT = '''\
+    if (self_p->{field.name_snake_case}.is_present) {{
+        pbtools_encoder_write_{field.full_type_snake_case}_always(\
+encoder_p, {field.field_number}, {ref}self_p->{field.name_snake_case}.value);
+    }}
+'''
+
 ENCODE_STRING_MEMBER_FMT = '''\
     pbtools_encoder_write_string(\
 encoder_p, {field.field_number}, {ref}self_p->{field.name_snake_case}_p);
+'''
+
+ENCODE_OPTIONAL_STRING_MEMBER_FMT = '''\
+    if (self_p->{field.name_snake_case}.is_present) {{
+        pbtools_encoder_write_string_always(\
+encoder_p, {field.field_number}, {ref}self_p->{field.name_snake_case}.value_p);
+    }}
 '''
 
 ENCODE_REPEATED_MEMBER_FMT = '''\
@@ -351,6 +365,14 @@ pbtools_decoder_read_{field.full_type_snake_case}(decoder_p, wire_type);
             break;
 '''
 
+DECODE_OPTIONAL_MEMBER_FMT = '''\
+        case {field.field_number}:
+            self_p->{field.name_snake_case}.is_present = true;
+            self_p->{field.name_snake_case}.value = \
+pbtools_decoder_read_{field.full_type_snake_case}(decoder_p, wire_type);
+            break;
+'''
+
 DECODE_MEMBER_BYTES_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_bytes(\
@@ -358,10 +380,26 @@ decoder_p, wire_type, &self_p->{field.name_snake_case});
             break;
 '''
 
+DECODE_OPTIONAL_MEMBER_BYTES_FMT = '''\
+        case {field.field_number}:
+            self_p->{field.name_snake_case}.is_present = true;
+            pbtools_decoder_read_bytes(\
+decoder_p, wire_type, &self_p->{field.name_snake_case}.value);
+            break;
+'''
+
 DECODE_MEMBER_STRING_FMT = '''\
         case {field.field_number}:
             pbtools_decoder_read_string(\
 decoder_p, wire_type, &self_p->{field.name_snake_case}_p);
+            break;
+'''
+
+DECODE_OPTIONAL_MEMBER_STRING_FMT = '''\
+        case {field.field_number}:
+            self_p->{field.name_snake_case}.is_present = true;
+            pbtools_decoder_read_string(\
+decoder_p, wire_type, &self_p->{field.name_snake_case}.value_p);
             break;
 '''
 
@@ -626,6 +664,13 @@ REPEATED_MESSAGE_FINALIZER_FMT = '''\
         &self_p->{field.name_snake_case});\
 '''
 
+OPTIONAL_STRUCT_MEMBER_FMT = '''\
+    struct {{
+        bool is_present;
+        {type}{value_name_snake_case};
+    }} {name_snake_case};\
+'''
+
 
 class Generator:
 
@@ -675,6 +720,34 @@ class Generator:
 
         return f'    {type}{name_snake_case};'
 
+    def generate_optional_struct_member_fmt(self, type, name_snake_case, type_kind):
+        value_name_snake_case = 'value'
+
+        if type in ['int32', 'int64', 'uint32', 'uint64']:
+            type = f'{type}_t '
+        elif type in ['sint32', 'sint64']:
+            type = f'{type[1:]}_t '
+        elif type in ['fixed32', 'fixed64']:
+            type = f'uint{type[5:]}_t '
+        elif type in ['sfixed32', 'sfixed64']:
+            type = f'int{type[6:]}_t '
+        elif type in ['float', 'double', 'bool']:
+            type = f'{type} '
+        elif type == 'bytes':
+            type = f'struct pbtools_bytes_t '
+        elif type == 'string':
+            type = f'char *'
+            value_name_snake_case = f'{value_name_snake_case}_p'
+        elif type_kind == 'enum':
+            type = f'enum {type}_e '
+        else:
+            raise Exception('Only scalar value types may be optional.')
+
+        return OPTIONAL_STRUCT_MEMBER_FMT.format(
+            type=type,
+            name_snake_case=name_snake_case,
+            value_name_snake_case=value_name_snake_case)
+
     def generate_repeated_struct_member_fmt(self,
                                             type,
                                             name_snake_case,
@@ -705,7 +778,10 @@ class Generator:
                     field.name_snake_case,
                     field.type_kind)
             elif field.optional:
-                raise NotImplementedError('Optional fields are not yet supported.')
+                member = self.generate_optional_struct_member_fmt(
+                    field.full_type_snake_case,
+                    field.name_snake_case,
+                    field.type_kind)
             else:
                 member = self.generate_struct_member_fmt(
                     field.full_type_snake_case,
@@ -872,9 +948,15 @@ class Generator:
                 if field.repeated:
                     fmt = ENCODE_REPEATED_MEMBER_FMT
                 elif field.type == 'string':
-                    fmt = ENCODE_STRING_MEMBER_FMT
+                    if field.optional:
+                        fmt = ENCODE_OPTIONAL_STRING_MEMBER_FMT
+                    else:
+                        fmt = ENCODE_STRING_MEMBER_FMT
                 else:
-                    fmt = ENCODE_MEMBER_FMT
+                    if field.optional:
+                        fmt = ENCODE_OPTIONAL_MEMBER_FMT
+                    else:
+                        fmt = ENCODE_MEMBER_FMT
             else:
                 if field.repeated:
                     if field.type_kind == 'enum':
@@ -919,11 +1001,20 @@ class Generator:
                 else:
                     fmt = DECODE_REPEATED_FIELD_FMT
             elif field.type == 'bytes':
-                fmt = DECODE_MEMBER_BYTES_FMT
+                if field.optional:
+                    fmt = DECODE_OPTIONAL_MEMBER_BYTES_FMT
+                else:
+                    fmt = DECODE_MEMBER_BYTES_FMT
             elif field.type == 'string':
-                fmt = DECODE_MEMBER_STRING_FMT
+                if field.optional:
+                    fmt = DECODE_OPTIONAL_MEMBER_STRING_FMT
+                else:
+                    fmt = DECODE_MEMBER_STRING_FMT
             elif field.type_kind == 'scalar-value-type':
-                fmt = DECODE_MEMBER_FMT
+                if field.optional:
+                    fmt = DECODE_OPTIONAL_MEMBER_FMT
+                else:
+                    fmt = DECODE_MEMBER_FMT
             elif field.type_kind == 'message':
                 if self.sub_message_pointers:
                     fmt = DECODE_SUB_MESSAGE_MEMBER_POINTER_FMT
@@ -949,6 +1040,8 @@ class Generator:
 
             if field.repeated:
                 member = f'    self_p->{name}.length = 0;'
+            elif field.optional:
+                member = f'    self_p->{name}.is_present = false;'
             elif field.type == 'bytes':
                 member = f'    pbtools_bytes_init(&self_p->{name});'
             elif field.type == 'string':

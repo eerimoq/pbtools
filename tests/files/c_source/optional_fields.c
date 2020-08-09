@@ -44,24 +44,25 @@ void optional_fields_message_init(
     self_p->v2.is_present = false;
     self_p->v3.is_present = false;
     self_p->v4 = 0;
+    self_p->v5.is_present = false;
 }
 
 void optional_fields_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct optional_fields_message_t *self_p)
 {
+    if (self_p->v5.is_present) {
+        pbtools_encoder_write_bytes_always(encoder_p, 5, &self_p->v5.value);
+    }
     pbtools_encoder_write_int32(encoder_p, 4, self_p->v4);
-
     if (self_p->v3.is_present) {
-        pbtools_encoder_write_string(encoder_p, 3, self_p->v3.value_p);
+        pbtools_encoder_write_string_always(encoder_p, 3, self_p->v3.value_p);
     }
-
     if (self_p->v2.is_present) {
-        pbtools_encoder_write_bool(encoder_p, 2, self_p->v2.value);
+        pbtools_encoder_write_bool_always(encoder_p, 2, self_p->v2.value);
     }
-
     if (self_p->v1.is_present) {
-        pbtools_encoder_write_int32(encoder_p, 1, self_p->v1.value);
+        pbtools_encoder_write_int32_always(encoder_p, 1, self_p->v1.value);
     }
 }
 
@@ -91,6 +92,11 @@ void optional_fields_message_decode_inner(
 
         case 4:
             self_p->v4 = pbtools_decoder_read_int32(decoder_p, wire_type);
+            break;
+
+        case 5:
+            self_p->v5.is_present = true;
+            pbtools_decoder_read_bytes(decoder_p, wire_type, &self_p->v5.value);
             break;
 
         default:
