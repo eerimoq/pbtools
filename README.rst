@@ -397,6 +397,10 @@ The generate C source subcommand
 Below is an example of how to generate C source code from a
 proto-file.
 
+Give ``--sub-message-pointers`` to make sub-messages pointers to
+enable sub-message presence detection and support for recursive
+messages.
+
 .. code-block:: text
 
    $ pbtools generate_c_source examples/address_book/address_book.proto
