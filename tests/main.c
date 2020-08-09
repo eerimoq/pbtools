@@ -3744,8 +3744,6 @@ TEST(add_and_remove_fields_version3)
     ASSERT_EQ(message_p->v4, 0);
 }
 
-#if 0
-
 TEST(optional_fields)
 {
     uint8_t encoded[128];
@@ -3779,6 +3777,5 @@ TEST(optional_fields)
     ASSERT_FALSE(message_p->v2.is_present);
     ASSERT_TRUE(message_p->v3.is_present);
     ASSERT_EQ(message_p->v3.value_p, "Hello!");
+    ASSERT_EQ(message_p->v4, 0);
 }
-
-#endif

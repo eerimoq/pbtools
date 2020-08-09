@@ -47,9 +47,18 @@ struct optional_fields_message_repeated_t {
 
 struct optional_fields_message_t {
     struct pbtools_message_base_t base;
-    int32_t v1;
-    bool v2;
-    char *v3_p;
+    struct {
+        bool is_present;
+        int32_t value;
+    } v1;
+    struct {
+        bool is_present;
+        bool value;
+    } v2;
+    struct {
+        bool is_present;
+        char *value_p;
+    } v3;
     int32_t v4;
 };
 
