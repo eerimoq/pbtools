@@ -7,31 +7,32 @@
 
 static void fill_message_message1(struct benchmark_message_t *message_p)
 {
-    benchmark_message_oneof_message1_init(message_p);
-    message_p->oneof.value.message1.field80 = true;
-    message_p->oneof.value.message1.field2 = -336;
-    message_p->oneof.value.message1.field6 = 5000;
-    message_p->oneof.value.message1.field22 = 5;
-    benchmark_message1_field4_alloc(&message_p->oneof.value.message1, 3);
-    message_p->oneof.value.message1.field4.items_pp[0] = "The first string";
-    message_p->oneof.value.message1.field4.items_pp[1] = "The second string";
-    message_p->oneof.value.message1.field4.items_pp[2] = "The third string";
-    message_p->oneof.value.message1.field15.field1 = 0;
-    message_p->oneof.value.message1.field15.field3 = 9999;
-    message_p->oneof.value.message1.field15.field15_p = (
+    benchmark_message_oneof_message1_alloc(message_p);
+    message_p->oneof.value.message1_p->field80 = true;
+    message_p->oneof.value.message1_p->field2 = -336;
+    message_p->oneof.value.message1_p->field6 = 5000;
+    message_p->oneof.value.message1_p->field22 = 5;
+    benchmark_message1_field4_alloc(message_p->oneof.value.message1_p, 3);
+    message_p->oneof.value.message1_p->field4.items_pp[0] = "The first string";
+    message_p->oneof.value.message1_p->field4.items_pp[1] = "The second string";
+    message_p->oneof.value.message1_p->field4.items_pp[2] = "The third string";
+    benchmark_message1_field15_alloc(message_p->oneof.value.message1_p);
+    message_p->oneof.value.message1_p->field15_p->field1 = 0;
+    message_p->oneof.value.message1_p->field15_p->field3 = 9999;
+    message_p->oneof.value.message1_p->field15_p->field15_p = (
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello!");
-    message_p->oneof.value.message1.field15.field12.buf_p = (uint8_t *)(
+    message_p->oneof.value.message1_p->field15_p->field12.buf_p = (uint8_t *)(
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello!");
-    message_p->oneof.value.message1.field15.field12.size = 230;
-    message_p->oneof.value.message1.field15.field21 = 449932;
-    message_p->oneof.value.message1.field15.field204 = 1;
-    message_p->oneof.value.message1.field15.field300 = benchmark_enum_e3_e;
+    message_p->oneof.value.message1_p->field15_p->field12.size = 230;
+    message_p->oneof.value.message1_p->field15_p->field21 = 449932;
+    message_p->oneof.value.message1_p->field15_p->field204 = 1;
+    message_p->oneof.value.message1_p->field15_p->field300 = benchmark_enum_e3_e;
 }
 
 static void encode_message_message1(int iterations)

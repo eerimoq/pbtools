@@ -81,8 +81,8 @@ struct bar_imported4_message_repeated_t {
 
 struct bar_imported4_message_t {
     struct pbtools_message_base_t base;
-    struct bar_imported3_message_t v1;
-    struct foo_bar_imported3_message_t v2;
+    struct bar_imported3_message_t *v1_p;
+    struct foo_bar_imported3_message_t *v2_p;
 };
 
 /**
@@ -120,6 +120,12 @@ int bar_imported3_message_decode(
     struct bar_imported3_message_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+int bar_imported4_message_v1_alloc(
+    struct bar_imported4_message_t *self_p);
+
+int bar_imported4_message_v2_alloc(
+    struct bar_imported4_message_t *self_p);
 
 /**
  * Encoding and decoding of bar.Imported4Message.

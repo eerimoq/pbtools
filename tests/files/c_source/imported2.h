@@ -58,7 +58,7 @@ struct imported2_foo_bar_imported2_message_repeated_t {
 
 struct imported2_foo_bar_imported2_message_t {
     struct pbtools_message_base_t base;
-    struct imported_imported_duplicated_package_message_t v1;
+    struct imported_imported_duplicated_package_message_t *v1_p;
 };
 
 /**
@@ -71,7 +71,7 @@ struct imported2_foo_bar_imported3_message_imported2_message_repeated_t {
 
 struct imported2_foo_bar_imported3_message_imported2_message_t {
     struct pbtools_message_base_t base;
-    struct imported_imported_duplicated_package_message_t v1;
+    struct imported_imported_duplicated_package_message_t *v1_p;
 };
 
 /**
@@ -84,17 +84,20 @@ struct imported2_foo_bar_imported3_message_repeated_t {
 
 struct imported2_foo_bar_imported3_message_t {
     struct pbtools_message_base_t base;
-    struct imported_imported_duplicated_package_message_t v1;
-    struct imported2_foo_bar_imported3_message_imported2_message_t v2;
-    struct bar_imported2_message_t v3;
-    struct foo_bar_imported2_message_t v4;
-    struct imported2_foo_bar_imported2_message_t v5;
-    struct imported_imported2_message_t v6;
+    struct imported_imported_duplicated_package_message_t *v1_p;
+    struct imported2_foo_bar_imported3_message_imported2_message_t *v2_p;
+    struct bar_imported2_message_t *v3_p;
+    struct foo_bar_imported2_message_t *v4_p;
+    struct imported2_foo_bar_imported2_message_t *v5_p;
+    struct imported_imported2_message_t *v6_p;
     struct bar_imported3_message_repeated_t v7;
     struct foo_bar_imported3_message_repeated_t v9;
     struct bar_imported3_message_repeated_t v8;
     struct foo_bar_imported3_message_repeated_t v10;
 };
+
+int imported2_foo_bar_imported2_message_v1_alloc(
+    struct imported2_foo_bar_imported2_message_t *self_p);
 
 /**
  * Encoding and decoding of imported2.foo.bar.Imported2Message.
@@ -114,6 +117,24 @@ int imported2_foo_bar_imported2_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+int imported2_foo_bar_imported3_message_v1_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p);
+
+int imported2_foo_bar_imported3_message_v2_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p);
+
+int imported2_foo_bar_imported3_message_v3_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p);
+
+int imported2_foo_bar_imported3_message_v4_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p);
+
+int imported2_foo_bar_imported3_message_v5_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p);
+
+int imported2_foo_bar_imported3_message_v6_alloc(
+    struct imported2_foo_bar_imported3_message_t *self_p);
+
 int imported2_foo_bar_imported3_message_v7_alloc(
     struct imported2_foo_bar_imported3_message_t *self_p,
     int length);
@@ -129,6 +150,9 @@ int imported2_foo_bar_imported3_message_v8_alloc(
 int imported2_foo_bar_imported3_message_v10_alloc(
     struct imported2_foo_bar_imported3_message_t *self_p,
     int length);
+
+int imported2_foo_bar_imported3_message_imported2_message_v1_alloc(
+    struct imported2_foo_bar_imported3_message_imported2_message_t *self_p);
 
 /**
  * Encoding and decoding of imported2.foo.bar.Imported3Message.

@@ -207,7 +207,7 @@ void map_message_pbtools_map_map2_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->key = 0;
-    map_value_init(&self_p->value, heap_p);
+    self_p->value_p = NULL;
 }
 
 void map_message_pbtools_map_map2_encode_inner(
@@ -217,7 +217,7 @@ void map_message_pbtools_map_map2_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         2,
-        &self_p->value.base,
+        (struct pbtools_message_base_t *)self_p->value_p,
         (pbtools_message_encode_inner_t)map_value_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 1, self_p->key);
 }
@@ -239,7 +239,9 @@ void map_message_pbtools_map_map2_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->value.base,
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init,
                 (pbtools_message_decode_inner_t)map_value_decode_inner);
             break;
 
@@ -248,6 +250,16 @@ void map_message_pbtools_map_map2_decode_inner(
             break;
         }
     }
+}
+
+int map_message_pbtools_map_map2_value_alloc(
+    struct map_message_pbtools_map_map2_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                self_p->base.heap_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init));
 }
 
 void map_message_pbtools_map_map2_encode_repeated_inner(
@@ -283,7 +295,7 @@ void map_message_pbtools_map_map3_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->key = 0;
-    map_value_init(&self_p->value, heap_p);
+    self_p->value_p = NULL;
 }
 
 void map_message_pbtools_map_map3_encode_inner(
@@ -293,7 +305,7 @@ void map_message_pbtools_map_map3_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         2,
-        &self_p->value.base,
+        (struct pbtools_message_base_t *)self_p->value_p,
         (pbtools_message_encode_inner_t)map_value_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 1, self_p->key);
 }
@@ -315,7 +327,9 @@ void map_message_pbtools_map_map3_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->value.base,
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init,
                 (pbtools_message_decode_inner_t)map_value_decode_inner);
             break;
 
@@ -324,6 +338,16 @@ void map_message_pbtools_map_map3_decode_inner(
             break;
         }
     }
+}
+
+int map_message_pbtools_map_map3_value_alloc(
+    struct map_message_pbtools_map_map3_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                self_p->base.heap_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init));
 }
 
 void map_message_pbtools_map_map3_encode_repeated_inner(
@@ -608,7 +632,7 @@ void map_message2_map2_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->key = 0;
-    map_value_init(&self_p->value, heap_p);
+    self_p->value_p = NULL;
 }
 
 void map_message2_map2_encode_inner(
@@ -618,7 +642,7 @@ void map_message2_map2_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         2,
-        &self_p->value.base,
+        (struct pbtools_message_base_t *)self_p->value_p,
         (pbtools_message_encode_inner_t)map_value_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 1, self_p->key);
 }
@@ -640,7 +664,9 @@ void map_message2_map2_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->value.base,
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init,
                 (pbtools_message_decode_inner_t)map_value_decode_inner);
             break;
 
@@ -649,6 +675,16 @@ void map_message2_map2_decode_inner(
             break;
         }
     }
+}
+
+int map_message2_map2_value_alloc(
+    struct map_message2_map2_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                self_p->base.heap_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init));
 }
 
 void map_message2_map2_encode_repeated_inner(
@@ -684,7 +720,7 @@ void map_message2_map3_init(
 {
     self_p->base.heap_p = heap_p;
     self_p->key = 0;
-    map_value_init(&self_p->value, heap_p);
+    self_p->value_p = NULL;
 }
 
 void map_message2_map3_encode_inner(
@@ -694,7 +730,7 @@ void map_message2_map3_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         2,
-        &self_p->value.base,
+        (struct pbtools_message_base_t *)self_p->value_p,
         (pbtools_message_encode_inner_t)map_value_encode_inner);
     pbtools_encoder_write_int32(encoder_p, 1, self_p->key);
 }
@@ -716,7 +752,9 @@ void map_message2_map3_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->value.base,
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init,
                 (pbtools_message_decode_inner_t)map_value_decode_inner);
             break;
 
@@ -725,6 +763,16 @@ void map_message2_map3_decode_inner(
             break;
         }
     }
+}
+
+int map_message2_map3_value_alloc(
+    struct map_message2_map3_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->value_p,
+                self_p->base.heap_p,
+                sizeof(struct map_value_t),
+                (pbtools_message_init_t)map_value_init));
 }
 
 void map_message2_map3_encode_repeated_inner(

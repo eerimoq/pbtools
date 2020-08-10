@@ -154,7 +154,7 @@ void field_names_message_camel_case_init(
     self_p->my_string_p = "";
     pbtools_bytes_init(&self_p->my_bytes);
     self_p->my_enum = 0;
-    field_names_message_init(&self_p->my_message, heap_p);
+    self_p->my_message_p = NULL;
 }
 
 void field_names_message_camel_case_encode_inner(
@@ -164,7 +164,7 @@ void field_names_message_camel_case_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         17,
-        &self_p->my_message.base,
+        (struct pbtools_message_base_t *)self_p->my_message_p,
         (pbtools_message_encode_inner_t)field_names_message_encode_inner);
     pbtools_encoder_write_enum(encoder_p, 16, self_p->my_enum);
     pbtools_encoder_write_bytes(encoder_p, 15, &self_p->my_bytes);
@@ -261,7 +261,9 @@ void field_names_message_camel_case_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->my_message.base,
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init,
                 (pbtools_message_decode_inner_t)field_names_message_decode_inner);
             break;
 
@@ -270,6 +272,16 @@ void field_names_message_camel_case_decode_inner(
             break;
         }
     }
+}
+
+int field_names_message_camel_case_my_message_alloc(
+    struct field_names_message_camel_case_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init));
 }
 
 void field_names_message_camel_case_encode_repeated_inner(
@@ -356,7 +368,7 @@ void field_names_message_pascal_case_init(
     self_p->my_string_p = "";
     pbtools_bytes_init(&self_p->my_bytes);
     self_p->my_enum = 0;
-    field_names_message_init(&self_p->my_message, heap_p);
+    self_p->my_message_p = NULL;
 }
 
 void field_names_message_pascal_case_encode_inner(
@@ -366,7 +378,7 @@ void field_names_message_pascal_case_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         17,
-        &self_p->my_message.base,
+        (struct pbtools_message_base_t *)self_p->my_message_p,
         (pbtools_message_encode_inner_t)field_names_message_encode_inner);
     pbtools_encoder_write_enum(encoder_p, 16, self_p->my_enum);
     pbtools_encoder_write_bytes(encoder_p, 15, &self_p->my_bytes);
@@ -463,7 +475,9 @@ void field_names_message_pascal_case_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->my_message.base,
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init,
                 (pbtools_message_decode_inner_t)field_names_message_decode_inner);
             break;
 
@@ -472,6 +486,16 @@ void field_names_message_pascal_case_decode_inner(
             break;
         }
     }
+}
+
+int field_names_message_pascal_case_my_message_alloc(
+    struct field_names_message_pascal_case_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->my_message_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_message_t),
+                (pbtools_message_init_t)field_names_message_init));
 }
 
 void field_names_message_pascal_case_encode_repeated_inner(
@@ -1583,40 +1607,52 @@ int field_names_repeated_message_pascal_case_decode(
                 (pbtools_message_decode_inner_t)field_names_repeated_message_pascal_case_decode_inner));
 }
 
-void field_names_message_one_of_one_of_camel_case_message_init(
+int field_names_message_one_of_one_of_camel_case_message_alloc(
     struct field_names_message_one_of_t *self_p)
 {
     self_p->one_of.choice = field_names_message_one_of_one_of_choice_camel_case_message_e;
-    field_names_message_camel_case_init(
-        &self_p->one_of.value.camel_case_message,
-        self_p->base.heap_p);
+
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->one_of.value.camel_case_message_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_message_camel_case_t),
+                (pbtools_message_init_t)field_names_message_camel_case_init));
 }
 
-void field_names_message_one_of_one_of_pascal_case_message_init(
+int field_names_message_one_of_one_of_pascal_case_message_alloc(
     struct field_names_message_one_of_t *self_p)
 {
     self_p->one_of.choice = field_names_message_one_of_one_of_choice_pascal_case_message_e;
-    field_names_message_pascal_case_init(
-        &self_p->one_of.value.pascal_case_message,
-        self_p->base.heap_p);
+
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->one_of.value.pascal_case_message_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_message_pascal_case_t),
+                (pbtools_message_init_t)field_names_message_pascal_case_init));
 }
 
-void field_names_message_one_of_one_of_camel_case_message_repeated_init(
+int field_names_message_one_of_one_of_camel_case_message_repeated_alloc(
     struct field_names_message_one_of_t *self_p)
 {
     self_p->one_of.choice = field_names_message_one_of_one_of_choice_camel_case_message_repeated_e;
-    field_names_repeated_message_camel_case_init(
-        &self_p->one_of.value.camel_case_message_repeated,
-        self_p->base.heap_p);
+
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->one_of.value.camel_case_message_repeated_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_repeated_message_camel_case_t),
+                (pbtools_message_init_t)field_names_repeated_message_camel_case_init));
 }
 
-void field_names_message_one_of_one_of_pascal_case_message_repeated_init(
+int field_names_message_one_of_one_of_pascal_case_message_repeated_alloc(
     struct field_names_message_one_of_t *self_p)
 {
     self_p->one_of.choice = field_names_message_one_of_one_of_choice_pascal_case_message_repeated_e;
-    field_names_repeated_message_pascal_case_init(
-        &self_p->one_of.value.pascal_case_message_repeated,
-        self_p->base.heap_p);
+
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->one_of.value.pascal_case_message_repeated_p,
+                self_p->base.heap_p,
+                sizeof(struct field_names_repeated_message_pascal_case_t),
+                (pbtools_message_init_t)field_names_repeated_message_pascal_case_init));
 }
 
 void field_names_message_one_of_one_of_my_int32_init(
@@ -1650,7 +1686,7 @@ void field_names_message_one_of_one_of_encode(
         pbtools_encoder_sub_message_encode_always(
             encoder_p,
             1,
-            &self_p->value.camel_case_message.base,
+            &self_p->value.camel_case_message_p->base,
             (pbtools_message_encode_inner_t)field_names_message_camel_case_encode_inner);
         break;
 
@@ -1658,7 +1694,7 @@ void field_names_message_one_of_one_of_encode(
         pbtools_encoder_sub_message_encode_always(
             encoder_p,
             2,
-            &self_p->value.pascal_case_message.base,
+            &self_p->value.pascal_case_message_p->base,
             (pbtools_message_encode_inner_t)field_names_message_pascal_case_encode_inner);
         break;
 
@@ -1666,7 +1702,7 @@ void field_names_message_one_of_one_of_encode(
         pbtools_encoder_sub_message_encode_always(
             encoder_p,
             3,
-            &self_p->value.camel_case_message_repeated.base,
+            &self_p->value.camel_case_message_repeated_p->base,
             (pbtools_message_encode_inner_t)field_names_repeated_message_camel_case_encode_inner);
         break;
 
@@ -1674,7 +1710,7 @@ void field_names_message_one_of_one_of_encode(
         pbtools_encoder_sub_message_encode_always(
             encoder_p,
             4,
-            &self_p->value.pascal_case_message_repeated.base,
+            &self_p->value.pascal_case_message_repeated_p->base,
             (pbtools_message_encode_inner_t)field_names_repeated_message_pascal_case_encode_inner);
         break;
 
@@ -1709,11 +1745,13 @@ static void field_names_message_one_of_one_of_camel_case_message_decode(
     int wire_type,
     struct field_names_message_one_of_t *self_p)
 {
-    field_names_message_one_of_one_of_camel_case_message_init(self_p);
+    self_p->one_of.choice = field_names_message_one_of_one_of_choice_camel_case_message_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        &self_p->one_of.value.camel_case_message.base,
+        (struct pbtools_message_base_t **)&self_p->one_of.value.camel_case_message_p,
+        sizeof(struct field_names_message_camel_case_t),
+        (pbtools_message_init_t)field_names_message_camel_case_init,
         (pbtools_message_decode_inner_t)field_names_message_camel_case_decode_inner);
 }
 
@@ -1722,11 +1760,13 @@ static void field_names_message_one_of_one_of_pascal_case_message_decode(
     int wire_type,
     struct field_names_message_one_of_t *self_p)
 {
-    field_names_message_one_of_one_of_pascal_case_message_init(self_p);
+    self_p->one_of.choice = field_names_message_one_of_one_of_choice_pascal_case_message_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        &self_p->one_of.value.pascal_case_message.base,
+        (struct pbtools_message_base_t **)&self_p->one_of.value.pascal_case_message_p,
+        sizeof(struct field_names_message_pascal_case_t),
+        (pbtools_message_init_t)field_names_message_pascal_case_init,
         (pbtools_message_decode_inner_t)field_names_message_pascal_case_decode_inner);
 }
 
@@ -1735,11 +1775,13 @@ static void field_names_message_one_of_one_of_camel_case_message_repeated_decode
     int wire_type,
     struct field_names_message_one_of_t *self_p)
 {
-    field_names_message_one_of_one_of_camel_case_message_repeated_init(self_p);
+    self_p->one_of.choice = field_names_message_one_of_one_of_choice_camel_case_message_repeated_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        &self_p->one_of.value.camel_case_message_repeated.base,
+        (struct pbtools_message_base_t **)&self_p->one_of.value.camel_case_message_repeated_p,
+        sizeof(struct field_names_repeated_message_camel_case_t),
+        (pbtools_message_init_t)field_names_repeated_message_camel_case_init,
         (pbtools_message_decode_inner_t)field_names_repeated_message_camel_case_decode_inner);
 }
 
@@ -1748,11 +1790,13 @@ static void field_names_message_one_of_one_of_pascal_case_message_repeated_decod
     int wire_type,
     struct field_names_message_one_of_t *self_p)
 {
-    field_names_message_one_of_one_of_pascal_case_message_repeated_init(self_p);
+    self_p->one_of.choice = field_names_message_one_of_one_of_choice_pascal_case_message_repeated_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        &self_p->one_of.value.pascal_case_message_repeated.base,
+        (struct pbtools_message_base_t **)&self_p->one_of.value.pascal_case_message_repeated_p,
+        sizeof(struct field_names_repeated_message_pascal_case_t),
+        (pbtools_message_init_t)field_names_repeated_message_pascal_case_init,
         (pbtools_message_decode_inner_t)field_names_repeated_message_pascal_case_decode_inner);
 }
 

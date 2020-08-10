@@ -48,8 +48,11 @@ struct npi_message2_repeated_t {
 
 struct npi_message2_t {
     struct pbtools_message_base_t base;
-    struct no_package_imported_message_t v3;
+    struct no_package_imported_message_t *v3_p;
 };
+
+int npi_message2_v3_alloc(
+    struct npi_message2_t *self_p);
 
 /**
  * Encoding and decoding of npi.Message2.

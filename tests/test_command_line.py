@@ -156,33 +156,6 @@ class CommandLineTest(unittest.TestCase):
         self.assertTrue(os.path.exists('generated/address_book.h'))
         self.assertTrue(os.path.exists('generated/address_book.c'))
 
-    def test_command_line_generate_c_source_sub_message_pointers(self):
-        specs = [
-            'sub_message_pointers_message',
-            'sub_message_pointers_repeated'
-        ]
-
-        for spec in specs:
-            proto = f'tests/files/{spec}.proto'
-            argv = [
-                'pbtools',
-                'generate_c_source',
-                '--sub-message-pointers',
-                proto
-            ]
-
-            filename_h = f'{spec}.h'
-            filename_c = f'{spec}.c'
-
-            remove_files([filename_h, filename_c])
-
-            with patch('sys.argv', argv):
-                pbtools._main()
-
-            for filename in [filename_h, filename_c]:
-                self.assert_files_equal(filename,
-                                        f'tests/files/c_source/{filename}')
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -107,7 +107,7 @@ enum oneof_message2_oneof1_choice_e {
 struct oneof_message2_oneof1_oneof_t {
     enum oneof_message2_oneof1_choice_e choice;
     union {
-        struct oneof_message2_foo_t v4;
+        struct oneof_message2_foo_t *v4_p;
         struct pbtools_bytes_t v5;
         enum oneof_enum_e v6;
     } value;
@@ -130,8 +130,8 @@ struct oneof_message2_oneof2_oneof_t {
     enum oneof_message2_oneof2_choice_e choice;
     union {
         bool v1;
-        struct oneof_message2_foo_t v2;
-        struct oneof_message_t v3;
+        struct oneof_message2_foo_t *v2_p;
+        struct oneof_message_t *v3_p;
     } value;
 };
 
@@ -209,7 +209,7 @@ enum oneof_message3_oneof1_choice_e {
 struct oneof_message3_oneof1_oneof_t {
     enum oneof_message3_oneof1_choice_e choice;
     union {
-        struct oneof_message3_bar_t v1;
+        struct oneof_message3_bar_t *v1_p;
     } value;
 };
 
@@ -250,7 +250,7 @@ int oneof_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
-void oneof_message2_oneof1_v4_init(
+int oneof_message2_oneof1_v4_alloc(
     struct oneof_message2_t *self_p);
 
 void oneof_message2_oneof1_v5_init(
@@ -262,10 +262,10 @@ void oneof_message2_oneof1_v6_init(
 void oneof_message2_oneof2_v1_init(
     struct oneof_message2_t *self_p);
 
-void oneof_message2_oneof2_v2_init(
+int oneof_message2_oneof2_v2_alloc(
     struct oneof_message2_t *self_p);
 
-void oneof_message2_oneof2_v3_init(
+int oneof_message2_oneof2_v3_alloc(
     struct oneof_message2_t *self_p);
 
 /**
@@ -296,7 +296,7 @@ int oneof_message3_bar_foo_alloc(
     struct oneof_message3_bar_t *self_p,
     int length);
 
-void oneof_message3_oneof1_v1_init(
+int oneof_message3_oneof1_v1_alloc(
     struct oneof_message3_t *self_p);
 
 /**

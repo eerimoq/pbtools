@@ -40,7 +40,7 @@ void npi_message2_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    no_package_imported_message_init(&self_p->v3, heap_p);
+    self_p->v3_p = NULL;
 }
 
 void npi_message2_encode_inner(
@@ -50,7 +50,7 @@ void npi_message2_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         1,
-        &self_p->v3.base,
+        (struct pbtools_message_base_t *)self_p->v3_p,
         (pbtools_message_encode_inner_t)no_package_imported_message_encode_inner);
 }
 
@@ -67,7 +67,9 @@ void npi_message2_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->v3.base,
+                (struct pbtools_message_base_t **)&self_p->v3_p,
+                sizeof(struct no_package_imported_message_t),
+                (pbtools_message_init_t)no_package_imported_message_init,
                 (pbtools_message_decode_inner_t)no_package_imported_message_decode_inner);
             break;
 
@@ -76,6 +78,16 @@ void npi_message2_decode_inner(
             break;
         }
     }
+}
+
+int npi_message2_v3_alloc(
+    struct npi_message2_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->v3_p,
+                self_p->base.heap_p,
+                sizeof(struct no_package_imported_message_t),
+                (pbtools_message_init_t)no_package_imported_message_init));
 }
 
 void npi_message2_encode_repeated_inner(

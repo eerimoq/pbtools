@@ -2518,22 +2518,6 @@ void pbtools_encoder_sub_message_encode(
 {
     int pos;
 
-    pos = self_p->pos;
-    encode_inner(self_p, message_p);
-    encoder_write_tagged_varint(self_p,
-                                field_number,
-                                PBTOOLS_WIRE_TYPE_LENGTH_DELIMITED,
-                                (uint64_t)(pos - self_p->pos));
-}
-
-void pbtools_encoder_sub_message_pointer_encode(
-    struct pbtools_encoder_t *self_p,
-    int field_number,
-    struct pbtools_message_base_t *message_p,
-    pbtools_message_encode_inner_t encode_inner)
-{
-    int pos;
-
     if (message_p != NULL) {
         pos = self_p->pos;
         encode_inner(self_p, message_p);
@@ -2562,27 +2546,14 @@ void pbtools_encoder_sub_message_encode_always(
 void pbtools_decoder_sub_message_decode(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_message_base_t *message_p,
-    pbtools_message_decode_inner_t decode_inner)
-{
-    int size;
-    struct pbtools_decoder_t decoder;
-
-    size = (int)decoder_read_length_delimited(self_p, wire_type);
-    decoder_init_slice(&decoder, self_p, size);
-    decode_inner(&decoder, message_p);
-    decoder_seek(self_p, decoder_get_result(&decoder));
-}
-
-void pbtools_decoder_sub_message_pointer_decode(
-    struct pbtools_decoder_t *self_p,
-    int wire_type,
     struct pbtools_message_base_t **message_pp,
     size_t sub_message_size,
     pbtools_message_init_t message_init,
     pbtools_message_decode_inner_t decode_inner)
 {
     struct pbtools_message_base_t *message_p;
+    int size;
+    struct pbtools_decoder_t decoder;
 
     message_p = decoder_heap_alloc(
         self_p,
@@ -2594,7 +2565,10 @@ void pbtools_decoder_sub_message_pointer_decode(
     }
 
     message_init(message_p, self_p->heap_p);
-    pbtools_decoder_sub_message_decode(self_p, wire_type, message_p, decode_inner);
+    size = (int)decoder_read_length_delimited(self_p, wire_type);
+    decoder_init_slice(&decoder, self_p, size);
+    decode_inner(&decoder, message_p);
+    decoder_seek(self_p, decoder_get_result(&decoder));
     *message_pp = message_p;
 }
 

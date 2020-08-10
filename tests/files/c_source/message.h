@@ -81,7 +81,7 @@ struct message_message_fie_foo_repeated_t {
 struct message_message_fie_foo_t {
     struct pbtools_message_base_t base;
     bool value;
-    struct message_bar_t bar;
+    struct message_bar_t *bar_p;
 };
 
 /**
@@ -94,7 +94,7 @@ struct message_message_fie_repeated_t {
 
 struct message_message_fie_t {
     struct pbtools_message_base_t base;
-    struct message_message_fie_foo_t foo;
+    struct message_message_fie_foo_t *foo_p;
 };
 
 /**
@@ -108,8 +108,8 @@ struct message_message_repeated_t {
 struct message_message_t {
     struct pbtools_message_base_t base;
     enum message_message_foo_e foo;
-    struct message_bar_t bar;
-    struct message_message_fie_t fie;
+    struct message_bar_t *bar_p;
+    struct message_message_fie_t *fie_p;
 };
 
 /**
@@ -180,6 +180,18 @@ int message_bar_decode(
     struct message_bar_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+int message_message_bar_alloc(
+    struct message_message_t *self_p);
+
+int message_message_fie_alloc(
+    struct message_message_t *self_p);
+
+int message_message_fie_foo_alloc(
+    struct message_message_fie_t *self_p);
+
+int message_message_fie_foo_bar_alloc(
+    struct message_message_fie_foo_t *self_p);
 
 /**
  * Encoding and decoding of message.Message.

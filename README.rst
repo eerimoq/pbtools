@@ -131,45 +131,11 @@ One struct is generated per message.
 
    struct foo_fie_t {
        int32_t v2;
-       struct foo_bar_t v3;
-   };
-
-The generated code can encode and decode messages.
-
-.. code-block:: c
-
-   struct foo_fie_t *fie_p;
-
-   /* Encode. */
-   fie_p = foo_fie_new(...);
-   fie_p->v2 = 5;
-   fie_p->v3.v1 = true;
-   foo_fie_encode(fie_p, ...);
-
-   /* Decode. */
-   fie_p = foo_fie_new(...);
-   foo_fie_decode(fie_p, ...);
-   printf("%d\n", fie_p->v2);
-   printf("%d\n", fie_p->v3.v1);
-
-Give ``--sub-message-pointers`` to enable sub-message presence
-detection and support for recursive message.
-
-The ``v3`` field is now a pointer.
-
-.. code-block:: c
-
-   struct foo_bar_t {
-       bool v1;
-   };
-
-   struct foo_fie_t {
-       int32_t v2;
        struct foo_bar_t *v3_p;
    };
 
-``v3`` has to be allocated before encoding and checked if ``NULL``
-after decoding.
+The sub-message ``v3`` has to be allocated before encoding and checked
+if ``NULL`` after decoding.
 
 .. code-block:: c
 
@@ -394,10 +360,6 @@ The generate C source subcommand
 
 Below is an example of how to generate C source code from a
 proto-file.
-
-Give ``--sub-message-pointers`` to make sub-messages pointers to
-enable sub-message presence detection and support for recursive
-messages.
 
 .. code-block:: text
 

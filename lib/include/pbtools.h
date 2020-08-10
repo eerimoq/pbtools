@@ -690,12 +690,6 @@ void pbtools_encoder_sub_message_encode(
     struct pbtools_message_base_t *message_p,
     pbtools_message_encode_inner_t encode_inner);
 
-void pbtools_encoder_sub_message_pointer_encode(
-    struct pbtools_encoder_t *self_p,
-    int field_number,
-    struct pbtools_message_base_t *message_p,
-    pbtools_message_encode_inner_t encode_inner);
-
 void pbtools_encoder_sub_message_encode_always(
     struct pbtools_encoder_t *self_p,
     int field_number,
@@ -705,12 +699,6 @@ void pbtools_encoder_sub_message_encode_always(
 void pbtools_decoder_sub_message_decode(
     struct pbtools_decoder_t *self_p,
     int wire_type,
-    struct pbtools_message_base_t *message_p,
-    pbtools_message_decode_inner_t decode_inner);
-
-void pbtools_decoder_sub_message_pointer_decode(
-    struct pbtools_decoder_t *self_p,
-    int wire_type,
     struct pbtools_message_base_t **message_pp,
     size_t sub_message_size,
     pbtools_message_init_t message_init,
@@ -718,8 +706,8 @@ void pbtools_decoder_sub_message_pointer_decode(
 
 const char *pbtools_error_code_to_string(int code);
 
- void pbtools_repeated_info_init(struct pbtools_repeated_info_t *self_p,
-                                 int tag);
+void pbtools_repeated_info_init(struct pbtools_repeated_info_t *self_p,
+                                int tag);
 
 void pbtools_repeated_info_decode(struct pbtools_repeated_info_t *self_p,
                                   struct pbtools_decoder_t *decoder_p,

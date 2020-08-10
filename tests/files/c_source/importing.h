@@ -51,7 +51,7 @@ struct importing_message_repeated_t {
 struct importing_message_t {
     struct pbtools_message_base_t base;
     enum imported_imported_enum_e v1;
-    struct imported_imported_message_t v2;
+    struct imported_imported_message_t *v2_p;
 };
 
 /**
@@ -64,8 +64,8 @@ struct importing_message2_repeated_t {
 
 struct importing_message2_t {
     struct pbtools_message_base_t base;
-    struct importing_message_t v1;
-    struct imported2_foo_bar_imported2_message_t v2;
+    struct importing_message_t *v1_p;
+    struct imported2_foo_bar_imported2_message_t *v2_p;
 };
 
 /**
@@ -79,8 +79,11 @@ struct importing_message3_repeated_t {
 struct importing_message3_t {
     struct pbtools_message_base_t base;
     enum imported_imported_duplicated_package_enum_e v1;
-    struct imported_imported_duplicated_package_message_t v2;
+    struct imported_imported_duplicated_package_message_t *v2_p;
 };
+
+int importing_message_v2_alloc(
+    struct importing_message_t *self_p);
 
 /**
  * Encoding and decoding of importing.Message.
@@ -100,6 +103,12 @@ int importing_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
+int importing_message2_v1_alloc(
+    struct importing_message2_t *self_p);
+
+int importing_message2_v2_alloc(
+    struct importing_message2_t *self_p);
+
 /**
  * Encoding and decoding of importing.Message2.
  */
@@ -117,6 +126,9 @@ int importing_message2_decode(
     struct importing_message2_t *self_p,
     const uint8_t *encoded_p,
     size_t size);
+
+int importing_message3_v2_alloc(
+    struct importing_message3_t *self_p);
 
 /**
  * Encoding and decoding of importing.Message3.
