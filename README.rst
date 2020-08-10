@@ -19,6 +19,11 @@ Known limitations:
 
 - Public imports are not implemented.
 
+ToDo:
+
+- Make ``map`` easier to use. Only one allocation should be needed
+  before encoding, not one per sub-message item.
+
 Project homepage: https://github.com/eerimoq/pbtools
 
 Documentation: https://pbtools.readthedocs.io
