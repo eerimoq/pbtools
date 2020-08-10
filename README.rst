@@ -122,7 +122,7 @@ For example, let's create a protocol specification.
    }
 
    message Fie {
-       int32 v2 = 1;
+       optional int32 v2 = 1;
        Bar v3 = 2;
    }
 
@@ -135,7 +135,10 @@ One struct is generated per message.
    };
 
    struct foo_fie_t {
-       int32_t v2;
+       struct {
+           bool is_present;
+           int32_t value;
+       } v2;
        struct foo_bar_t *v3_p;
    };
 
@@ -148,7 +151,8 @@ if ``NULL`` after decoding.
 
    /* Encode. */
    fie_p = foo_fie_new(...);
-   fie_p->v2 = 5;
+   fie_p->v2.is_present = true;
+   fie_p->v2.value = 5;
    foo_fie_v3_alloc(fie_p);
    fie_p->v3_p->v1 = true;
    foo_fie_encode(fie_p, ...);
@@ -156,7 +160,10 @@ if ``NULL`` after decoding.
    /* Decode. */
    fie_p = foo_fie_new(...);
    foo_fie_decode(fie_p, ...);
-   printf("%d\n", fie_p->v2);
+
+   if (fie_p->v2.is_present) {
+       printf("%d\n", fie_p->v2.value);
+   }
 
    if (fie_p->v3_p != NULL) {
        printf("%d\n", fie_p->v3_p->v1);
