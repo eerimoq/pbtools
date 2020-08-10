@@ -69,6 +69,6 @@ release-to-pypi:
 	twine upload dist/*
 
 generate:
-	$(MAKE) -C examples/c generate
+	$(MAKE) -C examples generate
 	$(MAKE) -C benchmark/pbtools generate
 	$(MAKE) -C tests fuzzer-generate

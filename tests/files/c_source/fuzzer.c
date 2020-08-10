@@ -42,13 +42,16 @@ void fuzzer_everything_oneof_field_oneof_uint32_init(
     self_p->oneof_field.value.oneof_uint32 = 0;
 }
 
-void fuzzer_everything_oneof_field_oneof_nested_message_init(
+int fuzzer_everything_oneof_field_oneof_nested_message_alloc(
     struct fuzzer_everything_t *self_p)
 {
     self_p->oneof_field.choice = fuzzer_everything_oneof_field_choice_oneof_nested_message_e;
-    fuzzer_everything_nested_message_init(
-        &self_p->oneof_field.value.oneof_nested_message,
-        self_p->base.heap_p);
+
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->oneof_field.value.oneof_nested_message_p,
+                self_p->base.heap_p,
+                sizeof(struct fuzzer_everything_nested_message_t),
+                (pbtools_message_init_t)fuzzer_everything_nested_message_init));
 }
 
 void fuzzer_everything_oneof_field_oneof_string_init(
@@ -72,29 +75,29 @@ void fuzzer_everything_oneof_field_encode(
     switch (self_p->choice) {
 
     case fuzzer_everything_oneof_field_choice_oneof_uint32_e:
-        pbtools_encoder_write_uint32(
+        pbtools_encoder_write_uint32_always(
             encoder_p,
             111,
             self_p->value.oneof_uint32);
         break;
 
     case fuzzer_everything_oneof_field_choice_oneof_nested_message_e:
-        pbtools_encoder_sub_message_encode(
+        pbtools_encoder_sub_message_encode_always(
             encoder_p,
             112,
-            &self_p->value.oneof_nested_message.base,
+            &self_p->value.oneof_nested_message_p->base,
             (pbtools_message_encode_inner_t)fuzzer_everything_nested_message_encode_inner);
         break;
 
     case fuzzer_everything_oneof_field_choice_oneof_string_e:
-        pbtools_encoder_write_string(
+        pbtools_encoder_write_string_always(
             encoder_p,
             113,
             self_p->value.oneof_string_p);
         break;
 
     case fuzzer_everything_oneof_field_choice_oneof_bytes_e:
-        pbtools_encoder_write_bytes(
+        pbtools_encoder_write_bytes_always(
             encoder_p,
             114,
             &self_p->value.oneof_bytes);
@@ -121,11 +124,13 @@ static void fuzzer_everything_oneof_field_oneof_nested_message_decode(
     int wire_type,
     struct fuzzer_everything_t *self_p)
 {
-    fuzzer_everything_oneof_field_oneof_nested_message_init(self_p);
+    self_p->oneof_field.choice = fuzzer_everything_oneof_field_choice_oneof_nested_message_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        &self_p->oneof_field.value.oneof_nested_message.base,
+        (struct pbtools_message_base_t **)&self_p->oneof_field.value.oneof_nested_message_p,
+        sizeof(struct fuzzer_everything_nested_message_t),
+        (pbtools_message_init_t)fuzzer_everything_nested_message_init,
         (pbtools_message_decode_inner_t)fuzzer_everything_nested_message_decode_inner);
 }
 
@@ -179,21 +184,21 @@ void fuzzer_everything_nested_message_oneof_field_encode(
     switch (self_p->choice) {
 
     case fuzzer_everything_nested_message_oneof_field_choice_a_e:
-        pbtools_encoder_write_int32(
+        pbtools_encoder_write_int32_always(
             encoder_p,
             1,
             self_p->value.a);
         break;
 
     case fuzzer_everything_nested_message_oneof_field_choice_b_e:
-        pbtools_encoder_write_string(
+        pbtools_encoder_write_string_always(
             encoder_p,
             10000,
             self_p->value.b_p);
         break;
 
     case fuzzer_everything_nested_message_oneof_field_choice_c_e:
-        pbtools_encoder_write_float(
+        pbtools_encoder_write_float_always(
             encoder_p,
             10001,
             self_p->value.c);
@@ -336,11 +341,11 @@ void fuzzer_everything_init(
     self_p->optional_bool = 0;
     self_p->optional_string_p = "";
     pbtools_bytes_init(&self_p->optional_bytes);
-    fuzzer_everything_nested_message_init(&self_p->optional_nested_message, heap_p);
+    self_p->optional_nested_message_p = NULL;
     self_p->optional_nested_enum = 0;
     self_p->optional_string_piece_p = "";
     self_p->optional_cord_p = "";
-    fuzzer_everything_nested_message_init(&self_p->optional_lazy_message, heap_p);
+    self_p->optional_lazy_message_p = NULL;
     self_p->repeated_int32.length = 0;
     self_p->repeated_int64.length = 0;
     self_p->repeated_uint32.length = 0;
@@ -397,7 +402,7 @@ void fuzzer_everything_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         27,
-        &self_p->optional_lazy_message.base,
+        (struct pbtools_message_base_t *)self_p->optional_lazy_message_p,
         (pbtools_message_encode_inner_t)fuzzer_everything_nested_message_encode_inner);
     pbtools_encoder_write_string(encoder_p, 25, self_p->optional_cord_p);
     pbtools_encoder_write_string(encoder_p, 24, self_p->optional_string_piece_p);
@@ -405,7 +410,7 @@ void fuzzer_everything_encode_inner(
     pbtools_encoder_sub_message_encode(
         encoder_p,
         18,
-        &self_p->optional_nested_message.base,
+        (struct pbtools_message_base_t *)self_p->optional_nested_message_p,
         (pbtools_message_encode_inner_t)fuzzer_everything_nested_message_encode_inner);
     pbtools_encoder_write_bytes(encoder_p, 15, &self_p->optional_bytes);
     pbtools_encoder_write_string(encoder_p, 14, self_p->optional_string_p);
@@ -539,7 +544,9 @@ void fuzzer_everything_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->optional_nested_message.base,
+                (struct pbtools_message_base_t **)&self_p->optional_nested_message_p,
+                sizeof(struct fuzzer_everything_nested_message_t),
+                (pbtools_message_init_t)fuzzer_everything_nested_message_init,
                 (pbtools_message_decode_inner_t)fuzzer_everything_nested_message_decode_inner);
             break;
 
@@ -559,7 +566,9 @@ void fuzzer_everything_decode_inner(
             pbtools_decoder_sub_message_decode(
                 decoder_p,
                 wire_type,
-                &self_p->optional_lazy_message.base,
+                (struct pbtools_message_base_t **)&self_p->optional_lazy_message_p,
+                sizeof(struct fuzzer_everything_nested_message_t),
+                (pbtools_message_init_t)fuzzer_everything_nested_message_init,
                 (pbtools_message_decode_inner_t)fuzzer_everything_nested_message_decode_inner);
             break;
 
@@ -815,6 +824,26 @@ void fuzzer_everything_decode_inner(
         decoder_p,
         &repeated_info_repeated_lazy_message,
         &self_p->repeated_lazy_message);
+}
+
+int fuzzer_everything_optional_nested_message_alloc(
+    struct fuzzer_everything_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->optional_nested_message_p,
+                self_p->base.heap_p,
+                sizeof(struct fuzzer_everything_nested_message_t),
+                (pbtools_message_init_t)fuzzer_everything_nested_message_init));
+}
+
+int fuzzer_everything_optional_lazy_message_alloc(
+    struct fuzzer_everything_t *self_p)
+{
+    return (pbtools_sub_message_alloc(
+                (struct pbtools_message_base_t **)&self_p->optional_lazy_message_p,
+                self_p->base.heap_p,
+                sizeof(struct fuzzer_everything_nested_message_t),
+                (pbtools_message_init_t)fuzzer_everything_nested_message_init));
 }
 
 int fuzzer_everything_repeated_int32_alloc(
