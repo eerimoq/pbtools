@@ -3497,8 +3497,7 @@ TEST(map_message2_encode_decode)
     /* Add one item to map2. */
     ASSERT_EQ(map_message2_map2_alloc(message_p, 1), 0);
     message_p->map2.items_p[0].key = 100;
-    ASSERT_EQ(map_message_pbtools_map_map2_value_alloc(&message_p->map2.items_p[0]),
-              0);
+    ASSERT_EQ(map_message2_map2_value_alloc(&message_p->map2.items_p[0]), 0);
     message_p->map2.items_p[0].value_p->v1 = true;
 
     /* Encode the message. */
