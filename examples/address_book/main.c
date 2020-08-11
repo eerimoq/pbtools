@@ -67,7 +67,6 @@ int main(int argc, const char *argv[])
 
     /* Check the decoded person. */
     person_p = &address_book_p->people.items_p[0];
-    assert(person_p != NULL);
     assert(strcmp(person_p->name_p, "Kalle Kula") == 0);
     assert(person_p->id == 56);
     assert(strcmp(person_p->email_p, "kalle.kula@foobar.com") == 0);
