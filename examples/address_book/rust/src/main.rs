@@ -1,3 +1,5 @@
+use pbtools::Encoder;
+use pbtools::Decoder;
 
 #[derive(Debug, Copy, Clone)]
 enum PhoneType {
@@ -79,7 +81,7 @@ impl AddressBook {
             encoded: encoded
         };
         self.decode_inner(&mut decoder);
-        Ok(decoder.pos as u64)
+        Ok(decoder.encoded.len() as u64)
     }
 
     fn decode_inner(&mut self, decoder: &mut Decoder) {

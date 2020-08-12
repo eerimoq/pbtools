@@ -1,0 +1,9 @@
+[package]
+name = "pbtools"
+version = "0.5.0"
+authors = ["Erik Moqvist <erik.moqvist@gmail.com>"]
+description = "Google Protocol Buffers"
+license = "MIT"
+repository = "https://github.com/eerimoq/pbtools"
+
+[dependencies]
