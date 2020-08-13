@@ -1,11 +1,11 @@
 [package]
 name = "pbtools"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Erik Moqvist <erik.moqvist@gmail.com>"]
-description = "Google Protocol Buffers"
+description = "Google Protocol Buffers encoding and decoding."
 license = "MIT"
 repository = "https://github.com/eerimoq/pbtools"
 keywords = ["protobuf", "proto", "proto3", "protocol-buffers"]
-readme = "README.rst"
+readme = "README.md"
 
 [dependencies]
