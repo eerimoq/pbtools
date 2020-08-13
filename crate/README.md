@@ -1,13 +1,13 @@
 # Google Protocol Buffers encoding and decoding
 
-🚧 🚧 🚧 🚧 🚧 Under construction - DO NOT USE 🚧 🚧 🚧 🚧 🚧
+🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
 Install the Python package pbtools and use it to generate Rust source
 code from protobuf specification(s). Add the generated files to your
 projects crate. Add this crate as a dependency in your project's
 Cargo.toml file and you should be good to go.
 
-🚧 🚧 🚧 🚧 🚧 Under construction - DO NOT USE 🚧 🚧 🚧 🚧 🚧
+🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
 # Example usage
 
