@@ -80,7 +80,7 @@ impl Decoder {
         String::from("koko")
     }
 
-    pub fn read_int32(&mut self, _wire_type: u32) -> s32 {
+    pub fn read_int32(&mut self, _wire_type: u32) -> i32 {
         5
     }
 }
