@@ -1,6 +1,6 @@
 ``` rust
 use address_book::{AddressBook, Person};
-use address_book::Person::{PhoneNumber, PhoneType};
+use address_book::person::{PhoneNumber, PhoneType};
 
 fn main() {
     // Encode.
