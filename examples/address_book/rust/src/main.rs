@@ -64,7 +64,7 @@ impl Person {
                 (1, wire_type) => { self.name = decoder.read_string(wire_type) },
                 (2, wire_type) => { self.id = decoder.read_int32(wire_type) },
                 (3, wire_type) => { self.email = decoder.read_string(wire_type) },
-                _ => println!("unknown")
+                _ => decoder.skip_field(wire_type)
             }
         }
     }

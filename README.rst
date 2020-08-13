@@ -253,6 +253,169 @@ Benchmark
 
 See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
 
+Rust source code design
+=======================
+
+The Rust source code is designed with the following in mind:
+
+- Clean and easy to use API.
+
+- Fast encoding and decoding.
+
+Scalar Value Types
+------------------
+
+Protobuf scalar value types are mapped to Rust types as shown in the
+table below.
+
++---------------+--------------------------------------------+
+| Protubuf Type | Rust Type                                  |
++===============+============================================+
+| ``double``    | ``f64``                                    |
++---------------+--------------------------------------------+
+| ``float``     | ``f32``                                    |
++---------------+--------------------------------------------+
+| ``int32``     | ``i32``                                    |
++---------------+--------------------------------------------+
+| ``int64``     | ``i64``                                    |
++---------------+--------------------------------------------+
+| ``uint32``    | ``u32``                                    |
++---------------+--------------------------------------------+
+| ``uint64``    | ``u64``                                    |
++---------------+--------------------------------------------+
+| ``sint32``    | ``i32``                                    |
++---------------+--------------------------------------------+
+| ``sint64``    | ``i64``                                    |
++---------------+--------------------------------------------+
+| ``fixed32``   | ``i32``                                    |
++---------------+--------------------------------------------+
+| ``fixed64``   | ``i64``                                    |
++---------------+--------------------------------------------+
+| ``sfixed32``  | ``i32``                                    |
++---------------+--------------------------------------------+
+| ``sfixed64``  | ``i64``                                    |
++---------------+--------------------------------------------+
+| ``bool``      | ``bool``                                   |
++---------------+--------------------------------------------+
+| ``string``    | ``String``                                 |
++---------------+--------------------------------------------+
+| ``bytes``     | ``Vec<u8>``                                |
++---------------+--------------------------------------------+
+
+Message
+-------
+
+A message is a struct in Rust.
+
+For example, let's create a protocol specification.
+
+.. code-block:: proto
+
+   syntax = "proto3";
+
+   package foo;
+
+   message Bar {
+       bool v1 = 1;
+   }
+
+   message Fie {
+       optional int32 v2 = 1;
+       Bar v3 = 2;
+   }
+
+One struct is generated per message.
+
+.. code-block:: rust
+
+   pub struct Bar {
+       pub v1: bool
+   };
+
+   pub struct Fie {
+       pub v2: Option<i32>,
+       pub v3: Option<Box<Bar>>;
+   };
+
+.. code-block:: rust
+
+   // Encode.
+   let fie = Fie {
+       v2: Some(5),
+       v3: Some(Bar {
+           v1: true
+       })
+   };
+
+   let encoded = fie.encode();
+
+   // Decode.
+   fie = Default::default();
+   fie.decode(encoded);
+
+   if let Some(v2) = fie.v2 {
+        println!("v2: {}", v2);
+   }
+
+   if let Some(v3) = fie.v3 {
+        println!("v3.v1: {}", v3.v1);
+   }
+
+Oneof
+-----
+
+A oneof is an enum in Rust.
+
+For example, let's create a protocol specification.
+
+.. code-block:: proto
+
+   syntax = "proto3";
+
+   package foo;
+
+   message Bar {
+       oneof fie {
+           int32 v1 = 1;
+           bool v2 = 2;
+       };
+   }
+
+One enum is generated per oneof.
+
+.. code-block:: rust
+
+   pub struct BarOneofFie {
+       v1(i32),
+       v2(bool)
+   }
+
+   pub struct Bar {
+       fie: Option<BarOneofFie>;
+   }
+
+The generated code can encode and decode messages.
+
+.. code-block:: rust
+
+   // Encode with choice v1.
+   let mut bar: Bar {
+       fie: Some(BarOneofFie::v1(-2))
+   };
+
+   let encoded = bar.encode();
+
+   // Decode.
+   bar = Default::default();
+   bar.decode(encoded);
+
+   if let Some(fie) = bar.fie {
+       match fie {
+           BarOneofFie::v1(v1) => println!("v1: {}", v1),
+           BarOneofFie::v2(v2) => println!("v2: {}", v2)
+      }
+   }
+
 Example usage
 =============
 
