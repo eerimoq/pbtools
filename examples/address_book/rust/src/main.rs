@@ -1,29 +1,34 @@
-use pbtools::Encoder;
-use pbtools::Decoder;
+mod person {
+    use pbtools::Encoder;
 
-#[derive(Debug, Copy, Clone)]
-enum PhoneType {
-    MOBILE = 0,
-    HOME = 1,
-    WORK = 2
-}
+    #[derive(Debug, Copy, Clone)]
+    pub enum PhoneType {
+        MOBILE = 0,
+        HOME = 1,
+        WORK = 2
+    }
 
-impl Default for PhoneType {
-    fn default() -> Self { PhoneType::MOBILE }
-}
+    impl Default for PhoneType {
+        fn default() -> Self { PhoneType::MOBILE }
+    }
 
-#[derive(Default, Debug)]
-struct PhoneNumber {
-    number: String,
-    type_: PhoneType
-}
+    #[derive(Default, Debug)]
+    pub struct PhoneNumber {
+        pub number: String,
+        pub type_: PhoneType
+    }
 
-impl PhoneNumber {
-    fn encode_inner(&self,  encoder: &mut Encoder) {
-        encoder.write_string(1, &self.number);
-        encoder.write_int32(2, self.type_ as i32);
+    impl PhoneNumber {
+        pub fn encode_inner(&self,  encoder: &mut Encoder) {
+            encoder.write_string(1, &self.number);
+            encoder.write_int32(2, self.type_ as i32);
+        }
     }
 }
+
+use pbtools::Encoder;
+use pbtools::Decoder;
+use person::{PhoneNumber, PhoneType};
 
 #[derive(Default, Debug)]
 struct Person {
@@ -38,7 +43,7 @@ impl Person {
         encoder.write_string(1, &self.name);
         encoder.write_int32(2, self.id);
         encoder.write_string(3, &self.email);
-        
+
         for item in &self.phones {
             let mut item_encoder = Encoder {
                 encoded: vec![]
@@ -125,11 +130,11 @@ fn main() {
 
     address_book = Default::default();
     println!("Default:\n{:#?}", address_book);
-    
+
     match address_book.decode(encoded) {
         Ok(size) => println!("Size: {}", size),
         Err(message) => println!("Error: {}", message)
     }
-    
+
     println!("After decode:\n{:#?}", address_book);
 }

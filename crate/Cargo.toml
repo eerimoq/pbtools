@@ -1,6 +1,6 @@
 [package]
 name = "pbtools"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["Erik Moqvist <erik.moqvist@gmail.com>"]
 description = "Google Protocol Buffers encoding and decoding."
 license = "MIT"

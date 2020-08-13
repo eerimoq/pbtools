@@ -29,12 +29,12 @@ fn main() {
 
     // Decode.
     address_book = Default::default();
-    
+
     match address_book.decode(encoded) {
         Ok(()) => println!("Ok!"),
         Err(message) => println!("Error: {}", message)
     }
-    
+
     println!("Decoded:\n{:#?}", address_book);
 }
 ```
