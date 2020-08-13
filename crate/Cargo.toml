@@ -10,4 +10,4 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
-num_enum = "*"
+num_enum = "0.5.1"
