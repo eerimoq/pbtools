@@ -53,6 +53,21 @@ impl Person {
             encoder.encoded.extend(item_encoder.encoded);
         }
     }
+
+    fn decode_inner(&mut self,  decoder: &mut Decoder) {
+        loop {
+            if !decoder.available() {
+                break;
+            }
+
+            match decoder.read_tag() {
+                (1, wire_type) => { self.name = decoder.read_string(wire_type) },
+                (2, wire_type) => { self.id = decoder.read_int32(wire_type) },
+                (3, wire_type) => { self.email = decoder.read_string(wire_type) },
+                _ => println!("unknown")
+            }
+        }
+    }
 }
 
 #[derive(Default, Debug)]
@@ -96,7 +111,11 @@ impl AddressBook {
             }
 
             match decoder.read_tag() {
-                (1, wire_type) => println!("1, {}", wire_type),
+                (1, _wire_type) => {
+                    let mut person: Person = Default::default();
+                    person.decode_inner(decoder);
+                    self.people.push(person)
+                },
                 _ => println!("unknown")
             }
         }

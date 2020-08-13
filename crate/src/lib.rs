@@ -75,4 +75,12 @@ impl Decoder {
             (0, 0)
         }
     }
+
+    pub fn read_string(&mut self, _wire_type: u32) -> String {
+        String::from("koko")
+    }
+
+    pub fn read_int32(&mut self, _wire_type: u32) -> s32 {
+        5
+    }
 }
