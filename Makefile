@@ -72,3 +72,9 @@ generate:
 	$(MAKE) -C examples generate
 	$(MAKE) -C benchmark/pbtools generate
 	$(MAKE) -C tests fuzzer-generate
+
+rust-crate:
+	cd crate && cargo build
+
+rust:
+	cd examples/address_book/rust && cargo build && ./target/debug/rust

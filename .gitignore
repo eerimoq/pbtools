@@ -77,3 +77,4 @@ tests/main_fuzzer*
 report.json
 generated
 lib/libpbtools.a
+Cargo.lock

@@ -1,3 +1,14 @@
+🚧🚧🚧 Under construction - DO NOT USE 🚧🚧🚧
+
+# Google Protocol Buffers encoding and decoding
+
+Install the Python package pbtools and use it to generate Rust source
+code from protobuf specification(s). Add the generated files to your
+projects crate. Add this crate as a dependency in your project's
+Cargo.toml file and you should be good to go.
+
+# Example usage
+
 ``` rust
 use address_book::{AddressBook, Person};
 use address_book::person::{PhoneNumber, PhoneType};

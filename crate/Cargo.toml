@@ -7,5 +7,7 @@ license = "MIT"
 repository = "https://github.com/eerimoq/pbtools"
 keywords = ["protobuf", "proto", "proto3", "protocol-buffers"]
 readme = "README.md"
+edition = "2018"
 
 [dependencies]
+num_enum = "*"

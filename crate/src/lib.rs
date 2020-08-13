@@ -1,8 +1,13 @@
+use num_enum::TryFromPrimitive;
+use std::convert::TryFrom;
+
+#[derive(Debug, Eq, PartialEq, TryFromPrimitive)]
+#[repr(u32)]
 enum WireType {
     Varint = 0,
-    // Bits64 = 1,
+    Bits64 = 1,
     LengthDelimited = 2,
-    // Bits32 = 5
+    Bits32 = 5
 }
 
 pub struct Encoder {
@@ -76,11 +81,37 @@ impl Decoder {
         }
     }
 
+    pub fn read_varint(&mut self) -> u64 {
+        5
+    }
+
+    pub fn read_length_delimited(&mut self) -> u64{
+        3
+    }
+
     pub fn read_string(&mut self, _wire_type: u32) -> String {
         String::from("koko")
     }
 
     pub fn read_int32(&mut self, _wire_type: u32) -> i32 {
         5
+    }
+
+    pub fn seek(&mut self, offset: u32) {
+        self.pos += offset as usize;
+    }
+
+    pub fn skip_field(&mut self, wire_type: u32) {
+        match WireType::try_from(wire_type) {
+            Ok(WireType::Varint) => {
+                self.read_varint();
+            },
+            Ok(WireType::Bits64) => self.seek(8),
+            Ok(WireType::LengthDelimited) => {
+                self.read_length_delimited();
+            },
+            Ok(WireType::Bits32) => self.seek(4),
+            Err(message) => panic!("{}", message)
+        };
     }
 }

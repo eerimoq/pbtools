@@ -64,7 +64,7 @@ impl Person {
                 (1, wire_type) => { self.name = decoder.read_string(wire_type) },
                 (2, wire_type) => { self.id = decoder.read_int32(wire_type) },
                 (3, wire_type) => { self.email = decoder.read_string(wire_type) },
-                _ => decoder.skip_field(wire_type)
+                (_, wire_type) => decoder.skip_field(wire_type)
             }
         }
     }
@@ -114,9 +114,9 @@ impl AddressBook {
                 (1, _wire_type) => {
                     let mut person: Person = Default::default();
                     person.decode_inner(decoder);
-                    self.people.push(person)
+                    self.people.push(person);
                 },
-                _ => println!("unknown")
+                (_, wire_type) => decoder.skip_field(wire_type)
             }
         }
     }
