@@ -387,13 +387,17 @@ One enum is generated per oneof.
 
 .. code-block:: rust
 
-   pub struct BarOneofFie {
-       v1(i32),
-       v2(bool)
+   mod bar {
+       mod oneof {
+           pub struct Fie {
+               v1(i32),
+               v2(bool)
+           }
+       }
    }
 
    pub struct Bar {
-       fie: Option<BarOneofFie>;
+       fie: Option<bar::oneof::Fie>;
    }
 
 The generated code can encode and decode messages.
@@ -402,7 +406,7 @@ The generated code can encode and decode messages.
 
    // Encode with choice v1.
    let mut bar: Bar {
-       fie: Some(BarOneofFie::v1(-2))
+       fie: Some(bar::oneof::Fie::v1(-2))
    };
 
    let encoded = bar.encode();
@@ -413,8 +417,8 @@ The generated code can encode and decode messages.
 
    if let Some(fie) = bar.fie {
        match fie {
-           BarOneofFie::v1(v1) => println!("v1: {}", v1),
-           BarOneofFie::v2(v2) => println!("v2: {}", v2)
+           bar::oneof::Fie::v1(v1) => println!("v1: {}", v1),
+           bar::oneof::Fie::v2(v2) => println!("v2: {}", v2)
       }
    }
 
