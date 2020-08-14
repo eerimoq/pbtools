@@ -389,7 +389,7 @@ One enum is generated per oneof.
 
    mod bar {
        mod oneof {
-           pub struct Fie {
+           pub enum Fie {
                v1(i32),
                v2(bool)
            }
