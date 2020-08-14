@@ -2,8 +2,8 @@
 
 🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
-Install the Python 3 package
-[pbtools](https://pypi.org/project/pbtools/) and use it to generate
+Install the [Python 3 package
+pbtools](https://pypi.org/project/pbtools/) and use it to generate
 Rust source code from protobuf specification(s). Add the generated
 file(s) to your project's crate. Add this crate as a dependency in
 your project's Cargo.toml file and you should be good to go.
