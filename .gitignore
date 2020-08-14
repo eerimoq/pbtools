@@ -78,3 +78,4 @@ report.json
 generated
 lib/libpbtools.a
 Cargo.lock
+/*.rs

@@ -156,6 +156,41 @@ class CommandLineTest(unittest.TestCase):
         self.assertTrue(os.path.exists('generated/address_book.h'))
         self.assertTrue(os.path.exists('generated/address_book.c'))
 
+    def test_command_line_generate_rust_source(self):
+        specs = [
+            'address_book',
+        ]
+
+        for spec in specs:
+            if isinstance(spec, tuple):
+                proto = f'tests/files/{spec[0]}.proto'
+                options = []
+
+                for include_path in spec[1]:
+                    options += ['-I', f'tests/files/{include_path}']
+
+                spec = os.path.basename(spec[0])
+            else:
+                proto = f'tests/files/{spec}.proto'
+                options = []
+
+            argv = [
+                'pbtools',
+                'generate_rust_source',
+                *options,
+                proto
+            ]
+
+            filename_rs = f'{spec}.rs'
+
+            remove_files([filename_rs])
+
+            with patch('sys.argv', argv):
+                pbtools._main()
+
+            self.assert_files_equal(filename_rs,
+                                    f'tests/files/rust_source/{filename_rs}')
+
 
 if __name__ == '__main__':
     unittest.main()
