@@ -19,6 +19,10 @@ address_book.rs
 
 # Example usage
 
+See
+https://github.com/eerimoq/pbtools/tree/rust/examples/address_book/rust
+for the complete example.
+
 ``` rust
 use address_book::{AddressBook, Person};
 use address_book::person::{PhoneNumber, PhoneType};
