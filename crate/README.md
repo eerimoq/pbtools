@@ -2,10 +2,18 @@
 
 🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
-Install the Python package pbtools and use it to generate Rust source
-code from protobuf specification(s). Add the generated files to your
-projects crate. Add this crate as a dependency in your project's
-Cargo.toml file and you should be good to go.
+Install the Python package
+[pbtools](https://pypi.org/project/pbtools/) and use it to generate
+Rust source code from protobuf specification(s). Add the generated
+files to your projects crate. Add this crate as a dependency in your
+project's Cargo.toml file and you should be good to go.
+
+``` console
+$ pip install pbtools
+$ pbtools generate_rust_source address_book.proto
+$ ls -l
+address_book.rs
+```
 
 🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
