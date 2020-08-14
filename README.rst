@@ -11,7 +11,7 @@ About
 
 - `C` source code generator.
 
-- `Rust` source code generator (under construction).
+- `Rust` source code generator (🚧 🚧 🚧 under construction 🚧 🚧 🚧).
 
 - `proto3`_ language parser.
 
