@@ -11,7 +11,7 @@ About
 
 - `C` source code generator.
 
-- `Rust` source code generator (🚧 🏗 🚧 under construction 🚧 🏗 🚧).
+- `Rust` source code generator (🚧 🚧 🚧 under construction 🚧 🚧 🚧).
 
 - `proto3`_ language parser.
 
@@ -258,7 +258,7 @@ See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
 Rust source code design
 =======================
 
-🚧 🏗 🚧 🏗 🚧 **Under construction - DO NOT USE** 🚧 🏗 🚧 🏗 🚧
+🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
 The Rust source code is designed with the following in mind:
 
@@ -266,7 +266,7 @@ The Rust source code is designed with the following in mind:
 
 - Fast encoding and decoding.
 
-🚧 🏗 🚧 🏗 🚧 **Under construction - DO NOT USE** 🚧 🏗 🚧 🏗 🚧
+🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
 
 Scalar Value Types
 ------------------
