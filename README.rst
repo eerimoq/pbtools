@@ -11,6 +11,8 @@ About
 
 - `C` source code generator.
 
+- `Rust` source code generator.
+
 - `proto3`_ language parser.
 
 Known limitations:
