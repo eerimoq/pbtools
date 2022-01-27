@@ -15,12 +15,12 @@ FUZZER_CFLAGS = \
 FUZZER_EXECUTION_TIME ?= 30
 
 CFLAGS ?= \
+	-Wno-gnu-alignof-expression \
+	-Wno-unused-command-line-argument \
 	-fprofile-arcs \
 	-ftest-coverage \
 	-fsanitize=address \
 	-fsanitize=signed-integer-overflow \
-	-Wjump-misses-init \
-	-Wlogical-op \
 	-Wdouble-promotion \
 	-Wfloat-equal \
 	-Wformat=2 \
@@ -31,6 +31,7 @@ CFLAGS ?= \
 	-no-pie \
 	-std=gnu11 \
 	-Wconversion \
+	-Wno-sign-conversion \
 	-Wall \
 	-Wextra \
 	-Wpedantic
@@ -41,6 +42,7 @@ all:
 	    -I ../lib/include \
 	    -c \
 	    -no-pie \
+	    -Wno-gnu-alignof-expression \
 	    ../lib/src/pbtools.c \
 	    -o no-float.o
 	gcc -O2 -no-pie -g nala.c -c -o nala.o

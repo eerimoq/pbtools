@@ -48,21 +48,10 @@ enum oneof_enum_e {
 /**
  * Enum oneof.Message.value.
  */
-enum oneof_message_value_choice_e {
-    oneof_message_value_choice_none_e = 0,
-    oneof_message_value_choice_v1_e = 1,
-    oneof_message_value_choice_v2_e = 2
-};
-
-/**
- * Oneof oneof.Message.value.
- */
-struct oneof_message_value_oneof_t {
-    enum oneof_message_value_choice_e choice;
-    union {
-        int32_t v1;
-        char *v2_p;
-    } value;
+enum oneof_message_value_e {
+    oneof_message_value_none_e = 0,
+    oneof_message_value_v1_e = 1,
+    oneof_message_value_v2_e = 2
 };
 
 /**
@@ -75,7 +64,11 @@ struct oneof_message_repeated_t {
 
 struct oneof_message_t {
     struct pbtools_message_base_t base;
-    struct oneof_message_value_oneof_t value;
+    enum oneof_message_value_e value;
+    union {
+        int32_t v1;
+        char *v2_p;
+    };
 };
 
 /**
@@ -94,45 +87,21 @@ struct oneof_message2_foo_t {
 /**
  * Enum oneof.Message2.oneof1.
  */
-enum oneof_message2_oneof1_choice_e {
-    oneof_message2_oneof1_choice_none_e = 0,
-    oneof_message2_oneof1_choice_v4_e = 1,
-    oneof_message2_oneof1_choice_v5_e = 2,
-    oneof_message2_oneof1_choice_v6_e = 3
-};
-
-/**
- * Oneof oneof.Message2.oneof1.
- */
-struct oneof_message2_oneof1_oneof_t {
-    enum oneof_message2_oneof1_choice_e choice;
-    union {
-        struct oneof_message2_foo_t *v4_p;
-        struct pbtools_bytes_t v5;
-        enum oneof_enum_e v6;
-    } value;
+enum oneof_message2_oneof1_e {
+    oneof_message2_oneof1_none_e = 0,
+    oneof_message2_oneof1_v4_e = 1,
+    oneof_message2_oneof1_v5_e = 2,
+    oneof_message2_oneof1_v6_e = 3
 };
 
 /**
  * Enum oneof.Message2.oneof2.
  */
-enum oneof_message2_oneof2_choice_e {
-    oneof_message2_oneof2_choice_none_e = 0,
-    oneof_message2_oneof2_choice_v1_e = 1,
-    oneof_message2_oneof2_choice_v2_e = 2,
-    oneof_message2_oneof2_choice_v3_e = 3
-};
-
-/**
- * Oneof oneof.Message2.oneof2.
- */
-struct oneof_message2_oneof2_oneof_t {
-    enum oneof_message2_oneof2_choice_e choice;
-    union {
-        bool v1;
-        struct oneof_message2_foo_t *v2_p;
-        struct oneof_message_t *v3_p;
-    } value;
+enum oneof_message2_oneof2_e {
+    oneof_message2_oneof2_none_e = 0,
+    oneof_message2_oneof2_v1_e = 1,
+    oneof_message2_oneof2_v2_e = 2,
+    oneof_message2_oneof2_v3_e = 3
 };
 
 /**
@@ -145,28 +114,27 @@ struct oneof_message2_repeated_t {
 
 struct oneof_message2_t {
     struct pbtools_message_base_t base;
-    struct oneof_message2_oneof1_oneof_t oneof1;
-    struct oneof_message2_oneof2_oneof_t oneof2;
+    enum oneof_message2_oneof1_e oneof1;
+    union {
+        struct oneof_message2_foo_t *v4_p;
+        struct pbtools_bytes_t v5;
+        enum oneof_enum_e v6;
+    };
+    enum oneof_message2_oneof2_e oneof2;
+    union {
+        bool v1;
+        struct oneof_message2_foo_t *v2_p;
+        struct oneof_message_t *v3_p;
+    };
 };
 
 /**
  * Enum oneof.Message3.Foo.inner_oneof.
  */
-enum oneof_message3_foo_inner_oneof_choice_e {
-    oneof_message3_foo_inner_oneof_choice_none_e = 0,
-    oneof_message3_foo_inner_oneof_choice_v1_e = 1,
-    oneof_message3_foo_inner_oneof_choice_v2_e = 2
-};
-
-/**
- * Oneof oneof.Message3.Foo.inner_oneof.
- */
-struct oneof_message3_foo_inner_oneof_oneof_t {
-    enum oneof_message3_foo_inner_oneof_choice_e choice;
-    union {
-        bool v1;
-        struct pbtools_bytes_t v2;
-    } value;
+enum oneof_message3_foo_inner_oneof_e {
+    oneof_message3_foo_inner_oneof_none_e = 0,
+    oneof_message3_foo_inner_oneof_v1_e = 1,
+    oneof_message3_foo_inner_oneof_v2_e = 2
 };
 
 /**
@@ -179,7 +147,11 @@ struct oneof_message3_foo_repeated_t {
 
 struct oneof_message3_foo_t {
     struct pbtools_message_base_t base;
-    struct oneof_message3_foo_inner_oneof_oneof_t inner_oneof;
+    enum oneof_message3_foo_inner_oneof_e inner_oneof;
+    union {
+        bool v1;
+        struct pbtools_bytes_t v2;
+    };
 };
 
 /**
@@ -198,19 +170,9 @@ struct oneof_message3_bar_t {
 /**
  * Enum oneof.Message3.oneof1.
  */
-enum oneof_message3_oneof1_choice_e {
-    oneof_message3_oneof1_choice_none_e = 0,
-    oneof_message3_oneof1_choice_v1_e = 1
-};
-
-/**
- * Oneof oneof.Message3.oneof1.
- */
-struct oneof_message3_oneof1_oneof_t {
-    enum oneof_message3_oneof1_choice_e choice;
-    union {
-        struct oneof_message3_bar_t *v1_p;
-    } value;
+enum oneof_message3_oneof1_e {
+    oneof_message3_oneof1_none_e = 0,
+    oneof_message3_oneof1_v1_e = 1
 };
 
 /**
@@ -223,13 +185,16 @@ struct oneof_message3_repeated_t {
 
 struct oneof_message3_t {
     struct pbtools_message_base_t base;
-    struct oneof_message3_oneof1_oneof_t oneof1;
+    enum oneof_message3_oneof1_e oneof1;
+    union {
+        struct oneof_message3_bar_t *v1_p;
+    };
 };
 
-void oneof_message_value_v1_init(
+void oneof_message_v1_init(
     struct oneof_message_t *self_p);
 
-void oneof_message_value_v2_init(
+void oneof_message_v2_init(
     struct oneof_message_t *self_p);
 
 /**
@@ -250,22 +215,22 @@ int oneof_message_decode(
     const uint8_t *encoded_p,
     size_t size);
 
-int oneof_message2_oneof1_v4_alloc(
+int oneof_message2_v4_alloc(
     struct oneof_message2_t *self_p);
 
-void oneof_message2_oneof1_v5_init(
+void oneof_message2_v5_init(
     struct oneof_message2_t *self_p);
 
-void oneof_message2_oneof1_v6_init(
+void oneof_message2_v6_init(
     struct oneof_message2_t *self_p);
 
-void oneof_message2_oneof2_v1_init(
+void oneof_message2_v1_init(
     struct oneof_message2_t *self_p);
 
-int oneof_message2_oneof2_v2_alloc(
+int oneof_message2_v2_alloc(
     struct oneof_message2_t *self_p);
 
-int oneof_message2_oneof2_v3_alloc(
+int oneof_message2_v3_alloc(
     struct oneof_message2_t *self_p);
 
 /**
@@ -286,17 +251,17 @@ int oneof_message2_decode(
     const uint8_t *encoded_p,
     size_t size);
 
-void oneof_message3_foo_inner_oneof_v1_init(
+void oneof_message3_foo_v1_init(
     struct oneof_message3_foo_t *self_p);
 
-void oneof_message3_foo_inner_oneof_v2_init(
+void oneof_message3_foo_v2_init(
     struct oneof_message3_foo_t *self_p);
 
 int oneof_message3_bar_foo_alloc(
     struct oneof_message3_bar_t *self_p,
     int length);
 
-int oneof_message3_oneof1_v1_alloc(
+int oneof_message3_v1_alloc(
     struct oneof_message3_t *self_p);
 
 /**

@@ -35,43 +35,18 @@
 #    error "Number of bits in a char must be 8."
 #endif
 
-void oneof_message_value_v1_init(
+void oneof_message_v1_init(
     struct oneof_message_t *self_p)
 {
-    self_p->value.choice = oneof_message_value_choice_v1_e;
-    self_p->value.value.v1 = 0;
+    self_p->value = oneof_message_value_v1_e;
+    self_p->v1 = 0;
 }
 
-void oneof_message_value_v2_init(
+void oneof_message_v2_init(
     struct oneof_message_t *self_p)
 {
-    self_p->value.choice = oneof_message_value_choice_v2_e;
-    self_p->value.value.v2_p = "";
-}
-
-void oneof_message_value_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_message_value_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case oneof_message_value_choice_v1_e:
-        pbtools_encoder_write_int32_always(
-            encoder_p,
-            1,
-            self_p->value.v1);
-        break;
-
-    case oneof_message_value_choice_v2_e:
-        pbtools_encoder_write_string_always(
-            encoder_p,
-            2,
-            self_p->value.v2_p);
-        break;
-
-    default:
-        break;
-    }
+    self_p->value = oneof_message_value_v2_e;
+    self_p->v2_p = "";
 }
 
 static void oneof_message_value_v1_decode(
@@ -79,8 +54,8 @@ static void oneof_message_value_v1_decode(
     int wire_type,
     struct oneof_message_t *self_p)
 {
-    oneof_message_value_v1_init(self_p);
-    self_p->value.value.v1 = pbtools_decoder_read_int32(
+    oneof_message_v1_init(self_p);
+    self_p->v1 = pbtools_decoder_read_int32(
         decoder_p,
         wire_type);
 }
@@ -90,10 +65,10 @@ static void oneof_message_value_v2_decode(
     int wire_type,
     struct oneof_message_t *self_p)
 {
-    oneof_message_value_v2_init(self_p);
+    oneof_message_v2_init(self_p);
     pbtools_decoder_read_string(decoder_p,
                                 wire_type,
-                                &self_p->value.value.v2_p);
+                                &self_p->v2_p);
 }
 
 void oneof_message_init(
@@ -101,14 +76,32 @@ void oneof_message_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->value.choice = 0;
+    self_p->value = 0;
 }
 
 void oneof_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct oneof_message_t *self_p)
 {
-    oneof_message_value_encode(encoder_p, &self_p->value);
+    switch (self_p->value) {
+
+    case oneof_message_value_v1_e:
+        pbtools_encoder_write_int32_always(
+            encoder_p,
+            1,
+            self_p->v1);
+        break;
+
+    case oneof_message_value_v2_e:
+        pbtools_encoder_write_string_always(
+            encoder_p,
+            2,
+            self_p->v2_p);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void oneof_message_decode_inner(
@@ -204,63 +197,30 @@ int oneof_message_decode(
                 (pbtools_message_decode_inner_t)oneof_message_decode_inner));
 }
 
-int oneof_message2_oneof1_v4_alloc(
+int oneof_message2_v4_alloc(
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof1.choice = oneof_message2_oneof1_choice_v4_e;
+    self_p->oneof1 = oneof_message2_oneof1_v4_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof1.value.v4_p,
+                (struct pbtools_message_base_t **)&self_p->v4_p,
                 self_p->base.heap_p,
                 sizeof(struct oneof_message2_foo_t),
                 (pbtools_message_init_t)oneof_message2_foo_init));
 }
 
-void oneof_message2_oneof1_v5_init(
+void oneof_message2_v5_init(
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof1.choice = oneof_message2_oneof1_choice_v5_e;
-    pbtools_bytes_init(&self_p->oneof1.value.v5);
+    self_p->oneof1 = oneof_message2_oneof1_v5_e;
+    pbtools_bytes_init(&self_p->v5);
 }
 
-void oneof_message2_oneof1_v6_init(
+void oneof_message2_v6_init(
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof1.choice = oneof_message2_oneof1_choice_v6_e;
-    self_p->oneof1.value.v6 = 0;
-}
-
-void oneof_message2_oneof1_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_message2_oneof1_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case oneof_message2_oneof1_choice_v4_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            4,
-            &self_p->value.v4_p->base,
-            (pbtools_message_encode_inner_t)oneof_message2_foo_encode_inner);
-        break;
-
-    case oneof_message2_oneof1_choice_v5_e:
-        pbtools_encoder_write_bytes_always(
-            encoder_p,
-            5,
-            &self_p->value.v5);
-        break;
-
-    case oneof_message2_oneof1_choice_v6_e:
-        pbtools_encoder_write_enum_always(
-            encoder_p,
-            6,
-            self_p->value.v6);
-        break;
-
-    default:
-        break;
-    }
+    self_p->oneof1 = oneof_message2_oneof1_v6_e;
+    self_p->v6 = 0;
 }
 
 static void oneof_message2_oneof1_v4_decode(
@@ -268,11 +228,11 @@ static void oneof_message2_oneof1_v4_decode(
     int wire_type,
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof1.choice = oneof_message2_oneof1_choice_v4_e;
+    self_p->oneof1 = oneof_message2_oneof1_v4_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof1.value.v4_p,
+        (struct pbtools_message_base_t **)&self_p->v4_p,
         sizeof(struct oneof_message2_foo_t),
         (pbtools_message_init_t)oneof_message2_foo_init,
         (pbtools_message_decode_inner_t)oneof_message2_foo_decode_inner);
@@ -283,10 +243,10 @@ static void oneof_message2_oneof1_v5_decode(
     int wire_type,
     struct oneof_message2_t *self_p)
 {
-    oneof_message2_oneof1_v5_init(self_p);
+    oneof_message2_v5_init(self_p);
     pbtools_decoder_read_bytes(decoder_p,
                                wire_type,
-                               &self_p->oneof1.value.v5);
+                               &self_p->v5);
 }
 
 static void oneof_message2_oneof1_v6_decode(
@@ -294,75 +254,41 @@ static void oneof_message2_oneof1_v6_decode(
     int wire_type,
     struct oneof_message2_t *self_p)
 {
-    oneof_message2_oneof1_v6_init(self_p);
-    self_p->oneof1.value.v6 = pbtools_decoder_read_enum(
+    oneof_message2_v6_init(self_p);
+    self_p->v6 = pbtools_decoder_read_enum(
         decoder_p,
         wire_type);
 }
 
-void oneof_message2_oneof2_v1_init(
+void oneof_message2_v1_init(
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof2.choice = oneof_message2_oneof2_choice_v1_e;
-    self_p->oneof2.value.v1 = 0;
+    self_p->oneof2 = oneof_message2_oneof2_v1_e;
+    self_p->v1 = 0;
 }
 
-int oneof_message2_oneof2_v2_alloc(
+int oneof_message2_v2_alloc(
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof2.choice = oneof_message2_oneof2_choice_v2_e;
+    self_p->oneof2 = oneof_message2_oneof2_v2_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof2.value.v2_p,
+                (struct pbtools_message_base_t **)&self_p->v2_p,
                 self_p->base.heap_p,
                 sizeof(struct oneof_message2_foo_t),
                 (pbtools_message_init_t)oneof_message2_foo_init));
 }
 
-int oneof_message2_oneof2_v3_alloc(
+int oneof_message2_v3_alloc(
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof2.choice = oneof_message2_oneof2_choice_v3_e;
+    self_p->oneof2 = oneof_message2_oneof2_v3_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof2.value.v3_p,
+                (struct pbtools_message_base_t **)&self_p->v3_p,
                 self_p->base.heap_p,
                 sizeof(struct oneof_message_t),
                 (pbtools_message_init_t)oneof_message_init));
-}
-
-void oneof_message2_oneof2_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_message2_oneof2_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case oneof_message2_oneof2_choice_v1_e:
-        pbtools_encoder_write_bool_always(
-            encoder_p,
-            1,
-            self_p->value.v1);
-        break;
-
-    case oneof_message2_oneof2_choice_v2_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            2,
-            &self_p->value.v2_p->base,
-            (pbtools_message_encode_inner_t)oneof_message2_foo_encode_inner);
-        break;
-
-    case oneof_message2_oneof2_choice_v3_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            3,
-            &self_p->value.v3_p->base,
-            (pbtools_message_encode_inner_t)oneof_message_encode_inner);
-        break;
-
-    default:
-        break;
-    }
 }
 
 static void oneof_message2_oneof2_v1_decode(
@@ -370,8 +296,8 @@ static void oneof_message2_oneof2_v1_decode(
     int wire_type,
     struct oneof_message2_t *self_p)
 {
-    oneof_message2_oneof2_v1_init(self_p);
-    self_p->oneof2.value.v1 = pbtools_decoder_read_bool(
+    oneof_message2_v1_init(self_p);
+    self_p->v1 = pbtools_decoder_read_bool(
         decoder_p,
         wire_type);
 }
@@ -381,11 +307,11 @@ static void oneof_message2_oneof2_v2_decode(
     int wire_type,
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof2.choice = oneof_message2_oneof2_choice_v2_e;
+    self_p->oneof2 = oneof_message2_oneof2_v2_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof2.value.v2_p,
+        (struct pbtools_message_base_t **)&self_p->v2_p,
         sizeof(struct oneof_message2_foo_t),
         (pbtools_message_init_t)oneof_message2_foo_init,
         (pbtools_message_decode_inner_t)oneof_message2_foo_decode_inner);
@@ -396,11 +322,11 @@ static void oneof_message2_oneof2_v3_decode(
     int wire_type,
     struct oneof_message2_t *self_p)
 {
-    self_p->oneof2.choice = oneof_message2_oneof2_choice_v3_e;
+    self_p->oneof2 = oneof_message2_oneof2_v3_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof2.value.v3_p,
+        (struct pbtools_message_base_t **)&self_p->v3_p,
         sizeof(struct oneof_message_t),
         (pbtools_message_init_t)oneof_message_init,
         (pbtools_message_decode_inner_t)oneof_message_decode_inner);
@@ -473,16 +399,69 @@ void oneof_message2_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->oneof1.choice = 0;
-    self_p->oneof2.choice = 0;
+    self_p->oneof1 = 0;
+    self_p->oneof2 = 0;
 }
 
 void oneof_message2_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct oneof_message2_t *self_p)
 {
-    oneof_message2_oneof1_encode(encoder_p, &self_p->oneof1);
-    oneof_message2_oneof2_encode(encoder_p, &self_p->oneof2);
+    switch (self_p->oneof1) {
+
+    case oneof_message2_oneof1_v4_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            4,
+            &self_p->v4_p->base,
+            (pbtools_message_encode_inner_t)oneof_message2_foo_encode_inner);
+        break;
+
+    case oneof_message2_oneof1_v5_e:
+        pbtools_encoder_write_bytes_always(
+            encoder_p,
+            5,
+            &self_p->v5);
+        break;
+
+    case oneof_message2_oneof1_v6_e:
+        pbtools_encoder_write_enum_always(
+            encoder_p,
+            6,
+            self_p->v6);
+        break;
+
+    default:
+        break;
+    }
+    switch (self_p->oneof2) {
+
+    case oneof_message2_oneof2_v1_e:
+        pbtools_encoder_write_bool_always(
+            encoder_p,
+            1,
+            self_p->v1);
+        break;
+
+    case oneof_message2_oneof2_v2_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            2,
+            &self_p->v2_p->base,
+            (pbtools_message_encode_inner_t)oneof_message2_foo_encode_inner);
+        break;
+
+    case oneof_message2_oneof2_v3_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            3,
+            &self_p->v3_p->base,
+            (pbtools_message_encode_inner_t)oneof_message_encode_inner);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void oneof_message2_decode_inner(
@@ -606,35 +585,16 @@ int oneof_message2_decode(
                 (pbtools_message_decode_inner_t)oneof_message2_decode_inner));
 }
 
-int oneof_message3_oneof1_v1_alloc(
+int oneof_message3_v1_alloc(
     struct oneof_message3_t *self_p)
 {
-    self_p->oneof1.choice = oneof_message3_oneof1_choice_v1_e;
+    self_p->oneof1 = oneof_message3_oneof1_v1_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof1.value.v1_p,
+                (struct pbtools_message_base_t **)&self_p->v1_p,
                 self_p->base.heap_p,
                 sizeof(struct oneof_message3_bar_t),
                 (pbtools_message_init_t)oneof_message3_bar_init));
-}
-
-void oneof_message3_oneof1_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_message3_oneof1_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case oneof_message3_oneof1_choice_v1_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            1,
-            &self_p->value.v1_p->base,
-            (pbtools_message_encode_inner_t)oneof_message3_bar_encode_inner);
-        break;
-
-    default:
-        break;
-    }
 }
 
 static void oneof_message3_oneof1_v1_decode(
@@ -642,53 +602,28 @@ static void oneof_message3_oneof1_v1_decode(
     int wire_type,
     struct oneof_message3_t *self_p)
 {
-    self_p->oneof1.choice = oneof_message3_oneof1_choice_v1_e;
+    self_p->oneof1 = oneof_message3_oneof1_v1_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof1.value.v1_p,
+        (struct pbtools_message_base_t **)&self_p->v1_p,
         sizeof(struct oneof_message3_bar_t),
         (pbtools_message_init_t)oneof_message3_bar_init,
         (pbtools_message_decode_inner_t)oneof_message3_bar_decode_inner);
 }
 
-void oneof_message3_foo_inner_oneof_v1_init(
+void oneof_message3_foo_v1_init(
     struct oneof_message3_foo_t *self_p)
 {
-    self_p->inner_oneof.choice = oneof_message3_foo_inner_oneof_choice_v1_e;
-    self_p->inner_oneof.value.v1 = 0;
+    self_p->inner_oneof = oneof_message3_foo_inner_oneof_v1_e;
+    self_p->v1 = 0;
 }
 
-void oneof_message3_foo_inner_oneof_v2_init(
+void oneof_message3_foo_v2_init(
     struct oneof_message3_foo_t *self_p)
 {
-    self_p->inner_oneof.choice = oneof_message3_foo_inner_oneof_choice_v2_e;
-    pbtools_bytes_init(&self_p->inner_oneof.value.v2);
-}
-
-void oneof_message3_foo_inner_oneof_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_message3_foo_inner_oneof_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case oneof_message3_foo_inner_oneof_choice_v1_e:
-        pbtools_encoder_write_bool_always(
-            encoder_p,
-            1,
-            self_p->value.v1);
-        break;
-
-    case oneof_message3_foo_inner_oneof_choice_v2_e:
-        pbtools_encoder_write_bytes_always(
-            encoder_p,
-            2,
-            &self_p->value.v2);
-        break;
-
-    default:
-        break;
-    }
+    self_p->inner_oneof = oneof_message3_foo_inner_oneof_v2_e;
+    pbtools_bytes_init(&self_p->v2);
 }
 
 static void oneof_message3_foo_inner_oneof_v1_decode(
@@ -696,8 +631,8 @@ static void oneof_message3_foo_inner_oneof_v1_decode(
     int wire_type,
     struct oneof_message3_foo_t *self_p)
 {
-    oneof_message3_foo_inner_oneof_v1_init(self_p);
-    self_p->inner_oneof.value.v1 = pbtools_decoder_read_bool(
+    oneof_message3_foo_v1_init(self_p);
+    self_p->v1 = pbtools_decoder_read_bool(
         decoder_p,
         wire_type);
 }
@@ -707,10 +642,10 @@ static void oneof_message3_foo_inner_oneof_v2_decode(
     int wire_type,
     struct oneof_message3_foo_t *self_p)
 {
-    oneof_message3_foo_inner_oneof_v2_init(self_p);
+    oneof_message3_foo_v2_init(self_p);
     pbtools_decoder_read_bytes(decoder_p,
                                wire_type,
-                               &self_p->inner_oneof.value.v2);
+                               &self_p->v2);
 }
 
 void oneof_message3_foo_init(
@@ -718,14 +653,32 @@ void oneof_message3_foo_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->inner_oneof.choice = 0;
+    self_p->inner_oneof = 0;
 }
 
 void oneof_message3_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct oneof_message3_foo_t *self_p)
 {
-    oneof_message3_foo_inner_oneof_encode(encoder_p, &self_p->inner_oneof);
+    switch (self_p->inner_oneof) {
+
+    case oneof_message3_foo_inner_oneof_v1_e:
+        pbtools_encoder_write_bool_always(
+            encoder_p,
+            1,
+            self_p->v1);
+        break;
+
+    case oneof_message3_foo_inner_oneof_v2_e:
+        pbtools_encoder_write_bytes_always(
+            encoder_p,
+            2,
+            &self_p->v2);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void oneof_message3_foo_decode_inner(
@@ -877,14 +830,26 @@ void oneof_message3_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->oneof1.choice = 0;
+    self_p->oneof1 = 0;
 }
 
 void oneof_message3_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct oneof_message3_t *self_p)
 {
-    oneof_message3_oneof1_encode(encoder_p, &self_p->oneof1);
+    switch (self_p->oneof1) {
+
+    case oneof_message3_oneof1_v1_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            1,
+            &self_p->v1_p->base,
+            (pbtools_message_encode_inner_t)oneof_message3_bar_encode_inner);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void oneof_message3_decode_inner(

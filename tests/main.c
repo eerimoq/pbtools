@@ -1586,10 +1586,10 @@ TEST(oneof_message_v1)
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_none_e);
+    ASSERT_EQ(message_p->value, oneof_message_value_none_e);
 
-    oneof_message_value_v1_init(message_p);
-    message_p->value.value.v1 = 65;
+    oneof_message_v1_init(message_p);
+    message_p->v1 = 65;
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
     ASSERT_MEMORY_EQ(&encoded[0], "\x08\x41", size);
@@ -1598,8 +1598,8 @@ TEST(oneof_message_v1)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v1_e);
-    ASSERT_EQ(message_p->value.value.v1, 65);
+    ASSERT_EQ(message_p->value, oneof_message_value_v1_e);
+    ASSERT_EQ(message_p->v1, 65);
 }
 
 TEST(oneof_message_v1_default_value)
@@ -1611,9 +1611,9 @@ TEST(oneof_message_v1_default_value)
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_none_e);
+    ASSERT_EQ(message_p->value, oneof_message_value_none_e);
 
-    oneof_message_value_v1_init(message_p);
+    oneof_message_v1_init(message_p);
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
     ASSERT_MEMORY_EQ(&encoded[0], "\x08\x00", size);
@@ -1622,8 +1622,8 @@ TEST(oneof_message_v1_default_value)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v1_e);
-    ASSERT_EQ(message_p->value.value.v1, 0);
+    ASSERT_EQ(message_p->value, oneof_message_value_v1_e);
+    ASSERT_EQ(message_p->v1, 0);
 }
 
 TEST(oneof_message_v2)
@@ -1635,8 +1635,8 @@ TEST(oneof_message_v2)
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message_value_v2_init(message_p);
-    message_p->value.value.v2_p = "Hello!";
+    oneof_message_v2_init(message_p);
+    message_p->v2_p = "Hello!";
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 8);
     ASSERT_MEMORY_EQ(&encoded[0], "\x12\x06Hello!", size);
@@ -1645,8 +1645,8 @@ TEST(oneof_message_v2)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 8);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v2_e);
-    ASSERT_EQ(message_p->value.value.v2_p, "Hello!");
+    ASSERT_EQ(message_p->value, oneof_message_value_v2_e);
+    ASSERT_EQ(message_p->v2_p, "Hello!");
 }
 
 TEST(oneof_message_v2_default_value)
@@ -1658,7 +1658,7 @@ TEST(oneof_message_v2_default_value)
 
     message_p = oneof_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message_value_v2_init(message_p);
+    oneof_message_v2_init(message_p);
     size = oneof_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
     ASSERT_MEMORY_EQ(&encoded[0], "\x12\x00", size);
@@ -1667,8 +1667,8 @@ TEST(oneof_message_v2_default_value)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_v2_e);
-    ASSERT_EQ(message_p->value.value.v2_p, "");
+    ASSERT_EQ(message_p->value, oneof_message_value_v2_e);
+    ASSERT_EQ(message_p->v2_p, "");
 }
 
 TEST(oneof_message_none)
@@ -1687,7 +1687,7 @@ TEST(oneof_message_none)
     ASSERT_NE(message_p, NULL);
     size = oneof_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 0);
-    ASSERT_EQ(message_p->value.choice, oneof_message_value_choice_none_e);
+    ASSERT_EQ(message_p->value, oneof_message_value_none_e);
 }
 
 TEST(oneof_message2_v6)
@@ -1699,10 +1699,10 @@ TEST(oneof_message2_v6)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message2_oneof1_v6_init(message_p);
-    message_p->oneof1.value.v6 = oneof_enum_b_e;
-    oneof_message2_oneof2_v1_init(message_p);
-    message_p->oneof2.value.v1 = true;
+    oneof_message2_v6_init(message_p);
+    message_p->v6 = oneof_enum_b_e;
+    oneof_message2_v1_init(message_p);
+    message_p->v1 = true;
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 4);
@@ -1713,10 +1713,10 @@ TEST(oneof_message2_v6)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 4);
-    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v6_e);
-    ASSERT_EQ(message_p->oneof1.value.v6, oneof_enum_b_e);
-    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v1_e);
-    ASSERT_EQ(message_p->oneof2.value.v1, true);
+    ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v6_e);
+    ASSERT_EQ(message_p->v6, oneof_enum_b_e);
+    ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v1_e);
+    ASSERT_EQ(message_p->v1, true);
 }
 
 TEST(oneof_message2_v5)
@@ -1728,11 +1728,11 @@ TEST(oneof_message2_v5)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message2_oneof1_v5_init(message_p);
-    message_p->oneof1.value.v5.buf_p = (uint8_t *)"123";
-    message_p->oneof1.value.v5.size = 3;
-    ASSERT_EQ(oneof_message2_oneof2_v2_alloc(message_p), 0);
-    message_p->oneof2.value.v2_p->bar = 9999;
+    oneof_message2_v5_init(message_p);
+    message_p->v5.buf_p = (uint8_t *)"123";
+    message_p->v5.size = 3;
+    ASSERT_EQ(oneof_message2_v2_alloc(message_p), 0);
+    message_p->v2_p->bar = 9999;
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 11);
@@ -1745,11 +1745,11 @@ TEST(oneof_message2_v5)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 11);
-    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v5_e);
-    ASSERT_EQ(message_p->oneof1.value.v5.size, 3);
-    ASSERT_MEMORY_EQ(message_p->oneof1.value.v5.buf_p, "123", 3);
-    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v2_e);
-    ASSERT_EQ(message_p->oneof2.value.v2_p->bar, 9999);
+    ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v5_e);
+    ASSERT_EQ(message_p->v5.size, 3);
+    ASSERT_MEMORY_EQ(message_p->v5.buf_p, "123", 3);
+    ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v2_e);
+    ASSERT_EQ(message_p->v2_p->bar, 9999);
 }
 
 TEST(oneof_message2_v1_default_value)
@@ -1761,7 +1761,7 @@ TEST(oneof_message2_v1_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message2_oneof2_v1_init(message_p);
+    oneof_message2_v1_init(message_p);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1772,8 +1772,8 @@ TEST(oneof_message2_v1_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v1_e);
-    ASSERT_FALSE(message_p->oneof2.value.v1);
+    ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v1_e);
+    ASSERT_FALSE(message_p->v1);
 }
 
 TEST(oneof_message2_v2_default_value)
@@ -1785,7 +1785,7 @@ TEST(oneof_message2_v2_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(oneof_message2_oneof2_v2_alloc(message_p), 0);
+    ASSERT_EQ(oneof_message2_v2_alloc(message_p), 0);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1796,8 +1796,8 @@ TEST(oneof_message2_v2_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v2_e);
-    ASSERT_EQ(message_p->oneof2.value.v2_p->bar, 0);
+    ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v2_e);
+    ASSERT_EQ(message_p->v2_p->bar, 0);
 }
 
 TEST(oneof_message2_v3_default_value)
@@ -1809,7 +1809,7 @@ TEST(oneof_message2_v3_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(oneof_message2_oneof2_v3_alloc(message_p), 0);
+    ASSERT_EQ(oneof_message2_v3_alloc(message_p), 0);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1820,9 +1820,8 @@ TEST(oneof_message2_v3_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v3_e);
-    ASSERT_EQ(message_p->oneof2.value.v3_p->value.choice,
-              oneof_message_value_choice_none_e);
+    ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v3_e);
+    ASSERT_EQ(message_p->v3_p->value, oneof_message_value_none_e);
 }
 
 TEST(oneof_message2_v3_v1_default_value)
@@ -1834,8 +1833,8 @@ TEST(oneof_message2_v3_v1_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(oneof_message2_oneof2_v3_alloc(message_p), 0);
-    oneof_message_value_v1_init(message_p->oneof2.value.v3_p);
+    ASSERT_EQ(oneof_message2_v3_alloc(message_p), 0);
+    oneof_message_v1_init(message_p->v3_p);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 4);
@@ -1846,10 +1845,9 @@ TEST(oneof_message2_v3_v1_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 4);
-    ASSERT_EQ(message_p->oneof2.choice, oneof_message2_oneof2_choice_v3_e);
-    ASSERT_EQ(message_p->oneof2.value.v3_p->value.choice,
-              oneof_message_value_choice_v1_e);
-    ASSERT_EQ(message_p->oneof2.value.v3_p->value.value.v1, 0);
+    ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v3_e);
+    ASSERT_EQ(message_p->v3_p->value, oneof_message_value_v1_e);
+    ASSERT_EQ(message_p->v3_p->v1, 0);
 }
 
 TEST(oneof_message2_v4_default_value)
@@ -1861,7 +1859,7 @@ TEST(oneof_message2_v4_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(oneof_message2_oneof1_v4_alloc(message_p), 0);
+    ASSERT_EQ(oneof_message2_v4_alloc(message_p), 0);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1872,8 +1870,8 @@ TEST(oneof_message2_v4_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v4_e);
-    ASSERT_EQ(message_p->oneof1.value.v4_p->bar, 0);
+    ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v4_e);
+    ASSERT_EQ(message_p->v4_p->bar, 0);
 }
 
 TEST(oneof_message2_v5_default_value)
@@ -1885,7 +1883,7 @@ TEST(oneof_message2_v5_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message2_oneof1_v5_init(message_p);
+    oneof_message2_v5_init(message_p);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1896,8 +1894,8 @@ TEST(oneof_message2_v5_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v5_e);
-    ASSERT_EQ(message_p->oneof1.value.v5.size, 0);
+    ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v5_e);
+    ASSERT_EQ(message_p->v5.size, 0);
 }
 
 TEST(oneof_message2_v6_default_value)
@@ -1909,7 +1907,7 @@ TEST(oneof_message2_v6_default_value)
 
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    oneof_message2_oneof1_v6_init(message_p);
+    oneof_message2_v6_init(message_p);
 
     size = oneof_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
@@ -1920,8 +1918,8 @@ TEST(oneof_message2_v6_default_value)
     size = oneof_message2_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 2);
-    ASSERT_EQ(message_p->oneof1.choice, oneof_message2_oneof1_choice_v6_e);
-    ASSERT_EQ(message_p->oneof1.value.v6, oneof_enum_a_e);
+    ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v6_e);
+    ASSERT_EQ(message_p->v6, oneof_enum_a_e);
 }
 
 TEST(oneof_message3)
@@ -1934,17 +1932,17 @@ TEST(oneof_message3)
 
     message_p = oneof_message3_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(oneof_message3_oneof1_v1_alloc(message_p), 0);
-    ASSERT_EQ(oneof_message3_bar_foo_alloc(message_p->oneof1.value.v1_p, 2), 0);
+    ASSERT_EQ(oneof_message3_v1_alloc(message_p), 0);
+    ASSERT_EQ(oneof_message3_bar_foo_alloc(message_p->v1_p, 2), 0);
 
-    foo_p = &message_p->oneof1.value.v1_p->foo.items_p[0];
-    oneof_message3_foo_inner_oneof_v2_init(foo_p);
-    foo_p->inner_oneof.value.v2.buf_p = (uint8_t *)"456";
-    foo_p->inner_oneof.value.v2.size = 3;
+    foo_p = &message_p->v1_p->foo.items_p[0];
+    oneof_message3_foo_v2_init(foo_p);
+    foo_p->v2.buf_p = (uint8_t *)"456";
+    foo_p->v2.size = 3;
 
-    foo_p = &message_p->oneof1.value.v1_p->foo.items_p[1];
-    oneof_message3_foo_inner_oneof_v1_init(foo_p);
-    foo_p->inner_oneof.value.v1 = true;
+    foo_p = &message_p->v1_p->foo.items_p[1];
+    oneof_message3_foo_v1_init(foo_p);
+    foo_p->v1 = true;
 
     size = oneof_message3_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 13);
@@ -1957,19 +1955,17 @@ TEST(oneof_message3)
     size = oneof_message3_decode(message_p, &encoded[0], size);
 
     ASSERT_EQ(size, 13);
-    ASSERT_EQ(message_p->oneof1.choice, oneof_message3_oneof1_choice_v1_e);
-    ASSERT_EQ(message_p->oneof1.value.v1_p->foo.length, 2);
+    ASSERT_EQ(message_p->oneof1, oneof_message3_oneof1_v1_e);
+    ASSERT_EQ(message_p->v1_p->foo.length, 2);
 
-    foo_p = &message_p->oneof1.value.v1_p->foo.items_p[0];
-    ASSERT_EQ(foo_p->inner_oneof.choice,
-              oneof_message3_foo_inner_oneof_choice_v2_e);
-    ASSERT_EQ(foo_p->inner_oneof.value.v2.size, 3);
-    ASSERT_MEMORY_EQ(foo_p->inner_oneof.value.v2.buf_p, "456", 3);
+    foo_p = &message_p->v1_p->foo.items_p[0];
+    ASSERT_EQ(foo_p->inner_oneof, oneof_message3_foo_inner_oneof_v2_e);
+    ASSERT_EQ(foo_p->v2.size, 3);
+    ASSERT_MEMORY_EQ(foo_p->v2.buf_p, "456", 3);
 
-    foo_p = &message_p->oneof1.value.v1_p->foo.items_p[1];
-    ASSERT_EQ(foo_p->inner_oneof.choice,
-              oneof_message3_foo_inner_oneof_choice_v1_e);
-    ASSERT_EQ(foo_p->inner_oneof.value.v1, true);
+    foo_p = &message_p->v1_p->foo.items_p[1];
+    ASSERT_EQ(foo_p->inner_oneof, oneof_message3_foo_inner_oneof_v1_e);
+    ASSERT_EQ(foo_p->v1, true);
 }
 
 TEST(repeated_int32s_one_item)
@@ -3097,7 +3093,9 @@ TEST(message_decode_error_bad_sub_message_wire_type)
 
     message_p = message_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    size = message_message_decode(message_p, "\x81\x34\x03\xe8\x14\x01", 6);
+    size = message_message_decode(message_p,
+                                  (const uint8_t *)"\x81\x34\x03\xe8\x14\x01",
+                                  6);
     ASSERT_EQ(size, -PBTOOLS_BAD_WIRE_TYPE);
 }
 
@@ -3547,9 +3545,10 @@ TEST(add_and_remove_fields_version1)
     /* Decode Version2 as Version1. */
     message_p = add_and_remove_fields_version1_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    size = add_and_remove_fields_version1_decode(message_p,
-                                                 "\x08\x05\x10\x06\x18\x07",
-                                                 6);
+    size = add_and_remove_fields_version1_decode(
+        message_p,
+        (const uint8_t *)"\x08\x05\x10\x06\x18\x07",
+        6);
     ASSERT_EQ(size, 6);
     ASSERT_EQ(message_p->v1, 5);
 
@@ -3557,7 +3556,7 @@ TEST(add_and_remove_fields_version1)
     message_p = add_and_remove_fields_version1_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = add_and_remove_fields_version1_decode(message_p,
-                                                 "\x18\x07\x20\x08",
+                                                 (const uint8_t *)"\x18\x07\x20\x08",
                                                  4);
     ASSERT_EQ(size, 4);
     ASSERT_EQ(message_p->v1, 0);
@@ -3586,7 +3585,7 @@ TEST(add_and_remove_fields_version2)
     message_p = add_and_remove_fields_version2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = add_and_remove_fields_version2_decode(message_p,
-                                                 "\x08\x05",
+                                                 (const uint8_t *)"\x08\x05",
                                                  2);
     ASSERT_EQ(size, 2);
     ASSERT_EQ(message_p->v1, 5);
@@ -3597,7 +3596,7 @@ TEST(add_and_remove_fields_version2)
     message_p = add_and_remove_fields_version2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = add_and_remove_fields_version2_decode(message_p,
-                                                 "\x18\x07\x20\x08",
+                                                 (const uint8_t *)"\x18\x07\x20\x08",
                                                  4);
     ASSERT_EQ(size, 4);
     ASSERT_EQ(message_p->v1, 0);
@@ -3627,7 +3626,7 @@ TEST(add_and_remove_fields_version3)
     message_p = add_and_remove_fields_version3_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = add_and_remove_fields_version3_decode(message_p,
-                                                 "\x08\x05",
+                                                 (const uint8_t *)"\x08\x05",
                                                  2);
     ASSERT_EQ(size, 2);
     ASSERT_EQ(message_p->v3, 0);
@@ -3636,9 +3635,10 @@ TEST(add_and_remove_fields_version3)
     /* Decode Version2 as Version3. */
     message_p = add_and_remove_fields_version3_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    size = add_and_remove_fields_version3_decode(message_p,
-                                                 "\x08\x05\x10\x06\x18\x07",
-                                                 6);
+    size = add_and_remove_fields_version3_decode(
+        message_p,
+        (const uint8_t *)"\x08\x05\x10\x06\x18\x07",
+        6);
     ASSERT_EQ(size, 6);
     ASSERT_EQ(message_p->v3, 7);
     ASSERT_EQ(message_p->v4, 0);
@@ -3693,7 +3693,7 @@ TEST(optional_fields_2)
     message_p->v3.is_present = true;
     message_p->v3.value_p = "";
     message_p->v5.is_present = true;
-    message_p->v5.value.buf_p = "123";
+    message_p->v5.value.buf_p = (uint8_t *)"123";
     message_p->v5.value.size = 3;
     size = optional_fields_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 9);
