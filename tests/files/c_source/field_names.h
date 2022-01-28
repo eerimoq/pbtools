@@ -177,31 +177,15 @@ struct field_names_repeated_message_pascal_case_t {
 /**
  * Enum field_names.MessageOneOf.OneOf.
  */
-enum field_names_message_one_of_one_of_choice_e {
-    field_names_message_one_of_one_of_choice_none_e = 0,
-    field_names_message_one_of_one_of_choice_camel_case_message_e = 1,
-    field_names_message_one_of_one_of_choice_pascal_case_message_e = 2,
-    field_names_message_one_of_one_of_choice_camel_case_message_repeated_e = 3,
-    field_names_message_one_of_one_of_choice_pascal_case_message_repeated_e = 4,
-    field_names_message_one_of_one_of_choice_my_int32_e = 5,
-    field_names_message_one_of_one_of_choice_my_string_e = 6,
-    field_names_message_one_of_one_of_choice_my_bytes_e = 7
-};
-
-/**
- * Oneof field_names.MessageOneOf.OneOf.
- */
-struct field_names_message_one_of_one_of_oneof_t {
-    enum field_names_message_one_of_one_of_choice_e choice;
-    union {
-        struct field_names_message_camel_case_t *camel_case_message_p;
-        struct field_names_message_pascal_case_t *pascal_case_message_p;
-        struct field_names_repeated_message_camel_case_t *camel_case_message_repeated_p;
-        struct field_names_repeated_message_pascal_case_t *pascal_case_message_repeated_p;
-        int32_t my_int32;
-        char *my_string_p;
-        struct pbtools_bytes_t my_bytes;
-    } value;
+enum field_names_message_one_of_one_of_e {
+    field_names_message_one_of_one_of_none_e = 0,
+    field_names_message_one_of_one_of_camel_case_message_e = 1,
+    field_names_message_one_of_one_of_pascal_case_message_e = 2,
+    field_names_message_one_of_one_of_camel_case_message_repeated_e = 3,
+    field_names_message_one_of_one_of_pascal_case_message_repeated_e = 4,
+    field_names_message_one_of_one_of_my_int32_e = 5,
+    field_names_message_one_of_one_of_my_string_e = 6,
+    field_names_message_one_of_one_of_my_bytes_e = 7
 };
 
 /**
@@ -214,7 +198,16 @@ struct field_names_message_one_of_repeated_t {
 
 struct field_names_message_one_of_t {
     struct pbtools_message_base_t base;
-    struct field_names_message_one_of_one_of_oneof_t one_of;
+    enum field_names_message_one_of_one_of_e one_of;
+    union {
+        struct field_names_message_camel_case_t *camel_case_message_p;
+        struct field_names_message_pascal_case_t *pascal_case_message_p;
+        struct field_names_repeated_message_camel_case_t *camel_case_message_repeated_p;
+        struct field_names_repeated_message_pascal_case_t *pascal_case_message_repeated_p;
+        int32_t my_int32;
+        char *my_string_p;
+        struct pbtools_bytes_t my_bytes;
+    };
 };
 
 /**
@@ -449,25 +442,25 @@ int field_names_repeated_message_pascal_case_decode(
     const uint8_t *encoded_p,
     size_t size);
 
-int field_names_message_one_of_one_of_camel_case_message_alloc(
+int field_names_message_one_of_camel_case_message_alloc(
     struct field_names_message_one_of_t *self_p);
 
-int field_names_message_one_of_one_of_pascal_case_message_alloc(
+int field_names_message_one_of_pascal_case_message_alloc(
     struct field_names_message_one_of_t *self_p);
 
-int field_names_message_one_of_one_of_camel_case_message_repeated_alloc(
+int field_names_message_one_of_camel_case_message_repeated_alloc(
     struct field_names_message_one_of_t *self_p);
 
-int field_names_message_one_of_one_of_pascal_case_message_repeated_alloc(
+int field_names_message_one_of_pascal_case_message_repeated_alloc(
     struct field_names_message_one_of_t *self_p);
 
-void field_names_message_one_of_one_of_my_int32_init(
+void field_names_message_one_of_my_int32_init(
     struct field_names_message_one_of_t *self_p);
 
-void field_names_message_one_of_one_of_my_string_init(
+void field_names_message_one_of_my_string_init(
     struct field_names_message_one_of_t *self_p);
 
-void field_names_message_one_of_one_of_my_bytes_init(
+void field_names_message_one_of_my_bytes_init(
     struct field_names_message_one_of_t *self_p);
 
 /**

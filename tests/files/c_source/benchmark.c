@@ -813,117 +813,82 @@ int benchmark_message3_decode(
                 (pbtools_message_decode_inner_t)benchmark_message3_decode_inner));
 }
 
-int benchmark_message_oneof_message1_alloc(
+int benchmark_message_message1_alloc(
     struct benchmark_message_t *self_p)
 {
-    self_p->oneof.choice = benchmark_message_oneof_choice_message1_e;
+    self_p->oneof = benchmark_message_oneof_message1_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof.value.message1_p,
+                (struct pbtools_message_base_t **)&self_p->message1_p,
                 self_p->base.heap_p,
                 sizeof(struct benchmark_message1_t),
                 (pbtools_message_init_t)benchmark_message1_init));
 }
 
-int benchmark_message_oneof_message2_alloc(
+int benchmark_message_message2_alloc(
     struct benchmark_message_t *self_p)
 {
-    self_p->oneof.choice = benchmark_message_oneof_choice_message2_e;
+    self_p->oneof = benchmark_message_oneof_message2_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof.value.message2_p,
+                (struct pbtools_message_base_t **)&self_p->message2_p,
                 self_p->base.heap_p,
                 sizeof(struct benchmark_message2_t),
                 (pbtools_message_init_t)benchmark_message2_init));
 }
 
-int benchmark_message_oneof_message3_alloc(
+int benchmark_message_message3_alloc(
     struct benchmark_message_t *self_p)
 {
-    self_p->oneof.choice = benchmark_message_oneof_choice_message3_e;
+    self_p->oneof = benchmark_message_oneof_message3_e;
 
     return (pbtools_sub_message_alloc(
-                (struct pbtools_message_base_t **)&self_p->oneof.value.message3_p,
+                (struct pbtools_message_base_t **)&self_p->message3_p,
                 self_p->base.heap_p,
                 sizeof(struct benchmark_message3_t),
                 (pbtools_message_init_t)benchmark_message3_init));
 }
 
-void benchmark_message_oneof_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct benchmark_message_oneof_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case benchmark_message_oneof_choice_message1_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            1,
-            &self_p->value.message1_p->base,
-            (pbtools_message_encode_inner_t)benchmark_message1_encode_inner);
-        break;
-
-    case benchmark_message_oneof_choice_message2_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            2,
-            &self_p->value.message2_p->base,
-            (pbtools_message_encode_inner_t)benchmark_message2_encode_inner);
-        break;
-
-    case benchmark_message_oneof_choice_message3_e:
-        pbtools_encoder_sub_message_encode_always(
-            encoder_p,
-            7,
-            &self_p->value.message3_p->base,
-            (pbtools_message_encode_inner_t)benchmark_message3_encode_inner);
-        break;
-
-    default:
-        break;
-    }
-}
-
-static void benchmark_message_oneof_message1_decode(
+static void benchmark_message_message1_decode(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct benchmark_message_t *self_p)
 {
-    self_p->oneof.choice = benchmark_message_oneof_choice_message1_e;
+    self_p->oneof = benchmark_message_oneof_message1_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof.value.message1_p,
+        (struct pbtools_message_base_t **)&self_p->message1_p,
         sizeof(struct benchmark_message1_t),
         (pbtools_message_init_t)benchmark_message1_init,
         (pbtools_message_decode_inner_t)benchmark_message1_decode_inner);
 }
 
-static void benchmark_message_oneof_message2_decode(
+static void benchmark_message_message2_decode(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct benchmark_message_t *self_p)
 {
-    self_p->oneof.choice = benchmark_message_oneof_choice_message2_e;
+    self_p->oneof = benchmark_message_oneof_message2_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof.value.message2_p,
+        (struct pbtools_message_base_t **)&self_p->message2_p,
         sizeof(struct benchmark_message2_t),
         (pbtools_message_init_t)benchmark_message2_init,
         (pbtools_message_decode_inner_t)benchmark_message2_decode_inner);
 }
 
-static void benchmark_message_oneof_message3_decode(
+static void benchmark_message_message3_decode(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct benchmark_message_t *self_p)
 {
-    self_p->oneof.choice = benchmark_message_oneof_choice_message3_e;
+    self_p->oneof = benchmark_message_oneof_message3_e;
     pbtools_decoder_sub_message_decode(
         decoder_p,
         wire_type,
-        (struct pbtools_message_base_t **)&self_p->oneof.value.message3_p,
+        (struct pbtools_message_base_t **)&self_p->message3_p,
         sizeof(struct benchmark_message3_t),
         (pbtools_message_init_t)benchmark_message3_init,
         (pbtools_message_decode_inner_t)benchmark_message3_decode_inner);
@@ -934,14 +899,42 @@ void benchmark_message_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->oneof.choice = 0;
+    self_p->oneof = 0;
 }
 
 void benchmark_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct benchmark_message_t *self_p)
 {
-    benchmark_message_oneof_encode(encoder_p, &self_p->oneof);
+    switch (self_p->oneof) {
+
+    case benchmark_message_oneof_message1_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            1,
+            &self_p->message1_p->base,
+            (pbtools_message_encode_inner_t)benchmark_message1_encode_inner);
+        break;
+
+    case benchmark_message_oneof_message2_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            2,
+            &self_p->message2_p->base,
+            (pbtools_message_encode_inner_t)benchmark_message2_encode_inner);
+        break;
+
+    case benchmark_message_oneof_message3_e:
+        pbtools_encoder_sub_message_encode_always(
+            encoder_p,
+            7,
+            &self_p->message3_p->base,
+            (pbtools_message_encode_inner_t)benchmark_message3_encode_inner);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void benchmark_message_decode_inner(
@@ -954,21 +947,21 @@ void benchmark_message_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            benchmark_message_oneof_message1_decode(
+            benchmark_message_message1_decode(
                 decoder_p,
                 wire_type,
                 self_p);
             break;
 
         case 2:
-            benchmark_message_oneof_message2_decode(
+            benchmark_message_message2_decode(
                 decoder_p,
                 wire_type,
                 self_p);
             break;
 
         case 7:
-            benchmark_message_oneof_message3_decode(
+            benchmark_message_message3_decode(
                 decoder_p,
                 wire_type,
                 self_p);

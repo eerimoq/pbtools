@@ -3108,33 +3108,33 @@ TEST(benchmark_oneof_message_1)
 
     message_p = benchmark_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    ASSERT_EQ(benchmark_message_oneof_message1_alloc(message_p), 0);
-    message_p->oneof.value.message1_p->field80 = true;
-    message_p->oneof.value.message1_p->field2 = -336;
-    message_p->oneof.value.message1_p->field6 = 5000;
-    message_p->oneof.value.message1_p->field22 = 5;
-    benchmark_message1_field4_alloc(message_p->oneof.value.message1_p, 3);
-    message_p->oneof.value.message1_p->field4.items_pp[0] = "The first string";
-    message_p->oneof.value.message1_p->field4.items_pp[1] = "The second string";
-    message_p->oneof.value.message1_p->field4.items_pp[2] = "The third string";
-    ASSERT_EQ(benchmark_message1_field15_alloc(message_p->oneof.value.message1_p),
+    ASSERT_EQ(benchmark_message_message1_alloc(message_p), 0);
+    message_p->message1_p->field80 = true;
+    message_p->message1_p->field2 = -336;
+    message_p->message1_p->field6 = 5000;
+    message_p->message1_p->field22 = 5;
+    benchmark_message1_field4_alloc(message_p->message1_p, 3);
+    message_p->message1_p->field4.items_pp[0] = "The first string";
+    message_p->message1_p->field4.items_pp[1] = "The second string";
+    message_p->message1_p->field4.items_pp[2] = "The third string";
+    ASSERT_EQ(benchmark_message1_field15_alloc(message_p->message1_p),
               0);
-    message_p->oneof.value.message1_p->field15_p->field1 = 0;
-    message_p->oneof.value.message1_p->field15_p->field3 = 9999;
-    message_p->oneof.value.message1_p->field15_p->field15_p = (
+    message_p->message1_p->field15_p->field1 = 0;
+    message_p->message1_p->field15_p->field3 = 9999;
+    message_p->message1_p->field15_p->field15_p = (
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello!");
-    message_p->oneof.value.message1_p->field15_p->field12.buf_p = (uint8_t *)(
+    message_p->message1_p->field15_p->field12.buf_p = (uint8_t *)(
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
         "Hello! Hello! Hello!");
-    message_p->oneof.value.message1_p->field15_p->field12.size = 230;
-    message_p->oneof.value.message1_p->field15_p->field21 = 449932;
-    message_p->oneof.value.message1_p->field15_p->field204 = 1;
-    message_p->oneof.value.message1_p->field15_p->field300 = benchmark_enum_e3_e;
+    message_p->message1_p->field15_p->field12.size = 230;
+    message_p->message1_p->field15_p->field21 = 449932;
+    message_p->message1_p->field15_p->field204 = 1;
+    message_p->message1_p->field15_p->field300 = benchmark_enum_e3_e;
 
     size = benchmark_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 566);
@@ -3183,36 +3183,36 @@ TEST(benchmark_oneof_message_1)
     size = benchmark_message_decode(message_p, &encoded[0], 566);
     ASSERT_EQ(size, 566);
 
-    ASSERT_EQ(message_p->oneof.choice, benchmark_message_oneof_choice_message1_e);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field80, true);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field2, -336);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field6, 5000);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field22, 5);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field4.length, 3);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field4.items_pp[0],
+    ASSERT_EQ(message_p->oneof, benchmark_message_oneof_message1_e);
+    ASSERT_EQ(message_p->message1_p->field80, true);
+    ASSERT_EQ(message_p->message1_p->field2, -336);
+    ASSERT_EQ(message_p->message1_p->field6, 5000);
+    ASSERT_EQ(message_p->message1_p->field22, 5);
+    ASSERT_EQ(message_p->message1_p->field4.length, 3);
+    ASSERT_EQ(message_p->message1_p->field4.items_pp[0],
               "The first string");
-    ASSERT_EQ(message_p->oneof.value.message1_p->field4.items_pp[1],
+    ASSERT_EQ(message_p->message1_p->field4.items_pp[1],
               "The second string");
-    ASSERT_EQ(message_p->oneof.value.message1_p->field4.items_pp[2],
+    ASSERT_EQ(message_p->message1_p->field4.items_pp[2],
               "The third string");
-    ASSERT_NE(message_p->oneof.value.message1_p->field15_p, NULL);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field1, 0);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field3, 9999);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field15_p,
+    ASSERT_NE(message_p->message1_p->field15_p, NULL);
+    ASSERT_EQ(message_p->message1_p->field15_p->field1, 0);
+    ASSERT_EQ(message_p->message1_p->field15_p->field3, 9999);
+    ASSERT_EQ(message_p->message1_p->field15_p->field15_p,
               "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
               "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
               "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
               "Hello! Hello! Hello!");
-    ASSERT_MEMORY_EQ(message_p->oneof.value.message1_p->field15_p->field12.buf_p,
+    ASSERT_MEMORY_EQ(message_p->message1_p->field15_p->field12.buf_p,
                   "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
                   "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
                   "Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! Hello! "
                   "Hello! Hello! Hello!",
                   230);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field12.size, 230);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field21, 449932);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field204, 1);
-    ASSERT_EQ(message_p->oneof.value.message1_p->field15_p->field300, benchmark_enum_e3_e);
+    ASSERT_EQ(message_p->message1_p->field15_p->field12.size, 230);
+    ASSERT_EQ(message_p->message1_p->field15_p->field21, 449932);
+    ASSERT_EQ(message_p->message1_p->field15_p->field204, 1);
+    ASSERT_EQ(message_p->message1_p->field15_p->field300, benchmark_enum_e3_e);
 }
 
 TEST(benchmark_message_3)
