@@ -23,6 +23,7 @@ jobs:
       run: |
         python -m unittest
         make test-c
+        make -C examples
 
   release:
     needs: [test]
