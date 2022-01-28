@@ -1,7 +1,3 @@
-|buildstatus|_
-|appveyor|_
-|coverage|_
-|codecov|_
 |nala|_
 
 About
@@ -550,18 +546,6 @@ proto-file.
 
 See `address_book.h`_ and `address_book.c`_ for the contents of the
 generated files.
-
-.. |buildstatus| image:: https://travis-ci.org/eerimoq/pbtools.svg?branch=master
-.. _buildstatus: https://travis-ci.org/eerimoq/pbtools
-
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/eerimoq/pbtools?svg=true
-.. _appveyor: https://ci.appveyor.com/project/eerimoq/pbtools/branch/master
-
-.. |coverage| image:: https://coveralls.io/repos/github/eerimoq/pbtools/badge.svg?branch=master
-.. _coverage: https://coveralls.io/github/eerimoq/pbtools
-
-.. |codecov| image:: https://codecov.io/gh/eerimoq/pbtools/branch/master/graph/badge.svg
-.. _codecov: https://codecov.io/gh/eerimoq/pbtools
 
 .. |nala| image:: https://img.shields.io/badge/nala-test-blue.svg
 .. _nala: https://github.com/eerimoq/nala
