@@ -120,7 +120,7 @@ For example, let's create a protocol specification.
    }
 
    message Fie {
-       optional int32 v2 = 1;
+       int32 v2 = 1;
        Bar v3 = 2;
    }
 
@@ -133,10 +133,7 @@ One struct is generated per message.
    };
 
    struct foo_fie_t {
-       struct {
-           bool is_present;
-           int32_t value;
-       } v2;
+       int32_t v2;
        struct foo_bar_t *v3_p;
    };
 
@@ -149,8 +146,7 @@ if ``NULL`` after decoding.
 
    /* Encode. */
    fie_p = foo_fie_new(...);
-   fie_p->v2.is_present = true;
-   fie_p->v2.value = 5;
+   fie_p->v2 = 5;
    foo_fie_v3_alloc(fie_p);
    fie_p->v3_p->v1 = true;
    foo_fie_encode(fie_p, ...);
@@ -159,9 +155,7 @@ if ``NULL`` after decoding.
    fie_p = foo_fie_new(...);
    foo_fie_decode(fie_p, ...);
 
-   if (fie_p->v2.is_present) {
-       printf("%d\n", fie_p->v2.value);
-   }
+   printf("%d\n", fie_p->v2);
 
    if (fie_p->v3_p != NULL) {
        printf("%d\n", fie_p->v3_p->v1);
@@ -191,27 +185,24 @@ One enum and one struct is generated per oneof.
 
 .. code-block:: c
 
-   enum foo_bar_fie_choice_e {
-       foo_bar_fie_choice_none_e = 0,
-       foo_bar_fie_choice_v1_e = 1,
-       foo_bar_fie_choice_v2_e = 2
-   };
-
-   struct foo_bar_fie_oneof_t {
-       enum foo_bar_fie_choice_e choice;
-       union {
-           int32_t v1;
-           bool v2;
-       } value;
+   enum foo_bar_fie_e {
+       foo_bar_fie_none_e = 0,
+       foo_bar_fie_v1_e = 1,
+       foo_bar_fie_v2_e = 2
    };
 
    struct foo_bar_t {
-       struct foo_bar_fie_oneof_t fie;
+       enum foo_bar_fie_choice_e fie;
+       union {
+           int32_t v1;
+           bool v2;
+       };
    };
 
 The generated code can encode and decode messages. Call
-``_<field>_init()`` to select which oneof field to encode. Use the
-``choice`` member to check which oneof field was decoded (if any).
+``_<field>_init()`` or ``_<field>_alloc()`` to select which oneof
+field to encode. Use the ``enum`` to check which oneof field was
+decoded (if any).
 
 .. code-block:: c
 
@@ -219,26 +210,26 @@ The generated code can encode and decode messages. Call
 
    /* Encode with choice v1. */
    bar_p = foo_bar_new(...);
-   foo_bar_fie_v1_init(bar_p);
-   bar_p->fie.value.v1 = -2;
+   foo_bar_v1_init(bar_p);
+   bar_p->v1 = -2;
    foo_bar_encode(bar_p, ...);
 
    /* Decode. */
    bar_p = foo_bar_new(...);
    foo_bar_decode(bar_p, ...);
 
-   switch (bar_p->fie.choice) {
+   switch (bar_p->fie) {
 
-   case foo_bar_fie_choice_none_e:
+   case foo_bar_fie_none_e:
        printf("Not present.\n");
        break;
 
-   case foo_bar_fie_choice_v1_e:
-       printf("%d\n", bar_p->fie.value.v1);
+   case foo_bar_fie_v1_e:
+       printf("%d\n", bar_p->v1);
        break;
 
-   case foo_bar_fie_choice_v2_e:
-       printf("%d\n", bar_p->fie.value.v2);
+   case foo_bar_fie_v2_e:
+       printf("%d\n", bar_p->v2);
        break;
 
    default:
@@ -250,175 +241,6 @@ Benchmark
 ---------
 
 See `benchmark`_ for a benchmark of a few C/C++ protobuf libraries.
-
-Rust source code design
-=======================
-
-🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
-
-The Rust source code is designed with the following in mind:
-
-- Clean and easy to use API.
-
-- Fast encoding and decoding.
-
-🚧 🚧 🚧 🚧 🚧 **Under construction - DO NOT USE** 🚧 🚧 🚧 🚧 🚧
-
-Scalar Value Types
-------------------
-
-Protobuf scalar value types are mapped to Rust types as shown in the
-table below.
-
-+---------------+--------------------------------------------+
-| Protubuf Type | Rust Type                                  |
-+===============+============================================+
-| ``double``    | ``f64``                                    |
-+---------------+--------------------------------------------+
-| ``float``     | ``f32``                                    |
-+---------------+--------------------------------------------+
-| ``int32``     | ``i32``                                    |
-+---------------+--------------------------------------------+
-| ``int64``     | ``i64``                                    |
-+---------------+--------------------------------------------+
-| ``uint32``    | ``u32``                                    |
-+---------------+--------------------------------------------+
-| ``uint64``    | ``u64``                                    |
-+---------------+--------------------------------------------+
-| ``sint32``    | ``i32``                                    |
-+---------------+--------------------------------------------+
-| ``sint64``    | ``i64``                                    |
-+---------------+--------------------------------------------+
-| ``fixed32``   | ``i32``                                    |
-+---------------+--------------------------------------------+
-| ``fixed64``   | ``i64``                                    |
-+---------------+--------------------------------------------+
-| ``sfixed32``  | ``i32``                                    |
-+---------------+--------------------------------------------+
-| ``sfixed64``  | ``i64``                                    |
-+---------------+--------------------------------------------+
-| ``bool``      | ``bool``                                   |
-+---------------+--------------------------------------------+
-| ``string``    | ``String``                                 |
-+---------------+--------------------------------------------+
-| ``bytes``     | ``Vec<u8>``                                |
-+---------------+--------------------------------------------+
-
-Message
--------
-
-A message is a struct in Rust.
-
-For example, let's create a protocol specification.
-
-.. code-block:: proto
-
-   syntax = "proto3";
-
-   package foo;
-
-   message Bar {
-       bool v1 = 1;
-   }
-
-   message Fie {
-       optional int32 v2 = 1;
-       Bar v3 = 2;
-   }
-
-One struct is generated per message.
-
-.. code-block:: rust
-
-   pub struct Bar {
-       pub v1: bool
-   };
-
-   pub struct Fie {
-       pub v2: Option<i32>,
-       pub v3: Option<Box<Bar>>;
-   };
-
-.. code-block:: rust
-
-   // Encode.
-   let fie = Fie {
-       v2: Some(5),
-       v3: Some(Bar {
-           v1: true
-       })
-   };
-
-   let encoded = fie.encode();
-
-   // Decode.
-   fie = Default::default();
-   fie.decode(encoded);
-
-   if let Some(v2) = fie.v2 {
-        println!("v2: {}", v2);
-   }
-
-   if let Some(v3) = fie.v3 {
-        println!("v3.v1: {}", v3.v1);
-   }
-
-Oneof
------
-
-A oneof is an enum in Rust.
-
-For example, let's create a protocol specification.
-
-.. code-block:: proto
-
-   syntax = "proto3";
-
-   package foo;
-
-   message Bar {
-       oneof fie {
-           int32 v1 = 1;
-           bool v2 = 2;
-       };
-   }
-
-One enum is generated per oneof.
-
-.. code-block:: rust
-
-   mod bar {
-       pub enum Fie {
-           v1(i32),
-           v2(bool)
-       }
-   }
-
-   pub struct Bar {
-       fie: Option<bar::Fie>;
-   }
-
-The generated code can encode and decode messages.
-
-.. code-block:: rust
-
-   // Encode with choice v1.
-   let mut bar: Bar {
-       fie: Some(bar::Fie::v1(-2))
-   };
-
-   let encoded = bar.encode();
-
-   // Decode.
-   bar = Default::default();
-   bar.decode(encoded);
-
-   if let Some(fie) = bar.fie {
-       match fie {
-           bar::Fie::v1(v1) => println!("v1: {}", v1),
-           bar::Fie::v2(v2) => println!("v2: {}", v2)
-      }
-   }
 
 Example usage
 =============
