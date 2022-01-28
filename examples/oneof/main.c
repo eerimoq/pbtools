@@ -15,8 +15,8 @@ int main(int argc, const char *argv[])
         return (1);
     }
 
-    oneof_foo_bar_fie_init(foo_p);
-    foo_p->bar.value.fie = 789;
+    oneof_foo_fie_init(foo_p);
+    foo_p->fie = 789;
     size = oneof_foo_encode(foo_p, &encoded[0], sizeof(encoded));
 
     if (size < 0) {
@@ -40,18 +40,18 @@ int main(int argc, const char *argv[])
 
     printf("Successfully decoded %d bytes into Foo.\n", size);
 
-    switch (foo_p->bar.choice) {
+    switch (foo_p->bar) {
 
-    case oneof_foo_bar_choice_fie_e:
-        printf("Foo.bar.fie: %d\n", foo_p->bar.value.fie);
+    case oneof_foo_bar_fie_e:
+        printf("Foo.fie: %d\n", foo_p->fie);
         break;
 
-    case oneof_foo_bar_choice_fum_e:
-        printf("Foo.bar.fum: %d\n", foo_p->bar.value.fum);
+    case oneof_foo_bar_fum_e:
+        printf("Foo.fum: %d\n", foo_p->fum);
         break;
 
     default:
-        printf("Unknown choice %d\n", foo_p->bar.choice);
+        printf("Unknown choice %d\n", foo_p->bar);
         break;
     }
 
