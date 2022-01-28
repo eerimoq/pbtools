@@ -51,23 +51,11 @@ enum fuzzer_everything_nested_enum_e {
 /**
  * Enum fuzzer.Everything.NestedMessage.oneof_field.
  */
-enum fuzzer_everything_nested_message_oneof_field_choice_e {
-    fuzzer_everything_nested_message_oneof_field_choice_none_e = 0,
-    fuzzer_everything_nested_message_oneof_field_choice_a_e = 1,
-    fuzzer_everything_nested_message_oneof_field_choice_b_e = 2,
-    fuzzer_everything_nested_message_oneof_field_choice_c_e = 3
-};
-
-/**
- * Oneof fuzzer.Everything.NestedMessage.oneof_field.
- */
-struct fuzzer_everything_nested_message_oneof_field_oneof_t {
-    enum fuzzer_everything_nested_message_oneof_field_choice_e choice;
-    union {
-        int32_t a;
-        char *b_p;
-        float c;
-    } value;
+enum fuzzer_everything_nested_message_oneof_field_e {
+    fuzzer_everything_nested_message_oneof_field_none_e = 0,
+    fuzzer_everything_nested_message_oneof_field_a_e = 1,
+    fuzzer_everything_nested_message_oneof_field_b_e = 2,
+    fuzzer_everything_nested_message_oneof_field_c_e = 3
 };
 
 /**
@@ -80,31 +68,23 @@ struct fuzzer_everything_nested_message_repeated_t {
 
 struct fuzzer_everything_nested_message_t {
     struct pbtools_message_base_t base;
-    struct fuzzer_everything_nested_message_oneof_field_oneof_t oneof_field;
+    enum fuzzer_everything_nested_message_oneof_field_e oneof_field;
+    union {
+        int32_t a;
+        char *b_p;
+        float c;
+    };
 };
 
 /**
  * Enum fuzzer.Everything.oneof_field.
  */
-enum fuzzer_everything_oneof_field_choice_e {
-    fuzzer_everything_oneof_field_choice_none_e = 0,
-    fuzzer_everything_oneof_field_choice_oneof_uint32_e = 1,
-    fuzzer_everything_oneof_field_choice_oneof_nested_message_e = 2,
-    fuzzer_everything_oneof_field_choice_oneof_string_e = 3,
-    fuzzer_everything_oneof_field_choice_oneof_bytes_e = 4
-};
-
-/**
- * Oneof fuzzer.Everything.oneof_field.
- */
-struct fuzzer_everything_oneof_field_oneof_t {
-    enum fuzzer_everything_oneof_field_choice_e choice;
-    union {
-        uint32_t oneof_uint32;
-        struct fuzzer_everything_nested_message_t *oneof_nested_message_p;
-        char *oneof_string_p;
-        struct pbtools_bytes_t oneof_bytes;
-    } value;
+enum fuzzer_everything_oneof_field_e {
+    fuzzer_everything_oneof_field_none_e = 0,
+    fuzzer_everything_oneof_field_oneof_uint32_e = 1,
+    fuzzer_everything_oneof_field_oneof_nested_message_e = 2,
+    fuzzer_everything_oneof_field_oneof_string_e = 3,
+    fuzzer_everything_oneof_field_oneof_bytes_e = 4
 };
 
 /**
@@ -157,7 +137,13 @@ struct fuzzer_everything_t {
     struct pbtools_repeated_string_t repeated_string_piece;
     struct pbtools_repeated_string_t repeated_cord;
     struct fuzzer_everything_nested_message_repeated_t repeated_lazy_message;
-    struct fuzzer_everything_oneof_field_oneof_t oneof_field;
+    enum fuzzer_everything_oneof_field_e oneof_field;
+    union {
+        uint32_t oneof_uint32;
+        struct fuzzer_everything_nested_message_t *oneof_nested_message_p;
+        char *oneof_string_p;
+        struct pbtools_bytes_t oneof_bytes;
+    };
 };
 
 int fuzzer_everything_optional_nested_message_alloc(
@@ -246,25 +232,25 @@ int fuzzer_everything_repeated_lazy_message_alloc(
     struct fuzzer_everything_t *self_p,
     int length);
 
-void fuzzer_everything_nested_message_oneof_field_a_init(
+void fuzzer_everything_nested_message_a_init(
     struct fuzzer_everything_nested_message_t *self_p);
 
-void fuzzer_everything_nested_message_oneof_field_b_init(
+void fuzzer_everything_nested_message_b_init(
     struct fuzzer_everything_nested_message_t *self_p);
 
-void fuzzer_everything_nested_message_oneof_field_c_init(
+void fuzzer_everything_nested_message_c_init(
     struct fuzzer_everything_nested_message_t *self_p);
 
-void fuzzer_everything_oneof_field_oneof_uint32_init(
+void fuzzer_everything_oneof_uint32_init(
     struct fuzzer_everything_t *self_p);
 
-int fuzzer_everything_oneof_field_oneof_nested_message_alloc(
+int fuzzer_everything_oneof_nested_message_alloc(
     struct fuzzer_everything_t *self_p);
 
-void fuzzer_everything_oneof_field_oneof_string_init(
+void fuzzer_everything_oneof_string_init(
     struct fuzzer_everything_t *self_p);
 
-void fuzzer_everything_oneof_field_oneof_bytes_init(
+void fuzzer_everything_oneof_bytes_init(
     struct fuzzer_everything_t *self_p);
 
 /**

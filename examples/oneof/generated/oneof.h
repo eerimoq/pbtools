@@ -40,21 +40,10 @@ extern "C" {
 /**
  * Enum oneof.Foo.bar.
  */
-enum oneof_foo_bar_choice_e {
-    oneof_foo_bar_choice_none_e = 0,
-    oneof_foo_bar_choice_fie_e = 1,
-    oneof_foo_bar_choice_fum_e = 2
-};
-
-/**
- * Oneof oneof.Foo.bar.
- */
-struct oneof_foo_bar_oneof_t {
-    enum oneof_foo_bar_choice_e choice;
-    union {
-        int32_t fie;
-        bool fum;
-    } value;
+enum oneof_foo_bar_e {
+    oneof_foo_bar_none_e = 0,
+    oneof_foo_bar_fie_e = 1,
+    oneof_foo_bar_fum_e = 2
 };
 
 /**
@@ -67,13 +56,17 @@ struct oneof_foo_repeated_t {
 
 struct oneof_foo_t {
     struct pbtools_message_base_t base;
-    struct oneof_foo_bar_oneof_t bar;
+    enum oneof_foo_bar_e bar;
+    union {
+        int32_t fie;
+        bool fum;
+    };
 };
 
-void oneof_foo_bar_fie_init(
+void oneof_foo_fie_init(
     struct oneof_foo_t *self_p);
 
-void oneof_foo_bar_fum_init(
+void oneof_foo_fum_init(
     struct oneof_foo_t *self_p);
 
 /**

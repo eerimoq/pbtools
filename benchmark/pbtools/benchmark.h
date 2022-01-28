@@ -159,23 +159,11 @@ struct benchmark_message3_t {
 /**
  * Enum benchmark.Message.oneof.
  */
-enum benchmark_message_oneof_choice_e {
-    benchmark_message_oneof_choice_none_e = 0,
-    benchmark_message_oneof_choice_message1_e = 1,
-    benchmark_message_oneof_choice_message2_e = 2,
-    benchmark_message_oneof_choice_message3_e = 3
-};
-
-/**
- * Oneof benchmark.Message.oneof.
- */
-struct benchmark_message_oneof_oneof_t {
-    enum benchmark_message_oneof_choice_e choice;
-    union {
-        struct benchmark_message1_t *message1_p;
-        struct benchmark_message2_t *message2_p;
-        struct benchmark_message3_t *message3_p;
-    } value;
+enum benchmark_message_oneof_e {
+    benchmark_message_oneof_none_e = 0,
+    benchmark_message_oneof_message1_e = 1,
+    benchmark_message_oneof_message2_e = 2,
+    benchmark_message_oneof_message3_e = 3
 };
 
 /**
@@ -188,7 +176,12 @@ struct benchmark_message_repeated_t {
 
 struct benchmark_message_t {
     struct pbtools_message_base_t base;
-    struct benchmark_message_oneof_oneof_t oneof;
+    enum benchmark_message_oneof_e oneof;
+    union {
+        struct benchmark_message1_t *message1_p;
+        struct benchmark_message2_t *message2_p;
+        struct benchmark_message3_t *message3_p;
+    };
 };
 
 /**
@@ -274,13 +267,13 @@ int benchmark_message3_decode(
     const uint8_t *encoded_p,
     size_t size);
 
-int benchmark_message_oneof_message1_alloc(
+int benchmark_message_message1_alloc(
     struct benchmark_message_t *self_p);
 
-int benchmark_message_oneof_message2_alloc(
+int benchmark_message_message2_alloc(
     struct benchmark_message_t *self_p);
 
-int benchmark_message_oneof_message3_alloc(
+int benchmark_message_message3_alloc(
     struct benchmark_message_t *self_p);
 
 /**

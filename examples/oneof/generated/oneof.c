@@ -35,63 +35,38 @@
 #    error "Number of bits in a char must be 8."
 #endif
 
-void oneof_foo_bar_fie_init(
+void oneof_foo_fie_init(
     struct oneof_foo_t *self_p)
 {
-    self_p->bar.choice = oneof_foo_bar_choice_fie_e;
-    self_p->bar.value.fie = 0;
+    self_p->bar = oneof_foo_bar_fie_e;
+    self_p->fie = 0;
 }
 
-void oneof_foo_bar_fum_init(
+void oneof_foo_fum_init(
     struct oneof_foo_t *self_p)
 {
-    self_p->bar.choice = oneof_foo_bar_choice_fum_e;
-    self_p->bar.value.fum = 0;
+    self_p->bar = oneof_foo_bar_fum_e;
+    self_p->fum = 0;
 }
 
-void oneof_foo_bar_encode(
-    struct pbtools_encoder_t *encoder_p,
-    struct oneof_foo_bar_oneof_t *self_p)
-{
-    switch (self_p->choice) {
-
-    case oneof_foo_bar_choice_fie_e:
-        pbtools_encoder_write_int32_always(
-            encoder_p,
-            1,
-            self_p->value.fie);
-        break;
-
-    case oneof_foo_bar_choice_fum_e:
-        pbtools_encoder_write_bool_always(
-            encoder_p,
-            2,
-            self_p->value.fum);
-        break;
-
-    default:
-        break;
-    }
-}
-
-static void oneof_foo_bar_fie_decode(
+static void oneof_foo_fie_decode(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct oneof_foo_t *self_p)
 {
-    oneof_foo_bar_fie_init(self_p);
-    self_p->bar.value.fie = pbtools_decoder_read_int32(
+    oneof_foo_fie_init(self_p);
+    self_p->fie = pbtools_decoder_read_int32(
         decoder_p,
         wire_type);
 }
 
-static void oneof_foo_bar_fum_decode(
+static void oneof_foo_fum_decode(
     struct pbtools_decoder_t *decoder_p,
     int wire_type,
     struct oneof_foo_t *self_p)
 {
-    oneof_foo_bar_fum_init(self_p);
-    self_p->bar.value.fum = pbtools_decoder_read_bool(
+    oneof_foo_fum_init(self_p);
+    self_p->fum = pbtools_decoder_read_bool(
         decoder_p,
         wire_type);
 }
@@ -101,14 +76,32 @@ void oneof_foo_init(
     struct pbtools_heap_t *heap_p)
 {
     self_p->base.heap_p = heap_p;
-    self_p->bar.choice = 0;
+    self_p->bar = 0;
 }
 
 void oneof_foo_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct oneof_foo_t *self_p)
 {
-    oneof_foo_bar_encode(encoder_p, &self_p->bar);
+    switch (self_p->bar) {
+
+    case oneof_foo_bar_fie_e:
+        pbtools_encoder_write_int32_always(
+            encoder_p,
+            1,
+            self_p->fie);
+        break;
+
+    case oneof_foo_bar_fum_e:
+        pbtools_encoder_write_bool_always(
+            encoder_p,
+            2,
+            self_p->fum);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void oneof_foo_decode_inner(
@@ -121,14 +114,14 @@ void oneof_foo_decode_inner(
         switch (pbtools_decoder_read_tag(decoder_p, &wire_type)) {
 
         case 1:
-            oneof_foo_bar_fie_decode(
+            oneof_foo_fie_decode(
                 decoder_p,
                 wire_type,
                 self_p);
             break;
 
         case 2:
-            oneof_foo_bar_fum_decode(
+            oneof_foo_fum_decode(
                 decoder_p,
                 wire_type,
                 self_p);
