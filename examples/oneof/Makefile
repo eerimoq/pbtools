@@ -2,6 +2,7 @@ all:
 	gcc \
 	    -O2 \
 	    -Wall \
+	    -Wno-gnu-alignof-expression \
 	    -I ../../lib/include \
 	    -Igenerated \
 	    generated/*.c \
