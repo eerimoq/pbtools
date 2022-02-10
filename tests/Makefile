@@ -41,12 +41,11 @@ all:
 	    -D PBTOOLS_CONFIG_FLOAT=0 \
 	    -I ../lib/include \
 	    -c \
-	    -no-pie \
 	    -Wno-gnu-alignof-expression \
 	    ../lib/src/pbtools.c \
 	    -o no-float.o
-	gcc -O2 -no-pie -g nala.c -c -o nala.o
-	gcc -O2 -no-pie -g -I ../lib/include main.c -c -o main.o
+	gcc -O2 -g nala.c -c -o nala.o
+	gcc -O2 -g -I ../lib/include main.c -c -o main.o
 	gcc \
 	    $(CFLAGS) \
 	    -I ../lib/include \
