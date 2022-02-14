@@ -288,6 +288,13 @@ ENCODE_ENUM_FMT = '''\
 self_p->{field.name_snake_case});
 '''
 
+ENCODE_OPTIONAL_ENUM_FMT = '''\
+    if (self_p->{field.name_snake_case}.is_present) {{
+        pbtools_encoder_write_enum(encoder_p, {field.field_number}, \
+self_p->{field.name_snake_case}.value);
+    }}
+'''
+
 ENCODE_ONEOF_CHOICE_FMT = '''\
     case {oneof.full_name_snake_case}_{field.name_snake_case}_e:
         pbtools_encoder_write_{field.full_type_snake_case}_always(
@@ -427,6 +434,14 @@ DECODE_SUB_MESSAGE_MEMBER_FMT = '''\
 DECODE_ENUM_FMT = '''\
         case {field.field_number}:
             self_p->{field.name_snake_case} = pbtools_decoder_read_enum(\
+decoder_p, wire_type);
+            break;
+'''
+
+DECODE_OPTIONAL_ENUM_FMT = '''\
+        case {field.field_number}:
+            self_p->{field.name_snake_case}.is_present = true;
+            self_p->{field.name_snake_case}.value = pbtools_decoder_read_enum(\
 decoder_p, wire_type);
             break;
 '''
@@ -953,7 +968,10 @@ class Generator:
                 elif field.type_kind == 'message':
                     fmt = ENCODE_SUB_MESSAGE_MEMBER_FMT
                 else:
-                    fmt = ENCODE_ENUM_FMT
+                    if field.optional:
+                        fmt = ENCODE_OPTIONAL_ENUM_FMT
+                    else:
+                        fmt = ENCODE_ENUM_FMT
 
             member = fmt.format(field=field,
                                 ref='&' if field.type == 'bytes' else '')
@@ -1000,7 +1018,10 @@ class Generator:
             elif field.type_kind == 'message':
                 fmt = DECODE_SUB_MESSAGE_MEMBER_FMT
             else:
-                fmt = DECODE_ENUM_FMT
+                if field.optional:
+                    fmt = DECODE_OPTIONAL_ENUM_FMT
+                else:
+                    fmt = DECODE_ENUM_FMT
 
             members.append(fmt.format(field=field))
 
