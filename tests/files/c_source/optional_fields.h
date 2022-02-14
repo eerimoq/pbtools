@@ -38,6 +38,14 @@ extern "C" {
 #include "pbtools.h"
 
 /**
+ * Enum optional_fields.Enum.
+ */
+enum optional_fields_enum_e {
+    optional_fields_enum_a_e = 0,
+    optional_fields_enum_b_e = 1
+};
+
+/**
  * Message optional_fields.Message.
  */
 struct optional_fields_message_repeated_t {
@@ -64,6 +72,10 @@ struct optional_fields_message_t {
         bool is_present;
         struct pbtools_bytes_t value;
     } v5;
+    struct {
+        bool is_present;
+        enum optional_fields_enum_e value;
+    } v6;
 };
 
 /**

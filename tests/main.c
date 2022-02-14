@@ -3676,6 +3676,7 @@ TEST(optional_fields)
     ASSERT_EQ(message_p->v3.value_p, "Hello!");
     ASSERT_EQ(message_p->v4, 0);
     ASSERT_FALSE(message_p->v5.is_present);
+    ASSERT_FALSE(message_p->v6.is_present);
 }
 
 TEST(optional_fields_2)
@@ -3695,15 +3696,19 @@ TEST(optional_fields_2)
     message_p->v5.is_present = true;
     message_p->v5.value.buf_p = (uint8_t *)"123";
     message_p->v5.value.size = 3;
+    message_p->v6.is_present = true;
+    message_p->v6.value = optional_fields_enum_b_e;
     size = optional_fields_message_encode(message_p, &encoded[0], sizeof(encoded));
-    ASSERT_EQ(size, 9);
-    ASSERT_MEMORY_EQ(&encoded[0], "\x10\x00\x1a\x00\x2a\x03\x31\x32\x33", size);
+    ASSERT_EQ(size, 11);
+    ASSERT_MEMORY_EQ(&encoded[0],
+                     "\x10\x00\x1a\x00\x2a\x03\x31\x32\x33\x30\x01",
+                     size);
 
     /* Decode. */
     message_p = optional_fields_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     size = optional_fields_message_decode(message_p, &encoded[0], size);
-    ASSERT_EQ(size, 9);
+    ASSERT_EQ(size, 11);
     ASSERT_FALSE(message_p->v1.is_present);
     ASSERT_TRUE(message_p->v2.is_present);
     ASSERT_FALSE(message_p->v2.value);
@@ -3713,4 +3718,31 @@ TEST(optional_fields_2)
     ASSERT_TRUE(message_p->v5.is_present);
     ASSERT_EQ(message_p->v5.value.size, 3);
     ASSERT_MEMORY_EQ(message_p->v5.value.buf_p, "123", 3);
+    ASSERT_TRUE(message_p->v6.is_present);
+    ASSERT_EQ(message_p->v6.value, optional_fields_enum_b_e);
+}
+
+TEST(optional_fields_3)
+{
+    uint8_t encoded[128];
+    int size;
+    uint8_t workspace[1024];
+    struct optional_fields_message_t *message_p;
+
+    /* Encode. */
+    message_p = optional_fields_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    message_p->v6.is_present = true;
+    message_p->v6.value = optional_fields_enum_a_e;
+    size = optional_fields_message_encode(message_p, &encoded[0], sizeof(encoded));
+    ASSERT_EQ(size, 2);
+    ASSERT_MEMORY_EQ(&encoded[0], "\x30\x00", size);
+
+    /* Decode. */
+    message_p = optional_fields_message_new(&workspace[0], sizeof(workspace));
+    ASSERT_NE(message_p, NULL);
+    size = optional_fields_message_decode(message_p, &encoded[0], size);
+    ASSERT_EQ(size, 2);
+    ASSERT_TRUE(message_p->v6.is_present);
+    ASSERT_EQ(message_p->v6.value, optional_fields_enum_a_e);
 }

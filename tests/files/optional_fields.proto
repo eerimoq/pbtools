@@ -2,10 +2,16 @@ syntax = "proto3";
 
 package optional_fields;
 
+enum Enum {
+    A = 0;
+    B = 1;    
+}
+
 message Message {
     optional int32 v1 = 1;
     optional bool v2 = 2;
     optional string v3 = 3;
     int32 v4 = 4;
     optional bytes v5 = 5;
+    optional Enum v6 = 6;
 }

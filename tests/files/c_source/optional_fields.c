@@ -45,12 +45,16 @@ void optional_fields_message_init(
     self_p->v3.is_present = false;
     self_p->v4 = 0;
     self_p->v5.is_present = false;
+    self_p->v6.is_present = false;
 }
 
 void optional_fields_message_encode_inner(
     struct pbtools_encoder_t *encoder_p,
     struct optional_fields_message_t *self_p)
 {
+    if (self_p->v6.is_present) {
+        pbtools_encoder_write_enum_always(encoder_p, 6, self_p->v6.value);
+    }
     if (self_p->v5.is_present) {
         pbtools_encoder_write_bytes_always(encoder_p, 5, &self_p->v5.value);
     }
@@ -97,6 +101,11 @@ void optional_fields_message_decode_inner(
         case 5:
             self_p->v5.is_present = true;
             pbtools_decoder_read_bytes(decoder_p, wire_type, &self_p->v5.value);
+            break;
+
+        case 6:
+            self_p->v6.is_present = true;
+            self_p->v6.value = pbtools_decoder_read_enum(decoder_p, wire_type);
             break;
 
         default:

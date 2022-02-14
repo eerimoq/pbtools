@@ -290,7 +290,7 @@ self_p->{field.name_snake_case});
 
 ENCODE_OPTIONAL_ENUM_FMT = '''\
     if (self_p->{field.name_snake_case}.is_present) {{
-        pbtools_encoder_write_enum(encoder_p, {field.field_number}, \
+        pbtools_encoder_write_enum_always(encoder_p, {field.field_number}, \
 self_p->{field.name_snake_case}.value);
     }}
 '''
