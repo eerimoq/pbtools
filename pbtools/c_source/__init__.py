@@ -1322,6 +1322,8 @@ def generate_files(infiles,
 
     """
 
+    os.makedirs(output_directory, exist_ok=True)
+
     for filename in infiles:
         parsed = parse_file(filename, import_paths)
         basename = os.path.basename(filename)
