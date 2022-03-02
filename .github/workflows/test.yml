@@ -43,6 +43,14 @@ jobs:
     - name: Test C
       run: |
         make test-c
+    - name: Test CMake
+      run: |
+        mkdir lib/build
+        cd lib/build
+        cmake ..
+        make
+        cmake --install . --prefix foo
+        ls foo/include/pbtools.h foo/lib/libpbtools.a
     - name: Examples
       run: |
         make -C examples
