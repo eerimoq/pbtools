@@ -35,6 +35,8 @@ extern "C" {{
 #include <stdbool.h>
 #include <string.h>
 
+#define PBTOOLS_VERSION "0.43.0"
+
 /* Compile time configuration. */
 
 /* Support for float and double if 1. */
