@@ -35,7 +35,7 @@ extern "C" {{
 #include <stdbool.h>
 #include <string.h>
 
-#define PBTOOLS_VERSION "0.43.0"
+#define PBTOOLS_VERSION "0.44.0"
 
 /* Compile time configuration. */
 

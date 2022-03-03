@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.1)
 project(pbtools C)
 add_library(pbtools src/pbtools.c)
 target_include_directories(pbtools PUBLIC
