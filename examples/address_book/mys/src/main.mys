@@ -24,4 +24,5 @@ def main():
                        b"\x0c\x2b\x34\x36\x39\x39\x39\x39\x39\x39"
                        b"\x39\x39\x39\x10\x02")
 
-    # assert AddressBook(encoded) == address_book
+    address_book.from_bytes(encoded)
+    print(address_book)
