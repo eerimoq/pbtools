@@ -2368,7 +2368,9 @@ int pbtools_sub_message_alloc(
 {
     struct pbtools_message_base_t *message_p;
 
-    message_p = heap_alloc(heap_p, sub_message_size, alignof(*message_p));
+    message_p = heap_alloc(heap_p,
+                           sub_message_size,
+                           alignof(struct pbtools_message_base_t));
 
     if (message_p == NULL) {
         return (-1);
@@ -2558,7 +2560,7 @@ void pbtools_decoder_sub_message_decode(
     message_p = decoder_heap_alloc(
         self_p,
         sub_message_size,
-        alignof(*message_p));
+        alignof(struct pbtools_message_base_t));
 
     if (message_p == NULL) {
         return;
