@@ -69,9 +69,10 @@ class Person:
                 case 3:
                     self.email = decoder.read_string(wire_type)
                 case 4:
-                    decoder.read_length_delimited(WireType.LengthDelimited)
                     phone = PersonPhoneNumber("", PersonPhoneType.Mobile)
-                    phone.from_bytes_inner(decoder)
+                    phone.from_bytes_inner(
+                        decoder.slice(i64(
+                            decoder.read_length_delimited(WireType.LengthDelimited))))
                     self.phones.append(phone)
                 case _:
                     decoder.skip_field(wire_type)
@@ -90,7 +91,7 @@ class AddressBook:
 
     def from_bytes(self, data: bytes):
         self.clear()
-        self.from_bytes_inner(Decoder(data))
+        self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
         for person in reversed(self.people):
@@ -104,9 +105,10 @@ class AddressBook:
 
             match field_number:
                 case 1:
-                    decoder.read_length_delimited(WireType.LengthDelimited)
                     person = Person("", 0, "", [])
-                    person.from_bytes_inner(decoder)
+                    person.from_bytes_inner(
+                        decoder.slice(i64(
+                            decoder.read_length_delimited(WireType.LengthDelimited))))
                     self.people.append(person)
                 case _:
                     decoder.skip_field(wire_type)

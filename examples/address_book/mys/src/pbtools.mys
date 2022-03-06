@@ -74,13 +74,15 @@ class Encoder:
 class Decoder:
     data: bytes
     pos: i64
+    length: i64
 
-    def __init__(self, data: bytes):
-        self.data = data
-        self.pos = 0
+    def slice(self, length: i64) -> Decoder:
+        self.pos += length
+
+        return Decoder(self.data, self.pos - length, self.pos)
 
     def available(self) -> bool:
-        return self.pos < i64(len(self.data))
+        return self.pos < self.length
 
     def get(self) -> u8:
         if not self.available():

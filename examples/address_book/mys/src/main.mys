@@ -14,6 +14,7 @@ def main():
                ])
     ])
 
+    print(address_book)
     encoded = address_book.to_bytes()
     assert encoded == (b"\x0a\x49\x0a\x0a\x4b\x61\x6c\x6c\x65\x20"
                        b"\x4b\x75\x6c\x61\x10\x38\x1a\x15\x6b\x61"
