@@ -2,7 +2,6 @@
 
 from .pbtools import Decoder
 from .pbtools import Encoder
-from .pbtools import PbtoolsError
 from .pbtools import WireType
 
 @enum
