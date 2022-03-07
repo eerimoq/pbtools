@@ -1,0 +1,12 @@
+from .oneof import Foo
+from .oneof import FooBar
+
+def main():
+    foo = Foo(FooBar.Fie, 789, False)
+
+    print(foo)
+    encoded = foo.to_bytes()
+    assert encoded == b"\x08\x95\x06"
+
+    foo.from_bytes(encoded)
+    print(foo)
