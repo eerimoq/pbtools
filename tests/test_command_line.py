@@ -191,6 +191,41 @@ class CommandLineTest(unittest.TestCase):
             self.assert_files_equal(filename_rs,
                                     f'tests/files/rust_source/{filename_rs}')
 
+    def test_command_line_generate_mys_source(self):
+        specs = [
+            'address_book',
+        ]
+
+        for spec in specs:
+            if isinstance(spec, tuple):
+                proto = f'tests/files/{spec[0]}.proto'
+                options = []
+
+                for include_path in spec[1]:
+                    options += ['-I', f'tests/files/{include_path}']
+
+                spec = os.path.basename(spec[0])
+            else:
+                proto = f'tests/files/{spec}.proto'
+                options = []
+
+            argv = [
+                'pbtools',
+                'generate_mys_source',
+                *options,
+                proto
+            ]
+
+            filename_mys = f'{spec}.mys'
+
+            remove_files([filename_mys])
+
+            with patch('sys.argv', argv):
+                pbtools._main()
+
+            self.assert_files_equal(filename_mys,
+                                    f'tests/files/mys_source/{filename_mys}')
+
 
 if __name__ == '__main__':
     unittest.main()
