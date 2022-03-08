@@ -20,7 +20,6 @@ from pbtools import Encoder
 MESSAGE_STRUCT_FMT = '''\
 class {message.name}:
 {members}\
-}};
 '''
 
 ENUM_FMT = '''\
@@ -34,41 +33,8 @@ ENUM_MEMBER_FMT = '''\
 '''
 
 ONEOF_FMT = '''\
-    enum {oneof.full_name_snake_case}_e {oneof.name_snake_case};
-    union {{
-{members}
-    }};\
-'''
-
-MESSAGE_DECLARATION_FMT = '''\
-/**
- * Encoding and decoding of {message.full_name}.
- */
-struct {message.full_name_snake_case}_t *
-{message.full_name_snake_case}_new(
-    void *workspace_p,
-    size_t size);
-
-int {message.full_name_snake_case}_encode(
-    struct {message.full_name_snake_case}_t *self_p,
-    uint8_t *encoded_p,
-    size_t size);
-
-int {message.full_name_snake_case}_decode(
-    struct {message.full_name_snake_case}_t *self_p,
-    const uint8_t *encoded_p,
-    size_t size);
-'''
-
-REPEATED_DECLARATION_FMT = '''\
-int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
-    struct {message.full_name_snake_case}_t *self_p,
-    int length);
-'''
-
-SUB_MESSAGE_ALLOC_DECLARATION_FMT = '''\
-int {message.full_name_snake_case}_{field.name_snake_case}_alloc(
-    struct {message.full_name_snake_case}_t *self_p);
+    {oneof.name_snake_case}: {oneof.full_name_snake_case}
+{members}\
 '''
 
 MESSAGE_DECLARATIONS_FMT = '''\
@@ -653,23 +619,8 @@ class Generator:
 
     def generate_repeated_struct_member_fmt(self,
                                             type,
-                                            name_snake_case,
-                                            type_kind):
-        if type in SCALAR_VALUE_TYPES:
-            if type in ['sint32', 'sint64']:
-                type = type[1:]
-            elif type in ['fixed32', 'fixed64']:
-                type = f'uint{type[5:]}'
-            elif type in ['sfixed32', 'sfixed64']:
-                type = f'int{type[6:]}'
-
-            type = f'struct pbtools_repeated_{type}_t'
-        elif type_kind == 'enum':
-            type = 'struct pbtools_repeated_int32_t'
-        else:
-            type = f'struct {type}_repeated_t'
-
-        return f'    {type} {name_snake_case};'
+                                            name_snake_case):
+        return f'    {name_snake_case}: [{type}]'
 
     def generate_struct_members(self, message):
         members = []
@@ -677,9 +628,8 @@ class Generator:
         for field in message.fields:
             if field.repeated:
                 member = self.generate_repeated_struct_member_fmt(
-                    field.full_type_snake_case,
-                    field.name_snake_case,
-                    field.type_kind)
+                    field.type,
+                    field.name_snake_case)
             elif field.optional:
                 member = self.generate_optional_struct_member_fmt(
                     field.full_type_snake_case,
@@ -687,7 +637,7 @@ class Generator:
                     field.type_kind)
             else:
                 member = self.generate_struct_member_fmt(
-                    field.full_type_snake_case,
+                    field.type,
                     field.name_snake_case,
                     field.type_kind)
 
@@ -788,15 +738,6 @@ class Generator:
         return '\n'.join(declarations)
 
     def generate_message_declarations(self, message, declarations, public):
-        for field in message.fields:
-            if field.repeated:
-                declarations.append(
-                    REPEATED_DECLARATION_FMT.format(message=message, field=field))
-            elif field.type_kind == 'message':
-                declarations.append(
-                    SUB_MESSAGE_ALLOC_DECLARATION_FMT.format(message=message,
-                                                             field=field))
-
         for sub_message in message.messages:
             self.generate_message_declarations(sub_message,
                                                declarations,
@@ -814,10 +755,6 @@ class Generator:
                         INIT_ONEOF_FMT.format(oneof=oneof,
                                               message=message,
                                               field=field))
-
-        if public:
-            declarations.append(
-                MESSAGE_DECLARATION_FMT.format(message=message))
 
     def generate_internal_declarations(self):
         declarations = []
