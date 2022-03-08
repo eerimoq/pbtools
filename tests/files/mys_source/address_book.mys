@@ -13,13 +13,61 @@ class PhoneNumber:
     number: string
     type: PhoneType
 
+    def to_bytes(self) -> bytes:
+        encoder = Encoder()
+        self.to_bytes_inner(encoder)
+
+        return encoder.data()
+
+    def from_bytes(self, data: bytes):
+        self.clear()
+        self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
+
+    def to_bytes_inner(self, encoder: Encoder):
+        pass
+
+    def from_bytes_inner(self, decoder: Decoder):
+        pass
+
 class Person:
     name: string
     id: i32
     email: string
     phones: [PhoneNumber]
 
+    def to_bytes(self) -> bytes:
+        encoder = Encoder()
+        self.to_bytes_inner(encoder)
+
+        return encoder.data()
+
+    def from_bytes(self, data: bytes):
+        self.clear()
+        self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
+
+    def to_bytes_inner(self, encoder: Encoder):
+        pass
+
+    def from_bytes_inner(self, decoder: Decoder):
+        pass
+
 class AddressBook:
     people: [Person]
+
+    def to_bytes(self) -> bytes:
+        encoder = Encoder()
+        self.to_bytes_inner(encoder)
+
+        return encoder.data()
+
+    def from_bytes(self, data: bytes):
+        self.clear()
+        self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
+
+    def to_bytes_inner(self, encoder: Encoder):
+        pass
+
+    def from_bytes_inner(self, decoder: Decoder):
+        pass
 
 

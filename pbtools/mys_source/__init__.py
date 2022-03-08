@@ -18,7 +18,23 @@ from pbtools import Encoder
 
 MESSAGE_STRUCT_FMT = '''\
 class {message.name}:
-{members}\
+{members}
+
+    def to_bytes(self) -> bytes:
+        encoder = Encoder()
+        self.to_bytes_inner(encoder)
+
+        return encoder.data()
+
+    def from_bytes(self, data: bytes):
+        self.clear()
+        self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
+
+    def to_bytes_inner(self, encoder: Encoder):
+        pass
+
+    def from_bytes_inner(self, decoder: Decoder):
+        pass
 '''
 
 ENUM_FMT = '''\
@@ -648,9 +664,6 @@ class Generator:
                                  members=self.generate_oneof_members(oneof)))
 
         members = '\n'.join(members)
-
-        if members:
-            members += '\n'
 
         return members
 
