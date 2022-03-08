@@ -70,4 +70,3 @@ class AddressBook:
     def from_bytes_inner(self, decoder: Decoder):
         pass
 
-
