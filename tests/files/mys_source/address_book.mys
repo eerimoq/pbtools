@@ -13,6 +13,10 @@ class PhoneNumber:
     number: string
     type: PhoneType
 
+    def clear(self):
+        self.number = ""
+        self.type = PersonPhoneType.Mobile
+
     def to_bytes(self) -> bytes:
         encoder = Encoder()
         self.to_bytes_inner(encoder)
@@ -24,16 +28,32 @@ class PhoneNumber:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        pass
+        encoder.write_enum(2, i64(self.type))
+        encoder.write(1, self.number)
 
     def from_bytes_inner(self, decoder: Decoder):
-        pass
+        while decoder.available():
+            field_number, wire_type = decoder.read_tag()
+
+            match field_number:
+                case 1:
+                    self.number = decoder.read_string(wire_type)
+                case 2:
+                    self.type = PersonPhoneType(i64(decoder.read_i32(wire_type)))
+                case _:
+                    decoder.skip_field(wire_type)
 
 class Person:
     name: string
     id: i32
     email: string
-    phones: [PhoneNumber]
+    phones: [PersonPhoneNumber]
+
+    def clear(self):
+        self.name = ""
+        self.id = 0
+        self.email = ""
+        self.phones = []
 
     def to_bytes(self) -> bytes:
         encoder = Encoder()
@@ -46,14 +66,41 @@ class Person:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        pass
+        for phone in reversed(self.phones):
+            pos = encoder.pos
+            phone.to_bytes_inner(encoder)
+            encoder.write_length_delimited(4, u64(pos - encoder.pos))
+
+        encoder.write(3, self.email)
+        encoder.write(2, self.id)
+        encoder.write(1, self.name)
 
     def from_bytes_inner(self, decoder: Decoder):
-        pass
+        while decoder.available():
+            field_number, wire_type = decoder.read_tag()
+
+            match field_number:
+                case 1:
+                    self.name = decoder.read_string(wire_type)
+                case 2:
+                    self.id = decoder.read_i32(wire_type)
+                case 3:
+                    self.email = decoder.read_string(wire_type)
+                case 4:
+                    phone = PersonPhoneNumber("", PersonPhoneType.Mobile)
+                    phone.from_bytes_inner(
+                        decoder.slice(i64(
+                            decoder.read_length_delimited(WireType.LengthDelimited))))
+                    self.phones.append(phone)
+                case _:
+                    decoder.skip_field(wire_type)
 
 class AddressBook:
     people: [Person]
 
+    def clear(self):
+        self.people.clear()
+
     def to_bytes(self) -> bytes:
         encoder = Encoder()
         self.to_bytes_inner(encoder)
@@ -65,8 +112,21 @@ class AddressBook:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        pass
+        for person in reversed(self.people):
+            pos = encoder.pos
+            person.to_bytes_inner(encoder)
+            encoder.write_length_delimited(1, u64(pos - encoder.pos))
 
     def from_bytes_inner(self, decoder: Decoder):
-        pass
+        while decoder.available():
+            field_number, wire_type = decoder.read_tag()
 
+            match field_number:
+                case 1:
+                    person = Person("", 0, "", [])
+                    person.from_bytes_inner(
+                        decoder.slice(i64(
+                            decoder.read_length_delimited(WireType.LengthDelimited))))
+                    self.people.append(person)
+                case _:
+                    decoder.skip_field(wire_type)

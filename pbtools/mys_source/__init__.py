@@ -19,6 +19,9 @@ MESSAGE_FMT = '''\
 class {message.name}:
 {members}
 
+    def clear(self):
+{clear}
+
     def to_bytes(self) -> bytes:
         encoder = Encoder()
         self.to_bytes_inner(encoder)
@@ -33,7 +36,12 @@ class {message.name}:
         pass
 
     def from_bytes_inner(self, decoder: Decoder):
-        pass
+        while decoder.available():
+            field_number, wire_type = decoder.read_tag()
+
+            match field_number:
+                case _:
+                    decoder.skip_field(wire_type)
 '''
 
 ENUM_FMT = '''\
@@ -100,6 +108,27 @@ class Generator:
 
         return f'    {name_snake_case}: {type}'
 
+    def generate_struct_clear_value(self, type, type_kind):
+        if type in ['int32', 'int64',
+                    'uint32', 'uint64',
+                    'fixed32', 'fixed64',
+                    'sfixed32', 'sfixed64']:
+            value = '0'
+        elif type in ['float', 'double']:
+            value = '0.0'
+        elif type == 'bool':
+            value = 'False'
+        elif type == 'bytes':
+            value = 'b""'
+        elif type == 'string':
+            value = '""'
+        elif type_kind == 'enum':
+            value = f'{type}.Todo'
+        else:
+            value = 'None'
+
+        return value
+
     def generate_optional_struct_member_fmt(self, type, name_snake_case, type_kind):
         value_name_snake_case = 'value'
 
@@ -163,6 +192,25 @@ class Generator:
 
         return members
 
+    def generate_struct_clear(self, message):
+        members = []
+
+        for field in message.fields:
+            if field.repeated:
+                value = '[]'
+            elif field.optional:
+                value = 'None'
+            else:
+                value = self.generate_struct_clear_value(
+                    field.type,
+                    field.type_kind)
+
+            members.append(f'        self.{field.name_snake_case} = {value}')
+
+        members = '\n'.join(members)
+
+        return members
+
     def generate_enum_members(self, enum):
         return '\n'.join([
             ENUM_MEMBER_FMT.format(enum=enum, field=field)
@@ -221,7 +269,8 @@ class Generator:
         types += [
             MESSAGE_FMT.format(
                 message=message,
-                members=self.generate_struct_members(message))
+                members=self.generate_struct_members(message),
+                clear=self.generate_struct_clear(message))
         ]
 
         return types
