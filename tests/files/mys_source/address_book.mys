@@ -15,7 +15,7 @@ class PhoneNumber:
 
     def clear(self):
         self.number = ""
-        self.type = PersonPhoneType.Mobile
+        self.type = PhoneType.Mobile
 
     def to_bytes(self) -> bytes:
         encoder = Encoder()
@@ -39,7 +39,7 @@ class PhoneNumber:
                 case 1:
                     self.number = decoder.read_string(wire_type)
                 case 2:
-                    self.type = PersonPhoneType(i64(decoder.read_i32(wire_type)))
+                    self.type = PhoneType(i64(decoder.read_i32(wire_type)))
                 case _:
                     decoder.skip_field(wire_type)
 
@@ -47,7 +47,7 @@ class Person:
     name: string
     id: i32
     email: string
-    phones: [PersonPhoneNumber]
+    phones: [PhoneNumber]
 
     def clear(self):
         self.name = ""
@@ -66,9 +66,9 @@ class Person:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        for phone in reversed(self.phones):
+        for item in reversed(self.phones):
             pos = encoder.pos
-            phone.to_bytes_inner(encoder)
+            item.to_bytes_inner(encoder)
             encoder.write_length_delimited(4, u64(pos - encoder.pos))
 
         encoder.write(3, self.email)
@@ -87,7 +87,7 @@ class Person:
                 case 3:
                     self.email = decoder.read_string(wire_type)
                 case 4:
-                    phone = PersonPhoneNumber("", PersonPhoneType.Mobile)
+                    phone = PhoneNumber("", PhoneType.Mobile)
                     phone.from_bytes_inner(
                         decoder.slice(i64(
                             decoder.read_length_delimited(WireType.LengthDelimited))))
@@ -112,9 +112,9 @@ class AddressBook:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        for person in reversed(self.people):
+        for item in reversed(self.people):
             pos = encoder.pos
-            person.to_bytes_inner(encoder)
+            item.to_bytes_inner(encoder)
             encoder.write_length_delimited(1, u64(pos - encoder.pos))
 
     def from_bytes_inner(self, decoder: Decoder):

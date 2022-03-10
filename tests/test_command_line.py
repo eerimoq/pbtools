@@ -223,7 +223,7 @@ class CommandLineTest(unittest.TestCase):
             with patch('sys.argv', argv):
                 pbtools._main()
 
-            with self.assertRaises(Exception):
+            with self.assertRaises(AssertionError):
                 self.assert_files_equal(filename_mys,
                                         f'tests/files/mys_source/{filename_mys}')
 

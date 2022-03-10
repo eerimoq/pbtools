@@ -33,13 +33,14 @@ class {message.name}:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        pass
+{to_bytes_inner}
 
     def from_bytes_inner(self, decoder: Decoder):
         while decoder.available():
             field_number, wire_type = decoder.read_tag()
 
             match field_number:
+{from_bytes_inner}
                 case _:
                     decoder.skip_field(wire_type)
 '''
@@ -211,6 +212,78 @@ class Generator:
 
         return members
 
+    def generate_struct_to_bytes_inner(self, message):
+        lines = []
+
+        for field in reversed(message.fields):
+            if field.repeated:
+                lines += self.generate_struct_to_bytes_inner_repeated(field)
+            else:
+                lines += self.generate_struct_to_bytes_inner_field(field)
+
+        lines = '\n'.join(lines)
+
+        return lines
+
+    def generate_struct_to_bytes_inner_field(self, field):
+        if field.type_kind == 'enum':
+            lines = [f'        encoder.write_enum({field.field_number}, '
+                     f'i64(self.{field.name_snake_case}))']
+        else:
+            lines = [f'        encoder.write({field.field_number}, '
+                     f'self.{field.name_snake_case})']
+
+        return lines
+
+    def generate_struct_to_bytes_inner_repeated(self, field):
+        return [
+            f'        for item in reversed(self.{field.name_snake_case}):',
+            f'            pos = encoder.pos',
+            f'            item.to_bytes_inner(encoder)',
+            f'            encoder.write_length_delimited({field.field_number}, '
+            f'u64(pos - encoder.pos))',
+            ''
+        ]
+
+    def generate_struct_from_bytes_inner(self, message):
+        lines = []
+
+        for field in message.fields:
+            lines.append(f'                case {field.field_number}:')
+
+            if field.repeated:
+                lines += self.generate_struct_from_bytes_inner_repeated(field)
+            else:
+                lines += self.generate_struct_from_bytes_inner_field(field)
+
+        lines = '\n'.join(lines)
+
+        return lines
+
+    def generate_struct_from_bytes_inner_field(self, field):
+        if field.type_kind == 'enum':
+            lines = [
+                f'                    self.{field.name_snake_case} = '
+                f'PhoneType(i64(decoder.read_i32(wire_type)))'
+            ]
+        else:
+            lines = [
+                f'                    self.{field.name_snake_case} = '
+                f'decoder.read_string(wire_type)'
+            ]
+
+        return lines
+
+    def generate_struct_from_bytes_inner_repeated(self, field):
+        return [
+            f'        for item in reversed(self.{field.name_snake_case}):',
+            f'            pos = encoder.pos',
+            f'            item.to_bytes_inner(encoder)',
+            f'            encoder.write_length_delimited({field.field_number}, '
+            f'u64(pos - encoder.pos))',
+            ''
+        ]
+
     def generate_enum_members(self, enum):
         return '\n'.join([
             ENUM_MEMBER_FMT.format(enum=enum, field=field)
@@ -270,7 +343,9 @@ class Generator:
             MESSAGE_FMT.format(
                 message=message,
                 members=self.generate_struct_members(message),
-                clear=self.generate_struct_clear(message))
+                clear=self.generate_struct_clear(message),
+                to_bytes_inner=self.generate_struct_to_bytes_inner(message),
+                from_bytes_inner=self.generate_struct_from_bytes_inner(message))
         ]
 
         return types
