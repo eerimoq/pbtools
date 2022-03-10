@@ -46,7 +46,7 @@ class {message.name}:
 '''
 
 ENUM_FMT = '''\
-@enum
+@enum(i32)
 class {name}:
 {members}
 '''
@@ -229,7 +229,7 @@ class Generator:
     def generate_struct_to_bytes_inner_field(self, field):
         if field.type_kind == 'enum':
             lines = [f'        encoder.write_enum({field.field_number}, '
-                     f'i64(self.{field.name_snake_case}))']
+                     f'i32(self.{field.name_snake_case}))']
         else:
             lines = [f'        encoder.write({field.field_number}, '
                      f'self.{field.name_snake_case})']
@@ -265,7 +265,7 @@ class Generator:
         if field.type_kind == 'enum':
             lines = [
                 f'                    self.{field.name_snake_case} = '
-                f'PhoneType(i64(decoder.read_i32(wire_type)))'
+                f'PhoneType(decoder.read_i32(wire_type))'
             ]
         else:
             lines = [

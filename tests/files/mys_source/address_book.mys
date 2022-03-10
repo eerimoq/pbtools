@@ -3,7 +3,7 @@
 from pbtools import Decoder
 from pbtools import Encoder
 
-@enum
+@enum(i32)
 class PhoneType:
     MOBILE = 0
     HOME = 1
@@ -28,7 +28,7 @@ class PhoneNumber:
         self.from_bytes_inner(Decoder(data, 0, i64(len(data))))
 
     def to_bytes_inner(self, encoder: Encoder):
-        encoder.write_enum(2, i64(self.type))
+        encoder.write_enum(2, i32(self.type))
         encoder.write(1, self.number)
 
     def from_bytes_inner(self, decoder: Decoder):
@@ -39,7 +39,7 @@ class PhoneNumber:
                 case 1:
                     self.number = decoder.read_string(wire_type)
                 case 2:
-                    self.type = PhoneType(i64(decoder.read_i32(wire_type)))
+                    self.type = PhoneType(decoder.read_i32(wire_type))
                 case _:
                     decoder.skip_field(wire_type)
 
