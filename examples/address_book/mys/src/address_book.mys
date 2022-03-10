@@ -16,7 +16,7 @@ class PersonPhoneNumber:
 
     def clear(self):
         self.number = ""
-        self.type = PersonPhoneType.Mobile
+        self.type = PersonPhoneType(0)
 
     def to_bytes_inner(self, encoder: Encoder):
         encoder.write_enum(2, i64(self.type))

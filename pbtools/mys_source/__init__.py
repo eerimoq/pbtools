@@ -124,7 +124,7 @@ class Generator:
         elif type == 'string':
             value = '""'
         elif type_kind == 'enum':
-            value = f'{type}.Todo'
+            value = f'{type}(0)'
         else:
             value = 'None'
 
@@ -198,15 +198,16 @@ class Generator:
 
         for field in message.fields:
             if field.repeated:
-                value = '[]'
+                action = '.clear()'
             elif field.optional:
-                value = 'None'
+                action = ' = None'
             else:
                 value = self.generate_struct_clear_value(
                     field.type,
                     field.type_kind)
+                action = f' = {value}'
 
-            members.append(f'        self.{field.name_snake_case} = {value}')
+            members.append(f'        self.{field.name_snake_case}{action}')
 
         members = '\n'.join(members)
 
@@ -223,7 +224,7 @@ class Generator:
 
         lines = '\n'.join(lines)
 
-        return lines
+        return lines.rstrip()
 
     def generate_struct_to_bytes_inner_field(self, field):
         if field.type_kind == 'enum':
@@ -276,11 +277,8 @@ class Generator:
 
     def generate_struct_from_bytes_inner_repeated(self, field):
         return [
-            f'        for item in reversed(self.{field.name_snake_case}):',
-            f'            pos = encoder.pos',
-            f'            item.to_bytes_inner(encoder)',
-            f'            encoder.write_length_delimited({field.field_number}, '
-            f'u64(pos - encoder.pos))',
+            f'                    item = Todo()',
+            f'                    self.{field.name_snake_case}.append(item)',
             ''
         ]
 
