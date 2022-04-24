@@ -519,7 +519,7 @@ class ImportedProto:
         self.path = tokens[2].strip('"')
         self.abspath = find_file(self.path, import_paths)
 
-        with open(self.abspath) as fin:
+        with open(self.abspath, encoding='utf-8') as fin:
             tree = Parser().parse(ignore_comments(fin.read()))
 
         # ToDo: Public imports should be found as well.
@@ -830,7 +830,7 @@ def parse_file(filename, import_paths=None):
     if import_paths is None:
         import_paths = []
 
-    with open(filename, 'r') as fin:
+    with open(filename, 'r', encoding='utf-8') as fin:
         return Proto(Parser().parse(ignore_comments(fin.read())),
                      find_file(filename, import_paths),
                      import_paths)
