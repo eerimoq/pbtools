@@ -34,7 +34,7 @@ class CommandLineTest(unittest.TestCase):
             ('imports/imported1', ['imports']),
             ('imports/imported2', ['imports']),
             ('imports/imported3', ['imports']),
-            ('imports/imported_duplicated_package', ['imports']),
+            ('imports/ImportedDuplicatedPackage', ['imports']),
             ('importing', ['.', 'imports']),
             ('no_package_importing', ['.', 'imports']),
             'no_package_imported',
@@ -70,7 +70,7 @@ class CommandLineTest(unittest.TestCase):
                 for include_path in spec[1]:
                     options += ['-I', f'tests/files/{include_path}']
 
-                spec = os.path.basename(spec[0])
+                spec = pbtools.parser.camel_to_snake_case(os.path.basename(spec[0]))
             else:
                 proto = f'tests/files/{spec}.proto'
                 options = []

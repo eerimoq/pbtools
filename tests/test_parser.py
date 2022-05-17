@@ -616,11 +616,11 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(imported.messages, ['ImportedMessage'])
 
         imported = parsed.imports[1]
-        self.assertEqual(imported.path, 'imported_duplicated_package.proto')
+        self.assertEqual(imported.path, 'ImportedDuplicatedPackage.proto')
         self.assertEqual(imported.package, 'imported')
         self.assertTrue(
             imported.abspath.endswith(
-                os.path.join('tests', 'files', 'imports', 'imported_duplicated_package.proto')))
+                os.path.join('tests', 'files', 'imports', 'ImportedDuplicatedPackage.proto')))
         self.assertEqual(imported.enums, ['ImportedDuplicatedPackageEnum'])
         self.assertEqual(imported.messages,
                          ['Imported2Message', 'ImportedDuplicatedPackageMessage'])

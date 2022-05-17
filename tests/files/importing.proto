@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 import "imported.proto";
-import "imported_duplicated_package.proto";
+import "ImportedDuplicatedPackage.proto";
 import "imported2.proto";
 
 package importing;

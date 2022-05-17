@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "imported_duplicated_package.proto";
+import "ImportedDuplicatedPackage.proto";
 
 package imported;
 

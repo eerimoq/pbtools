@@ -4,7 +4,7 @@ package imported2.foo.bar;
 
 import "imported3.proto";
 import "imported1.proto";
-import "imported_duplicated_package.proto";
+import "ImportedDuplicatedPackage.proto";
 
 enum Imported2Enum {
     A = 0;

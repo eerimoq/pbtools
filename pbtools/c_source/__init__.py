@@ -1281,8 +1281,8 @@ class Generator:
         includes = []
 
         for imported in self.parsed.imports:
-            filename = imported.path.replace('.proto', '.h')
-            includes.append(f'#include "{filename}"')
+            name = camel_to_snake_case(os.path.splitext(imported.path)[0])
+            includes.append(f'#include "{name}.h"')
 
         includes = '\n'.join(includes)
 
