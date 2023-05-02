@@ -133,6 +133,15 @@ ENUM_MEMBER_FMT = '''\
     {enum.full_name_snake_case}_{field.name_snake_case}_e = {field.field_number}\
 '''
 
+ENUM_MEMBER_PREFIX_NS_FMT = '''\
+    {enum.namespace_snake_case}_{field.name_snake_case}_e = {field.field_number}\
+'''
+
+ENUM_MEMBER_PREFIX_NONE_FMT = '''\
+    {field.name_snake_case}_e = {field.field_number}\
+'''
+
+
 ONEOF_FMT = '''\
     enum {oneof.full_name_snake_case}_e {oneof.name_snake_case};
     union {{
@@ -682,15 +691,24 @@ OPTIONAL_STRUCT_MEMBER_FMT = '''\
 '''
 
 
+class GeneratorOptions:
+
+    def __init__(self):
+        self.enum_prefix = 2
+        self.enum_upper = False
+
+
 class Generator:
 
-    def __init__(self, namespace, parsed, header_name):
+    def __init__(self, namespace, parsed, header_name, gen_opts):
         if parsed.package is not None:
             namespace = camel_to_snake_case(parsed.package)
 
         self.namespace = namespace
         self.parsed = parsed
         self.header_name = header_name
+        self.enum_prefix = gen_opts.enum_prefix
+        self.enum_upper = gen_opts.enum_upper
 
     @property
     def messages(self):
@@ -812,10 +830,19 @@ class Generator:
         return REPEATED_MESSAGE_STRUCT_FMT.format(message=message)
 
     def generate_enum_members(self, enum):
-        return ',\n'.join([
-            ENUM_MEMBER_FMT.format(enum=enum, field=field)
-            for field in enum.fields
-        ])
+        if self.enum_prefix == 0:
+            format_func = ENUM_MEMBER_PREFIX_NONE_FMT.format
+        elif self.enum_prefix == 1:
+            format_func = ENUM_MEMBER_PREFIX_NS_FMT.format
+        else:
+            format_func = ENUM_MEMBER_FMT.format
+        lines = []
+        for field in enum.fields:
+            line = format_func(enum=enum, field=field)
+            if self.enum_upper:
+                line = line.upper()
+            lines.append(line)
+        return ',\n'.join(lines)
 
     def generate_enum_type(self, enum):
         return [
@@ -1307,17 +1334,18 @@ class Generator:
         return header, source
 
 
-def generate(namespace, parsed, header_name):
+def generate(namespace, parsed, header_name, gen_opts):
     """Generate C source code from given parsed proto-file.
 
     """
 
-    return Generator(namespace, parsed, header_name).generate()
+    return Generator(namespace, parsed, header_name, gen_opts).generate()
 
 
 def generate_files(infiles,
                    import_paths=None,
-                   output_directory='.'):
+                   output_directory='.',
+                   gen_opts=None):
     """Generate C source code from proto-file(s).
 
     """
@@ -1332,7 +1360,9 @@ def generate_files(infiles,
         filename_h = f'{name}.h'
         filename_c = f'{name}.c'
 
-        header, source = generate(name, parsed, filename_h)
+        if gen_opts is None:
+            gen_opts = GeneratorOptions()
+        header, source = generate(name, parsed, filename_h, gen_opts)
         filename_h = os.path.join(output_directory, filename_h)
         filename_c = os.path.join(output_directory, filename_c)
 
