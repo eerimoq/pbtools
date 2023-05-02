@@ -6,13 +6,14 @@ from ..c_source import GeneratorOptions
 
 
 def _do_generate_c_source(args):
-    gen_opts = GeneratorOptions()
-    gen_opts.enum_prefix = args.enum_prefix
-    gen_opts.enum_upper = args.enum_upper
+    options = GeneratorOptions(
+        enum_prefix=args.enum_prefix,
+        enum_upper=args.enum_upper
+    )
     generate_files(args.infiles,
                    args.import_path,
                    args.output_directory,
-                   gen_opts)
+                   options)
 
 
 def add_subparser(subparsers):
@@ -34,9 +35,9 @@ def add_subparser(subparsers):
         help='Input protobuf file(s).')
     subparser.add_argument(
         '--enum-prefix',
-        default=2,
-        type=int,
-        help='set generated enum prefix, 0: none, 1: namespace, else: namespace and type')
+        choices=GeneratorOptions.enum_prefixes(),
+        default=GeneratorOptions.enum_prefixes()[0],
+        help='set generated enum prefix')
     subparser.add_argument(
         '--enum-upper',
         action='store_true',

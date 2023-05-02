@@ -693,22 +693,31 @@ OPTIONAL_STRUCT_MEMBER_FMT = '''\
 
 class GeneratorOptions:
 
-    def __init__(self):
-        self.enum_prefix = 2
-        self.enum_upper = False
+    _enum_formatters = {
+        'namespace-and-type': ENUM_MEMBER_FMT.format,
+        'namespace': ENUM_MEMBER_PREFIX_NS_FMT.format,
+        'none': ENUM_MEMBER_PREFIX_NONE_FMT.format
+    }
+
+    def enum_prefixes():
+        return list(GeneratorOptions._enum_formatters.keys())
+
+    def __init__(self, enum_prefix, enum_upper):
+        self.enum_prefix = enum_prefix
+        self.enum_upper = enum_upper
 
 
 class Generator:
 
-    def __init__(self, namespace, parsed, header_name, gen_opts):
+    def __init__(self, namespace, parsed, header_name, options):
         if parsed.package is not None:
             namespace = camel_to_snake_case(parsed.package)
 
         self.namespace = namespace
         self.parsed = parsed
         self.header_name = header_name
-        self.enum_prefix = gen_opts.enum_prefix
-        self.enum_upper = gen_opts.enum_upper
+        self.enum_prefix = options.enum_prefix
+        self.enum_upper = options.enum_upper
 
     @property
     def messages(self):
@@ -830,12 +839,7 @@ class Generator:
         return REPEATED_MESSAGE_STRUCT_FMT.format(message=message)
 
     def generate_enum_members(self, enum):
-        if self.enum_prefix == 0:
-            format_func = ENUM_MEMBER_PREFIX_NONE_FMT.format
-        elif self.enum_prefix == 1:
-            format_func = ENUM_MEMBER_PREFIX_NS_FMT.format
-        else:
-            format_func = ENUM_MEMBER_FMT.format
+        format_func = GeneratorOptions._enum_formatters[self.enum_prefix]
         lines = []
         for field in enum.fields:
             line = format_func(enum=enum, field=field)
