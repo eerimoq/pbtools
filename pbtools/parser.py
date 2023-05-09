@@ -335,6 +335,10 @@ class Enum:
             self.fields.append(EnumField(item))
 
     @property
+    def namespace_snake_case(self):
+        return camel_to_snake_case('.'.join(self.namespace))
+
+    @property
     def full_name(self):
         return '.'.join(self.namespace + [self.name])
 

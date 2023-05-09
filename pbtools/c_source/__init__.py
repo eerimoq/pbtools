@@ -130,7 +130,7 @@ enum {name}_e {{
 '''
 
 ENUM_MEMBER_FMT = '''\
-    {enum.full_name_snake_case}_{field.name_snake_case}_e = {field.field_number}\
+    {enum.namespace_snake_case}_{field.name_snake_case}_e = {field.field_number}\
 '''
 
 ONEOF_FMT = '''\
@@ -682,15 +682,22 @@ OPTIONAL_STRUCT_MEMBER_FMT = '''\
 '''
 
 
+class GeneratorOptions:
+
+    def __init__(self, enum_upper):
+        self.enum_upper = enum_upper
+
+
 class Generator:
 
-    def __init__(self, namespace, parsed, header_name):
+    def __init__(self, namespace, parsed, header_name, options):
         if parsed.package is not None:
             namespace = camel_to_snake_case(parsed.package)
 
         self.namespace = namespace
         self.parsed = parsed
         self.header_name = header_name
+        self.enum_upper = options.enum_upper
 
     @property
     def messages(self):
@@ -812,10 +819,13 @@ class Generator:
         return REPEATED_MESSAGE_STRUCT_FMT.format(message=message)
 
     def generate_enum_members(self, enum):
-        return ',\n'.join([
-            ENUM_MEMBER_FMT.format(enum=enum, field=field)
-            for field in enum.fields
-        ])
+        lines = []
+        for field in enum.fields:
+            line = ENUM_MEMBER_FMT.format(enum=enum, field=field)
+            if self.enum_upper:
+                line = line.upper()
+            lines.append(line)
+        return ',\n'.join(lines)
 
     def generate_enum_type(self, enum):
         return [
@@ -1307,17 +1317,18 @@ class Generator:
         return header, source
 
 
-def generate(namespace, parsed, header_name):
+def generate(namespace, parsed, header_name, options):
     """Generate C source code from given parsed proto-file.
 
     """
 
-    return Generator(namespace, parsed, header_name).generate()
+    return Generator(namespace, parsed, header_name, options).generate()
 
 
 def generate_files(infiles,
                    import_paths=None,
-                   output_directory='.'):
+                   output_directory='.',
+                   options=None):
     """Generate C source code from proto-file(s).
 
     """
@@ -1332,7 +1343,7 @@ def generate_files(infiles,
         filename_h = f'{name}.h'
         filename_c = f'{name}.c'
 
-        header, source = generate(name, parsed, filename_h)
+        header, source = generate(name, parsed, filename_h, options)
         filename_h = os.path.join(output_directory, filename_h)
         filename_c = os.path.join(output_directory, filename_c)
 
