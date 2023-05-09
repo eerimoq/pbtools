@@ -41,8 +41,8 @@ extern "C" {
  * Enum pkg.Enum.
  */
 enum pkg_enum_e {
-    pkg_enum_a_e = 0,
-    pkg_enum_b_e = 1
+    pkg_a_e = 0,
+    pkg_b_e = 1
 };
 
 

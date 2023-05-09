@@ -41,16 +41,16 @@ extern "C" {
  * Enum enum.Enum.
  */
 enum enum_enum_e {
-    enum_enum_c_e = 0,
-    enum_enum_d_e = 1
+    enum_c_e = 0,
+    enum_d_e = 1
 };
 
 /**
  * Enum enum.Message.Enum.
  */
 enum enum_message_enum_e {
-    enum_message_enum_a_e = 0,
-    enum_message_enum_b_e = 1
+    enum_message_a_e = 0,
+    enum_message_b_e = 1
 };
 
 /**
@@ -70,8 +70,8 @@ struct enum_message_t {
  * Enum enum.Message2.InnerEnum.
  */
 enum enum_message2_inner_enum_e {
-    enum_message2_inner_enum_e_e = 0,
-    enum_message2_inner_enum_f_e = 1
+    enum_message2_e_e = 0,
+    enum_message2_f_e = 1
 };
 
 /**
@@ -92,9 +92,9 @@ struct enum_message2_t {
  * Enum enum.Limits.Enum.
  */
 enum enum_limits_enum_e {
-    enum_limits_enum_g_e = 0,
-    enum_limits_enum_h_e = -2147483648,
-    enum_limits_enum_i_e = 2147483647
+    enum_limits_g_e = 0,
+    enum_limits_h_e = -2147483648,
+    enum_limits_i_e = 2147483647
 };
 
 /**
@@ -114,9 +114,9 @@ struct enum_limits_t {
  * Enum enum.AllowAlias.Enum.
  */
 enum enum_allow_alias_enum_e {
-    enum_allow_alias_enum_a_e = 0,
-    enum_allow_alias_enum_b_e = 1,
-    enum_allow_alias_enum_c_e = 1
+    enum_allow_alias_a_e = 0,
+    enum_allow_alias_b_e = 1,
+    enum_allow_alias_c_e = 1
 };
 
 /**

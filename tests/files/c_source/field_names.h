@@ -41,8 +41,8 @@ extern "C" {
  * Enum field_names.Enum.
  */
 enum field_names_enum_e {
-    field_names_enum_a_e = 0,
-    field_names_enum_b_e = 1
+    field_names_a_e = 0,
+    field_names_b_e = 1
 };
 
 /**

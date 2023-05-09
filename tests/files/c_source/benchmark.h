@@ -41,11 +41,11 @@ extern "C" {
  * Enum benchmark.Enum.
  */
 enum benchmark_enum_e {
-    benchmark_enum_e0_e = 0,
-    benchmark_enum_e1_e = 1,
-    benchmark_enum_e2_e = 2,
-    benchmark_enum_e3_e = 3,
-    benchmark_enum_e5_e = 5
+    benchmark_e0_e = 0,
+    benchmark_e1_e = 1,
+    benchmark_e2_e = 2,
+    benchmark_e3_e = 3,
+    benchmark_e5_e = 5
 };
 
 /**

@@ -41,8 +41,8 @@ extern "C" {
  * Enum optional_fields.Enum.
  */
 enum optional_fields_enum_e {
-    optional_fields_enum_a_e = 0,
-    optional_fields_enum_b_e = 1
+    optional_fields_a_e = 0,
+    optional_fields_b_e = 1
 };
 
 /**

@@ -41,8 +41,8 @@ extern "C" {
  * Enum oneof.Enum.
  */
 enum oneof_enum_e {
-    oneof_enum_a_e = 0,
-    oneof_enum_b_e = 1
+    oneof_a_e = 0,
+    oneof_b_e = 1
 };
 
 /**

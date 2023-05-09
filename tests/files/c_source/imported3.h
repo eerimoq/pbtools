@@ -55,7 +55,7 @@ struct bar_imported2_message_t {
  * Enum bar.Imported3Message.Enum.
  */
 enum bar_imported3_message_enum_e {
-    bar_imported3_message_enum_a_e = 0
+    bar_imported3_message_a_e = 0
 };
 
 /**

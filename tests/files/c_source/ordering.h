@@ -41,14 +41,14 @@ extern "C" {
  * Enum ordering.Fam.
  */
 enum ordering_fam_e {
-    ordering_fam_a_e = 0
+    ordering_a_e = 0
 };
 
 /**
  * Enum ordering.Bar.Fum.
  */
 enum ordering_bar_fum_e {
-    ordering_bar_fum_a_e = 0
+    ordering_bar_a_e = 0
 };
 
 /**

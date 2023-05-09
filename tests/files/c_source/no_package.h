@@ -41,8 +41,8 @@ extern "C" {
  * Enum M0.E1.
  */
 enum m0_e1_e {
-    m0_e1_b_e = 0,
-    m0_e1_c_e = 1
+    m0_b_e = 0,
+    m0_c_e = 1
 };
 
 /**

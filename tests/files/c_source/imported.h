@@ -42,8 +42,8 @@ extern "C" {
  * Enum imported.ImportedEnum.
  */
 enum imported_imported_enum_e {
-    imported_imported_enum_a_e = 0,
-    imported_imported_enum_b_e = 1
+    imported_a_e = 0,
+    imported_b_e = 1
 };
 
 /**

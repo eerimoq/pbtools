@@ -682,10 +682,10 @@ OPTIONAL_STRUCT_MEMBER_FMT = '''\
 '''
 
 
-class GeneratorOptions:
+class Options:
 
-    def __init__(self, enum_upper):
-        self.enum_upper = enum_upper
+    def __init__(self, enums_upper_case=False):
+        self.enums_upper_case = enums_upper_case
 
 
 class Generator:
@@ -697,7 +697,7 @@ class Generator:
         self.namespace = namespace
         self.parsed = parsed
         self.header_name = header_name
-        self.enum_upper = options.enum_upper
+        self.enums_upper_case = options.enums_upper_case
 
     @property
     def messages(self):
@@ -820,11 +820,15 @@ class Generator:
 
     def generate_enum_members(self, enum):
         lines = []
+
         for field in enum.fields:
             line = ENUM_MEMBER_FMT.format(enum=enum, field=field)
-            if self.enum_upper:
+
+            if self.enums_upper_case:
                 line = line.upper()
+
             lines.append(line)
+
         return ',\n'.join(lines)
 
     def generate_enum_type(self, enum):
@@ -1332,6 +1336,9 @@ def generate_files(infiles,
     """Generate C source code from proto-file(s).
 
     """
+
+    if options is None:
+        options = Options()
 
     os.makedirs(output_directory, exist_ok=True)
 

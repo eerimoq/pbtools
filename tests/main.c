@@ -1039,8 +1039,8 @@ TEST(enum_message)
         int size;
         const char *encoded_p;
     } datas[] = {
-        { enum_message_enum_a_e, 0, "" },
-        { enum_message_enum_b_e, 2, "\x08\x01" }
+        { enum_message_a_e, 0, "" },
+        { enum_message_b_e, 2, "\x08\x01" }
     };
 
     /* Default. */
@@ -1082,8 +1082,8 @@ TEST(enum_message2)
 
     message_p = enum_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    message_p->outer = enum_enum_d_e;
-    message_p->inner = enum_message2_inner_enum_f_e;
+    message_p->outer = enum_d_e;
+    message_p->inner = enum_message2_f_e;
     size = enum_message2_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 4);
     ASSERT_MEMORY_EQ(&encoded[0], "\x08\x01\x10\x01", size);
@@ -1092,8 +1092,8 @@ TEST(enum_message2)
     ASSERT_NE(message_p, NULL);
     size = enum_message2_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 4);
-    ASSERT_EQ(message_p->outer, enum_enum_d_e);
-    ASSERT_EQ(message_p->inner, enum_message2_inner_enum_f_e);
+    ASSERT_EQ(message_p->outer, enum_d_e);
+    ASSERT_EQ(message_p->inner, enum_message2_f_e);
 }
 
 TEST(enum_limits)
@@ -1108,9 +1108,9 @@ TEST(enum_limits)
         int size;
         const char *encoded_p;
     } datas[] = {
-        { enum_limits_enum_g_e,  0, "" },
-        { enum_limits_enum_h_e, 11, "\x08\x80\x80\x80\x80\xf8\xff\xff\xff\xff\x01" },
-        { enum_limits_enum_i_e,  6, "\x08\xff\xff\xff\xff\x07" }
+        { enum_limits_g_e,  0, "" },
+        { enum_limits_h_e, 11, "\x08\x80\x80\x80\x80\xf8\xff\xff\xff\xff\x01" },
+        { enum_limits_i_e,  6, "\x08\xff\xff\xff\xff\x07" }
     };
 
     for (i = 0; i < membersof(datas); i++) {
@@ -1157,12 +1157,12 @@ TEST(address_book)
     /* Home. */
     phone_number_p = &person_p->phones.items_p[0];
     phone_number_p->number_p = "+46701232345";
-    phone_number_p->type = address_book_person_phone_type_home_e;
+    phone_number_p->type = address_book_person_home_e;
 
     /* Work. */
     phone_number_p = &person_p->phones.items_p[1];
     phone_number_p->number_p = "+46999999999";
-    phone_number_p->type = address_book_person_phone_type_work_e;
+    phone_number_p->type = address_book_person_work_e;
 
     /* Encode the message. */
     size = address_book_address_book_encode(address_book_p,
@@ -1200,12 +1200,12 @@ TEST(address_book)
     /* Home. */
     phone_number_p = &person_p->phones.items_p[0];
     ASSERT_EQ(phone_number_p->number_p, "+46701232345");
-    ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_home_e);
+    ASSERT_EQ(phone_number_p->type, address_book_person_home_e);
 
     /* Work. */
     phone_number_p = &person_p->phones.items_p[1];
     ASSERT_EQ(phone_number_p->number_p, "+46999999999");
-    ASSERT_EQ(phone_number_p->type, address_book_person_phone_type_work_e);
+    ASSERT_EQ(phone_number_p->type, address_book_person_work_e);
 }
 
 TEST(address_book_default)
@@ -1700,7 +1700,7 @@ TEST(oneof_message2_v6)
     message_p = oneof_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     oneof_message2_v6_init(message_p);
-    message_p->v6 = oneof_enum_b_e;
+    message_p->v6 = oneof_b_e;
     oneof_message2_v1_init(message_p);
     message_p->v1 = true;
 
@@ -1714,7 +1714,7 @@ TEST(oneof_message2_v6)
 
     ASSERT_EQ(size, 4);
     ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v6_e);
-    ASSERT_EQ(message_p->v6, oneof_enum_b_e);
+    ASSERT_EQ(message_p->v6, oneof_b_e);
     ASSERT_EQ(message_p->oneof2, oneof_message2_oneof2_v1_e);
     ASSERT_EQ(message_p->v1, true);
 }
@@ -1919,7 +1919,7 @@ TEST(oneof_message2_v6_default_value)
 
     ASSERT_EQ(size, 2);
     ASSERT_EQ(message_p->oneof1, oneof_message2_oneof1_v6_e);
-    ASSERT_EQ(message_p->v6, oneof_enum_a_e);
+    ASSERT_EQ(message_p->v6, oneof_a_e);
 }
 
 TEST(oneof_message3)
@@ -2848,8 +2848,8 @@ TEST(repeated_foo_enums)
     message_p = repeated_foo_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     ASSERT_EQ(repeated_foo_enums_alloc(message_p, 2), 0);
-    message_p->enums.items_p[0] = repeated_enum_a_e;
-    message_p->enums.items_p[1] = repeated_enum_b_e;
+    message_p->enums.items_p[0] = repeated_a_e;
+    message_p->enums.items_p[1] = repeated_b_e;
 
     size = repeated_foo_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 4);
@@ -2860,8 +2860,8 @@ TEST(repeated_foo_enums)
     size = repeated_foo_decode(message_p, &encoded[0], 4);
     ASSERT_EQ(size, 4);
     ASSERT_EQ(message_p->enums.length, 2);
-    ASSERT_EQ(message_p->enums.items_p[0], repeated_enum_a_e);
-    ASSERT_EQ(message_p->enums.items_p[1], repeated_enum_b_e);
+    ASSERT_EQ(message_p->enums.items_p[0], repeated_a_e);
+    ASSERT_EQ(message_p->enums.items_p[1], repeated_b_e);
 }
 
 TEST(scalar_value_types_decode_bad_wire_types)
@@ -3050,7 +3050,7 @@ TEST(message)
 
     message_p = message_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    message_p->foo = message_message_foo_b_e;
+    message_p->foo = message_message_b_e;
     ASSERT_EQ(message_message_fie_alloc(message_p), 0);
     ASSERT_EQ(message_message_fie_foo_alloc(message_p->fie_p), 0);
     message_p->fie_p->foo_p->value = true;
@@ -3067,7 +3067,7 @@ TEST(message)
     ASSERT_NE(message_p, NULL);
     size = message_message_decode(message_p, &encoded[0], 13);
     ASSERT_EQ(size, 13);
-    ASSERT_EQ(message_p->foo, message_message_foo_b_e);
+    ASSERT_EQ(message_p->foo, message_message_b_e);
     ASSERT_EQ(message_p->bar_p, NULL);
     ASSERT_NE(message_p->fie_p, NULL);
     ASSERT_NE(message_p->fie_p->foo_p, NULL);
@@ -3134,7 +3134,7 @@ TEST(benchmark_oneof_message_1)
     message_p->message1_p->field15_p->field12.size = 230;
     message_p->message1_p->field15_p->field21 = 449932;
     message_p->message1_p->field15_p->field204 = 1;
-    message_p->message1_p->field15_p->field300 = benchmark_enum_e3_e;
+    message_p->message1_p->field15_p->field300 = benchmark_e3_e;
 
     size = benchmark_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 566);
@@ -3212,7 +3212,7 @@ TEST(benchmark_oneof_message_1)
     ASSERT_EQ(message_p->message1_p->field15_p->field12.size, 230);
     ASSERT_EQ(message_p->message1_p->field15_p->field21, 449932);
     ASSERT_EQ(message_p->message1_p->field15_p->field204, 1);
-    ASSERT_EQ(message_p->message1_p->field15_p->field300, benchmark_enum_e3_e);
+    ASSERT_EQ(message_p->message1_p->field15_p->field300, benchmark_e3_e);
 }
 
 TEST(benchmark_message_3)
@@ -3297,10 +3297,10 @@ TEST(no_package)
     message_p = m0_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     ASSERT_EQ(m0_v1_alloc(message_p), 0);
-    message_p->v1_p->v1 = m0_e1_c_e;
+    message_p->v1_p->v1 = m0_c_e;
     ASSERT_EQ(m0_v2_alloc(message_p, 1), 0);
-    message_p->v2.items_p[0].v1 = m0_e1_b_e;
-    message_p->v3 = m0_e1_c_e;
+    message_p->v2.items_p[0].v1 = m0_b_e;
+    message_p->v3 = m0_c_e;
 
     size = m0_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 8);
@@ -3311,10 +3311,10 @@ TEST(no_package)
     size = m0_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 8);
     ASSERT_NE(message_p->v1_p, NULL);
-    ASSERT_EQ(message_p->v1_p->v1, m0_e1_c_e);
+    ASSERT_EQ(message_p->v1_p->v1, m0_c_e);
     ASSERT_EQ(message_p->v2.length, 1);
-    ASSERT_EQ(message_p->v2.items_p[0].v1, m0_e1_b_e);
-    ASSERT_EQ(message_p->v3, m0_e1_c_e);
+    ASSERT_EQ(message_p->v2.items_p[0].v1, m0_b_e);
+    ASSERT_EQ(message_p->v3, m0_c_e);
 }
 
 TEST(importing_message)
@@ -3326,7 +3326,7 @@ TEST(importing_message)
 
     message_p = importing_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
-    message_p->v1 = imported_imported_enum_b_e;
+    message_p->v1 = imported_b_e;
     ASSERT_EQ(importing_message_v2_alloc(message_p), 0);
     message_p->v2_p->v1 = true;
 
@@ -3338,7 +3338,7 @@ TEST(importing_message)
     ASSERT_NE(message_p, NULL);
     size = importing_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 6);
-    ASSERT_EQ(message_p->v1, imported_imported_enum_b_e);
+    ASSERT_EQ(message_p->v1, imported_b_e);
     ASSERT_NE(message_p->v2_p, NULL);
     ASSERT_EQ(message_p->v2_p->v1, true);
 }
@@ -3364,7 +3364,7 @@ TEST(importing_message_same_package)
     ASSERT_NE(message_p, NULL);
     size = importing_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 7);
-    ASSERT_EQ(message_p->v1, imported_imported_enum_a_e);
+    ASSERT_EQ(message_p->v1, imported_a_e);
     ASSERT_EQ(message_p->v2_p->v1, false);
     ASSERT_EQ(message_p->v2_p->v2_p->v1, true);
 }
@@ -3379,7 +3379,7 @@ TEST(importing_message_2)
     message_p = importing_message2_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     ASSERT_EQ(importing_message2_v1_alloc(message_p), 0);
-    message_p->v1_p->v1 = imported_imported_enum_b_e;
+    message_p->v1_p->v1 = imported_b_e;
     ASSERT_EQ(importing_message2_v2_alloc(message_p), 0);
     ASSERT_EQ(imported2_foo_bar_imported2_message_v1_alloc(message_p->v2_p), 0);
     message_p->v2_p->v1_p->v1 = true;
@@ -3394,7 +3394,7 @@ TEST(importing_message_2)
     ASSERT_NE(message_p, NULL);
     size = importing_message2_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 11);
-    ASSERT_EQ(message_p->v1_p->v1, imported_imported_enum_b_e);
+    ASSERT_EQ(message_p->v1_p->v1, imported_b_e);
     ASSERT_EQ(message_p->v2_p->v1_p->v1, true);
 }
 
@@ -3697,7 +3697,7 @@ TEST(optional_fields_2)
     message_p->v5.value.buf_p = (uint8_t *)"123";
     message_p->v5.value.size = 3;
     message_p->v6.is_present = true;
-    message_p->v6.value = optional_fields_enum_b_e;
+    message_p->v6.value = optional_fields_b_e;
     size = optional_fields_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 11);
     ASSERT_MEMORY_EQ(&encoded[0],
@@ -3719,7 +3719,7 @@ TEST(optional_fields_2)
     ASSERT_EQ(message_p->v5.value.size, 3);
     ASSERT_MEMORY_EQ(message_p->v5.value.buf_p, "123", 3);
     ASSERT_TRUE(message_p->v6.is_present);
-    ASSERT_EQ(message_p->v6.value, optional_fields_enum_b_e);
+    ASSERT_EQ(message_p->v6.value, optional_fields_b_e);
 }
 
 TEST(optional_fields_3)
@@ -3733,7 +3733,7 @@ TEST(optional_fields_3)
     message_p = optional_fields_message_new(&workspace[0], sizeof(workspace));
     ASSERT_NE(message_p, NULL);
     message_p->v6.is_present = true;
-    message_p->v6.value = optional_fields_enum_a_e;
+    message_p->v6.value = optional_fields_a_e;
     size = optional_fields_message_encode(message_p, &encoded[0], sizeof(encoded));
     ASSERT_EQ(size, 2);
     ASSERT_MEMORY_EQ(&encoded[0], "\x30\x00", size);
@@ -3744,5 +3744,5 @@ TEST(optional_fields_3)
     size = optional_fields_message_decode(message_p, &encoded[0], size);
     ASSERT_EQ(size, 2);
     ASSERT_TRUE(message_p->v6.is_present);
-    ASSERT_EQ(message_p->v6.value, optional_fields_enum_a_e);
+    ASSERT_EQ(message_p->v6.value, optional_fields_a_e);
 }

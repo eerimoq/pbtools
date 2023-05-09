@@ -2,13 +2,11 @@ import os
 
 from ..parser import camel_to_snake_case
 from ..c_source import generate_files
-from ..c_source import GeneratorOptions
+from ..c_source import Options
 
 
 def _do_generate_c_source(args):
-    options = GeneratorOptions(
-        enum_upper=args.enum_upper
-    )
+    options = Options(args.enums_upper_case)
     generate_files(args.infiles,
                    args.import_path,
                    args.output_directory,
@@ -33,7 +31,7 @@ def add_subparser(subparsers):
         nargs='+',
         help='Input protobuf file(s).')
     subparser.add_argument(
-        '--enum-upper',
+        '--enums-upper-case',
         action='store_true',
-        help='use upper case for generated enum')
+        help='Use upper case for generated enums.')
     subparser.set_defaults(func=_do_generate_c_source)

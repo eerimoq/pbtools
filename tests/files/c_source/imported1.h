@@ -54,7 +54,7 @@ struct foo_bar_imported2_message_t {
  * Enum foo.bar.Imported3Message.Enum.
  */
 enum foo_bar_imported3_message_enum_e {
-    foo_bar_imported3_message_enum_a_e = 0
+    foo_bar_imported3_message_a_e = 0
 };
 
 /**

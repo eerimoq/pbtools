@@ -44,8 +44,8 @@ extern "C" {
  * Enum imported2.foo.bar.Imported2Enum.
  */
 enum imported2_foo_bar_imported2_enum_e {
-    imported2_foo_bar_imported2_enum_a_e = 0,
-    imported2_foo_bar_imported2_enum_b_e = 1
+    imported2_foo_bar_a_e = 0,
+    imported2_foo_bar_b_e = 1
 };
 
 /**

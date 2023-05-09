@@ -227,6 +227,26 @@ class CommandLineTest(unittest.TestCase):
                 self.assert_files_equal(filename_mys,
                                         f'tests/files/mys_source/{filename_mys}')
 
+    def test_command_line_generate_c_source_enums_upper_case(self):
+        spec = 'address_book'
+        proto = f'tests/files/{spec}.proto'
 
-if __name__ == '__main__':
-    unittest.main()
+        argv = [
+            'pbtools',
+            'generate_c_source',
+            '--enums-upper-case',
+            proto
+        ]
+
+        filename_h = f'{spec}.h'
+        filename_c = f'{spec}.c'
+
+        remove_files([filename_h, filename_c])
+
+        with patch('sys.argv', argv):
+            pbtools._main()
+
+        for filename in [filename_h, filename_c]:
+            self.assert_files_equal(
+                filename,
+                f'tests/files/c_source/enums_upper_case_{filename}')

@@ -41,9 +41,9 @@ extern "C" {
  * Enum address_book.Person.PhoneType.
  */
 enum address_book_person_phone_type_e {
-    address_book_person_mobile_e = 0,
-    address_book_person_home_e = 1,
-    address_book_person_work_e = 2
+    ADDRESS_BOOK_PERSON_MOBILE_E = 0,
+    ADDRESS_BOOK_PERSON_HOME_E = 1,
+    ADDRESS_BOOK_PERSON_WORK_E = 2
 };
 
 /**

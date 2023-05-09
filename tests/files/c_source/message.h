@@ -66,8 +66,8 @@ struct message_bar_t {
  * Enum message.Message.Foo.
  */
 enum message_message_foo_e {
-    message_message_foo_a_e = 0,
-    message_message_foo_b_e = 1
+    message_message_a_e = 0,
+    message_message_b_e = 1
 };
 
 /**
@@ -116,7 +116,7 @@ struct message_message_t {
  * Enum message.UnusedInnerTypes.UnusedEnum.
  */
 enum message_unused_inner_types_unused_enum_e {
-    message_unused_inner_types_unused_enum_a_e = 0
+    message_unused_inner_types_a_e = 0
 };
 
 /**

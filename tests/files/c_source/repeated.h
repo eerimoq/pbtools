@@ -41,8 +41,8 @@ extern "C" {
  * Enum repeated.Enum.
  */
 enum repeated_enum_e {
-    repeated_enum_a_e = 0,
-    repeated_enum_b_e = 1
+    repeated_a_e = 0,
+    repeated_b_e = 1
 };
 
 /**

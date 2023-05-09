@@ -41,8 +41,8 @@ extern "C" {
  * Enum imported.ImportedDuplicatedPackageEnum.
  */
 enum imported_imported_duplicated_package_enum_e {
-    imported_imported_duplicated_package_enum_e_e = 0,
-    imported_imported_duplicated_package_enum_f_e = 1
+    imported_e_e = 0,
+    imported_f_e = 1
 };
 
 /**
