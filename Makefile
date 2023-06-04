@@ -48,7 +48,7 @@ test:
 	$(MAKE) test-c
 
 test-python:
-	python3 setup.py test
+	python3 -m unittest
 
 test-c:
 	$(MAKE) -C tests

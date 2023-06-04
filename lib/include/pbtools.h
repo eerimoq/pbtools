@@ -28,14 +28,14 @@
 #define PBTOOLS_H
 
 #ifdef __cplusplus
-extern "C" {{
+extern "C" {
 #endif
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
-#define PBTOOLS_VERSION "0.44.0"
+#define PBTOOLS_VERSION "0.47.0"
 
 /* Compile time configuration. */
 
@@ -725,7 +725,7 @@ void pbtools_repeated_varint_info_decode(struct pbtools_repeated_info_t *self_p,
                                          int wire_type);
 
 #ifdef __cplusplus
-}}
+}
 #endif
 
 #endif
